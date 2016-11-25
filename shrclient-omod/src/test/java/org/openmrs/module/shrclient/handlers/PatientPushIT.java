@@ -87,7 +87,7 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
     public void shouldUploadAnUpdatedPatient() throws Exception {
         executeDataSet("testDataSets/attributeTypesDS.xml");
         executeDataSet("testDataSets/attributeUpdateDS.xml");
-        Date date = DateUtil.parseDate("1992-12-24T20:03:00+0530");
+        Date date = DateUtil.parseDate("1992-12-24 20:03:00");
 
         String mciResponse = "{\"http_status\" : \"" + 201 + "\", \"id\" : \"hid-1\"}";
         givenThat(post(urlEqualTo("/api/default/patients"))
