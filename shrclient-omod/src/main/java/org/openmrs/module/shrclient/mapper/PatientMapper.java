@@ -11,6 +11,7 @@ import org.openmrs.module.shrclient.model.Status;
 import org.openmrs.module.shrclient.service.BbsCodeService;
 import org.openmrs.module.shrclient.util.AddressHelper;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.openmrs.module.fhir.Constants.*;
@@ -49,7 +50,8 @@ public class PatientMapper {
         patient.setGivenName(openMrsPatient.getGivenName());
         patient.setSurName(openMrsPatient.getFamilyName());
         patient.setGender(openMrsPatient.getGender());
-        patient.setDateOfBirth(openMrsPatient.getBirthdate());
+        Date birthDateTime = openMrsPatient.getBirthDateTime() != null ? openMrsPatient.getBirthDateTime() : openMrsPatient.getBirthdate();
+        patient.setDateOfBirth(birthDateTime);
 
         String healthId = personAttributeMapper.getAttributeValue(openMrsPatient, HEALTH_ID_ATTRIBUTE);
         if (healthId != null) {

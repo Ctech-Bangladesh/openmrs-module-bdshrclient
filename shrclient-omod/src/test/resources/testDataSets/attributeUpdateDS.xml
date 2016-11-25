@@ -22,7 +22,7 @@
     <!--shrclient system user-->
 
 
-    <person person_id="11" gender="M" dead="false" creator="1" birthdate_estimated="0"
+    <person person_id="11" gender="M" dead="false" creator="1" birthdate_estimated="0" birthdate="1992-12-24" birthtime="20:03:00"
             date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
             uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
 

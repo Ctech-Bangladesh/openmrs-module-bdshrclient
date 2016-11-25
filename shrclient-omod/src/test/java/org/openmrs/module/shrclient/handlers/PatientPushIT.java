@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
+import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.identity.IdentityStore;
 import org.openmrs.module.shrclient.mapper.PatientMapper;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -85,6 +87,7 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
     public void shouldUploadAnUpdatedPatient() throws Exception {
         executeDataSet("testDataSets/attributeTypesDS.xml");
         executeDataSet("testDataSets/attributeUpdateDS.xml");
+        Date date = DateUtil.parseDate("1992-12-24T20:03:00+0530");
 
         String mciResponse = "{\"http_status\" : \"" + 201 + "\", \"id\" : \"hid-1\"}";
         givenThat(post(urlEqualTo("/api/default/patients"))
@@ -102,9 +105,9 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
         patientPush.process(event);
 
         verify(1, postRequestedFor(urlEqualTo("/api/default/patients"))
-                        .withHeader(AUTH_TOKEN_KEY, matching(accessToken))
-                        .withHeader(CLIENT_ID_KEY, matching(clientIdValue))
-                        .withHeader(FROM_KEY, matching(email))
+                .withHeader(AUTH_TOKEN_KEY, matching(accessToken))
+                .withHeader(CLIENT_ID_KEY, matching(clientIdValue))
+                .withHeader(FROM_KEY, matching(email))
         );
         List<LoggedRequest> all = wireMockRule.findAll(postRequestedFor(urlEqualTo("/api/default/patients")));
         LoggedRequest loggedRequest = all.get(0);
@@ -118,6 +121,7 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
         for (Relation relation : relations) {
             assertDeletedRelation(relation);
         }
+        assertEquals(date, patient.getDateOfBirth());
     }
 
     private void assertDeletedRelation(Relation relation) {
