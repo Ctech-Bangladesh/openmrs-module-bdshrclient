@@ -3,10 +3,6 @@
     <global_property property="shr.orderTypeToFHIRCodeMappings" property_value='[{"type":"Radiology Order","code":"RAD","display":"Radiology"},
     {"type":"Custom Order","code":"CUST","display":"Custom"}]' description="A Map for Openmrs Order to FHIR Order Category Code" uuid="qkieyg88-efd9-fda3-2b99-z12aalsa677h"/>
 
-    <person_attribute_type person_attribute_type_id="100" name="healthId" description="Unique Health ID"
-                           format="java.lang.String" retired="0" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0"
-                           searchable="1" uuid="5b19584d-10ab-11e4-b4e1-1e55d8e9e2ae"/>
-
     <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
               uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
 
@@ -21,8 +17,6 @@
     <person_name person_name_id="1" preferred="true" person_id="1" prefix="" given_name="firstName" middle_name=""
                  family_name="lastName" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
                  voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
-    <person_attribute person_attribute_id="1" person_id="1" value="1234512345123" person_attribute_type_id="100" creator="1"
-                      date_created="2005-09-22 00:00:00" uuid="399e3a7b-6482-487d-94ce-c0zbbzcazcca" />
     <care_setting care_setting_id="1" name="OutPatient" description="OutPatient" care_setting_type="OUTPATIENT" creator="1" date_created="2008-08-19 12:35:30.0" retired="false" uuid="6f0c9a92-6f24-11e3-af88-005056821db0"/>
 
     <visit visit_id="1" date_started="2014-07-10 00:00:00" date_created="2014-07-10 00:00:00" patient_id="1"

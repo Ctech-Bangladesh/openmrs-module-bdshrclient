@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -39,7 +40,6 @@ import static org.openmrs.module.fhir.Constants.*;
 
 @Service("hieEmrPatientService")
 public class EMRPatientServiceImpl implements EMRPatientService {
-    private static final String DOB_TYPE_DECLARED = "1";
     private static final String DOB_TYPE_ESTIMATED = "3";
 
     private static final Logger logger = Logger.getLogger(EMRPatientServiceImpl.class);
@@ -53,6 +53,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
     private PersonAttributeMapper personAttributeMapper;
     private EMRPatientDeathService patientDeathService;
     private GlobalPropertyLookUpService globalPropertyLookUpService;
+    private LocationService locationService;
 
     @Autowired
     public EMRPatientServiceImpl(BbsCodeService bbsCodeService,
@@ -62,7 +63,8 @@ public class EMRPatientServiceImpl implements EMRPatientService {
                                  PropertiesReader propertiesReader,
                                  SystemUserService systemUserService,
                                  EMRPatientDeathService patientDeathService,
-                                 GlobalPropertyLookUpService globalPropertyLookUpService) {
+                                 GlobalPropertyLookUpService globalPropertyLookUpService,
+                                 LocationService locationService) {
         this.bbsCodeService = bbsCodeService;
         this.patientService = patientService;
         this.idMappingsRepository = idMappingRepository;
@@ -70,6 +72,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
         this.systemUserService = systemUserService;
         this.patientDeathService = patientDeathService;
         this.globalPropertyLookUpService = globalPropertyLookUpService;
+        this.locationService = locationService;
         this.personAttributeMapper = new PersonAttributeMapper(personService);
     }
 
@@ -94,7 +97,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
             PatientIdentifier healthID = new PatientIdentifier();
             healthID.setIdentifier(mciPatient.getHealthId());
             healthID.setIdentifierType(patientService.getPatientIdentifierTypeByName(HEALTH_ID_IDENTIFIER_TYPE_NAME));
-            healthID.setLocation(Context.getLocationService().getLocation(Location.LOCATION_UNKNOWN));
+            healthID.setLocation(locationService.getLocation(Location.LOCATION_UNKNOWN));
             emrPatient.addIdentifier(healthID);
 
             addPersonAttribute(emrPatient, NATIONAL_ID_ATTRIBUTE, mciPatient.getNationalId());
@@ -198,12 +201,12 @@ public class EMRPatientServiceImpl implements EMRPatientService {
     private PatientIdentifier generateIdentifier() {
         IdentifierSourceService identifierSourceService = Context.getService(IdentifierSourceService.class);
         PatientIdentifierType identifierType = getPatientIdentifierType();
-        IdentifierSource idSource = getIdenfierSource(identifierSourceService, identifierType);
+        IdentifierSource idSource = getIdentifierSource(identifierSourceService, identifierType);
         String identifier = identifierSourceService.generateIdentifier(idSource, "MCI Patient");
         return new PatientIdentifier(identifier, identifierType, null);
     }
 
-    private IdentifierSource getIdenfierSource(IdentifierSourceService identifierSourceService, PatientIdentifierType identifierType) {
+    private IdentifierSource getIdentifierSource(IdentifierSourceService identifierSourceService, PatientIdentifierType identifierType) {
         String defaultPatientIdSourceId = globalPropertyLookUpService.getGlobalPropertyValue(MRSProperties.GLOBAL_PROPERTY_DEFAULT_IDENTIFIER_TYPE_ID);
         if (defaultPatientIdSourceId != null)
             return identifierSourceService.getIdentifierSource(Integer.parseInt(defaultPatientIdSourceId));

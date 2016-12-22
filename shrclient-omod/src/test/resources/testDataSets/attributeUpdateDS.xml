@@ -79,10 +79,6 @@
                         identifier="GAN200000" identifier_type="2" creator="1"
                         uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0"/>
 
-    <person_attribute person_attribute_id="11" person_id="11" value="hid" person_attribute_type_id="103"
-                      creator="1" voided="0" date_created="2005-09-22 00:00:00"
-                      uuid="399e3a7b-6482-487d-94ce-c0zbbzcazcca"/>
-
     <person_attribute person_attribute_id="12" person_id="11" value="brn" person_attribute_type_id="105"
                       creator="1" voided="1" date_created="2005-09-22 00:00:00"
                       uuid="7cb74fd1-128d-4584-342f-81d3535da3a6"/>

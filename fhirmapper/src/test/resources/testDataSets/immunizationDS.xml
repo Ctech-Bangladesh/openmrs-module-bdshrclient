@@ -1,10 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-    <person_attribute_type person_attribute_type_id="100" name="healthId" description="Unique Health ID"
-                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
-                           date_created="2005-01-01 00:00:00.0"
-                           searchable="1" uuid="5b19584d-10ab-11e4-b4e1-1e55d8e9e2ae"></person_attribute_type>
-
     <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
               uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
 
@@ -19,9 +14,6 @@
     <person_name person_name_id="1" preferred="true" person_id="1" given_name="firstName"
                  family_name="lastName" creator="1" date_created="2005-09-22 00:00:00.0"
                  voided="false" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
-    <person_attribute person_attribute_id="1" person_id="1" value="1234512345123" person_attribute_type_id="100"
-                      creator="1"
-                      date_created="2005-09-22 00:00:00" uuid="399e3a7b-6482-487d-94ce-c0zbbzcazcca"></person_attribute>
 
     <!--Immunization concepts -->
     <concept concept_id="301" retired="false" datatype_id="4" class_id="10" is_set="true" creator="1"

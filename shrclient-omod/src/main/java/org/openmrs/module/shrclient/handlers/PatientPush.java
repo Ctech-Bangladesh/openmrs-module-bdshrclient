@@ -5,12 +5,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
+import org.openmrs.Location;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
-import org.openmrs.PersonAttribute;
-import org.openmrs.PersonAttributeType;
 import org.openmrs.Provider;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.utils.DateUtil;
@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.openmrs.module.fhir.Constants.HEALTH_ID_ATTRIBUTE;
+import static org.openmrs.module.fhir.Constants.HEALTH_ID_IDENTIFIER_TYPE_NAME;
 
 public class PatientPush implements EventWorker {
 
@@ -37,23 +37,23 @@ public class PatientPush implements EventWorker {
 
     private PatientService patientService;
     private SystemUserService systemUserService;
-    private PersonService personService;
     private PatientMapper patientMapper;
     private PropertiesReader propertiesReader;
     private List<String> patientUuidsProcessed;
     private RestClient mciRestClient;
     private IdMappingRepository idMappingsRepository;
     private ProviderService providerService;
+    private LocationService locationService;
 
-    public PatientPush(PatientService patientService, SystemUserService systemUserService, PersonService personService,
+    public PatientPush(PatientService patientService, SystemUserService systemUserService,
                        PatientMapper patientMapper, PropertiesReader propertiesReader, ClientRegistry clientRegistry,
-                       IdMappingRepository idMappingRepository, ProviderService providerService) throws IdentityUnauthorizedException {
+                       IdMappingRepository idMappingRepository, ProviderService providerService, LocationService locationService) throws IdentityUnauthorizedException {
         this.patientService = patientService;
         this.systemUserService = systemUserService;
-        this.personService = personService;
         this.patientMapper = patientMapper;
         this.propertiesReader = propertiesReader;
         this.providerService = providerService;
+        this.locationService = locationService;
         this.mciRestClient = clientRegistry.getMCIClient();
         this.idMappingsRepository = idMappingRepository;
         this.clientRegistry = clientRegistry;
@@ -69,7 +69,7 @@ public class PatientPush implements EventWorker {
 
             org.openmrs.Patient openMrsPatient = patientService.getPatientByUuid(uuid);
 
-            PatientIdMapping patientIdMapping = (PatientIdMapping) idMappingsRepository.findByInternalId(openMrsPatient.getUuid(),IdMappingType.PATIENT);
+            PatientIdMapping patientIdMapping = (PatientIdMapping) idMappingsRepository.findByInternalId(openMrsPatient.getUuid(), IdMappingType.PATIENT);
             if (!shouldUploadPatient(openMrsPatient, event.getDateCreated(), patientIdMapping)) {
                 return;
             }
@@ -126,9 +126,9 @@ public class PatientPush implements EventWorker {
             return false;
         }
 
-        if(eventDate != null && idMapping != null) {
+        if (eventDate != null && idMapping != null) {
             Date lastSyncDateTime = idMapping.getLastSyncDateTime();
-            if(DateUtil.isEqualTo(lastSyncDateTime, eventDate) || DateUtil.isLaterThan(lastSyncDateTime, eventDate)) {
+            if (DateUtil.isEqualTo(lastSyncDateTime, eventDate) || DateUtil.isLaterThan(lastSyncDateTime, eventDate)) {
                 log.debug(String.format("Patient [%s] already uploaded to MCI.", openMrsPatient.getUuid()));
                 return false;
             }
@@ -174,27 +174,28 @@ public class PatientPush implements EventWorker {
             return;
         }
 
-        PersonAttribute healthIdAttribute = openMrsPatient.getAttribute(HEALTH_ID_ATTRIBUTE);
-        if (healthIdAttribute != null && healthId.equals(healthIdAttribute.getValue())) {
+        PatientIdentifier healthIdIdentifier = openMrsPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        if (healthIdIdentifier != null && healthId.equals(healthIdIdentifier.getIdentifier())) {
             log.debug("OpenMRS patient health id is same as the health id provided. Hence, not updated.");
             saveOrUpdateIdMapping(openMrsPatient, healthId);
             return;
         }
 
-        if (healthIdAttribute == null) {
-            healthIdAttribute = new PersonAttribute();
-            PersonAttributeType healthAttrType = personService.getPersonAttributeTypeByName(HEALTH_ID_ATTRIBUTE);
-            healthIdAttribute.setAttributeType(healthAttrType);
-            healthIdAttribute.setValue(healthId);
-            openMrsPatient.addAttribute(healthIdAttribute);
+        if (healthIdIdentifier == null) {
+            PatientIdentifier patientIdentifier = new PatientIdentifier();
+            patientIdentifier.setIdentifier(healthId);
+            patientIdentifier.setIdentifierType(patientService.getPatientIdentifierTypeByName(HEALTH_ID_IDENTIFIER_TYPE_NAME));
+            patientIdentifier.setLocation(locationService.getLocation(Location.LOCATION_UNKNOWN));
+            openMrsPatient.addIdentifier(patientIdentifier);
+
         } else {
-            healthIdAttribute.setValue(healthId);
+            healthIdIdentifier.setIdentifier(healthId);
         }
         patientService.savePatient(openMrsPatient);
         saveOrUpdateIdMapping(openMrsPatient, healthId);
         systemUserService.setOpenmrsShrSystemUserAsCreator(openMrsPatient);
 
-        log.debug(String.format("OpenMRS patient updated."));
+        log.debug("OpenMRS patient updated.");
     }
 
     private void saveOrUpdateIdMapping(org.openmrs.Patient emrPatient, String healthId) {

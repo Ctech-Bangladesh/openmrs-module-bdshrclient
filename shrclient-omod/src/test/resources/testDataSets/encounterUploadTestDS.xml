@@ -1,10 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-    <person_attribute_type person_attribute_type_id="100" name="healthId" description="Unique Health ID"
-                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
-                           date_created="2005-01-01 00:00:00.0"
-                           searchable="1" uuid="5b19584d-10ab-11e4-b4e1-1e55d8e9e2ae"></person_attribute_type>
-
     <!--shrclient system user-->
     <person person_id="2" gender="M" dead="false" creator="1" birthdate_estimated="0"
             date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
@@ -41,8 +36,6 @@
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="11" patient_id="11"
                         identifier="GAN200000" identifier_type="2" creator="1"
                         uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0"/>
-    <person_attribute person_attribute_id="11" person_id="11" value="1234512345123" person_attribute_type_id="100"
-                      creator="1" date_created="2005-09-22 00:00:00" uuid="399e3a7b-6482-487d-94ce-c0zbbzcazcca"/>
     <patient_id_mapping id="11" internal_id="75e04d42-3ca8-11e3-bf2b-0800271c1b75" external_id="1234512345123"
                         uri="http:/localhost:9997/api/v1/patients/1234512345123"/>
 

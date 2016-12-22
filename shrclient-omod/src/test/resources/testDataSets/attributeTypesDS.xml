@@ -16,11 +16,6 @@
                            date_created="2005-01-01 00:00:00.0"
                            searchable="1" uuid="5b19584d-10ab-11e4-b4e1-x92kdxiii2ae"/>
 
-    <person_attribute_type person_attribute_type_id="103" name="healthId" description="Health Id"
-                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
-                           date_created="2005-01-01 00:00:00.0"
-                           searchable="1" uuid="5b19584d-10ab-1133-b4e1-1e55d8e9e2ae"/>
-
     <person_attribute_type person_attribute_type_id="104" name="nationalId" description="National Id"
                            format="java.lang.String" retired="0" creator="1" sort_weight="1"
                            date_created="2005-01-01 00:00:00.0"

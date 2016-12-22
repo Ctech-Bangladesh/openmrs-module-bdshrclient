@@ -8,9 +8,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
+import org.openmrs.module.fhir.Constants;
 import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.identity.IdentityStore;
@@ -30,7 +32,9 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static junit.framework.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.openmrs.module.shrclient.util.Headers.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -50,6 +54,8 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
     private ProviderService providerService;
     @Autowired
     private IdentityStore identityStore;
+    @Autowired
+    private LocationService locationService;
 
     private PatientPush patientPush;
 
@@ -73,9 +79,9 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
 
         ClientRegistry clientRegistry = new ClientRegistry(propertiesReader, identityStore);
         PatientMapper patientMapper = new PatientMapper(new BbsCodeService(), idMappingsRepository);
-        patientPush = new PatientPush(patientService, systemUserService, personService,
+        patientPush = new PatientPush(patientService, systemUserService,
                 patientMapper, propertiesReader, clientRegistry,
-                idMappingsRepository, providerService);
+                idMappingsRepository, providerService, locationService);
     }
 
     @After
@@ -84,7 +90,7 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    public void shouldUploadAnUpdatedPatient() throws Exception {
+    public void shouldUploadAnNewPatient() throws Exception {
         executeDataSet("testDataSets/attributeTypesDS.xml");
         executeDataSet("testDataSets/attributeUpdateDS.xml");
         Date date = DateUtil.parseDate("1992-12-24 20:03:00");
@@ -105,23 +111,27 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
         patientPush.process(event);
 
         verify(1, postRequestedFor(urlEqualTo("/api/default/patients"))
-                .withHeader(AUTH_TOKEN_KEY, matching(accessToken))
-                .withHeader(CLIENT_ID_KEY, matching(clientIdValue))
-                .withHeader(FROM_KEY, matching(email))
+                        .withHeader(AUTH_TOKEN_KEY, matching(accessToken))
+                        .withHeader(CLIENT_ID_KEY, matching(clientIdValue))
+                        .withHeader(FROM_KEY, matching(email))
         );
+
         List<LoggedRequest> all = wireMockRule.findAll(postRequestedFor(urlEqualTo("/api/default/patients")));
         LoggedRequest loggedRequest = all.get(0);
-        Patient patient = new ObjectMapper().readValue(loggedRequest.getBodyAsString(), Patient.class);
-        assertEquals("", patient.getNationalId());
-        assertEquals("", patient.getBirthRegNumber());
-        assertNull(patient.getPhoneNumber());
-        assertEquals("", patient.getHouseHoldCode());
-        Relation[] relations = patient.getRelations();
+        Patient pushedPatient = new ObjectMapper().readValue(loggedRequest.getBodyAsString(), Patient.class);
+        assertEquals("", pushedPatient.getNationalId());
+        assertEquals("", pushedPatient.getBirthRegNumber());
+        assertNull(pushedPatient.getPhoneNumber());
+        assertEquals("", pushedPatient.getHouseHoldCode());
+        Relation[] relations = pushedPatient.getRelations();
         assertEquals(3, relations.length);
         for (Relation relation : relations) {
             assertDeletedRelation(relation);
         }
-        assertEquals(date, patient.getDateOfBirth());
+        assertEquals(date, pushedPatient.getDateOfBirth());
+
+        org.openmrs.Patient patient = patientService.getPatient(11);
+        assertEquals("hid-1", patient.getPatientIdentifier(Constants.HEALTH_ID_IDENTIFIER_TYPE_NAME).getIdentifier());
     }
 
     private void assertDeletedRelation(Relation relation) {

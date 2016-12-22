@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.*;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
@@ -29,6 +30,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.openmrs.module.fhir.Constants.HEALTH_ID_ATTRIBUTE;
+import static org.openmrs.module.fhir.Constants.HEALTH_ID_IDENTIFIER_TYPE_NAME;
 
 public class PatientPushTest {
 
@@ -53,23 +55,23 @@ public class PatientPushTest {
     @Mock
     private ProviderService providerService;
     @Mock
+    private LocationService locationService;
+    @Mock
     private Event event;
 
     private PatientPush patientPush;
     private String healthId = "hid-200";
 
-    private String mciPatientContext;
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8089);
-
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
         when(clientRegistry.getMCIClient()).thenReturn(mockMciRestClient);
-        patientPush = new PatientPush(patientService, systemUserService, personService, patientMapper,
-                propertiesReader, clientRegistry, idMappingsRepository, providerService);
-        mciPatientContext = "/api/default/patients";
+        patientPush = new PatientPush(patientService, systemUserService, patientMapper,
+                propertiesReader, clientRegistry, idMappingsRepository, providerService, locationService);
+        String mciPatientContext = "/api/default/patients";
         when(propertiesReader.getMciPatientContext()).thenReturn(mciPatientContext);
         when(propertiesReader.getMciProperties()).thenReturn(new Properties() {{
             put(PropertyKeyConstants.MCI_REFERENCE_PATH, "http://public.com/");
@@ -93,14 +95,9 @@ public class PatientPushTest {
     }
 
     @Test
-    public void shouldNotUpdateOpenMrsPatient_WhenHealthIdAttributeIsSameAsProvidedHealthId() {
+    public void shouldNotUpdateOpenMrsPatient_WhenHealthIdIdentifierIsSameAsProvidedHealthId() {
         final org.openmrs.Patient openMrsPatient = new org.openmrs.Patient();
-
-        PersonAttribute healthIdAttribute = createHealthIdAttribute();
-
-        Set<PersonAttribute> openMrsPatientAttributes = new HashSet<>();
-        openMrsPatientAttributes.add(healthIdAttribute);
-        openMrsPatient.setAttributes(openMrsPatientAttributes);
+        openMrsPatient.addIdentifier(createHealthIdIdentifier());
 
         patientPush.updateOpenMrsPatientHealthId(openMrsPatient, healthId);
         verify(patientService, never()).savePatient(any(org.openmrs.Patient.class));
@@ -206,13 +203,14 @@ public class PatientPushTest {
         verify(idMappingsRepository, times(1)).saveOrUpdateIdMapping(any(IdMapping.class));
     }
 
-    private PersonAttribute createHealthIdAttribute() {
-        PersonAttributeType healthIdAttributeType = new PersonAttributeType();
-        healthIdAttributeType.setName(HEALTH_ID_ATTRIBUTE);
+    private PatientIdentifier createHealthIdIdentifier() {
+        PatientIdentifier healthId = new PatientIdentifier();
+        healthId.setIdentifier(this.healthId);
+        PatientIdentifierType identifierType = new PatientIdentifierType(12);
+        identifierType.setName(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        healthId.setIdentifierType(identifierType);
+        healthId.setLocation(locationService.getLocation(Location.LOCATION_UNKNOWN));
 
-        PersonAttribute healthIdAttribute = new PersonAttribute();
-        healthIdAttribute.setAttributeType(healthIdAttributeType);
-        healthIdAttribute.setValue(healthId);
-        return healthIdAttribute;
+        return healthId;
     }
 }

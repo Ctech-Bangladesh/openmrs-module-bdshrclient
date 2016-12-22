@@ -61,12 +61,11 @@ public abstract class AbstractBahmniSyncTask extends AbstractTask {
             return new PatientPush(
                     Context.getPatientService(),
                     systemUserService,
-                    Context.getPersonService(),
                     new PatientMapper(new BbsCodeService(), idMappingsRepository),
                     propertiesReader,
                     clientRegistry,
                     idMappingsRepository,
-                    Context.getProviderService());
+                    Context.getProviderService(), Context.getLocationService());
         } catch (IdentityUnauthorizedException e) {
             throw handleInvalidIdentity(clientRegistry, e);
         }
