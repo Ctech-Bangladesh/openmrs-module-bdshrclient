@@ -23,7 +23,10 @@ import org.openmrs.module.shrclient.model.Status;
 import org.openmrs.module.shrclient.service.BbsCodeService;
 import org.openmrs.module.shrclient.service.EMRPatientDeathService;
 import org.openmrs.module.shrclient.service.EMRPatientService;
-import org.openmrs.module.shrclient.util.*;
+import org.openmrs.module.shrclient.util.AddressHelper;
+import org.openmrs.module.shrclient.util.PropertiesReader;
+import org.openmrs.module.shrclient.util.SystemProperties;
+import org.openmrs.module.shrclient.util.SystemUserService;
 import org.openmrs.serialization.SerializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,8 +91,13 @@ public class EMRPatientServiceImpl implements EMRPatientService {
             }
             emrPatient.addAddress(addressHelper.setPersonAddress(mciPatient.getAddress()));
 
+            PatientIdentifier healthID = new PatientIdentifier();
+            healthID.setIdentifier(mciPatient.getHealthId());
+            healthID.setIdentifierType(patientService.getPatientIdentifierTypeByName(HEALTH_ID_IDENTIFIER_TYPE_NAME));
+            healthID.setLocation(Context.getLocationService().getLocation(Location.LOCATION_UNKNOWN));
+            emrPatient.addIdentifier(healthID);
+
             addPersonAttribute(emrPatient, NATIONAL_ID_ATTRIBUTE, mciPatient.getNationalId());
-            addPersonAttribute(emrPatient, HEALTH_ID_ATTRIBUTE, mciPatient.getHealthId());
             addPersonAttribute(emrPatient, BIRTH_REG_NO_ATTRIBUTE, mciPatient.getBirthRegNumber());
             addPersonAttribute(emrPatient, HOUSE_HOLD_CODE_ATTRIBUTE, mciPatient.getHouseHoldCode());
             addPersonAttribute(emrPatient, ADDRESS_CODE_ATTRIBUTE_TYPE, mciPatient.getAddress().getAddressCode());
@@ -127,9 +135,9 @@ public class EMRPatientServiceImpl implements EMRPatientService {
 
     private void setEducation(Patient mciPatient, org.openmrs.Patient emrPatient) {
         String educationLevel = mciPatient.getEducationLevel();
-        if(StringUtils.isBlank(educationLevel)) {
+        if (StringUtils.isBlank(educationLevel)) {
             PersonAttribute educationAttribute = emrPatient.getAttribute(EDUCATION_ATTRIBUTE);
-            if(null != educationAttribute) {
+            if (null != educationAttribute) {
                 emrPatient.removeAttribute(educationAttribute);
             }
             return;
@@ -147,9 +155,9 @@ public class EMRPatientServiceImpl implements EMRPatientService {
 
     private void setOccupation(Patient mciPatient, org.openmrs.Patient emrPatient) {
         String occupation = mciPatient.getOccupation();
-        if(StringUtils.isBlank(occupation)) {
+        if (StringUtils.isBlank(occupation)) {
             PersonAttribute occupationAttribute = emrPatient.getAttribute(OCCUPATION_ATTRIBUTE);
-            if(null != occupationAttribute) {
+            if (null != occupationAttribute) {
                 emrPatient.removeAttribute(occupationAttribute);
             }
             return;
@@ -230,9 +238,8 @@ public class EMRPatientServiceImpl implements EMRPatientService {
         Status status = mciPatient.getStatus();
         boolean isAliveMciPatient = status.getType() == '1';
         boolean isAliveEmrPatient = !emrPatient.isDead();
-        if (isAliveMciPatient && isAliveEmrPatient) {
-            return;
-        } else if (isAliveMciPatient) {
+        if (isAliveMciPatient && isAliveEmrPatient) return;
+        if (isAliveMciPatient) {
             emrPatient.setDead(false);
             emrPatient.setCauseOfDeath(null);
             emrPatient.setDeathDate(null);

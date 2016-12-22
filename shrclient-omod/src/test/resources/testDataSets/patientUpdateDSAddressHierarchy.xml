@@ -95,6 +95,9 @@
     <address_hierarchy_entry address_hierarchy_entry_id="6" name="Ward No-01" level_id="6" parent_id="5"
                              user_generated_id="303334991501" uuid="2927de2a-9abd-56tf-97e4-1556bf5202ea"/>
 
+    <patient_identifier_type patient_identifier_type_id="11" name="HID" description="Test description"
+                             check_digit="false" creator="1" date_created="2016-12-22 14:34:21.6" required="false" retired="false"
+                             uuid="2238b039-7f77-4384-a912-360dd154f0d1"/>
 
     <patient patient_id="1" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>

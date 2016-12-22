@@ -6,10 +6,10 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PatientService;
-import org.openmrs.module.fhir.Constants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -20,9 +20,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.openmrs.module.fhir.Constants.*;
@@ -52,9 +50,11 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(savedPatient.getGender(), "F");
         assertFalse(savedPatient.getBirthdateEstimated());
 
-        assertAttribute(savedPatient, Constants.HEALTH_ID_ATTRIBUTE, "11421467785");
-        assertAttribute(savedPatient, Constants.NATIONAL_ID_ATTRIBUTE, "7654376543127");
-        assertAttribute(savedPatient, Constants.BIRTH_REG_NO_ATTRIBUTE, "54098540985409815");
+        PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        assertEquals(healthId.getIdentifier(), "11421467785");
+
+        assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE, "7654376543127");
+        assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE, "54098540985409815");
     }
 
     @Test
@@ -71,9 +71,11 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(savedPatient.getGender(), "F");
         assertTrue(savedPatient.getBirthdateEstimated());
 
-        assertAttribute(savedPatient, Constants.HEALTH_ID_ATTRIBUTE, "11421467785");
-        assertAttribute(savedPatient, Constants.NATIONAL_ID_ATTRIBUTE, "7654376543127");
-        assertAttribute(savedPatient, Constants.BIRTH_REG_NO_ATTRIBUTE, "54098540985409815");
+        PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        assertEquals(healthId.getIdentifier(), "11421467785");
+
+        assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE, "7654376543127");
+        assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE, "54098540985409815");
     }
 
     @Test
@@ -85,14 +87,14 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
 
         Patient savedPatient = patientService.getPatient(1);
 
-        PersonAttribute fatherName = savedPatient.getAttribute(Constants.FATHER_NAME_ATTRIBUTE_TYPE);
+        PersonAttribute fatherName = savedPatient.getAttribute(FATHER_NAME_ATTRIBUTE_TYPE);
         assertNotNull(fatherName);
-        assertEquals(Constants.FATHER_NAME_ATTRIBUTE_TYPE, fatherName.getAttributeType().getName());
+        assertEquals(FATHER_NAME_ATTRIBUTE_TYPE, fatherName.getAttributeType().getName());
         assertEquals("Md. Sakib Ali Khan", fatherName.getValue());
 
-        PersonAttribute spouseName = savedPatient.getAttribute(Constants.SPOUSE_NAME_ATTRIBUTE_TYPE);
+        PersonAttribute spouseName = savedPatient.getAttribute(SPOUSE_NAME_ATTRIBUTE_TYPE);
         assertNotNull(spouseName);
-        assertEquals(Constants.SPOUSE_NAME_ATTRIBUTE_TYPE, spouseName.getAttributeType().getName());
+        assertEquals(SPOUSE_NAME_ATTRIBUTE_TYPE, spouseName.getAttributeType().getName());
         assertEquals("Azad", spouseName.getValue());
     }
 
@@ -107,10 +109,10 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
 
         Patient savedPatient = patientService.getPatient(1);
 
-        List<PersonAttribute> fatherName = savedPatient.getAttributes(Constants.FATHER_NAME_ATTRIBUTE_TYPE);
+        List<PersonAttribute> fatherName = savedPatient.getAttributes(FATHER_NAME_ATTRIBUTE_TYPE);
         assertEquals(1, fatherName.size());
 
-        List<PersonAttribute> spouseName = savedPatient.getAttributes(Constants.SPOUSE_NAME_ATTRIBUTE_TYPE);
+        List<PersonAttribute> spouseName = savedPatient.getAttributes(SPOUSE_NAME_ATTRIBUTE_TYPE);
         assertEquals(1, spouseName.size());
     }
 
@@ -123,7 +125,7 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
 
         Patient savedPatient = patientService.getPatient(1);
 
-        PersonAttribute addressCode = savedPatient.getAttribute(Constants.ADDRESS_CODE_ATTRIBUTE_TYPE);
+        PersonAttribute addressCode = savedPatient.getAttribute(ADDRESS_CODE_ATTRIBUTE_TYPE);
 
         assertNotNull(addressCode);
         assertEquals("302606", addressCode.getValue());
@@ -138,7 +140,7 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
 
         Patient savedPatient = patientService.getPatient(1);
 
-        PersonAttribute addressCode = savedPatient.getAttribute(Constants.ADDRESS_CODE_ATTRIBUTE_TYPE);
+        PersonAttribute addressCode = savedPatient.getAttribute(ADDRESS_CODE_ATTRIBUTE_TYPE);
 
         assertNull(addressCode);
     }
