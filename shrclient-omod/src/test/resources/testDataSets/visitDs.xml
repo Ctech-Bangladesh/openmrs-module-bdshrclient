@@ -40,4 +40,13 @@
     <visit visit_id="103" date_started="2015-07-10 07:00:00" date_created="2015-07-11 00:00:00" patient_id="100"
            visit_type_id="11" date_stopped="2015-07-10 20:59:59" location_id="13" creator="1" changed_by="1"
            voided_by="1" uuid="ad41fb41-123b-12as-8835-2f59099acf5a" voided="0"/>
+
+
+    <visit visit_id="104" date_started="2015-08-10 07:00:00" date_created="2015-07-11 00:00:00" patient_id="100"
+           visit_type_id="11" date_stopped="2015-08-11 20:59:59" location_id="13" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-123b-12as-8835-2f5z0z9acf5a" voided="0"/>
+    <encounter encounter_id="36" encounter_type="2" patient_id="100" visit_id="104" location_id="13"
+               encounter_datetime="2015-08-11 12:00:00" creator="1" date_created="2015-07-11 00:00:00"
+               voided="false" uuid="6d0af6767-707a-4629-9850-f15206e63ab0"/>
+
 </dataset>

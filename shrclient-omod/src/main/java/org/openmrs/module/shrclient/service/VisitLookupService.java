@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-import static org.joda.time.DateTime.now;
-
 @Component
 public class VisitLookupService {
 
@@ -22,26 +20,26 @@ public class VisitLookupService {
         this.visitService = visitService;
     }
 
-    public Visit findOrInitializeVisit(Patient patient, Date encounterDate, VisitType visitType, Location location, Date visitStartDate, Date visitStopDate) {
-        Visit applicableVisit = getApplicableVisit(patient, encounterDate, visitType, location, visitStartDate);
+    public Visit findOrInitializeVisit(Patient patient, Date encounterDate, VisitType visitType, Location location, Date givenVisitStartDate, Date givenVisitStopDate) {
+        Visit applicableVisit = getApplicableVisit(patient, encounterDate, visitType, location, givenVisitStartDate);
         if (applicableVisit != null) {
-            return modifiedVisit(applicableVisit, visitStopDate, encounterDate);
+            return modifyVisitIfRequired(applicableVisit, givenVisitStopDate, encounterDate);
         }
-        if (visitStartDate == null) {
-            visitStartDate = encounterDate;
+        if (givenVisitStartDate == null) {
+            givenVisitStartDate = encounterDate;
         }
         Visit visit = new Visit();
         visit.setPatient(patient);
         visit.setVisitType(visitType);
-        visit.setStartDatetime(visitStartDate);
+        visit.setStartDatetime(givenVisitStartDate);
         visit.setEncounters(new HashSet<Encounter>());
         visit.setUuid(UUID.randomUUID().toString());
         visit.setLocation(location);
 
-        Visit nextVisit = getVisitForPatientForNearestStartDate(patient, visitStartDate);
-        DateTime startTime = new DateTime(visitStartDate);
+        Visit nextVisit = getVisitForPatientForNearestStartDate(patient, givenVisitStartDate);
+        DateTime startTime = new DateTime(givenVisitStartDate);
         if (nextVisit == null) {
-            stopVisitWhenSuitable(visit, startTime, visitStopDate);
+            stopVisitWhenSuitable(visit, startTime, givenVisitStopDate);
         } else {
             stopVisitBeforeStartOfNextVisit(visit, nextVisit, startTime);
         }
@@ -55,16 +53,16 @@ public class VisitLookupService {
         return getApplicableVisitForVisitStartDate(visitType, patient, location, visitStartDate);
     }
 
-
-    private Visit modifiedVisit(Visit applicableVisit, Date visitStopDate, Date encounterDate) {
-        if (visitStopDate == null) {
-            Date today = new DateTime().toDate();
-            if (DateUtils.isSameDay(encounterDate, today))
-                visitStopDate = DateUtil.aSecondBefore(today);
-            else
-                visitStopDate = getEndOfDay(new DateTime(encounterDate)).toDate();
+    private Visit modifyVisitIfRequired(Visit applicableVisit, Date givenVisitStopDate, Date encounterDate) {
+        if (givenVisitStopDate == null) {
+            if (applicableVisit.getStopDatetime() == null || applicableVisit.getStopDatetime().before(encounterDate)) {
+                Date today = new DateTime().toDate();
+                if (DateUtils.isSameDay(encounterDate, today))
+                    applicableVisit.setStopDatetime(DateUtil.aSecondBefore(today));
+                else
+                    applicableVisit.setStopDatetime(getEndOfDay(new DateTime(encounterDate)).toDate());
+            }
         }
-        applicableVisit.setStopDatetime(visitStopDate);
         return applicableVisit;
     }
 

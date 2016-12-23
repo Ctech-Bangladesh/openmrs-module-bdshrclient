@@ -398,7 +398,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
 
         Visit finalVisit = visitService.getVisit(1);
         assertEquals(DateUtil.parseDate("2014-07-10 00:00:00"), finalVisit.getStartDatetime());
-        assertEquals(DateUtil.parseDate("2014-07-27 16:05:09"), finalVisit.getStopDatetime());
+        assertEquals(DateUtil.parseDate("2014-07-11 23:59:59"), finalVisit.getStopDatetime());
     }
 
     @Ignore
