@@ -19,5 +19,5 @@ public class Constants {
     public static final String HOUSE_HOLD_CODE_ATTRIBUTE = "householdCode";
     public final static String ORGANIZATION_ATTRIBUTE_TYPE_NAME = "Organization";
 
-    public static final String HEALTH_ID_IDENTIFIER_TYPE_NAME = "HID";
+    public static final String HEALTH_ID_IDENTIFIER_TYPE_NAME = "HealthId";
 }
