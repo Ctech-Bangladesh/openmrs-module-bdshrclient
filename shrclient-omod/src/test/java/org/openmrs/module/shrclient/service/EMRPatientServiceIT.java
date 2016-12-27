@@ -10,6 +10,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PatientService;
+import org.openmrs.module.fhir.Constants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -53,6 +54,7 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
         assertEquals(healthId.getIdentifier(), "11421467785");
 
+        assertAttribute(savedPatient, HEALTH_ID_ATTRIBUTE, "11421467785");
         assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE, "7654376543127");
         assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE, "54098540985409815");
     }
@@ -74,6 +76,7 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
         assertEquals(healthId.getIdentifier(), "11421467785");
 
+        assertAttribute(savedPatient, HEALTH_ID_ATTRIBUTE, "11421467785");
         assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE, "7654376543127");
         assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE, "54098540985409815");
     }

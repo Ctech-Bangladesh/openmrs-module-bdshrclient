@@ -100,6 +100,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
             healthID.setLocation(locationService.getLocation(Location.LOCATION_UNKNOWN));
             emrPatient.addIdentifier(healthID);
 
+            addPersonAttribute(emrPatient, HEALTH_ID_ATTRIBUTE, mciPatient.getHealthId());
             addPersonAttribute(emrPatient, NATIONAL_ID_ATTRIBUTE, mciPatient.getNationalId());
             addPersonAttribute(emrPatient, BIRTH_REG_NO_ATTRIBUTE, mciPatient.getBirthRegNumber());
             addPersonAttribute(emrPatient, HOUSE_HOLD_CODE_ATTRIBUTE, mciPatient.getHouseHoldCode());

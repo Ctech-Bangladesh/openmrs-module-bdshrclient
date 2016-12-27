@@ -69,7 +69,7 @@ public class PatientPushTest {
     public void setUp() throws Exception {
         initMocks(this);
         when(clientRegistry.getMCIClient()).thenReturn(mockMciRestClient);
-        patientPush = new PatientPush(patientService, systemUserService, patientMapper,
+        patientPush = new PatientPush(patientService, systemUserService, personService, patientMapper,
                 propertiesReader, clientRegistry, idMappingsRepository, providerService, locationService);
         String mciPatientContext = "/api/default/patients";
         when(propertiesReader.getMciPatientContext()).thenReturn(mciPatientContext);

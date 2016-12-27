@@ -32,9 +32,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.openmrs.module.shrclient.util.Headers.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -79,7 +77,7 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
 
         ClientRegistry clientRegistry = new ClientRegistry(propertiesReader, identityStore);
         PatientMapper patientMapper = new PatientMapper(new BbsCodeService(), idMappingsRepository);
-        patientPush = new PatientPush(patientService, systemUserService,
+        patientPush = new PatientPush(patientService, systemUserService, personService,
                 patientMapper, propertiesReader, clientRegistry,
                 idMappingsRepository, providerService, locationService);
     }
@@ -90,7 +88,7 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    public void shouldUploadAnNewPatient() throws Exception {
+    public void shouldUploadANewPatient() throws Exception {
         executeDataSet("testDataSets/attributeTypesDS.xml");
         executeDataSet("testDataSets/attributeUpdateDS.xml");
         Date date = DateUtil.parseDate("1992-12-24 20:03:00");
@@ -132,6 +130,7 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
 
         org.openmrs.Patient patient = patientService.getPatient(11);
         assertEquals("hid-1", patient.getPatientIdentifier(Constants.HEALTH_ID_IDENTIFIER_TYPE_NAME).getIdentifier());
+        assertEquals("hid-1", patient.getAttribute(Constants.HEALTH_ID_ATTRIBUTE).getValue());
     }
 
     private void assertDeletedRelation(Relation relation) {
