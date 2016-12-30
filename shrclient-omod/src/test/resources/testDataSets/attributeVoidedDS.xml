@@ -115,4 +115,8 @@
                       creator="1" voided="1" date_created="2005-09-22 00:00:00"
                       uuid="7cb74fd1-128d-4584-4qfg-11d3av5da3a6"/>
 
+    <person_attribute person_attribute_id="21" person_id="11" value="false" person_attribute_type_id="111"
+                      creator="1" voided="1" date_created="2005-09-22 00:00:00"
+                      uuid="7cb74fd1-239e-4584-4qfg-11d3av5da3a6"/>
+
 </dataset>

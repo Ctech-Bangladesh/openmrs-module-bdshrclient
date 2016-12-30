@@ -19,6 +19,8 @@ import static org.openmrs.module.fhir.Constants.*;
 public class PatientMapper {
     private static final String DOB_TYPE_DECLARED = "1";
     private static final String DOB_TYPE_ESTIMATED = "3";
+    private static final String HID_CARD_STATUS_REGISTERED = "REGISTERED";
+    private static final String HID_CARD_STATUS_ISSUED = "ISSUED";
     private BbsCodeService bbsCodeService;
     private IdMappingRepository idMappingsRepository;
     private AddressHelper addressHelper;
@@ -95,6 +97,12 @@ public class PatientMapper {
             patient.setEducationLevel(bbsCodeService.getEducationCode(education.toString()));
         } else {
             patient.setEducationLevel("");
+        }
+
+        PersonAttribute hidCardIssuedStatus = openMrsPatient.getAttribute(HID_CARD_ISSUED_ATTRIBUTE);
+        if (hidCardIssuedStatus != null) {
+            String hidCardStatus = Boolean.valueOf(hidCardIssuedStatus.getValue()) ? HID_CARD_STATUS_ISSUED : HID_CARD_STATUS_REGISTERED;
+            patient.setHidCardStatus(hidCardStatus);
         }
 
         patient.setAddress(addressHelper.getMciAddress(openMrsPatient));

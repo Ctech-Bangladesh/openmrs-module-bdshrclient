@@ -3,6 +3,8 @@ package org.openmrs.module.fhir;
 
 public class Constants {
     public static final String HEALTH_ID_ATTRIBUTE = "healthId";
+    public static final String HID_CARD_ISSUED_ATTRIBUTE = "hidCardIssued";
+
     public static final String NATIONAL_ID_ATTRIBUTE = "nationalId";
     public final static String ADDRESS_CODE_ATTRIBUTE_TYPE = "addressCode";
     public static final String BIRTH_REG_NO_ATTRIBUTE = "birthRegistrationId";
@@ -20,4 +22,5 @@ public class Constants {
     public final static String ORGANIZATION_ATTRIBUTE_TYPE_NAME = "Organization";
 
     public static final String HEALTH_ID_IDENTIFIER_TYPE_NAME = "Health Id";
+
 }

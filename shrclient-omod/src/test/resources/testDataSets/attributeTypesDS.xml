@@ -45,12 +45,17 @@
     <person_attribute_type person_attribute_type_id="109" name="phoneNumber" description="phone Number"
                            format="java.lang.String" retired="0" creator="1" sort_weight="1"
                            date_created="2005-01-01 00:00:00.0"
-                           searchable="1" uuid="5b19584d-10ab-1144-b4e1-1e55d8e9e2aj"></person_attribute_type>
+                           searchable="1" uuid="5b19584d-10ab-1144-b4e1-1e55d8e9e2aj"/>
 
     <person_attribute_type person_attribute_type_id="110" name="householdCode" description="household Code"
                            format="java.lang.String" retired="0" creator="1" sort_weight="1"
                            date_created="2005-01-01 00:00:00.0"
                            searchable="1" uuid="5b19584d-10ab-1144-b4e1-1e55d8e9e2ak"/>
+
+    <person_attribute_type person_attribute_type_id="111" name="hidCardIssued" description="Health Id Card Issued"
+                           format="java.lang.Boolean" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-1144-C5f2-1e55d8e9e2ak"/>
 
     <patient_identifier_type patient_identifier_type_id="11" name="Health Id" description="Test description"
                              check_digit="false" creator="1" date_created="2016-12-22 14:34:21.6" required="false" retired="false"

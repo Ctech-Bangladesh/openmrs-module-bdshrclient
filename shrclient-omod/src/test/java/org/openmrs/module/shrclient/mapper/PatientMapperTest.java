@@ -26,12 +26,8 @@ import org.openmrs.module.shrclient.util.SystemProperties;
 import java.text.ParseException;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.openmrs.module.fhir.Constants.*;
@@ -129,6 +125,23 @@ public class PatientMapperTest {
         assertTrue(CollectionUtils.isEmpty(filterRelationsWithNames(orphanPatient.getRelations())));
     }
 
+    @Test
+    public void shouldMapHidCardStatusAsRegistered() throws Exception {
+        openMrsPatient.addAttribute(createAttribute(HID_CARD_ISSUED_ATTRIBUTE, "false"));
+        assertEquals("REGISTERED", patientMapper.map(openMrsPatient).getHidCardStatus());
+    }
+
+    @Test
+    public void shouldMapHidCardStatusAsISSUED() throws Exception {
+        openMrsPatient.addAttribute(createAttribute(HID_CARD_ISSUED_ATTRIBUTE, "true"));
+        assertEquals("ISSUED", patientMapper.map(openMrsPatient).getHidCardStatus());
+    }
+
+    @Test
+    public void shouldNotMapHidCardStatus() throws Exception {
+        assertNull(patientMapper.map(openMrsPatient).getHidCardStatus());
+    }
+
     private List<Relation> filterRelationsWithNames(Relation[] relations) {
         List<Relation> relationsWithName = new ArrayList<>();
         for (Relation relation : relations) {
@@ -160,6 +173,7 @@ public class PatientMapperTest {
         person.setGender(gender);
         person.setBirthdate(dateOfBirth);
         person.setDeathDate(dateOfDeath);
+        person.setDead(true);
         person.addAddress(this.address);
         person.setBirthdateEstimated(Boolean.FALSE);
         openMrsPatient = new org.openmrs.Patient(person);
