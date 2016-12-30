@@ -10,7 +10,6 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PatientService;
-import org.openmrs.module.fhir.Constants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -21,10 +20,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 
-import static junit.framework.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.openmrs.module.fhir.Constants.*;
+import static org.junit.Assert.*;
+import static org.openmrs.module.fhir.OpenMRSConstants.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -57,6 +54,8 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         assertAttribute(savedPatient, HEALTH_ID_ATTRIBUTE, "11421467785");
         assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE, "7654376543127");
         assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE, "54098540985409815");
+
+        assertNull(savedPatient.getAttribute(HID_CARD_ISSUED_ATTRIBUTE));
     }
 
     @Test
@@ -147,6 +146,20 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
 
         assertNull(addressCode);
     }
+
+    @Test
+    public void shouldPopulateHidCardIssuedAttributeOnDownload() throws Exception {
+        executeDataSet("testDataSets/patientUpdateDSWithHidIssuedAttribute.xml");
+        org.openmrs.module.shrclient.model.Patient patient = getPatientFromJson("patients_response/by_hid.json");
+
+        emrPatientService.createOrUpdateEmrPatient(patient);
+
+        Patient savedPatient = patientService.getPatient(1);
+        PersonAttribute hidIssued = savedPatient.getAttribute(HID_CARD_ISSUED_ATTRIBUTE);
+        assertNotNull(hidIssued);
+        assertEquals("false", hidIssued.getValue());
+    }
+
 
     @Test
     public void shouldUpdateAnOlderPatientAddressToNewOne() throws Exception {

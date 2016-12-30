@@ -16,7 +16,7 @@ import org.openmrs.module.shrclient.model.Relation;
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static org.openmrs.module.fhir.Constants.*;
+import static org.openmrs.module.fhir.OpenMRSConstants.*;
 
 public class RelationshipMapper {
 

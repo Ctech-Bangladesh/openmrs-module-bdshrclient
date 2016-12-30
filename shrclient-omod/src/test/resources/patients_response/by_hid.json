@@ -39,5 +39,6 @@
   },
   "modified": "2015-04-07T15:05:16.916+05:30",
   "created": "2015-04-07T15:05:16.916+05:30",
-  "active": true
+  "active": true,
+  "hid_card_status": "REGISTERED"
 }

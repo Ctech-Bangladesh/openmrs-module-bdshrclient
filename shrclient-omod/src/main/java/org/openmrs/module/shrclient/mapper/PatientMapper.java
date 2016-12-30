@@ -2,6 +2,7 @@ package org.openmrs.module.shrclient.mapper;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAttribute;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.Patient;
@@ -14,13 +15,10 @@ import org.openmrs.module.shrclient.util.AddressHelper;
 import java.util.Date;
 import java.util.List;
 
-import static org.openmrs.module.fhir.Constants.*;
+import static org.openmrs.module.fhir.OpenMRSConstants.*;
+import static org.openmrs.module.fhir.utils.MCIConstants.*;
 
 public class PatientMapper {
-    private static final String DOB_TYPE_DECLARED = "1";
-    private static final String DOB_TYPE_ESTIMATED = "3";
-    private static final String HID_CARD_STATUS_REGISTERED = "REGISTERED";
-    private static final String HID_CARD_STATUS_ISSUED = "ISSUED";
     private BbsCodeService bbsCodeService;
     private IdMappingRepository idMappingsRepository;
     private AddressHelper addressHelper;
@@ -55,9 +53,9 @@ public class PatientMapper {
         Date birthDateTime = openMrsPatient.getBirthDateTime() != null ? openMrsPatient.getBirthDateTime() : openMrsPatient.getBirthdate();
         patient.setDateOfBirth(birthDateTime);
 
-        String healthId = personAttributeMapper.getAttributeValue(openMrsPatient, HEALTH_ID_ATTRIBUTE);
-        if (healthId != null) {
-            patient.setHealthId(healthId);
+        PatientIdentifier hid = openMrsPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        if (hid != null) {
+            patient.setHealthId(hid.getIdentifier());
         }
 
         if (StringUtils.isNotBlank(banglaName)) {

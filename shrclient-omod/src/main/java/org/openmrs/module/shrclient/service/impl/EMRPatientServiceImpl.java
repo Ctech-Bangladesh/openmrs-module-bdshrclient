@@ -11,6 +11,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.utils.GlobalPropertyLookUpService;
+import org.openmrs.module.fhir.utils.MCIConstants;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
@@ -36,12 +37,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import static org.openmrs.module.fhir.Constants.*;
+import static org.openmrs.module.fhir.OpenMRSConstants.*;
+import static org.openmrs.module.fhir.utils.MCIConstants.DOB_TYPE_ESTIMATED;
+import static org.openmrs.module.fhir.utils.MCIConstants.HID_CARD_STATUS_ISSUED;
+import static org.openmrs.module.fhir.utils.MCIConstants.HID_CARD_STATUS_REGISTERED;
 
 @Service("hieEmrPatientService")
 public class EMRPatientServiceImpl implements EMRPatientService {
-    private static final String DOB_TYPE_ESTIMATED = "3";
-
     private static final Logger logger = Logger.getLogger(EMRPatientServiceImpl.class);
     public static final String REGEX_TO_MATCH_MULTIPLE_WHITE_SPACE = "\\s+";
 
@@ -105,6 +107,10 @@ public class EMRPatientServiceImpl implements EMRPatientService {
             addPersonAttribute(emrPatient, BIRTH_REG_NO_ATTRIBUTE, mciPatient.getBirthRegNumber());
             addPersonAttribute(emrPatient, HOUSE_HOLD_CODE_ATTRIBUTE, mciPatient.getHouseHoldCode());
             addPersonAttribute(emrPatient, ADDRESS_CODE_ATTRIBUTE_TYPE, mciPatient.getAddress().getAddressCode());
+
+            String hidCardStatus = mciPatient.getHidCardStatus();
+            hidCardStatus = HID_CARD_STATUS_ISSUED.equalsIgnoreCase(hidCardStatus) ? Boolean.TRUE.toString() : Boolean.FALSE.toString();
+            addPersonAttribute(emrPatient, HID_CARD_ISSUED_ATTRIBUTE, hidCardStatus);
 
             String banglaName = mciPatient.getBanglaName();
             if (StringUtils.isNotBlank(banglaName)) {

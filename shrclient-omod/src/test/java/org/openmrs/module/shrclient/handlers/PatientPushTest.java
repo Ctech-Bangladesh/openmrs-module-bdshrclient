@@ -29,8 +29,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.openmrs.module.fhir.Constants.HEALTH_ID_ATTRIBUTE;
-import static org.openmrs.module.fhir.Constants.HEALTH_ID_IDENTIFIER_TYPE_NAME;
+import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_ATTRIBUTE;
+import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE_NAME;
 
 public class PatientPushTest {
 

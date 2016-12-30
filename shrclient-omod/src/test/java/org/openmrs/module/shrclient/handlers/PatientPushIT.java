@@ -12,7 +12,7 @@ import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
-import org.openmrs.module.fhir.Constants;
+import org.openmrs.module.fhir.OpenMRSConstants;
 import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.identity.IdentityStore;
@@ -130,8 +130,8 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(3, relations.length);
 
         org.openmrs.Patient patient = patientService.getPatient(11);
-        assertEquals("hid-1", patient.getPatientIdentifier(Constants.HEALTH_ID_IDENTIFIER_TYPE_NAME).getIdentifier());
-        assertEquals("hid-1", patient.getAttribute(Constants.HEALTH_ID_ATTRIBUTE).getValue());
+        assertEquals("hid-1", patient.getPatientIdentifier(OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE_NAME).getIdentifier());
+        assertEquals("hid-1", patient.getAttribute(OpenMRSConstants.HEALTH_ID_ATTRIBUTE).getValue());
     }
 
     @Test
@@ -176,8 +176,8 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(date, pushedPatient.getDateOfBirth());
 
         org.openmrs.Patient patient = patientService.getPatient(11);
-        assertEquals("hid-1", patient.getPatientIdentifier(Constants.HEALTH_ID_IDENTIFIER_TYPE_NAME).getIdentifier());
-        assertEquals("hid-1", patient.getAttribute(Constants.HEALTH_ID_ATTRIBUTE).getValue());
+        assertEquals("hid-1", patient.getPatientIdentifier(OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE_NAME).getIdentifier());
+        assertEquals("hid-1", patient.getAttribute(OpenMRSConstants.HEALTH_ID_ATTRIBUTE).getValue());
 
     }
 

@@ -15,7 +15,7 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ServiceContext;
-import org.openmrs.module.fhir.Constants;
+import org.openmrs.module.fhir.OpenMRSConstants;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.IdMapping;
 import org.openmrs.module.shrclient.model.IdMappingType;
@@ -33,8 +33,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.openmrs.module.fhir.Constants.FATHER_NAME_ATTRIBUTE_TYPE;
-import static org.openmrs.module.fhir.Constants.SPOUSE_NAME_ATTRIBUTE_TYPE;
+import static org.openmrs.module.fhir.OpenMRSConstants.FATHER_NAME_ATTRIBUTE_TYPE;
+import static org.openmrs.module.fhir.OpenMRSConstants.SPOUSE_NAME_ATTRIBUTE_TYPE;
 
 public class RelationshipMapperTest {
 
@@ -46,9 +46,9 @@ public class RelationshipMapperTest {
     @Before
     public void setup() throws Exception {
         initMocks(this);
-        when(personService.getPersonAttributeTypeByName(Constants.FATHER_NAME_ATTRIBUTE_TYPE)).thenReturn(getAttributeType(Constants.FATHER_NAME_ATTRIBUTE_TYPE));
-        when(personService.getPersonAttributeTypeByName(Constants.SPOUSE_NAME_ATTRIBUTE_TYPE)).thenReturn(getAttributeType(Constants.SPOUSE_NAME_ATTRIBUTE_TYPE));
-        when(personService.getPersonAttributeTypeByName(Constants.MOTHER_NAME_ATTRIBUTE_TYPE)).thenReturn(getAttributeType(Constants.MOTHER_NAME_ATTRIBUTE_TYPE));
+        when(personService.getPersonAttributeTypeByName(OpenMRSConstants.FATHER_NAME_ATTRIBUTE_TYPE)).thenReturn(getAttributeType(OpenMRSConstants.FATHER_NAME_ATTRIBUTE_TYPE));
+        when(personService.getPersonAttributeTypeByName(OpenMRSConstants.SPOUSE_NAME_ATTRIBUTE_TYPE)).thenReturn(getAttributeType(OpenMRSConstants.SPOUSE_NAME_ATTRIBUTE_TYPE));
+        when(personService.getPersonAttributeTypeByName(OpenMRSConstants.MOTHER_NAME_ATTRIBUTE_TYPE)).thenReturn(getAttributeType(OpenMRSConstants.MOTHER_NAME_ATTRIBUTE_TYPE));
 
         Context context = new Context();
         ServiceContext serviceContext = ServiceContext.getInstance();
@@ -163,15 +163,15 @@ public class RelationshipMapperTest {
         assertEquals(3, emrPatient.getAttributes().size());
 
         PersonAttribute father = (PersonAttribute) CollectionUtils.find(emrPatient.getAttributes(),
-                new BeanPropertyValueEqualsPredicate("attributeType.name", Constants.FATHER_NAME_ATTRIBUTE_TYPE));
+                new BeanPropertyValueEqualsPredicate("attributeType.name", OpenMRSConstants.FATHER_NAME_ATTRIBUTE_TYPE));
         assertEquals("Md. Sakib Ali Khan", father.getValue());
 
         PersonAttribute spouse = (PersonAttribute) CollectionUtils.find(emrPatient.getAttributes(),
-                new BeanPropertyValueEqualsPredicate("attributeType.name", Constants.SPOUSE_NAME_ATTRIBUTE_TYPE));
+                new BeanPropertyValueEqualsPredicate("attributeType.name", OpenMRSConstants.SPOUSE_NAME_ATTRIBUTE_TYPE));
         assertEquals("Azad", spouse.getValue());
 
         PersonAttribute mother = (PersonAttribute) CollectionUtils.find(emrPatient.getAttributes(),
-                new BeanPropertyValueEqualsPredicate("attributeType.name", Constants.MOTHER_NAME_ATTRIBUTE_TYPE));
+                new BeanPropertyValueEqualsPredicate("attributeType.name", OpenMRSConstants.MOTHER_NAME_ATTRIBUTE_TYPE));
         assertEquals("Shabnam Chowdhury", mother.getValue());
     }
 
@@ -184,10 +184,10 @@ public class RelationshipMapperTest {
 
         assertEquals(1, emrPatient.getAttributes().size());
 
-        PersonAttribute father = (PersonAttribute) CollectionUtils.find(emrPatient.getAttributes(), new BeanPropertyValueEqualsPredicate("attributeType.name", Constants.FATHER_NAME_ATTRIBUTE_TYPE));
+        PersonAttribute father = (PersonAttribute) CollectionUtils.find(emrPatient.getAttributes(), new BeanPropertyValueEqualsPredicate("attributeType.name", OpenMRSConstants.FATHER_NAME_ATTRIBUTE_TYPE));
         assertEquals("Md. Sakib Ali Khan", father.getValue());
 
-        PersonAttribute spouse = (PersonAttribute) CollectionUtils.find(emrPatient.getAttributes(), new BeanPropertyValueEqualsPredicate("attributeType.name", Constants.SPOUSE_NAME_ATTRIBUTE_TYPE));
+        PersonAttribute spouse = (PersonAttribute) CollectionUtils.find(emrPatient.getAttributes(), new BeanPropertyValueEqualsPredicate("attributeType.name", OpenMRSConstants.SPOUSE_NAME_ATTRIBUTE_TYPE));
         assertNull(spouse);
     }
 

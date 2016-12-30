@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
-import org.openmrs.module.fhir.Constants;
+import org.openmrs.module.fhir.OpenMRSConstants;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.IdMappingType;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -25,7 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.openmrs.module.fhir.Constants.HEALTH_ID_IDENTIFIER_TYPE_NAME;
+import static org.openmrs.module.fhir.OpenMRSConstants.*;
+import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE_NAME;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -104,7 +105,7 @@ public class EMRPatientMergeServiceIT extends BaseModuleWebContextSensitiveTest 
         assertEquals(expectedVoidReason, retiredPatient.getPerson().getPersonAddress().getVoidReason());
 
         assertEquals(0, retiredPatient.getActiveIdentifiers().size());
-        assertEquals(8, retiredPatient.getAttributes().size());
+        assertEquals(9, retiredPatient.getAttributes().size());
         assertEquals(expectedVoidReason, retiredPatient.getAttributes().iterator().next().getVoidReason());
 
         assertEquals(0, retiredPatient.getActiveAttributes().size());
@@ -114,15 +115,15 @@ public class EMRPatientMergeServiceIT extends BaseModuleWebContextSensitiveTest 
         assertEquals(expectedVoidReason, retiredPatientName.getVoidReason());
 
         assertFalse(retainedPatient.getVoided());
-        assertEquals(retainedHealthId, retainedPatient.getAttribute(Constants.HEALTH_ID_ATTRIBUTE).getValue());
-        assertEquals("7654376543777", retainedPatient.getAttribute(Constants.NATIONAL_ID_ATTRIBUTE).getValue());
-        assertEquals("54098599985409999", retainedPatient.getAttribute(Constants.BIRTH_REG_NO_ATTRIBUTE).getValue());
-        assertEquals("121", retainedPatient.getAttribute(Constants.HOUSE_HOLD_CODE_ATTRIBUTE).getValue());
-        assertEquals("123", retainedPatient.getAttribute(Constants.PHONE_NUMBER).getValue());
+        assertEquals(retainedHealthId, retainedPatient.getAttribute(HEALTH_ID_ATTRIBUTE).getValue());
+        assertEquals("7654376543777", retainedPatient.getAttribute(NATIONAL_ID_ATTRIBUTE).getValue());
+        assertEquals("54098599985409999", retainedPatient.getAttribute(BIRTH_REG_NO_ATTRIBUTE).getValue());
+        assertEquals("121", retainedPatient.getAttribute(HOUSE_HOLD_CODE_ATTRIBUTE).getValue());
+        assertEquals("123", retainedPatient.getAttribute(PHONE_NUMBER).getValue());
         assertEquals("F", retainedPatient.getGender());
 
         assertEquals(2, retainedPatient.getNames().size());
-        assertEquals(7, retainedPatient.getActiveAttributes().size());
+        assertEquals(8, retainedPatient.getActiveAttributes().size());
         Iterator<PersonName> personNameIterator = retainedPatient.getNames().iterator();
         assertEquals("Abdul", retainedPatient.getGivenName());
         assertEquals("Khan", retainedPatient.getFamilyName());
@@ -132,8 +133,8 @@ public class EMRPatientMergeServiceIT extends BaseModuleWebContextSensitiveTest 
         assertTrue(nameFromRetiredPatient.getVoided());
         assertEquals(expectedVoidMessageForUnPreferred, nameFromRetiredPatient.getVoidReason());
 
-        assertEquals("Rahman Khan", retainedPatient.getAttribute(Constants.FATHER_NAME_ATTRIBUTE_TYPE).getValue());
-        assertEquals("Bismillah", retainedPatient.getAttribute(Constants.SPOUSE_NAME_ATTRIBUTE_TYPE).getValue());
+        assertEquals("Rahman Khan", retainedPatient.getAttribute(FATHER_NAME_ATTRIBUTE_TYPE).getValue());
+        assertEquals("Bismillah", retainedPatient.getAttribute(SPOUSE_NAME_ATTRIBUTE_TYPE).getValue());
 
         assertEquals(2, retainedPatient.getAddresses().size());
         Iterator<PersonAddress> addressIterator = retainedPatient.getAddresses().iterator();

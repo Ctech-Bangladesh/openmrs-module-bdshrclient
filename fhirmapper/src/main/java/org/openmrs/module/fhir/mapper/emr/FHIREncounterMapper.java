@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static org.openmrs.module.fhir.Constants.ORGANIZATION_ATTRIBUTE_TYPE_NAME;
+import static org.openmrs.module.fhir.OpenMRSConstants.ORGANIZATION_ATTRIBUTE_TYPE_NAME;
 
 @Component
 public class FHIREncounterMapper {

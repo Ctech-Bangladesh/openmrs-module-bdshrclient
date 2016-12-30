@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.openmrs.module.fhir.Constants.*;
+import static org.openmrs.module.fhir.OpenMRSConstants.*;
 
 public class PatientMapperTest {
 
@@ -177,7 +177,9 @@ public class PatientMapperTest {
         person.addAddress(this.address);
         person.setBirthdateEstimated(Boolean.FALSE);
         openMrsPatient = new org.openmrs.Patient(person);
-
+        PatientIdentifierType patientIdentifierType = new PatientIdentifierType();
+        patientIdentifierType.setName(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        openMrsPatient.addIdentifier(new PatientIdentifier(healthId, patientIdentifierType, new Location(1)));
         openMrsPatient.setAttributes(createOpenMrsPersonAttributes());
 
         patient = new Patient();

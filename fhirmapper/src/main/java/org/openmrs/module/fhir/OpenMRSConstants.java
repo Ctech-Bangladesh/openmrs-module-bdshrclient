@@ -1,7 +1,7 @@
 package org.openmrs.module.fhir;
 
 
-public class Constants {
+public class OpenMRSConstants {
     public static final String HEALTH_ID_ATTRIBUTE = "healthId";
     public static final String HID_CARD_ISSUED_ATTRIBUTE = "hidCardIssued";
 

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
+    <person_attribute_type person_attribute_type_id="100" name="fatherName" description="Father's Name"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-11e4-b4e1-1e55d8e9e2ae"/>
+
+    <person_attribute_type person_attribute_type_id="101" name="spouseName" description="Spouse Name"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-1122-b4e1-1e55d8e9e2ae"/>
+
+    <person_attribute_type person_attribute_type_id="102" name="motherName" description="Mother's Name"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-11e4-b4e1-x92kdxiii2ae"/>
+
+    <person_attribute_type person_attribute_type_id="104" name="nationalId" description="National ID"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-kj45-98uy-b4e1-x92kdxiii2ae"/>
+
+    <person_attribute_type person_attribute_type_id="105" name="birthRegistrationId" description="Birth Registration ID"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-kj45-98uy-45re-x92kdxiii2ae"/>
+
+    <person_attribute_type person_attribute_type_id="106" name="hidCardIssued" description="HID card Issued"
+                           format="java.lang.Boolean" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-kj45-98uy-45re-x92kdxiii3ae"/>
+
+    <patient_identifier_type patient_identifier_type_id="11" name="Health Id" description="Test description"
+                             check_digit="false" creator="1" date_created="2016-12-22 14:34:21.6" required="false" retired="false"
+                             uuid="2238b039-7f77-4384-a912-360dd154f0d1"/>
+
+
+    <patient patient_id="1" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="1" patient_id="1"
+                        identifier="GAN200000" identifier_type="2" creator="1"
+                        uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0"/>
+
+    <patient_id_mapping id="50" internal_id="75e04d42-3ca8-11e3-bf2b-0800271c1b75" external_id="11421467785"
+                    uri="/patients/11421467785"/>
+
+    <users user_id="777" person_id="2" system_id="3-6" username="shrclientsystem" retired="false"
+           password="ff6d1655327d385e11a04e1632b4f33ceb8fafd2" salt="5d32c5fd9fde391c755f1f4dfd5e1d6e3debe6"
+           creator="1" date_created="2008-08-15 15:46:47.0" uuid="Z9fd3a7b-6482-487d-87eR-c07b123MxF99"/>
+
+
+    <global_property property="shr.system.user" property_value="777" description="Shr System User" uuid="lkieyg88-efd9-fda3-2b99-z12aalsa677h"/>
+</dataset>

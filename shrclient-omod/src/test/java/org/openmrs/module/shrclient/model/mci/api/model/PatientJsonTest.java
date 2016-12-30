@@ -49,7 +49,7 @@ public class PatientJsonTest {
                 "\"date_of_birth\":null,\"dob_type\":\"1\",\"gender\":\"M\",\"occupation\":null," +
                 "\"edu_level\":null,\"present_address\":{\"address_line\":null,\"division_id\":\"10\"," +
                 "\"district_id\":\"04\",\"upazila_id\":\"09\",\"city_corporation_id\":\"20\"," +
-                "\"union_or_urban_ward_id\":\"01\"},\"status\":null,\"bin_brn\":null,\"household_code\":null}";
+                "\"union_or_urban_ward_id\":\"01\"},\"status\":null,\"bin_brn\":null,\"household_code\":null,\"hid_card_status\":null}";
         patient.setDobType("1");
         String actual = objectMapper.writeValueAsString(patient);
         assertEquals(expected, actual);
@@ -66,7 +66,7 @@ public class PatientJsonTest {
                 "\"edu_level\":null,\"present_address\":{\"address_line\":null,\"division_id\":\"10\"," +
                 "\"district_id\":\"04\",\"upazila_id\":\"09\",\"city_corporation_id\":\"20\"," +
                 "\"union_or_urban_ward_id\":\"01\"},\"status\":null,\"bin_brn\":null,\"household_code\":null," +
-                "\"active\":true}";
+                "\"active\":true,\"hid_card_status\":null}";
         String actual = objectMapper.writeValueAsString(patient);
         assertEquals(expected, actual);
     }
@@ -82,7 +82,7 @@ public class PatientJsonTest {
                 "\"district_id\":\"04\",\"upazila_id\":\"09\",\"city_corporation_id\":\"20\"," +
                 "\"union_or_urban_ward_id\":\"01\"},\"status\":null,\"bin_brn\":null,\"household_code\":null," +
                 "\"relations\":[{\"type\":\"mother\",\"given_name\":\"Mother of Scott\",\"sur_name\":\"Tiger\"}]," +
-                "\"active\":false}";
+                "\"active\":false,\"hid_card_status\":null}";
         String actual = objectMapper.writeValueAsString(patient);
         assertEquals(expected, actual);
     }
