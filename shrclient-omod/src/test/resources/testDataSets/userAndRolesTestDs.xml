@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <privilege privilege="SOme" description="do something" uuid="3480cb6d-d56r-46c8-4rta-96dc33d199fb"/>
+    <role role="CHW" description="Community Health Workers" uuid="3480cb6d-d56r-46c8-8d3a-96dc33d199fb"/>
+    <role_privilege role="CHW" privilege="SOme"/>
+
+    <person person_id="1002" gender="M" birthdate="1975-04-08 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2005-09-22 00:00:00.0" voided="false"
+            uuid="da7f524f-kj87-4bb2-86d6-6d1d05312bd5"/>
+    <person person_id="1003" gender="M" birthdate="2007-05-27 00:00:00.0" birthdate_estimated="0" dead="false"
+            creator="1" date_created="2006-01-18 00:00:00.0" voided="false"
+            uuid="a7e04421-78yg-442f-8138-05b619d16def"/>
+
+    <users user_id="503" person_id="1002" system_id="2-6" username="bruno"
+           password="ff6d1655327d385e11a04e1632b4f33ceb8fafd2" salt="5d32c5fd9fde391c755f1f4dfd5e1d6e3debe6"
+           secret_question="" creator="1" date_created="2008-08-15 15:46:47.0" changed_by="1"
+           date_changed="2008-08-15 15:47:07.0" retired="false" retire_reason="" uuid="c1d8f5c2-e131-7h5r-babe-001e378eb67e"/>
+    <users user_id="504" person_id="1003" system_id="3-4" username="butch"
+           password="eeeda5c0cc3837151b2d61cfeab54a91fb0c27d" salt="42af4c437a47cd778a54f6564d71b3cd6e8e5ca"
+           secret_question="" creator="1" date_created="2008-08-15 15:57:09.0" changed_by="1"
+           date_changed="2008-08-18 11:51:56.0" retired="false" retire_reason="" uuid="c98a1558-e131-j87y-babe-001e378eb67e"/>
+    <user_role user_id="503" role="CHW"/>
+    <user_role user_id="504" role="CHW"/>
+</dataset>

@@ -23,4 +23,6 @@ public class OpenMRSConstants {
 
     public static final String HEALTH_ID_IDENTIFIER_TYPE_NAME = "Health Id";
 
+    public static final String HID_PRINT_PAGE_USER_ROLE = "CHW";
+
 }
