@@ -16,6 +16,7 @@ public class DateUtil {
     public static final String UTC_DATE_IN_SECS_FORMAT = "yyyy-MM-dd HH:mm:ssZ"; //2015-02-17 11:35:17+0530
     public static final String SIMPLE_DATE_WITH_SECS_FORMAT = "yyyy-MM-dd HH:mm:ss"; //2015-02-17 11:35:36
     public static final String SIMPLE_DATE_FORMAT = "yyyy-MM-dd"; //2015-02-17
+    public static final String SIMPLE_DATE_FORMAT_DATE_MONTH_YEAR_ORDER = "dd-MM-yyyy"; //17-02-2015
     public static final String ISO_DATE_IN_MILLIS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"; //2015-02-17T11:36:11.587+0530
     public static final String ISO_DATE_IN_SECS_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"; //2015-02-17T11:37:16+0530
     public static final String ISO_DATE_IN_HOUR_MIN_FORMAT = "yyyy-MM-dd'T'HH:mmZ"; //2015-02-17T11:37+0530
@@ -37,7 +38,7 @@ public class DateUtil {
             ISO_DATE_IN_MILLIS_FORMAT, ISO_DATE_IN_SECS_FORMAT, FHIR_ISO_DATE_IN_MILLIS_FORMAT,
             ISO_DATE_IN_HOUR_MIN_FORMAT,
             UTC_DATE_IN_MILLIS_FORMAT, UTC_DATE_IN_SECS_FORMAT,
-            SIMPLE_DATE_WITH_SECS_FORMAT, SIMPLE_DATE_FORMAT,
+            SIMPLE_DATE_WITH_SECS_FORMAT, SIMPLE_DATE_FORMAT, SIMPLE_DATE_FORMAT_DATE_MONTH_YEAR_ORDER,
             UTC_DATE_MILLIS_TZD_FORMAT, UTC_DATE_IN_SECS_TZD_FORMAT,
             UTC_DATE_IN_MIN_TZD_FORMAT, UTC_DATE_IN_HOUR_TZD_FORMAT,
             UTC_DATE_IN_DATE_TZD_FORMAT, UTC_DATE_IN_SIMPLE_TZD_FORMAT,
