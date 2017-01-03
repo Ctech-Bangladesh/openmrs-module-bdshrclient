@@ -9,6 +9,15 @@ public class HealthIdCard {
     private String dob;
     private String address;
     private String hid;
+    private String issuedDate;
+
+    public String getIssuedDate() {
+        return issuedDate;
+    }
+
+    public void setIssuedDate(String issuedDate) {
+        this.issuedDate = issuedDate;
+    }
 
     public HealthIdCard() {
     }

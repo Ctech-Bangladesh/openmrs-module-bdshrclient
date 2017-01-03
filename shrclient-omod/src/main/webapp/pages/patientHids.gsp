@@ -66,19 +66,33 @@
         width: 48%;
         margin: 0.5%;
         display: inline-block;
+        font-weight: bold;
+        font-size: 16px;
+        font-family: monospace;
     }
 
     #printArea .healthId img {
-        height: 25%;
-        width: 30%;
         margin: 0;
         float: left;
+        width:120px;
+        height:90px;
     }
 
     #printArea .healthId label {
-        float: right;
-        width: 70%;
-        margin-top: 0.5%;
+        margin: 0.5%;
+    }
+
+    #printArea .healthId .details_1{
+        height:100px;
+    }
+
+    #printArea .healthId .details_1 .name,.issued{
+        display:block
+    }
+
+    #printArea .healthId .details_1 .dob{
+        float:right;
+        margin-right:2%;
     }
 
     .errorMessage {
@@ -169,12 +183,13 @@
             <div class="healthId">
                 <img src="http://app.dghs.gov.bd/hrm-transfer/assets/dghs/images/gov_logo.jpg" alt="dhis_logo"/>
                 <div class="details_1">
-                    <label class="name">Name:-    {{name}}</label>
-                    <label class="gender">Gender:-    {{gender}}</label>
-                    <label class="dob">Date of Birth:-    {{dob}}</label>
+                    <label class="name">Name: {{name}}</label>
+                    <label class="gender">Gender: {{gender}}</label>
+                    <label class="dob">DOB: {{dob}}</label>
+                    <label class="issued">Issued Date: {{issuedDate}}</label>
                 </div>
-                <label class="address">Address:-        {{address}}</label>
-                <label class="hid">HID:-    {{hid}}</label>
+                <label class="address">Address: {{address}}</label>
+                <label class="hid">HID: {{hid}}</label>
 
                 <h1>Some Bar code</h1>
             </div>
