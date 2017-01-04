@@ -18,10 +18,14 @@ import static org.openmrs.module.fhir.OpenMRSConstants.HID_PRINT_PAGE_USER_ROLE;
 @Controller
 @RequestMapping(value = "/users")
 public class UserController {
-    @Autowired
     private UserService userService;
-    @Autowired
     private HealthIdCardService healthIdCardService;
+
+    @Autowired
+    public UserController(UserService userService, HealthIdCardService healthIdCardService) {
+        this.userService = userService;
+        this.healthIdCardService = healthIdCardService;
+    }
 
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     @ResponseBody
