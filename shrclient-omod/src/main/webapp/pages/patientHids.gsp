@@ -9,6 +9,7 @@
         ui.includeCss("uicommons", "styleguide/jquery-ui-1.9.2.custom.min.css", Integer.MAX_VALUE - 10)
         ui.includeJavascript("uicommons", "jquery.toastmessage.js", Integer.MAX_VALUE - 20)
         ui.includeJavascript("shrclient", "mustache.js", Integer.MAX_VALUE - 30)
+        ui.includeJavascript("shrclient", "jsBarCode.js", Integer.MAX_VALUE - 30)
         ui.includeJavascript("shrclient", "validation.js", Integer.MAX_VALUE - 30)
         ui.includeCss("uicommons", "styleguide/jquery.toastmessage.css", Integer.MAX_VALUE - 20)
     %>
@@ -33,7 +34,7 @@
         margin: 5px;
     }
 
-    lebel, input {
+    input {
         margin: 0px 10px 0px 10px;
         font-size: 18px;
     }
@@ -64,11 +65,25 @@
     #printArea .healthId {
         border-style: solid;
         width: 48%;
+        height:250px;
         margin: 0.5%;
         display: inline-block;
         font-weight: bold;
-        font-size: 16px;
+        font-size: 17px;
         font-family: monospace;
+    }
+
+    #printArea .healthId .patient_details{
+        height: 170px;
+    }
+
+    #printArea .healthId .details_1{
+        height:90px;
+    }
+
+    #printArea .healthId .hid_details{
+        height: 100px;
+        text-align: center;
     }
 
     #printArea .healthId img {
@@ -78,12 +93,8 @@
         height:90px;
     }
 
-    #printArea .healthId label {
+    #printArea .healthId  label {
         margin: 0.5%;
-    }
-
-    #printArea .healthId .details_1{
-        height:100px;
     }
 
     #printArea .healthId .details_1 .name,.issued{
@@ -92,7 +103,12 @@
 
     #printArea .healthId .details_1 .dob{
         float:right;
-        margin-right:2%;
+        margin: 0% 2% 0% 0%;
+    }
+
+    #printArea .healthId .address{
+        display: block;
+        margin-left: 5px;
     }
 
     .errorMessage {
@@ -146,6 +162,7 @@
                 Mustache.parse(template);
                 var rendered = Mustache.render(template, {"cards": responseData});
                 printArea.html(rendered);
+                JsBarcode(".barcode").init();
                 printArea.show();
             }).fail(onError);
         })
@@ -181,17 +198,22 @@
         <div id="printArea">
             {{#cards}}
             <div class="healthId">
-                <img src="http://app.dghs.gov.bd/hrm-transfer/assets/dghs/images/gov_logo.jpg" alt="dhis_logo"/>
-                <div class="details_1">
-                    <label class="name">Name: {{name}}</label>
-                    <label class="gender">Gender: {{gender}}</label>
-                    <label class="dob">DOB: {{dob}}</label>
-                    <label class="issued">Issued Date: {{issuedDate}}</label>
+                <div class="patient_details">
+                    <img src="${ ui.resourceLink("shrclient", "images/gov_logo.jpg")}" alt="dhis_logo"/>
+                    <div class="details_1">
+                        <label class="name">Name: {{name}}</label>
+                        <label class="gender">Gender: {{gender}}</label>
+                        <label class="dob">DOB: {{dob}}</label>
+                        <label class="issued">Issued Date: {{issuedDate}}</label>
+                    </div>
+                    <label class="address">Address: {{address}}</label>
                 </div>
-                <label class="address">Address: {{address}}</label>
-                <label class="hid">HID: {{hid}}</label>
+                <div class="hid_details">
+                    <svg class="barcode" jsbarcode-height="35px" jsbarcode-format="CODE39"
+                         jsbarcode-value="{{hid}}" jsbarcode-textmargin="0"
+                         jsbarcode-fontoptions="bold"></svg>
 
-                <h1>Some Bar code</h1>
+                </div>
             </div>
             {{/cards}}
         </div>
