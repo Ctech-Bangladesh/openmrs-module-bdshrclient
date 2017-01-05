@@ -11,7 +11,9 @@
         ui.includeJavascript("uicommons", "jquery.toastmessage.js", Integer.MAX_VALUE - 20)
         ui.includeJavascript("shrclient", "mustache.js", Integer.MAX_VALUE - 30)
         ui.includeJavascript("shrclient", "jsBarCode.js", Integer.MAX_VALUE - 30)
+        ui.includeJavascript("shrclient", "html2canvas.js", Integer.MAX_VALUE - 30)
         ui.includeJavascript("shrclient", "validation.js", Integer.MAX_VALUE - 30)
+        ui.includeJavascript("shrclient", "jsPdf.js", Integer.MAX_VALUE - 30)
         ui.includeCss("uicommons", "styleguide/jquery.toastmessage.css", Integer.MAX_VALUE - 20)
     %>
 
@@ -59,6 +61,14 @@
                 printArea.show();
             }).fail(onError);
         })
+        jQuery('#pdf').click(function (e) {
+            var pdf = new jsPDF('p', 'pt', 'letter');
+            //this is a hack so jsPDF doesn't stretch the pdf
+            pdf.internal.scaleFactor = 1.345;
+            pdf.addHTML(jQuery('#printArea')[0], {background: '#fff', pagesplit:true}, function () {
+                pdf.output("dataurlnewwindow");
+            });
+        });
     })
 </script>
 
@@ -68,6 +78,7 @@
         <h1>Print Patient HIDs</h1>
 
         <div style="display:none" class="errorMessage"></div>
+        <label for="user">Select a user</label>
         <select id="user" class="user">
             <option value="-1" selected="selected">Select a user</option>
             {{#list}}
@@ -87,13 +98,15 @@
             </div>
             <button class="btn" id="getAll">Get All Patients</button>
             <button class="btn" id="print" onclick="window.print()">Print All</button>
+            <button class="btn" id="pdf">Convert to PDF</button>
         </div>
 
         <div id="printArea">
             {{#cards}}
             <div class="healthId">
                 <div class="patient_details">
-                    <img src="${ ui.resourceLink("shrclient", "images/gov_logo.jpg")}" alt="dhis_logo"/>
+                    <img src="${ui.resourceLink("shrclient", "images/gov_logo.jpg")}" alt="dhis_logo"/>
+
                     <div class="details_1">
                         <label class="name">Name: {{name}}</label>
                         <label class="gender">Gender: {{gender}}</label>
@@ -102,10 +115,11 @@
                     </div>
                     <label class="address">Address: {{address}}</label>
                 </div>
+
                 <div class="hid_details">
                     <svg class="barcode" jsbarcode-height="35px" jsbarcode-format="CODE39"
                          jsbarcode-value="{{hid}}" jsbarcode-textmargin="0"
-                         jsbarcode-fontoptions="bold"></svg>
+                         jsbarcode-fontoptions="bold"/>
 
                 </div>
             </div>
