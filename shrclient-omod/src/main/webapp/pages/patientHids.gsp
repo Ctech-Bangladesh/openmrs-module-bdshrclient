@@ -7,6 +7,7 @@
     <%
         ui.includeJavascript("uicommons", "jquery-1.8.3.min.js", Integer.MAX_VALUE)
         ui.includeCss("uicommons", "styleguide/jquery-ui-1.9.2.custom.min.css", Integer.MAX_VALUE - 10)
+        ui.includeCss("shrclient", "printHid.css", Integer.MAX_VALUE - 10)
         ui.includeJavascript("uicommons", "jquery.toastmessage.js", Integer.MAX_VALUE - 20)
         ui.includeJavascript("shrclient", "mustache.js", Integer.MAX_VALUE - 30)
         ui.includeJavascript("shrclient", "jsBarCode.js", Integer.MAX_VALUE - 30)
@@ -14,114 +15,6 @@
         ui.includeCss("uicommons", "styleguide/jquery.toastmessage.css", Integer.MAX_VALUE - 20)
     %>
 
-    <style>
-    body {
-        font-family: Arial, Sans-serif;
-        font-size: 12px;
-        color: #333;
-    }
-
-    .btn {
-        background: #88af28;
-        color: #fff;
-        border: 1px solid #88af28;
-        font-size: 14px;
-        border-radius: 3px;
-    }
-
-    .dateRange {
-        padding: 5px;
-        margin: 5px;
-    }
-
-    input {
-        margin: 0px 10px 0px 10px;
-        font-size: 18px;
-    }
-
-    .container {
-        width: 960px;
-        margin: 0 auto;
-    }
-
-    h1 {
-        font-size: 24px;
-        color: #438D80;
-    }
-
-    .dateRange div {
-        display: inline-block;
-    }
-
-    select.user {
-        border: 1px solid #ccc;
-        height: 30px;
-    }
-
-    #printArea {
-        display: none;
-    }
-
-    #printArea .healthId {
-        border-style: solid;
-        width: 48%;
-        height:250px;
-        margin: 0.5%;
-        display: inline-block;
-        font-weight: bold;
-        font-size: 17px;
-        font-family: monospace;
-    }
-
-    #printArea .healthId .patient_details{
-        height: 170px;
-    }
-
-    #printArea .healthId .details_1{
-        height:90px;
-    }
-
-    #printArea .healthId .hid_details{
-        height: 100px;
-        text-align: center;
-    }
-
-    #printArea .healthId img {
-        margin: 0;
-        float: left;
-        width:120px;
-        height:90px;
-    }
-
-    #printArea .healthId  label {
-        margin: 0.5%;
-    }
-
-    #printArea .healthId .details_1 .name,.issued{
-        display:block
-    }
-
-    #printArea .healthId .details_1 .dob{
-        float:right;
-        margin: 0% 2% 0% 0%;
-    }
-
-    #printArea .healthId .address{
-        display: block;
-        margin-left: 5px;
-    }
-
-    .errorMessage {
-        padding: 2px 4px;
-        margin: 0px;
-        border: solid 1px #FBD3C6;
-        background: #FDE4E1;
-        color: #CB4721;
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 14px;
-        font-weight: bold;
-    }
-    </style>
 
     ${ui.resourceLinks()}
 </head>
@@ -147,7 +40,7 @@
             userSelect.html(rendered)
         }).fail(onError);
 
-        jQuery('#printAll').click(function (e) {
+        jQuery('#getAll').click(function (e) {
             var userId = jQuery('#user').val()
             var fromDate = jQuery('#fromDate').val()
             var toDate = jQuery('#toDate').val()
@@ -192,7 +85,8 @@
                 <label for="toDate">To:-</label>
                 <input type="date" id="toDate">
             </div>
-            <button class="btn" id="printAll">Print</button>
+            <button class="btn" id="getAll">Get All Patients</button>
+            <button class="btn" id="print" onclick="window.print()">Print All</button>
         </div>
 
         <div id="printArea">
