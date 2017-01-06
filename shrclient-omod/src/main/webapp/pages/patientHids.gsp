@@ -7,7 +7,6 @@
     <%
         ui.includeJavascript("uicommons", "jquery-1.8.3.min.js", Integer.MAX_VALUE)
         ui.includeCss("uicommons", "styleguide/jquery-ui-1.9.2.custom.min.css", Integer.MAX_VALUE - 10)
-        ui.includeCss("shrclient", "printHid.css", Integer.MAX_VALUE - 10)
         ui.includeJavascript("uicommons", "jquery.toastmessage.js", Integer.MAX_VALUE - 20)
         ui.includeJavascript("shrclient", "mustache.js", Integer.MAX_VALUE - 30)
         ui.includeJavascript("shrclient", "jsBarCode.js", Integer.MAX_VALUE - 30)
@@ -15,6 +14,7 @@
         ui.includeJavascript("shrclient", "validation.js", Integer.MAX_VALUE - 30)
         ui.includeJavascript("shrclient", "jsPdf.js", Integer.MAX_VALUE - 30)
         ui.includeCss("uicommons", "styleguide/jquery.toastmessage.css", Integer.MAX_VALUE - 20)
+        ui.includeCss("shrclient", "printHid.css", Integer.MAX_VALUE - 10)
     %>
 
 
@@ -59,13 +59,15 @@
                 printArea.html(rendered);
                 JsBarcode(".barcode").init();
                 printArea.show();
+                jQuery('#print').prop('disabled', false);
+                jQuery('#pdf').prop('disabled', false);
             }).fail(onError);
         })
         jQuery('#pdf').click(function (e) {
             var pdf = new jsPDF('p', 'pt', 'letter');
             //this is a hack so jsPDF doesn't stretch the pdf
             pdf.internal.scaleFactor = 1.345;
-            pdf.addHTML(jQuery('#printArea')[0], {background: '#fff', pagesplit:true}, function () {
+            pdf.addHTML(jQuery('#printArea')[0], {background: '#fff', pagesplit: true}, function () {
                 pdf.output("dataurlnewwindow");
             });
         });
@@ -97,8 +99,8 @@
                 <input type="date" id="toDate">
             </div>
             <button class="btn" id="getAll">Get All Patients</button>
-            <button class="btn" id="print" onclick="window.print()">Print All</button>
-            <button class="btn" id="pdf">Convert to PDF</button>
+            <button class="btn" id="print" onclick="window.print()" disabled>Print All</button>
+            <button class="btn" id="pdf" disabled>Convert to PDF</button>
         </div>
 
         <div id="printArea">
@@ -113,7 +115,13 @@
                         <label class="dob">DOB: {{dob}}</label>
                         <label class="issued">Issued Date: {{issuedDate}}</label>
                     </div>
-                    <label class="address">Address: {{address}}</label>
+
+                    <div class="address_details">
+                        <div class="address">Address:</div>
+
+                        <div class="value">{{address}}</div>
+                    </div>
+
                 </div>
 
                 <div class="hid_details">

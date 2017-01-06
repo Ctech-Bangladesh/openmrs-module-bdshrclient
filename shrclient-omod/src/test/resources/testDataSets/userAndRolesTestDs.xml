@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
+    <global_property property="shr.fieldWorkerRoleName" property_value="CHW"/>
+
     <privilege privilege="SOme" description="do something" uuid="3480cb6d-d56r-46c8-4rta-96dc33d199fb"/>
     <role role="CHW" description="Community Health Workers" uuid="3480cb6d-d56r-46c8-8d3a-96dc33d199fb"/>
     <role_privilege role="CHW" privilege="SOme"/>
