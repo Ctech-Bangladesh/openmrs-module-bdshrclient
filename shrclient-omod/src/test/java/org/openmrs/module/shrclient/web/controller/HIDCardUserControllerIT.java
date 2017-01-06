@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"})
-public class UserControllerIT extends BaseModuleWebContextSensitiveTest {
+public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
     @Autowired
     private WebApplicationContext wac;
 
@@ -40,7 +40,6 @@ public class UserControllerIT extends BaseModuleWebContextSensitiveTest {
     public void tearDown() throws Exception {
         deleteAllData();
     }
-
 
     @Test
     public void shouldGetAllTheUsers() throws Exception {

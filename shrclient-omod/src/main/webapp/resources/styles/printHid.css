@@ -1,7 +1,6 @@
 body {
-    font-family: Arial, Sans-serif;
-    font-size: 12px;
-    color: #333;
+    font-family: Arial, Sans-serif !important;
+    color: #333 !important;
 }
 
 .btn {
@@ -45,52 +44,52 @@ select.user {
     display: none;
 }
 
-#printArea .healthId {
+.healthId {
     border-style: solid;
     width: 48%;
     height:250px;
     margin: 0.5%;
     display: inline-block;
     font-weight: bold;
-    font-size: 17px;
+    font-size: 15px;
 }
 
-#printArea .healthId .patient_details{
+.patient_details{
     height: 170px;
 }
 
-#printArea .healthId .details_1{
+.details_1{
     height:90px;
 }
 
-#printArea .healthId .hid_details{
+.hid_details{
     height: 100px;
     text-align: center;
 }
 
-#printArea .healthId img {
-    margin: 0;
+.healthId img {
+    margin: 0 0 0 1%;
     float: left;
     width:120px;
     height:90px;
 }
 
-#printArea .healthId  label {
+.healthId  label {
     margin: 0.5%;
 }
 
-#printArea .healthId .details_1 .name,.issued{
+ .name,.issued{
     display:block
 }
 
-#printArea .healthId .details_1 .dob{
+.dob{
     float:right;
-    margin: 0% 2% 0% 0%;
+    margin: 0% 2% 0% 0% !important;
 }
 
-#printArea .healthId .address{
-    display: block;
-    margin-left: 5px;
+.healthId .address, .address_value{
+    display: inline-block;
+    height: auto;
 }
 
 .errorMessage {
@@ -102,6 +101,21 @@ select.user {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
     font-weight: bold;
+}
+
+.address_details{
+    margin:0 0 0 2%;
+}
+
+.address_details .address{
+    float: left;
+    width: 80px;
+    display: inline;
+}
+
+.address_details .value{
+    width: 370px;
+    float:right;
 }
 
 @media print {

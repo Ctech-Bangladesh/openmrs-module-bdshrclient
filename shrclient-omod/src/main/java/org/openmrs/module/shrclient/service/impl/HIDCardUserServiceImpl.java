@@ -1,8 +1,14 @@
-package org.openmrs.module.shrclient.service;
+package org.openmrs.module.shrclient.service.impl;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.Role;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.api.UserService;
+import org.openmrs.module.fhir.utils.GlobalPropertyLookUpService;
 import org.openmrs.module.shrclient.model.HealthIdCard;
+import org.openmrs.module.shrclient.model.User;
+import org.openmrs.module.shrclient.service.HIDCardUserService;
 import org.openmrs.module.shrclient.util.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,21 +16,42 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import static org.openmrs.module.fhir.MRSProperties.GLOBAL_PROPERTY_FIELD_WORKER_ROLE_NAME;
 import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE_NAME;
 import static org.openmrs.module.fhir.utils.DateUtil.*;
 
 @Component
-public class HealthIdCardService {
+public class HIDCardUserServiceImpl implements HIDCardUserService {
     private Database database;
+    private GlobalPropertyLookUpService globalPropertyLookUpService;
+    private UserService userService;
 
     @Autowired
-    public HealthIdCardService(Database database) {
+    public HIDCardUserServiceImpl(Database database, GlobalPropertyLookUpService globalPropertyLookUpService, UserService userService) {
         this.database = database;
+        this.globalPropertyLookUpService = globalPropertyLookUpService;
+        this.userService = userService;
     }
 
-    public List<HealthIdCard> getAllCardsByQuery(final int userId, final String from, final String to) {
+    public List<User> getAllUsers() {
+        String value = globalPropertyLookUpService.getGlobalPropertyValue(GLOBAL_PROPERTY_FIELD_WORKER_ROLE_NAME);
+        Role role = userService.getRole(value);
+        if (null == role) return Collections.emptyList();
+        ArrayList<User> users = new ArrayList<>();
+        List<org.openmrs.User> allUsers = userService.getAllUsers();
+        for (org.openmrs.User user : allUsers) {
+            if (user.getAllRoles().contains(role)) {
+                users.add(new User(user.getId(), user.getDisplayString()));
+            }
+        }
+        return users;
+    }
+
+    @Authorized(value = {"Print HID Card"}, requireAll = true)
+    public List<HealthIdCard> getAllCardsByUserWithinDateRange(final int userId, final String from, final String to) {
         return database.executeInTransaction(new Database.TxWork<List<HealthIdCard>>() {
             @Override
             public List<HealthIdCard> execute(Connection connection) {
@@ -69,13 +96,13 @@ public class HealthIdCardService {
 
     private String getGender(ResultSet resultSet) throws SQLException {
         String gender = resultSet.getString("gender");
-        if ("M".equals(gender)){
+        if ("M".equals(gender)) {
             return "Male";
         }
-        if ("F".equals(gender)){
+        if ("F".equals(gender)) {
             return "Female";
         }
-        if ("O".equals(gender)){
+        if ("O".equals(gender)) {
             return "Other";
         }
         return gender;
