@@ -51,10 +51,7 @@ public class MCIPatientLookupServiceTest {
     private IdentityStore mockIdentityStore;
     @Mock
     private AddressHierarchyService addressHierarchyService;
-    @Mock
-    private ConceptService conceptService;
-    @Mock
-    private GlobalPropertyLookUpService globalPropertyLookUpService;
+
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(9997);
