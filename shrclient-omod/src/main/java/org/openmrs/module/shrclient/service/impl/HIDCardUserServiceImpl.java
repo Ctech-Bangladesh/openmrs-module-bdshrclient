@@ -2,9 +2,12 @@ package org.openmrs.module.shrclient.service.impl;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.openmrs.Role;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.UserService;
+import org.openmrs.api.context.Context;
+import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.fhir.utils.GlobalPropertyLookUpService;
 import org.openmrs.module.shrclient.model.HealthIdCard;
 import org.openmrs.module.shrclient.model.User;
@@ -24,21 +27,23 @@ import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE
 import static org.openmrs.module.fhir.utils.DateUtil.*;
 
 @Component
-public class HIDCardUserServiceImpl implements HIDCardUserService {
+public class HIDCardUserServiceImpl extends BaseOpenmrsService implements HIDCardUserService {
+    private static final Logger logger = Logger.getLogger(HIDCardUserServiceImpl.class);
+
     private Database database;
     private GlobalPropertyLookUpService globalPropertyLookUpService;
     private UserService userService;
 
     @Autowired
-    public HIDCardUserServiceImpl(Database database, GlobalPropertyLookUpService globalPropertyLookUpService, UserService userService) {
+    public HIDCardUserServiceImpl(Database database, GlobalPropertyLookUpService globalPropertyLookUpService) {
         this.database = database;
         this.globalPropertyLookUpService = globalPropertyLookUpService;
-        this.userService = userService;
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsersWithFieldRole() {
         String value = globalPropertyLookUpService.getGlobalPropertyValue(GLOBAL_PROPERTY_FIELD_WORKER_ROLE_NAME);
-        Role role = userService.getRole(value);
+        logger.debug("Fetching all users for role:- " + value);
+        Role role = getUserService().getRole(value);
         if (null == role) return Collections.emptyList();
         ArrayList<User> users = new ArrayList<>();
         List<org.openmrs.User> allUsers = userService.getAllUsers();
@@ -67,7 +72,7 @@ public class HIDCardUserServiceImpl implements HIDCardUserService {
                         healthIdCards.add(createHealthIdCard(resultSet));
                     }
                 } catch (SQLException | ParseException e) {
-                    e.printStackTrace();
+                    logger.error("Error while fetching Health-Id Card details", e);
                 }
                 return healthIdCards;
             }
@@ -136,4 +141,12 @@ public class HIDCardUserServiceImpl implements HIDCardUserService {
                 "(SELECT patient_identifier_type_id FROM patient_identifier_type WHERE name=?) AND " +
                 "p.creator=? AND p.date_created >= ? AND p.date_created <= ?;";
     }
+
+    private UserService getUserService() {
+        if (userService == null) {
+            userService = Context.getUserService();
+        }
+        return userService;
+    }
+
 }

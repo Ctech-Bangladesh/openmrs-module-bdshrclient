@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.addresshierarchy.AddressHierarchyEntry;
 import org.openmrs.module.addresshierarchy.service.AddressHierarchyService;
 import org.openmrs.module.shrclient.handlers.ClientRegistry;
@@ -24,14 +25,15 @@ import org.openmrs.module.shrclient.web.controller.MciPatientSearchRequest;
 import org.openmrs.module.shrclient.web.controller.dto.EncounterEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 import static java.util.Arrays.asList;
 
-@Service
-public class MCIPatientLookupServiceImpl implements MCIPatientLookupService {
+@Component
+public class MCIPatientLookupServiceImpl extends BaseOpenmrsService implements MCIPatientLookupService {
     private static final Logger log = Logger.getLogger(MCIPatientLookupServiceImpl.class);
 
     private static final String NID_PARAM_KEY = "nid";

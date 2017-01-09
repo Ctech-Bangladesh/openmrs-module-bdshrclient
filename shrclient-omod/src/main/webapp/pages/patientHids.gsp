@@ -10,9 +10,6 @@
         ui.includeJavascript("uicommons", "jquery.toastmessage.js", Integer.MAX_VALUE - 20)
         ui.includeJavascript("shrclient", "mustache.js", Integer.MAX_VALUE - 30)
         ui.includeJavascript("shrclient", "jsBarCode.js", Integer.MAX_VALUE - 30)
-        ui.includeJavascript("shrclient", "html2canvas.js", Integer.MAX_VALUE - 30)
-        ui.includeJavascript("shrclient", "validation.js", Integer.MAX_VALUE - 30)
-        ui.includeJavascript("shrclient", "jsPdf.js", Integer.MAX_VALUE - 30)
         ui.includeCss("uicommons", "styleguide/jquery.toastmessage.css", Integer.MAX_VALUE - 20)
         ui.includeCss("shrclient", "printHid.css", Integer.MAX_VALUE - 10)
     %>
@@ -25,10 +22,15 @@
 <script type="text/javascript">
     function onError(error) {
         var message = "Error occurred. Could not perform the action.";
+        if (error.status === 401) {
+            message = "The user doesn't have privilege to access this page.";
+        }
         jQuery(".errorMessage").text(message);
         jQuery(".errorMessage").show();
     }
+
     window.translations = window.translations || {};
+    var template;
     jQuery(document).ready(function (e) {
         jQuery.ajax({
             type: "GET",
@@ -53,24 +55,15 @@
                 dataType: "json"
             }).done(function (responseData) {
                 var printArea = jQuery('#printArea');
-                var template = printArea.html();
+                template = template || printArea.html();
                 Mustache.parse(template);
                 var rendered = Mustache.render(template, {"cards": responseData});
                 printArea.html(rendered);
                 JsBarcode(".barcode").init();
                 printArea.show();
                 jQuery('#print').prop('disabled', false);
-                jQuery('#pdf').prop('disabled', false);
             }).fail(onError);
         })
-        jQuery('#pdf').click(function (e) {
-            var pdf = new jsPDF('p', 'pt', 'letter');
-            //this is a hack so jsPDF doesn't stretch the pdf
-            pdf.internal.scaleFactor = 1.345;
-            pdf.addHTML(jQuery('#printArea')[0], {background: '#fff', pagesplit: true}, function () {
-                pdf.output("dataurlnewwindow");
-            });
-        });
     })
 </script>
 
@@ -100,7 +93,6 @@
             </div>
             <button class="btn" id="getAll">Get All Patients</button>
             <button class="btn" id="print" onclick="window.print()" disabled>Print All</button>
-            <button class="btn" id="pdf" disabled>Convert to PDF</button>
         </div>
 
         <div id="printArea">
