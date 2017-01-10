@@ -54,6 +54,11 @@
                 url: "/openmrs/ws/users/" + userId + "/findAllPatients?from=" + fromDate + "&to=" + toDate,
                 dataType: "json"
             }).done(function (responseData) {
+                if(!responseData || responseData.length < 1){
+                    jQuery('#info').show();
+                    return;
+                }
+                jQuery('#info').hide();
                 var printArea = jQuery('#printArea');
                 template = template || printArea.html();
                 Mustache.parse(template);
@@ -94,7 +99,7 @@
             <button class="btn" id="getAll">Get All Patients</button>
             <button class="btn" id="print" onclick="window.print()" disabled>Print All</button>
         </div>
-
+        <div id="info">There are no patients registered within the selected period.</div>
         <div id="printArea">
             {{#cards}}
             <div class="healthId">
