@@ -55,7 +55,6 @@ public class HIDCardUserServiceImpl extends BaseOpenmrsService implements HIDCar
         return users;
     }
 
-    @Authorized(value = {"Print HID Card"}, requireAll = true)
     public List<HealthIdCard> getAllCardsByUserWithinDateRange(final int userId, final String from, final String to) {
         return database.executeInTransaction(new Database.TxWork<List<HealthIdCard>>() {
             @Override

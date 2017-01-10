@@ -109,7 +109,7 @@ public class MRSProperties {
 
     public static final String GLOBAL_PROPERTY_EMR_PRIMARY_IDENTIFIER_TYPE = "emr.primaryIdentifierType";
     public static final String GLOBAL_PROPERTY_DEFAULT_IDENTIFIER_TYPE_ID = "shr.defaultPatientIdentifierSourceId";
-    public static final String GLOBAL_PROPERTY_FIELD_WORKER_ROLE_NAME = "shr.fieldWorkerRoleName";
+    public static final String GLOBAL_PROPERTY_FIELD_WORKER_ROLE_NAME = "user.fieldWorkerRoleName";
 
     public static final String BAHMNI_DRUG_ORDER_ADDITIONAL_INSTRCTIONS_KEY = "additionalInstructions";
     public static final String BAHMNI_DRUG_ORDER_INSTRCTIONS_KEY = "instructions";
