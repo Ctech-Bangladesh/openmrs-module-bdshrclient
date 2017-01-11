@@ -24,9 +24,50 @@
         var message = "Error occurred. Could not perform the action.";
         if (error.status === 401) {
             message = "The user doesn't have privilege to access this page.";
+            jQuery('div:not(.errorMessage)').hide();
+            jQuery('#heading').appendTo('body');
+            jQuery('.errorMessage').appendTo('body');
         }
         jQuery(".errorMessage").text(message);
         jQuery(".errorMessage").show();
+    }
+
+    function getDate(date){
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var year = date.getFullYear();
+
+        if(month < 10)
+            month = '0' + month.toString();
+        if(day < 10)
+            day = '0' + day.toString();
+
+        return year + '-' + month + '-' + day;
+    }
+
+    function restrictDatesToToday(){
+        var dtToday = new Date();
+
+        var maxDate = getDate(dtToday);
+        jQuery("#fromDate").attr('max', maxDate);
+        jQuery("#toDate").attr('max', maxDate);
+    }
+
+    function validateFromDate(){
+        var maxFromDate = new Date(jQuery("#toDate").val());
+        if (maxFromDate != "") {
+            var maxDate = getDate(maxFromDate);
+            jQuery("#fromDate").attr('max', maxDate);
+        }
+    }
+
+    function validateToDate(){
+            var minToDate = new Date(jQuery("#fromDate").val());
+            if (minToDate != ""){
+                var minDate = getDate(minToDate);
+                jQuery("#toDate").attr('min', minDate);
+            }
+
     }
 
     window.translations = window.translations || {};
@@ -44,22 +85,33 @@
             userSelect.html(rendered)
         }).fail(onError);
 
+        restrictDatesToToday();
+
+        jQuery("#fromDate").on('change',validateToDate);
+        jQuery("#toDate").on('change',validateFromDate);
+
         jQuery('#getAll').click(function (e) {
-            var userId = jQuery('#user').val()
-            var fromDate = jQuery('#fromDate').val()
-            var toDate = jQuery('#toDate').val()
+            var userId = jQuery('#user').val();
+            var fromDate = jQuery('#fromDate').val();
+            var toDate = jQuery('#toDate').val();
 
             jQuery.ajax({
                 type: "GET",
                 url: "/openmrs/ws/users/" + userId + "/findAllPatients?from=" + fromDate + "&to=" + toDate,
                 dataType: "json"
             }).done(function (responseData) {
-                if(!responseData || responseData.length < 1){
-                    jQuery('#info').show();
+                var printArea = jQuery('#printArea');
+                var infoMessage;
+                var noOfHIDCards = responseData.length;
+                if(!responseData || noOfHIDCards < 1){
+                    infoMessage = "There are no patients registered within the selected period.";
+                    jQuery("#info").text(infoMessage).show();
+                    printArea.hide();
                     return;
                 }
-                jQuery('#info').hide();
-                var printArea = jQuery('#printArea');
+                infoMessage = "Showing " + noOfHIDCards + " Health ID card(s).";
+                jQuery("#info").text(infoMessage).show();
+
                 template = template || printArea.html();
                 Mustache.parse(template);
                 var rendered = Mustache.render(template, {"cards": responseData});
@@ -75,7 +127,7 @@
 <div id="body-wrapper">
     ${ui.includeFragment("uicommons", "infoAndErrorMessage")}
     <div id="content" class="container">
-        <h1>Print Patient HIDs</h1>
+        <h1 id="heading">Print Patient HIDs</h1>
 
         <div style="display:none" class="errorMessage"></div>
         <label for="user">Select a user</label>
@@ -88,18 +140,18 @@
 
         <div class="dateRange">
             <div>
-                <label for="fromDate">From:-</label>
-                <input type="date" id="fromDate">
+                <label for="fromDate">From</label>
+                <input type="date" id="fromDate" onkeydown="return false">
             </div>
 
             <div>
-                <label for="toDate">To:-</label>
-                <input type="date" id="toDate">
+                <label for="toDate">To</label>
+                <input type="date" id="toDate" onkeydown="return false">
             </div>
             <button class="btn" id="getAll">Get All Patients</button>
             <button class="btn" id="print" onclick="window.print()" disabled>Print All</button>
         </div>
-        <div id="info">There are no patients registered within the selected period.</div>
+        <div id="info"></div>
         <div id="printArea">
             {{#cards}}
             <div class="healthId">

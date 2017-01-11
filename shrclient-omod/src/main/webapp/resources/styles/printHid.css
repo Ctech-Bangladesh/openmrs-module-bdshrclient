@@ -46,9 +46,9 @@ select.user {
 
 .healthId {
     border-style: solid;
-    width: 48%;
-    height:250px;
-    margin: 0.5%;
+    width: 460px;
+    height:260px;
+    margin: 3.5px;
     display: inline-block;
     font-weight: bold;
     font-size: 15px;
@@ -68,14 +68,14 @@ select.user {
 }
 
 .healthId img {
-    margin: 0 0 0 1%;
+    margin: 0 0 0 5px;
     float: left;
     width:120px;
     height:90px;
 }
 
 .healthId  label {
-    margin: 0.5%;
+    margin: 2px;
 }
 
  .name,.issued{
@@ -84,7 +84,7 @@ select.user {
 
 .dob{
     float:right;
-    margin: 0% 2% 0% 0% !important;
+    margin: 0 10px 0 0 !important
 }
 
 .healthId .address, .address_value{
@@ -115,7 +115,7 @@ select.user {
 }
 
 .address_details{
-    margin:0 0 0 2%;
+    margin:0 0 0 10px;
 }
 
 .address_details .address{
@@ -131,6 +131,6 @@ select.user {
 
 @media print {
     #content > :not(#printArea) {
-        display: none;
+        display: none !important;
     }
 }

@@ -107,7 +107,7 @@ public class HIDCardUserServiceImpl extends BaseOpenmrsService implements HIDCar
             return "Female";
         }
         if ("O".equals(gender)) {
-            return "Other";
+            return "Transgender";
         }
         return gender;
     }
