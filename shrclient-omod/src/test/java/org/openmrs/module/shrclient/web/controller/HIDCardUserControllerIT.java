@@ -63,7 +63,7 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
         assertHealthIdCard(healthIdCards[0], "Male", "Sayed Azam", "22-10-1992",
                 "22-10-2016", "HID1",
                 "lane 1, Kaliganj, Gazipur, Dhaka");
-        assertHealthIdCard(healthIdCards[1], "Other", "Farukh Engineer",
+        assertHealthIdCard(healthIdCards[1], "Transgender", "Farukh Engineer",
                 "22-10-1993", "22-11-2016", "HID2",
                 "lane 1, ward-01, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
         assertHealthIdCard(healthIdCards[2], "Female", "Babitha Chatterjee",
