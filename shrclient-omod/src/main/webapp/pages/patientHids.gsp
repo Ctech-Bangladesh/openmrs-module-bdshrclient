@@ -62,12 +62,23 @@
     }
 
     function validateToDate(){
-            var minToDate = new Date(jQuery("#fromDate").val());
-            if (minToDate != ""){
-                var minDate = getDate(minToDate);
-                jQuery("#toDate").attr('min', minDate);
-            }
+        var minToDate = new Date(jQuery("#fromDate").val());
+        if (minToDate != ""){
+            var minDate = getDate(minToDate);
+            jQuery("#toDate").attr('min', minDate);
+        }
 
+    }
+
+    function toggleGetAllButton(){
+        if (jQuery('#user').val()  !=   -1   &&
+            jQuery('#fromDate').val().length  >   0   &&
+            jQuery('#toDate').val().length    >   0) {
+                jQuery('#getAll').prop("disabled", false);
+        }
+        else {
+            jQuery('#getAll').prop("disabled", true);
+        }
     }
 
     window.translations = window.translations || {};
@@ -89,6 +100,8 @@
 
         jQuery("#fromDate").on('change',validateToDate);
         jQuery("#toDate").on('change',validateFromDate);
+
+        jQuery('#user, #fromDate, #toDate').change(toggleGetAllButton);
 
         jQuery('#getAll').click(function (e) {
             var userId = jQuery('#user').val();
@@ -148,7 +161,7 @@
                 <label for="toDate">To</label>
                 <input type="date" id="toDate" onkeydown="return false">
             </div>
-            <button class="btn" id="getAll">Get All Patients</button>
+            <button class="btn" id="getAll" disabled>Get All Patients</button>
             <button class="btn" id="print" onclick="window.print()" disabled>Print All</button>
         </div>
         <div id="info"></div>
