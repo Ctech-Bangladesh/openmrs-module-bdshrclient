@@ -72,6 +72,23 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
 
     }
 
+    @Test
+    public void shouldNotGetHealthIdCardsForVoidedOrIssuedHIDs() throws Exception {
+        executeDataSet("testDataSets/patientsWithVoidedHidIdentifiersOrIssuedHIDCard.xml");
+        MvcResult result = mockMvc.perform(get("/users/503/findAllPatients?from=2016-10-22&to=2016-12-22"))
+                .andExpect(status().isOk())
+                .andReturn();
+        String content = result.getResponse().getContentAsString();
+        HealthIdCard[] healthIdCards = new ObjectMapper().readValue(content, HealthIdCard[].class);
+        assertEquals(2, healthIdCards.length);
+        assertHealthIdCard(healthIdCards[0], "Male", "Sayed Azam", "22-10-1992",
+                "22-10-2016", "HID1",
+                "lane 1, Kaliganj, Gazipur, Dhaka");
+        assertHealthIdCard(healthIdCards[1], "Other", "Farukh Engineer",
+                "22-10-1993", "22-11-2016", "HID2",
+                "lane 1, ward-01, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
+    }
+
     private void assertHealthIdCard(HealthIdCard healthIdCard, String expectedGender, String expectedName,
                                     String expectedDob, String expectedIssuedDate, String expectedHid,
                                     String expectedAddress) {

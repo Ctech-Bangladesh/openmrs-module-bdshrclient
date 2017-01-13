@@ -24,6 +24,7 @@ import java.util.List;
 
 import static org.openmrs.module.fhir.MRSProperties.GLOBAL_PROPERTY_FIELD_WORKER_ROLE_NAME;
 import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE_NAME;
+import static org.openmrs.module.fhir.OpenMRSConstants.HID_CARD_ISSUED_ATTRIBUTE;
 import static org.openmrs.module.fhir.utils.DateUtil.*;
 
 @Component
@@ -66,6 +67,7 @@ public class HIDCardUserServiceImpl extends BaseOpenmrsService implements HIDCar
                     statement.setInt(2, userId);
                     statement.setTimestamp(3, new Timestamp(parseDate(from, SIMPLE_DATE_WITH_SECS_FORMAT).getTime()));
                     statement.setTimestamp(4, new Timestamp(parseDate(to, SIMPLE_DATE_WITH_SECS_FORMAT).getTime()));
+                    statement.setString(5, HID_CARD_ISSUED_ATTRIBUTE);
                     ResultSet resultSet = statement.executeQuery();
                     while (resultSet.next()) {
                         healthIdCards.add(createHealthIdCard(resultSet));
@@ -137,8 +139,10 @@ public class HIDCardUserServiceImpl extends BaseOpenmrsService implements HIDCar
                 "pa.address1, pa.address2, pa.address3, pa.address4, pa.address5, pa.county_district, pa.state_province " +
                 "FROM person_name pn, patient_identifier pi, person_address pa, person p WHERE p.person_id=pn.person_id AND " +
                 "p.person_id=pa.person_id AND p.person_id=pi.patient_id AND p.voided = 0 AND pi.voided = 0 AND pi.identifier_type=" +
-                "(SELECT patient_identifier_type_id FROM patient_identifier_type WHERE name=?) AND " +
-                "p.creator=? AND p.date_created >= ? AND p.date_created <= ?;";
+                "(SELECT patient_identifier_type_id FROM patient_identifier_type WHERE name=?) AND p.creator=? " +
+                "AND p.date_created >= ? AND p.date_created <= ? AND p.person_id NOT IN " +
+                "(SELECT person_id FROM person_attribute WHERE value='true' AND person_attribute_type_id=" +
+                "(SELECT person_attribute_type_id FROM person_attribute_type WHERE name = ?));";
     }
 
     private UserService getUserService() {
