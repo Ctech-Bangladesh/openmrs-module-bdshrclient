@@ -127,7 +127,18 @@
 
                 template = template || printArea.html();
                 Mustache.parse(template);
-                var rendered = Mustache.render(template, {"cards": responseData});
+                var finalEnlishToBanglaNumber={'0':'&#2534;','1':'&#2535;','2':'&#2536;','3':'&#2537;','4':'&#2538;','5':'&#2539;','6':'&#2540;','7':'&#2541;','8':'&#2542;','9':'&#2543;'};
+                var data = {"cards": responseData};
+                data.getDigitBanglaFromEnglish = function () { return function(text, render) {
+                    var strArray = render(text).split("");
+                    var retStr = "";
+                    for (var x in strArray) {
+                        retStr = retStr + finalEnlishToBanglaNumber[strArray[x]];
+                    }
+                    return retStr;
+                } };
+
+                var rendered = Mustache.render(template, data);
                 printArea.html(rendered);
                 JsBarcode(".barcode").init();
                 printArea.show();
@@ -189,7 +200,7 @@
                 <div class="hid_details">
                     <svg class="barcode" jsbarcode-height="35px" jsbarcode-format="CODE39"
                          jsbarcode-value="{{hid}}" jsbarcode-textmargin="0"
-                         jsbarcode-fontoptions="bold"/>
+                         jsbarcode-fontoptions="bold" jsbarcode-text="{{#getDigitBanglaFromEnglish}}{{hid}}{{/getDigitBanglaFromEnglish}}"/>
 
                 </div>
             </div>
