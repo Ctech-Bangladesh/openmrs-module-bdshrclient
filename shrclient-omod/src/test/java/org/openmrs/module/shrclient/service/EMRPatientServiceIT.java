@@ -255,6 +255,27 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
 
     }
 
+    @Test
+    public void shouldUpdateTheHealthIdIdentifierToTheSame() throws Exception {
+        executeDataSet("testDataSets/patientUpdateDS.xml");
+        org.openmrs.module.shrclient.model.Patient patient = getPatientFromJson("patients_response/by_hid.json");
+
+        emrPatientService.createOrUpdateEmrPatient(patient);
+
+        Patient savedPatient = patientService.getPatient(1);
+        assertEquals(2, savedPatient.getIdentifiers().size());
+        PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        assertEquals(healthId.getIdentifier(), "11421467785");
+
+        emrPatientService.createOrUpdateEmrPatient(patient);
+
+        savedPatient = patientService.getPatient(1);
+        assertEquals(2, savedPatient.getIdentifiers().size());
+        healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        assertEquals(healthId.getIdentifier(), "11421467785");
+
+    }
+
     private void assertAttribute(Patient savedPatient, String attributeName, String expected) {
         PersonAttribute attribute = savedPatient.getAttribute(attributeName);
         assertNotNull(attribute);

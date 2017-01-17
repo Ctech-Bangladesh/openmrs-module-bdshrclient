@@ -81,7 +81,7 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
         PatientMapper patientMapper = new PatientMapper(new BbsCodeService(), idMappingsRepository);
         patientPush = new PatientPush(patientService, systemUserService, personService,
                 patientMapper, propertiesReader, clientRegistry,
-                idMappingsRepository, providerService, locationService);
+                idMappingsRepository, providerService);
     }
 
     @After

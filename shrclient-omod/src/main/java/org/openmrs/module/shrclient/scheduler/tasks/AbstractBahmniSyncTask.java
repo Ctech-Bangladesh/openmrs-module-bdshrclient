@@ -66,7 +66,7 @@ public abstract class AbstractBahmniSyncTask extends AbstractTask {
                     propertiesReader,
                     clientRegistry,
                     idMappingsRepository,
-                    Context.getProviderService(), Context.getLocationService());
+                    Context.getProviderService());
         } catch (IdentityUnauthorizedException e) {
             throw handleInvalidIdentity(clientRegistry, e);
         }

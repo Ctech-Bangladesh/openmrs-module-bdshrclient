@@ -11,7 +11,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.utils.GlobalPropertyLookUpService;
-import org.openmrs.module.fhir.utils.MCIConstants;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
@@ -40,7 +39,6 @@ import java.util.Properties;
 import static org.openmrs.module.fhir.OpenMRSConstants.*;
 import static org.openmrs.module.fhir.utils.MCIConstants.DOB_TYPE_ESTIMATED;
 import static org.openmrs.module.fhir.utils.MCIConstants.HID_CARD_STATUS_ISSUED;
-import static org.openmrs.module.fhir.utils.MCIConstants.HID_CARD_STATUS_REGISTERED;
 
 @Service("hieEmrPatientService")
 public class EMRPatientServiceImpl implements EMRPatientService {
@@ -55,7 +53,6 @@ public class EMRPatientServiceImpl implements EMRPatientService {
     private PersonAttributeMapper personAttributeMapper;
     private EMRPatientDeathService patientDeathService;
     private GlobalPropertyLookUpService globalPropertyLookUpService;
-    private LocationService locationService;
 
     @Autowired
     public EMRPatientServiceImpl(BbsCodeService bbsCodeService,
@@ -65,8 +62,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
                                  PropertiesReader propertiesReader,
                                  SystemUserService systemUserService,
                                  EMRPatientDeathService patientDeathService,
-                                 GlobalPropertyLookUpService globalPropertyLookUpService,
-                                 LocationService locationService) {
+                                 GlobalPropertyLookUpService globalPropertyLookUpService) {
         this.bbsCodeService = bbsCodeService;
         this.patientService = patientService;
         this.idMappingsRepository = idMappingRepository;
@@ -74,7 +70,6 @@ public class EMRPatientServiceImpl implements EMRPatientService {
         this.systemUserService = systemUserService;
         this.patientDeathService = patientDeathService;
         this.globalPropertyLookUpService = globalPropertyLookUpService;
-        this.locationService = locationService;
         this.personAttributeMapper = new PersonAttributeMapper(personService);
     }
 
@@ -96,11 +91,11 @@ public class EMRPatientServiceImpl implements EMRPatientService {
             }
             emrPatient.addAddress(addressHelper.setPersonAddress(mciPatient.getAddress()));
 
-            PatientIdentifier healthID = new PatientIdentifier();
-            healthID.setIdentifier(mciPatient.getHealthId());
-            healthID.setIdentifierType(patientService.getPatientIdentifierTypeByName(HEALTH_ID_IDENTIFIER_TYPE_NAME));
-            healthID.setLocation(locationService.getLocation(Location.LOCATION_UNKNOWN));
-            emrPatient.addIdentifier(healthID);
+            PatientIdentifierType identifierType = patientService.getPatientIdentifierTypeByName(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+            PatientIdentifier patientIdentifier = emrPatient.getPatientIdentifier(identifierType);
+            if (patientIdentifier == null) {
+                emrPatient.addIdentifier(new PatientIdentifier(mciPatient.getHealthId(), identifierType, null));
+            }
 
             addPersonAttribute(emrPatient, HEALTH_ID_ATTRIBUTE, mciPatient.getHealthId());
             addPersonAttribute(emrPatient, NATIONAL_ID_ATTRIBUTE, mciPatient.getNationalId());
