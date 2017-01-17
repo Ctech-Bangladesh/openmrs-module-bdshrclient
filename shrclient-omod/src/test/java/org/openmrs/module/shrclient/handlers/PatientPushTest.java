@@ -70,7 +70,7 @@ public class PatientPushTest {
         initMocks(this);
         when(clientRegistry.getMCIClient()).thenReturn(mockMciRestClient);
         patientPush = new PatientPush(patientService, systemUserService, personService, patientMapper,
-                propertiesReader, clientRegistry, idMappingsRepository, providerService, locationService);
+                propertiesReader, clientRegistry, idMappingsRepository, providerService);
         String mciPatientContext = "/api/default/patients";
         when(propertiesReader.getMciPatientContext()).thenReturn(mciPatientContext);
         when(propertiesReader.getMciProperties()).thenReturn(new Properties() {{
@@ -209,8 +209,6 @@ public class PatientPushTest {
         PatientIdentifierType identifierType = new PatientIdentifierType(12);
         identifierType.setName(HEALTH_ID_IDENTIFIER_TYPE_NAME);
         healthId.setIdentifierType(identifierType);
-        healthId.setLocation(locationService.getLocation(Location.LOCATION_UNKNOWN));
-
         return healthId;
     }
 }

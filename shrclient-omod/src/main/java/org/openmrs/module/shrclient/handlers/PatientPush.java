@@ -43,18 +43,16 @@ public class PatientPush implements EventWorker {
     private RestClient mciRestClient;
     private IdMappingRepository idMappingsRepository;
     private ProviderService providerService;
-    private LocationService locationService;
 
     public PatientPush(PatientService patientService, SystemUserService systemUserService, PersonService personService,
                        PatientMapper patientMapper, PropertiesReader propertiesReader, ClientRegistry clientRegistry,
-                       IdMappingRepository idMappingRepository, ProviderService providerService, LocationService locationService) throws IdentityUnauthorizedException {
+                       IdMappingRepository idMappingRepository, ProviderService providerService) throws IdentityUnauthorizedException {
         this.patientService = patientService;
         this.systemUserService = systemUserService;
         this.personService = personService;
         this.patientMapper = patientMapper;
         this.propertiesReader = propertiesReader;
         this.providerService = providerService;
-        this.locationService = locationService;
         this.mciRestClient = clientRegistry.getMCIClient();
         this.idMappingsRepository = idMappingRepository;
         this.clientRegistry = clientRegistry;
@@ -183,11 +181,8 @@ public class PatientPush implements EventWorker {
         }
 
         if (healthIdIdentifier == null) {
-            PatientIdentifier patientIdentifier = new PatientIdentifier();
-            patientIdentifier.setIdentifier(healthId);
-            patientIdentifier.setIdentifierType(patientService.getPatientIdentifierTypeByName(HEALTH_ID_IDENTIFIER_TYPE_NAME));
-            patientIdentifier.setLocation(locationService.getLocation(Location.LOCATION_UNKNOWN));
-            openMrsPatient.addIdentifier(patientIdentifier);
+            PatientIdentifierType identifierType = patientService.getPatientIdentifierTypeByName(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+            openMrsPatient.addIdentifier(new PatientIdentifier(healthId, identifierType, null));
 
         } else {
             healthIdIdentifier.setIdentifier(healthId);
