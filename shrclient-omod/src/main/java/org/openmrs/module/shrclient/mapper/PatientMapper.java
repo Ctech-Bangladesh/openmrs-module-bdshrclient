@@ -41,8 +41,8 @@ public class PatientMapper {
     public Patient map(org.openmrs.Patient openMrsPatient) {
         Patient patient = new Patient();
 
-        String givenNameLocal = getAttributeValue(openMrsPatient, GIVEN_NAME_LOCAL);
-        String familyNameLocal = getAttributeValue(openMrsPatient, FAMILY_NAME_LOCAL);
+        String givenNameLocal = getAttributeValue(openMrsPatient, GIVEN_NAME_LOCAL_ATTRIBUTE_TYPE);
+        String familyNameLocal = getAttributeValue(openMrsPatient, FAMILY_NAME_LOCAL_ATTRIBUTE_TYPE);
         String banglaName = (StringUtils.isNotBlank(givenNameLocal) ? givenNameLocal : "")
                 .concat(" ")
                 .concat((StringUtils.isNotBlank(familyNameLocal) ? familyNameLocal : "")).trim();
@@ -53,7 +53,7 @@ public class PatientMapper {
         Date birthDateTime = openMrsPatient.getBirthDateTime() != null ? openMrsPatient.getBirthDateTime() : openMrsPatient.getBirthdate();
         patient.setDateOfBirth(birthDateTime);
 
-        PatientIdentifier hid = openMrsPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        PatientIdentifier hid = openMrsPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE);
         if (hid != null) {
             patient.setHealthId(hid.getIdentifier());
         }
@@ -62,42 +62,42 @@ public class PatientMapper {
             patient.setBanglaName(banglaName);
         }
 
-        String nationalId = getAttributeValue(openMrsPatient, NATIONAL_ID_ATTRIBUTE);
+        String nationalId = getAttributeValue(openMrsPatient, NATIONAL_ID_ATTRIBUTE_TYPE);
         if (nationalId != null) {
             patient.setNationalId(nationalId);
         }
 
-        String birthRegNo = getAttributeValue(openMrsPatient, BIRTH_REG_NO_ATTRIBUTE);
+        String birthRegNo = getAttributeValue(openMrsPatient, BIRTH_REG_NO_ATTRIBUTE_TYPE);
         if (birthRegNo != null) {
             patient.setBirthRegNumber(birthRegNo);
         }
 
-        String houseHoldCode = getAttributeValue(openMrsPatient, HOUSE_HOLD_CODE_ATTRIBUTE);
+        String houseHoldCode = getAttributeValue(openMrsPatient, HOUSE_HOLD_CODE_ATTRIBUTE_TYPE);
         if (houseHoldCode != null) {
             patient.setHouseHoldCode(houseHoldCode);
         }
 
-        String openmrsPhoneNumber = personAttributeMapper.getAttributeValue(openMrsPatient, PHONE_NUMBER);
+        String openmrsPhoneNumber = personAttributeMapper.getAttributeValue(openMrsPatient, PHONE_NUMBER_ATTRIBUTE_TYPE);
         if (StringUtils.isNotBlank(openmrsPhoneNumber)) {
             PhoneNumber mciPhoneNumber = PhoneNumberMapper.map(openmrsPhoneNumber);
             patient.setPhoneNumber(mciPhoneNumber);
         }
 
-        PersonAttribute occupation = openMrsPatient.getAttribute(OCCUPATION_ATTRIBUTE);
+        PersonAttribute occupation = openMrsPatient.getAttribute(OCCUPATION_ATTRIBUTE_TYPE);
         if (occupation != null) {
             patient.setOccupation(bbsCodeService.getOccupationCode(occupation.toString()));
         } else {
             patient.setOccupation("");
         }
 
-        PersonAttribute education = openMrsPatient.getAttribute(EDUCATION_ATTRIBUTE);
+        PersonAttribute education = openMrsPatient.getAttribute(EDUCATION_ATTRIBUTE_TYPE);
         if (education != null) {
             patient.setEducationLevel(bbsCodeService.getEducationCode(education.toString()));
         } else {
             patient.setEducationLevel("");
         }
 
-        PersonAttribute hidCardIssuedStatus = openMrsPatient.getAttribute(HID_CARD_ISSUED_ATTRIBUTE);
+        PersonAttribute hidCardIssuedStatus = openMrsPatient.getAttribute(HID_CARD_ISSUED_ATTRIBUTE_TYPE);
         if (hidCardIssuedStatus != null) {
             String hidCardStatus = Boolean.valueOf(hidCardIssuedStatus.getValue()) ? HID_CARD_STATUS_ISSUED : HID_CARD_STATUS_REGISTERED;
             patient.setHidCardStatus(hidCardStatus);

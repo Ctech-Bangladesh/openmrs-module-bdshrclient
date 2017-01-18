@@ -127,13 +127,13 @@ public class PatientMapperTest {
 
     @Test
     public void shouldMapHidCardStatusAsRegistered() throws Exception {
-        openMrsPatient.addAttribute(createAttribute(HID_CARD_ISSUED_ATTRIBUTE, "false"));
+        openMrsPatient.addAttribute(createAttribute(HID_CARD_ISSUED_ATTRIBUTE_TYPE, "false"));
         assertEquals("REGISTERED", patientMapper.map(openMrsPatient).getHidCardStatus());
     }
 
     @Test
     public void shouldMapHidCardStatusAsISSUED() throws Exception {
-        openMrsPatient.addAttribute(createAttribute(HID_CARD_ISSUED_ATTRIBUTE, "true"));
+        openMrsPatient.addAttribute(createAttribute(HID_CARD_ISSUED_ATTRIBUTE_TYPE, "true"));
         assertEquals("ISSUED", patientMapper.map(openMrsPatient).getHidCardStatus());
     }
 
@@ -178,7 +178,7 @@ public class PatientMapperTest {
         person.setBirthdateEstimated(Boolean.FALSE);
         openMrsPatient = new org.openmrs.Patient(person);
         PatientIdentifierType patientIdentifierType = new PatientIdentifierType();
-        patientIdentifierType.setName(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        patientIdentifierType.setName(HEALTH_ID_IDENTIFIER_TYPE);
         openMrsPatient.addIdentifier(new PatientIdentifier(healthId, patientIdentifierType, new Location(1)));
         openMrsPatient.setAttributes(createOpenMrsPersonAttributes());
 
@@ -256,12 +256,12 @@ public class PatientMapperTest {
 
     private Set<PersonAttribute> createOpenMrsPersonAttributes() {
         Set<PersonAttribute> attributes = new HashSet<>();
-        attributes.add(createAttribute(NATIONAL_ID_ATTRIBUTE, nationalId));
-        attributes.add(createAttribute(HEALTH_ID_ATTRIBUTE, healthId));
-        attributes.add(createAttribute(BIRTH_REG_NO_ATTRIBUTE, brnId));
-        attributes.add(createAttribute(OCCUPATION_ATTRIBUTE, occupation));
-        attributes.add(createAttribute(EDUCATION_ATTRIBUTE, educationLevel));
-        attributes.add(createAttribute(HOUSE_HOLD_CODE_ATTRIBUTE, houseHoldCode));
+        attributes.add(createAttribute(NATIONAL_ID_ATTRIBUTE_TYPE, nationalId));
+        attributes.add(createAttribute(HEALTH_ID_ATTRIBUTE_TYPE, healthId));
+        attributes.add(createAttribute(BIRTH_REG_NO_ATTRIBUTE_TYPE, brnId));
+        attributes.add(createAttribute(OCCUPATION_ATTRIBUTE_TYPE, occupation));
+        attributes.add(createAttribute(EDUCATION_ATTRIBUTE_TYPE, educationLevel));
+        attributes.add(createAttribute(HOUSE_HOLD_CODE_ATTRIBUTE_TYPE, houseHoldCode));
         return attributes;
     }
 

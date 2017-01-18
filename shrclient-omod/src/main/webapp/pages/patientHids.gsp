@@ -32,20 +32,20 @@
         jQuery(".errorMessage").show();
     }
 
-    function getDate(date){
+    function getDate(date) {
         var month = date.getMonth() + 1;
         var day = date.getDate();
         var year = date.getFullYear();
 
-        if(month < 10)
+        if (month < 10)
             month = '0' + month.toString();
-        if(day < 10)
+        if (day < 10)
             day = '0' + day.toString();
 
         return year + '-' + month + '-' + day;
     }
 
-    function restrictDatesToToday(){
+    function restrictDatesToToday() {
         var dtToday = new Date();
 
         var maxDate = getDate(dtToday);
@@ -53,7 +53,7 @@
         jQuery("#toDate").attr('max', maxDate);
     }
 
-    function validateFromDate(){
+    function validateFromDate() {
         var maxFromDate = new Date(jQuery("#toDate").val());
         if (maxFromDate != "") {
             var maxDate = getDate(maxFromDate);
@@ -61,20 +61,20 @@
         }
     }
 
-    function validateToDate(){
+    function validateToDate() {
         var minToDate = new Date(jQuery("#fromDate").val());
-        if (minToDate != ""){
+        if (minToDate != "") {
             var minDate = getDate(minToDate);
             jQuery("#toDate").attr('min', minDate);
         }
 
     }
 
-    function toggleGetAllButton(){
-        if (jQuery('#user').val()  !=   -1   &&
-            jQuery('#fromDate').val().length  >   0   &&
-            jQuery('#toDate').val().length    >   0) {
-                jQuery('#getAll').prop("disabled", false);
+    function toggleGetAllButton() {
+        if (jQuery('#user').val() != -1 &&
+            jQuery('#fromDate').val().length > 0 &&
+            jQuery('#toDate').val().length > 0) {
+            jQuery('#getAll').prop("disabled", false);
         }
         else {
             jQuery('#getAll').prop("disabled", true);
@@ -98,8 +98,8 @@
 
         restrictDatesToToday();
 
-        jQuery("#fromDate").on('change',validateToDate);
-        jQuery("#toDate").on('change',validateFromDate);
+        jQuery("#fromDate").on('change', validateToDate);
+        jQuery("#toDate").on('change', validateFromDate);
 
         jQuery('#user, #fromDate, #toDate').change(toggleGetAllButton);
 
@@ -116,7 +116,7 @@
                 var printArea = jQuery('#printArea');
                 var infoMessage;
                 var noOfHIDCards = responseData.length;
-                if(!responseData || noOfHIDCards < 1){
+                if (!responseData || noOfHIDCards < 1) {
                     infoMessage = "There are no patients registered within the selected period.";
                     jQuery("#info").text(infoMessage).show();
                     printArea.hide();
@@ -127,16 +127,45 @@
 
                 template = template || printArea.html();
                 Mustache.parse(template);
-                var finalEnlishToBanglaNumber={'0':'&#2534;','1':'&#2535;','2':'&#2536;','3':'&#2537;','4':'&#2538;','5':'&#2539;','6':'&#2540;','7':'&#2541;','8':'&#2542;','9':'&#2543;'};
+                var finalEnlishToBanglaNumber = {
+                    '0': '&#2534;',
+                    '1': '&#2535;',
+                    '2': '&#2536;',
+                    '3': '&#2537;',
+                    '4': '&#2538;',
+                    '5': '&#2539;',
+                    '6': '&#2540;',
+                    '7': '&#2541;',
+                    '8': '&#2542;',
+                    '9': '&#2543;'
+                };
                 var data = {"cards": responseData};
-                data.getDigitBanglaFromEnglish = function () { return function(text, render) {
-                    var strArray = render(text).split("");
-                    var retStr = "";
-                    for (var x in strArray) {
-                        retStr = retStr + finalEnlishToBanglaNumber[strArray[x]];
+                data.convertDigitToBangla = function () {
+                    return function (text, render) {
+                        var strArray = render(text).split("");
+                        var retStr = "";
+                        for (var x in strArray) {
+                            if (isNaN(strArray[x])) {
+                                retStr = retStr + strArray[x];
+                            } else {
+                                retStr = retStr + finalEnlishToBanglaNumber[strArray[x]];
+                            }
+                        }
+                        return retStr;
                     }
-                    return retStr;
-                } };
+                };
+                data.getGenderInBangla = function () {
+                    return function (text, render) {
+                        var gender = render(text);
+                        if (gender == "M") {
+                            return '&#2474;&#2497;&#2480;&#2497;&#2487;'
+                        } else if (gender == "F") {
+                            return '&#2478;&#2489;&#2495;&#2482;&#2494;'
+                        } else if (gender == "O") {
+                            return '&#2489;&#2495;&#2460;&#2465;&#2492;&#2494;&#2470;&#2503;&#2480;'
+                        }
+                    }
+                };
 
                 var rendered = Mustache.render(template, data);
                 printArea.html(rendered);
@@ -175,7 +204,9 @@
             <button class="btn" id="getAll" disabled>Get All Patients</button>
             <button class="btn" id="print" onclick="window.print()" disabled>Print All</button>
         </div>
+
         <div id="info"></div>
+
         <div id="printArea">
             {{#cards}}
             <div class="healthId">
@@ -183,10 +214,10 @@
                     <img src="${ui.resourceLink("shrclient", "images/gov_logo.jpg")}" alt="dhis_logo"/>
 
                     <div class="details_1">
-                        <label class="name">Name: {{name}}</label>
-                        <label class="gender">Gender: {{gender}}</label>
-                        <label class="dob">DOB: {{dob}}</label>
-                        <label class="issued">Issued Date: {{issuedDate}}</label>
+                        <label class="name">&#2472;&#2494;&#2478;: {{name}}</label>
+                        <label class="gender">&#2482;&#2495;&#2457;&#2509;&#2455;: {{#getGenderInBangla}}{{gender}}{{/getGenderInBangla}}</label>
+                        <label class="dob">&#2460;&#2472;&#2509;&#2478; &#2468;&#2494;&#2480;&#2495;&#2454;: {{#convertDigitToBangla}}{{dob}}{{/convertDigitToBangla}}</label>
+                        <label class="issued">&#2474;&#2509;&#2480;&#2470;&#2494;&#2472;&#2503;&#2480; &#2468;&#2494;&#2480;&#2495;&#2454;: {{#convertDigitToBangla}}{{issuedDate}}{{/convertDigitToBangla}}</label>
                     </div>
 
                     <div class="address_details">
@@ -200,7 +231,8 @@
                 <div class="hid_details">
                     <svg class="barcode" jsbarcode-height="35px" jsbarcode-format="CODE39"
                          jsbarcode-value="{{hid}}" jsbarcode-textmargin="0"
-                         jsbarcode-fontoptions="bold" jsbarcode-text="{{#getDigitBanglaFromEnglish}}{{hid}}{{/getDigitBanglaFromEnglish}}"/>
+                         jsbarcode-fontoptions="bold"
+                         jsbarcode-text="{{#convertDigitToBangla}}{{hid}}{{/convertDigitToBangla}}"/>
 
                 </div>
             </div>

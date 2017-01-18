@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static org.openmrs.module.fhir.OpenMRSConstants.ORGANIZATION_ATTRIBUTE_TYPE_NAME;
+import static org.openmrs.module.fhir.OpenMRSConstants.ORGANIZATION_ATTRIBUTE_TYPE;
 
 @Component
 public class FHIREncounterMapper {
@@ -100,7 +100,7 @@ public class FHIREncounterMapper {
         Provider provider = providerLookupService.getProviderByReferenceUrl(providerUrl);
         Set<ProviderAttribute> attributes = provider.getAttributes();
         for (ProviderAttribute attribute : attributes) {
-            if (attribute.getAttributeType().getName().equals(ORGANIZATION_ATTRIBUTE_TYPE_NAME)) {
+            if (attribute.getAttributeType().getName().equals(ORGANIZATION_ATTRIBUTE_TYPE)) {
                 String facilityId = attribute.getValueReference();
                 return getFacilityLocation(facilityId);
             }

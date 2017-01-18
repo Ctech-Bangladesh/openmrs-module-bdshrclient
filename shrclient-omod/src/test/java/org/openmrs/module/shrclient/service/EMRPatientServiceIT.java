@@ -48,14 +48,14 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(savedPatient.getGender(), "F");
         assertFalse(savedPatient.getBirthdateEstimated());
 
-        PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE);
         assertEquals(healthId.getIdentifier(), "11421467785");
 
-        assertAttribute(savedPatient, HEALTH_ID_ATTRIBUTE, "11421467785");
-        assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE, "7654376543127");
-        assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE, "54098540985409815");
+        assertAttribute(savedPatient, HEALTH_ID_ATTRIBUTE_TYPE, "11421467785");
+        assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE_TYPE, "7654376543127");
+        assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE_TYPE, "54098540985409815");
 
-        assertNull(savedPatient.getAttribute(HID_CARD_ISSUED_ATTRIBUTE));
+        assertNull(savedPatient.getAttribute(HID_CARD_ISSUED_ATTRIBUTE_TYPE));
     }
 
     @Test
@@ -72,12 +72,12 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(savedPatient.getGender(), "F");
         assertTrue(savedPatient.getBirthdateEstimated());
 
-        PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE);
         assertEquals(healthId.getIdentifier(), "11421467785");
 
-        assertAttribute(savedPatient, HEALTH_ID_ATTRIBUTE, "11421467785");
-        assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE, "7654376543127");
-        assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE, "54098540985409815");
+        assertAttribute(savedPatient, HEALTH_ID_ATTRIBUTE_TYPE, "11421467785");
+        assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE_TYPE, "7654376543127");
+        assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE_TYPE, "54098540985409815");
     }
 
     @Test
@@ -155,7 +155,7 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         emrPatientService.createOrUpdateEmrPatient(patient);
 
         Patient savedPatient = patientService.getPatient(1);
-        PersonAttribute hidIssued = savedPatient.getAttribute(HID_CARD_ISSUED_ATTRIBUTE);
+        PersonAttribute hidIssued = savedPatient.getAttribute(HID_CARD_ISSUED_ATTRIBUTE_TYPE);
         assertNotNull(hidIssued);
         assertEquals("false", hidIssued.getValue());
     }
@@ -204,27 +204,27 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
 
         Patient savedPatient = patientService.getPatient(1);
 
-        assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE, "7654376543127");
-        assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE, "54098540985409815");
-        assertAttribute(savedPatient, PHONE_NUMBER, "100");
-        assertAttribute(savedPatient, HOUSE_HOLD_CODE_ATTRIBUTE, "124");
+        assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE_TYPE, "7654376543127");
+        assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE_TYPE, "54098540985409815");
+        assertAttribute(savedPatient, PHONE_NUMBER_ATTRIBUTE_TYPE, "100");
+        assertAttribute(savedPatient, HOUSE_HOLD_CODE_ATTRIBUTE_TYPE, "124");
         assertAttribute(savedPatient, MOTHER_NAME_ATTRIBUTE_TYPE, "Shana Khan");
         assertAttribute(savedPatient, FATHER_NAME_ATTRIBUTE_TYPE, "Md. Sakib Ali Khan");
         assertAttribute(savedPatient, SPOUSE_NAME_ATTRIBUTE_TYPE, "Azad Khan");
-        assertAttribute(savedPatient, OCCUPATION_ATTRIBUTE, "303");
-        assertAttribute(savedPatient, EDUCATION_ATTRIBUTE, "304");
+        assertAttribute(savedPatient, OCCUPATION_ATTRIBUTE_TYPE, "303");
+        assertAttribute(savedPatient, EDUCATION_ATTRIBUTE_TYPE, "304");
 
         org.openmrs.module.shrclient.model.Patient patientUpdateResponse = getPatientFromJson("patients_response/patient_with_removed_attribute.json");
         emrPatientService.createOrUpdateEmrPatient(patientUpdateResponse);
 
         Patient updatedPatient = patientService.getPatient(1);
 
-        assertNull(updatedPatient.getAttribute(NATIONAL_ID_ATTRIBUTE));
-        assertNull(updatedPatient.getAttribute(BIRTH_REG_NO_ATTRIBUTE));
-        assertNull(updatedPatient.getAttribute(PHONE_NUMBER));
-        assertNull(updatedPatient.getAttribute(HOUSE_HOLD_CODE_ATTRIBUTE));
-        assertNull(updatedPatient.getAttribute(OCCUPATION_ATTRIBUTE));
-        assertNull(updatedPatient.getAttribute(EDUCATION_ATTRIBUTE));
+        assertNull(updatedPatient.getAttribute(NATIONAL_ID_ATTRIBUTE_TYPE));
+        assertNull(updatedPatient.getAttribute(BIRTH_REG_NO_ATTRIBUTE_TYPE));
+        assertNull(updatedPatient.getAttribute(PHONE_NUMBER_ATTRIBUTE_TYPE));
+        assertNull(updatedPatient.getAttribute(HOUSE_HOLD_CODE_ATTRIBUTE_TYPE));
+        assertNull(updatedPatient.getAttribute(OCCUPATION_ATTRIBUTE_TYPE));
+        assertNull(updatedPatient.getAttribute(EDUCATION_ATTRIBUTE_TYPE));
         assertNull(updatedPatient.getAttribute(MOTHER_NAME_ATTRIBUTE_TYPE));
         assertNull(updatedPatient.getAttribute(FATHER_NAME_ATTRIBUTE_TYPE));
         assertNull(updatedPatient.getAttribute(SPOUSE_NAME_ATTRIBUTE_TYPE));
@@ -264,14 +264,14 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
 
         Patient savedPatient = patientService.getPatient(1);
         assertEquals(2, savedPatient.getIdentifiers().size());
-        PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE);
         assertEquals(healthId.getIdentifier(), "11421467785");
 
         emrPatientService.createOrUpdateEmrPatient(patient);
 
         savedPatient = patientService.getPatient(1);
         assertEquals(2, savedPatient.getIdentifiers().size());
-        healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE);
         assertEquals(healthId.getIdentifier(), "11421467785");
 
     }

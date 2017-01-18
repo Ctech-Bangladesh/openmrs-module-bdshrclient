@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,18 +60,20 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
                 .andExpect(status().isOk())
                 .andReturn();
         String content = result.getResponse().getContentAsString();
-        HealthIdCard[] healthIdCards = new ObjectMapper().readValue(content, HealthIdCard[].class);
-        assertEquals(3, healthIdCards.length);
-        assertHealthIdCard(healthIdCards[0], "Male", "Sayed Azam", "22-10-1992",
+        Map[] healthIdCards = new ObjectMapper().readValue(content, Map[].class);
+        assertEquals(4, healthIdCards.length);
+        assertHealthIdCard(healthIdCards[0], "M", "Sayed Azam", "22-10-1992",
                 "22-10-2016", "HID1",
                 "lane 1, Kaliganj, Gazipur, Dhaka");
-        assertHealthIdCard(healthIdCards[1], "Transgender", "Farukh Engineer",
+        assertHealthIdCard(healthIdCards[1], "O", "Farukh Engineer",
                 "22-10-1993", "22-11-2016", "HID2",
                 "lane 1, ward-01, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
-        assertHealthIdCard(healthIdCards[2], "Female", "Babitha Chatterjee",
+        assertHealthIdCard(healthIdCards[2], "F", "Babitha Chatterjee",
                 "22-10-1992", "22-12-2016", "HID3",
                 "lane 1, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
-
+        assertHealthIdCard(healthIdCards[3], "F", "বাবিথা ছাত্তের্জী",
+                "22-10-1992", "22-12-2016", "HID4",
+                "lane 1, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
     }
 
     @Test
@@ -79,24 +83,26 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
                 .andExpect(status().isOk())
                 .andReturn();
         String content = result.getResponse().getContentAsString();
-        HealthIdCard[] healthIdCards = new ObjectMapper().readValue(content, HealthIdCard[].class);
+        Map[] healthIdCards = new ObjectMapper().readValue(content, Map[].class);
         assertEquals(2, healthIdCards.length);
-        assertHealthIdCard(healthIdCards[0], "Male", "Sayed Azam", "22-10-1992",
+        assertHealthIdCard(healthIdCards[0], "M", "Sayed Azam", "22-10-1992",
                 "22-10-2016", "HID1",
                 "lane 1, Kaliganj, Gazipur, Dhaka");
-        assertHealthIdCard(healthIdCards[1], "Transgender", "Farukh Engineer",
+        assertHealthIdCard(healthIdCards[1], "O", "Farukh Engineer",
                 "22-10-1993", "22-11-2016", "HID2",
                 "lane 1, ward-01, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
     }
 
-    private void assertHealthIdCard(HealthIdCard healthIdCard, String expectedGender, String expectedName,
+
+
+    private void assertHealthIdCard(Map healthIdCard, String expectedGender, String expectedName,
                                     String expectedDob, String expectedIssuedDate, String expectedHid,
                                     String expectedAddress) {
-        assertEquals(expectedGender, healthIdCard.getGender());
-        assertEquals(expectedName, healthIdCard.getName());
-        assertEquals(expectedDob, healthIdCard.getDob());
-        assertEquals(expectedIssuedDate, healthIdCard.getIssuedDate());
-        assertEquals(expectedHid, healthIdCard.getHid());
-        assertEquals(expectedAddress, healthIdCard.getAddress());
+        assertEquals(expectedGender, healthIdCard.get("gender"));
+        assertEquals(expectedName, healthIdCard.get("name"));
+        assertEquals(expectedDob, healthIdCard.get("dob"));
+        assertEquals(expectedIssuedDate, healthIdCard.get("issuedDate"));
+        assertEquals(expectedHid, healthIdCard.get("hid"));
+        assertEquals(expectedAddress, healthIdCard.get("address"));
     }
 }
