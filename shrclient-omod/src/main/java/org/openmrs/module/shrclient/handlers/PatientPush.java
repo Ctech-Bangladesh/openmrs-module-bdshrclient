@@ -26,8 +26,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_ATTRIBUTE;
-import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE_NAME;
+import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_ATTRIBUTE_TYPE;
+import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE;
 
 public class PatientPush implements EventWorker {
 
@@ -173,7 +173,7 @@ public class PatientPush implements EventWorker {
             return;
         }
 
-        PatientIdentifier healthIdIdentifier = openMrsPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        PatientIdentifier healthIdIdentifier = openMrsPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE);
         if (healthIdIdentifier != null && healthId.equals(healthIdIdentifier.getIdentifier())) {
             log.debug("OpenMRS patient health id is same as the health id provided. Hence, not updated.");
             saveOrUpdateIdMapping(openMrsPatient, healthId);
@@ -181,17 +181,16 @@ public class PatientPush implements EventWorker {
         }
 
         if (healthIdIdentifier == null) {
-            PatientIdentifierType identifierType = patientService.getPatientIdentifierTypeByName(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+            PatientIdentifierType identifierType = patientService.getPatientIdentifierTypeByName(HEALTH_ID_IDENTIFIER_TYPE);
             openMrsPatient.addIdentifier(new PatientIdentifier(healthId, identifierType, null));
-
         } else {
             healthIdIdentifier.setIdentifier(healthId);
         }
 
-        PersonAttribute healthIdAttribute = openMrsPatient.getAttribute(HEALTH_ID_ATTRIBUTE);
+        PersonAttribute healthIdAttribute = openMrsPatient.getAttribute(HEALTH_ID_ATTRIBUTE_TYPE);
         if (healthIdAttribute == null) {
             healthIdAttribute = new PersonAttribute();
-            PersonAttributeType healthAttrType = personService.getPersonAttributeTypeByName(HEALTH_ID_ATTRIBUTE);
+            PersonAttributeType healthAttrType = personService.getPersonAttributeTypeByName(HEALTH_ID_ATTRIBUTE_TYPE);
             healthIdAttribute.setAttributeType(healthAttrType);
             healthIdAttribute.setValue(healthId);
             openMrsPatient.addAttribute(healthIdAttribute);

@@ -29,8 +29,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_ATTRIBUTE;
-import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE_NAME;
+import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_ATTRIBUTE_TYPE;
+import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE;
 
 public class PatientPushTest {
 
@@ -108,11 +108,11 @@ public class PatientPushTest {
     public void shouldUpdateOpenMrsPatient_WhenNewHealthIdIsProvided() {
         final org.openmrs.Patient openMrsPatient = new org.openmrs.Patient();
         PersonAttributeType healthIdAttributeType = new PersonAttributeType();
-        healthIdAttributeType.setName(HEALTH_ID_ATTRIBUTE);
+        healthIdAttributeType.setName(HEALTH_ID_ATTRIBUTE_TYPE);
         Set<PersonAttribute> openMrsPatientAttributes = new HashSet<>();
         openMrsPatient.setAttributes(openMrsPatientAttributes);
 
-        when(personService.getPersonAttributeTypeByName(HEALTH_ID_ATTRIBUTE)).thenReturn(healthIdAttributeType);
+        when(personService.getPersonAttributeTypeByName(HEALTH_ID_ATTRIBUTE_TYPE)).thenReturn(healthIdAttributeType);
         patientPush.updateOpenMrsPatientHealthId(openMrsPatient, healthId);
         verify(patientService).savePatient(any(org.openmrs.Patient.class));
         verify(idMappingsRepository, times(1)).saveOrUpdateIdMapping(any(IdMapping.class));
@@ -207,7 +207,7 @@ public class PatientPushTest {
         PatientIdentifier healthId = new PatientIdentifier();
         healthId.setIdentifier(this.healthId);
         PatientIdentifierType identifierType = new PatientIdentifierType(12);
-        identifierType.setName(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+        identifierType.setName(HEALTH_ID_IDENTIFIER_TYPE);
         healthId.setIdentifierType(identifierType);
         return healthId;
     }

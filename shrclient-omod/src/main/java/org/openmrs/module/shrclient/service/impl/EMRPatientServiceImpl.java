@@ -91,29 +91,30 @@ public class EMRPatientServiceImpl implements EMRPatientService {
             }
             emrPatient.addAddress(addressHelper.setPersonAddress(mciPatient.getAddress()));
 
-            PatientIdentifierType identifierType = patientService.getPatientIdentifierTypeByName(HEALTH_ID_IDENTIFIER_TYPE_NAME);
+
+            PatientIdentifierType identifierType = patientService.getPatientIdentifierTypeByName(HEALTH_ID_IDENTIFIER_TYPE);
             PatientIdentifier patientIdentifier = emrPatient.getPatientIdentifier(identifierType);
             if (patientIdentifier == null) {
                 emrPatient.addIdentifier(new PatientIdentifier(mciPatient.getHealthId(), identifierType, null));
             }
 
-            addPersonAttribute(emrPatient, HEALTH_ID_ATTRIBUTE, mciPatient.getHealthId());
-            addPersonAttribute(emrPatient, NATIONAL_ID_ATTRIBUTE, mciPatient.getNationalId());
-            addPersonAttribute(emrPatient, BIRTH_REG_NO_ATTRIBUTE, mciPatient.getBirthRegNumber());
-            addPersonAttribute(emrPatient, HOUSE_HOLD_CODE_ATTRIBUTE, mciPatient.getHouseHoldCode());
+            addPersonAttribute(emrPatient, HEALTH_ID_ATTRIBUTE_TYPE, mciPatient.getHealthId());
+            addPersonAttribute(emrPatient, NATIONAL_ID_ATTRIBUTE_TYPE, mciPatient.getNationalId());
+            addPersonAttribute(emrPatient, BIRTH_REG_NO_ATTRIBUTE_TYPE, mciPatient.getBirthRegNumber());
+            addPersonAttribute(emrPatient, HOUSE_HOLD_CODE_ATTRIBUTE_TYPE, mciPatient.getHouseHoldCode());
             addPersonAttribute(emrPatient, ADDRESS_CODE_ATTRIBUTE_TYPE, mciPatient.getAddress().getAddressCode());
 
             String hidCardStatus = mciPatient.getHidCardStatus();
             hidCardStatus = HID_CARD_STATUS_ISSUED.equalsIgnoreCase(hidCardStatus) ? Boolean.TRUE.toString() : Boolean.FALSE.toString();
-            addPersonAttribute(emrPatient, HID_CARD_ISSUED_ATTRIBUTE, hidCardStatus);
+            addPersonAttribute(emrPatient, HID_CARD_ISSUED_ATTRIBUTE_TYPE, hidCardStatus);
 
             String banglaName = mciPatient.getBanglaName();
             if (StringUtils.isNotBlank(banglaName)) {
                 banglaName = banglaName.replaceAll(REGEX_TO_MATCH_MULTIPLE_WHITE_SPACE, " ");
             }
-            addPersonAttribute(emrPatient, GIVEN_NAME_LOCAL, getGivenNameLocal(banglaName));
-            addPersonAttribute(emrPatient, FAMILY_NAME_LOCAL, getFamilyNameLocal(banglaName));
-            addPersonAttribute(emrPatient, PHONE_NUMBER, PhoneNumberMapper.map(mciPatient.getPhoneNumber()));
+            addPersonAttribute(emrPatient, GIVEN_NAME_LOCAL_ATTRIBUTE_TYPE, getGivenNameLocal(banglaName));
+            addPersonAttribute(emrPatient, FAMILY_NAME_LOCAL_ATTRIBUTE_TYPE, getFamilyNameLocal(banglaName));
+            addPersonAttribute(emrPatient, PHONE_NUMBER_ATTRIBUTE_TYPE, PhoneNumberMapper.map(mciPatient.getPhoneNumber()));
 
             mapRelations(emrPatient, mciPatient);
             setOccupation(mciPatient, emrPatient);
@@ -141,7 +142,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
     private void setEducation(Patient mciPatient, org.openmrs.Patient emrPatient) {
         String educationLevel = mciPatient.getEducationLevel();
         if (StringUtils.isBlank(educationLevel)) {
-            PersonAttribute educationAttribute = emrPatient.getAttribute(EDUCATION_ATTRIBUTE);
+            PersonAttribute educationAttribute = emrPatient.getAttribute(EDUCATION_ATTRIBUTE_TYPE);
             if (null != educationAttribute) {
                 emrPatient.removeAttribute(educationAttribute);
             }
@@ -150,7 +151,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
         String educationConceptName = bbsCodeService.getEducationConceptName(educationLevel);
         String educationConceptId = getConceptId(educationConceptName);
         if (educationConceptId != null) {
-            addPersonAttribute(emrPatient, EDUCATION_ATTRIBUTE, educationConceptId);
+            addPersonAttribute(emrPatient, EDUCATION_ATTRIBUTE_TYPE, educationConceptId);
         } else {
             logger.warn(String.format("Can't update education for patient. " +
                             "Can't identify relevant concept for patient hid:%s, education:%s, code:%s",
@@ -161,7 +162,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
     private void setOccupation(Patient mciPatient, org.openmrs.Patient emrPatient) {
         String occupation = mciPatient.getOccupation();
         if (StringUtils.isBlank(occupation)) {
-            PersonAttribute occupationAttribute = emrPatient.getAttribute(OCCUPATION_ATTRIBUTE);
+            PersonAttribute occupationAttribute = emrPatient.getAttribute(OCCUPATION_ATTRIBUTE_TYPE);
             if (null != occupationAttribute) {
                 emrPatient.removeAttribute(occupationAttribute);
             }
@@ -170,7 +171,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
         String occupationConceptName = bbsCodeService.getOccupationConceptName(occupation);
         String occupationConceptId = getConceptId(occupationConceptName);
         if (occupationConceptId != null) {
-            addPersonAttribute(emrPatient, OCCUPATION_ATTRIBUTE, occupationConceptId);
+            addPersonAttribute(emrPatient, OCCUPATION_ATTRIBUTE_TYPE, occupationConceptId);
         } else {
             logger.warn(String.format("Can't update occupation for patient. " +
                             "Can't identify relevant concept for patient hid:%s, occupation:%s, code:%s",

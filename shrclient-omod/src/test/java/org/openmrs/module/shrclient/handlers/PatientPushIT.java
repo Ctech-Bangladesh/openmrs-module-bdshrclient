@@ -130,8 +130,8 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(3, relations.length);
 
         org.openmrs.Patient patient = patientService.getPatient(11);
-        assertEquals("hid-1", patient.getPatientIdentifier(OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE_NAME).getIdentifier());
-        assertEquals("hid-1", patient.getAttribute(OpenMRSConstants.HEALTH_ID_ATTRIBUTE).getValue());
+        assertEquals("hid-1", patient.getPatientIdentifier(OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE).getIdentifier());
+        assertEquals("hid-1", patient.getAttribute(OpenMRSConstants.HEALTH_ID_ATTRIBUTE_TYPE).getValue());
     }
 
     @Test
@@ -176,8 +176,8 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(date, pushedPatient.getDateOfBirth());
 
         org.openmrs.Patient patient = patientService.getPatient(11);
-        assertEquals("hid-1", patient.getPatientIdentifier(OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE_NAME).getIdentifier());
-        assertEquals("hid-1", patient.getAttribute(OpenMRSConstants.HEALTH_ID_ATTRIBUTE).getValue());
+        assertEquals("hid-1", patient.getPatientIdentifier(OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE).getIdentifier());
+        assertEquals("hid-1", patient.getAttribute(OpenMRSConstants.HEALTH_ID_ATTRIBUTE_TYPE).getValue());
 
     }
 
