@@ -1248,4 +1248,21 @@
             <column name="created_at" type="datetime" defaultValueComputed="now()"></column>
         </createTable>
     </changeSet>
+    <changeSet id="bdshrclient-20170120-1449" author="Dubey/Abhilash" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="address_hierarchy_entry_translation"></tableExists>
+            </not>
+        </preConditions>
+        <comment>A table to store address translations in local language</comment>
+        <createTable tableName="address_hierarchy_entry_translation">
+            <column name="address_hierarchy_entry_id" type="int(11)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="local_name" type="varchar(160)"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="address_hierarchy_entry_translation" baseColumnNames="address_hierarchy_entry_id"
+                                 constraintName="fk_address_hierarchy_entry_translation" referencedTableName="address_hierarchy_entry"
+                                 referencedColumnNames="address_hierarchy_entry_id"/>
+    </changeSet>
 </databaseChangeLog>

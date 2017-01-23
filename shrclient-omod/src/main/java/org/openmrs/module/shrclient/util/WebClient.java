@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -121,7 +122,7 @@ public class WebClient {
     }
 
     private String parseContentInputAsString(HttpEntity entity) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent(), StandardCharsets.UTF_8));
         String inputLine;
         StringBuilder responseString = new StringBuilder();
         while ((inputLine = reader.readLine()) != null) {
