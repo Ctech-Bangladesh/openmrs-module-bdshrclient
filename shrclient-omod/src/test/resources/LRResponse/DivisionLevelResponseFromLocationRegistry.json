@@ -3,6 +3,7 @@
         "code": "30",
         "id": "30",
         "name": "Dhaka",
+        "name_BN":"ঢাকা",
         "type": "division",
         "active": 1,
         "hierarchy": [
@@ -17,6 +18,7 @@
         "code": "20",
         "id": "20",
         "name": "Chittagong",
+        "name_BN": "চট্টগ্রাম",
         "type": "division",
         "active": 1,
         "hierarchy": [

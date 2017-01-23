@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <address_hierarchy_level address_hierarchy_level_id="1" name="Division" address_field="STATE_PROVINCE"
+                             uuid="7cb74fd1-128d-4584-4qfg-11d3av12a3a6" required="1"/>
+    <address_hierarchy_level address_hierarchy_level_id="2" name="Zilla" parent_level_id="1"
+                             address_field="COUNTY_DISTRICT" uuid="7cb74fd1-128d-4584-4qfg-11d3av12a1a6" required="1"/>
+    <address_hierarchy_level address_hierarchy_level_id="3" name="Upazilla" parent_level_id="2"
+                             address_field="ADDRESS_5" uuid="7cb74fd1-128d-4584-4qfg-1uy6av12a1a6" required="1"/>
+    <address_hierarchy_level address_hierarchy_level_id="4" name="Paurasava" parent_level_id="3"
+                             address_field="ADDRESS_4" uuid="7cb74fd1-128d-4584-4qfg-11d3av12aop6" required="0"/>
+    <address_hierarchy_level address_hierarchy_level_id="5" name="Ward/Union" parent_level_id="4"
+                             address_field="ADDRESS_3" uuid="7cb74fd1-128d-4584-4qfg-11d3av12ao06" required="0"/>
+    <address_hierarchy_level address_hierarchy_level_id="6" name="Rural Ward" parent_level_id="5"
+                             address_field="ADDRESS_2" uuid="7cb74fd1-128d-4ft4-4qfg-11d3av12a1a6" required="0"/>
+    <address_hierarchy_level address_hierarchy_level_id="7" name="Address Line" parent_level_id="6"
+                             address_field="ADDRESS_1" uuid="7cb74fd1-128d-4584-4ql8-11d3av12a1a6" required="1"/>
+
+</dataset>

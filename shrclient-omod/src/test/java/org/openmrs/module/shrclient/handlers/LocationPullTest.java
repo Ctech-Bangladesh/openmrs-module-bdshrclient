@@ -7,7 +7,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.module.addresshierarchy.service.AddressHierarchyService;
 import org.openmrs.module.fhir.utils.PropertyKeyConstants;
+import org.openmrs.module.shrclient.dao.AddressHierarchyEntryTranslationRepository;
 import org.openmrs.module.shrclient.mapper.AddressHierarchyEntryMapper;
+import org.openmrs.module.shrclient.model.AddressHierarchyEntryTranslation;
 import org.openmrs.module.shrclient.model.LRAddressHierarchyEntry;
 import org.openmrs.module.shrclient.util.PropertiesReader;
 import org.openmrs.module.shrclient.util.RestClient;
@@ -19,16 +21,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Properties;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.openmrs.module.shrclient.handlers.LocationPull.*;
-import static org.openmrs.module.shrclient.handlers.LocationPull.LR_DISTRICTS_LEVEL_FEED_URI;
-import static org.openmrs.module.shrclient.handlers.LocationPull.LR_DIVISIONS_LEVEL_FEED_URI;
-import static org.openmrs.module.shrclient.handlers.LocationPull.LR_PAURASAVAS_LEVEL_FEED_URI;
-import static org.openmrs.module.shrclient.handlers.LocationPull.LR_UNIONS_LEVEL_FEED_URI;
-import static org.openmrs.module.shrclient.handlers.LocationPull.LR_UPAZILAS_LEVEL_FEED_URI;
 
 public class LocationPullTest {
 
@@ -53,6 +48,9 @@ public class LocationPullTest {
 
     @Mock
     AddressHierarchyEntryMapper addressHierarchyEntryMapper;
+
+    @Mock
+    AddressHierarchyEntryTranslationRepository addressHierarchyEntryTranslationRepository;
 
     LRAddressHierarchyEntry[] lrAddressHierarchyEntriesForDivisions;
     LRAddressHierarchyEntry[] lrAddressHierarchyEntriesForDistricts;
@@ -122,7 +120,7 @@ public class LocationPullTest {
         String lastReadEntryIdForUnion = "1004099913";
         String lastReadEntryIdForWard = "100409991501";
 
-        LocationPull locationPull = new LocationPull(propertiesReader, lrWebClient, addressHierarchyService, scheduledTaskHistory, addressHierarchyEntryMapper);
+        LocationPull locationPull = new LocationPull(propertiesReader, lrWebClient, addressHierarchyService, scheduledTaskHistory, addressHierarchyEntryMapper, addressHierarchyEntryTranslationRepository);
         locationPull.synchronize();
 
         verify(scheduledTaskHistory, times(1)).getFeedUriForLastReadEntryByFeedUri(LR_DIVISIONS_LEVEL_FEED_URI);
@@ -181,7 +179,7 @@ public class LocationPullTest {
         when(lrWebClient.get(unionContextPath.replace(SINGLE_SPACE, ENCODED_SINGLE_SPACE), LRAddressHierarchyEntry[].class)).thenReturn(new LRAddressHierarchyEntry[]{});
         when(lrWebClient.get(wardContextPath.replace(SINGLE_SPACE, ENCODED_SINGLE_SPACE), LRAddressHierarchyEntry[].class)).thenReturn(new LRAddressHierarchyEntry[]{});
 
-        LocationPull locationPull = new LocationPull(propertiesReader, lrWebClient, addressHierarchyService, scheduledTaskHistory, addressHierarchyEntryMapper);
+        LocationPull locationPull = new LocationPull(propertiesReader, lrWebClient, addressHierarchyService, scheduledTaskHistory, addressHierarchyEntryMapper, addressHierarchyEntryTranslationRepository);
         locationPull.synchronize();
 
         verify(scheduledTaskHistory, times(1)).getFeedUriForLastReadEntryByFeedUri(LR_DIVISIONS_LEVEL_FEED_URI);

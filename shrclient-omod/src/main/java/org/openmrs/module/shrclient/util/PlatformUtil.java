@@ -2,6 +2,7 @@ package org.openmrs.module.shrclient.util;
 
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.shrclient.dao.AddressHierarchyEntryTranslationRepository;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.dao.FacilityCatchmentRepository;
 import org.openmrs.module.shrclient.identity.IdentityStore;
@@ -23,6 +24,10 @@ public class PlatformUtil {
 
     public static PropertiesReader getPropertiesReader() {
         return getRegisteredComponent(PropertiesReader.class);
+    }
+
+    public static AddressHierarchyEntryTranslationRepository getAddressHierarchyEntryTranslationRepository() {
+        return getRegisteredComponent(AddressHierarchyEntryTranslationRepository.class);
     }
 
     public static IdMappingRepository getIdMappingsRepository() {

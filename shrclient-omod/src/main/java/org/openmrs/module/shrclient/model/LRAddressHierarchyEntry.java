@@ -30,6 +30,10 @@ public class LRAddressHierarchyEntry {
     @JsonInclude(NON_EMPTY)
     private String active;
 
+    @JsonProperty("name_BN")
+    @JsonInclude(NON_EMPTY)
+    private String localName;
+
     public String getShortLocationCode() {
         return shortLocationCode;
     }
@@ -78,6 +82,7 @@ public class LRAddressHierarchyEntry {
         sb.append(", locationName='").append(locationName).append('\'');
         sb.append(", locationLevelName='").append(locationLevelName).append('\'');
         sb.append(", active='").append(active).append('\'');
+        sb.append(", name_BN='").append(localName).append('\'');
         sb.append('}');
         return sb.toString();
     }
@@ -106,5 +111,13 @@ public class LRAddressHierarchyEntry {
         result = 31 * result + locationLevelName.hashCode();
         result = 31 * result + (active != null ? active.hashCode() : 0);
         return result;
+    }
+
+    public String getLocalName() {
+        return localName;
+    }
+
+    public String setLocalName() {
+        return localName;
     }
 }

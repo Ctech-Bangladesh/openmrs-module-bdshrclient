@@ -5,7 +5,9 @@ import org.apache.log4j.Logger;
 import org.openmrs.module.addresshierarchy.AddressHierarchyEntry;
 import org.openmrs.module.addresshierarchy.service.AddressHierarchyService;
 import org.openmrs.module.fhir.utils.DateUtil;
+import org.openmrs.module.shrclient.dao.AddressHierarchyEntryTranslationRepository;
 import org.openmrs.module.shrclient.mapper.AddressHierarchyEntryMapper;
+import org.openmrs.module.shrclient.model.AddressHierarchyEntryTranslation;
 import org.openmrs.module.shrclient.model.LRAddressHierarchyEntry;
 import org.openmrs.module.shrclient.util.PropertiesReader;
 import org.openmrs.module.shrclient.util.RestClient;
@@ -50,16 +52,18 @@ public class LocationPull {
     private AddressHierarchyService addressHierarchyService;
     private RestClient lrWebClient;
     private PropertiesReader propertiesReader;
+    private AddressHierarchyEntryTranslationRepository entryTranslationRepository;
     private List<String> failedDuringSaveOrUpdateOperation;
     private int noOfEntriesSynchronizedSoFar;
 
     public LocationPull(PropertiesReader propertiesReader, RestClient lrWebClient, AddressHierarchyService addressHierarchyService,
-                        ScheduledTaskHistory scheduledTaskHistory, AddressHierarchyEntryMapper addressHierarchyEntryMapper) {
+                        ScheduledTaskHistory scheduledTaskHistory, AddressHierarchyEntryMapper addressHierarchyEntryMapper, AddressHierarchyEntryTranslationRepository entryTranslationRepository) {
         this.lrWebClient = lrWebClient;
         this.propertiesReader = propertiesReader;
         this.scheduledTaskHistory = scheduledTaskHistory;
         this.addressHierarchyEntryMapper = addressHierarchyEntryMapper;
         this.addressHierarchyService = addressHierarchyService;
+        this.entryTranslationRepository = entryTranslationRepository;
         this.failedDuringSaveOrUpdateOperation = new ArrayList<>();
     }
 
@@ -180,10 +184,19 @@ public class LocationPull {
             try {
                 if (addressHierarchyEntry.getId() == null) {
                     logger.info("Saving Address Hierarchy Entry to Local DB : \n" + addressHierarchyEntry.toString());
+                    addressHierarchyService.saveAddressHierarchyEntry(addressHierarchyEntry);
+                    AddressHierarchyEntry addressHierarchyEntrySaved = addressHierarchyService.getAddressHierarchyEntryByUserGenId(addressHierarchyEntry.getUserGeneratedId());
+                    if (StringUtils.isNotBlank(lrAddressHierarchyEntry.getLocalName())) {
+                        entryTranslationRepository.save(new AddressHierarchyEntryTranslation(addressHierarchyEntrySaved.getId(), lrAddressHierarchyEntry.getLocalName()));
+                    }
                 } else {
                     logger.info("Updating Address Hierarchy Entry to Local Db : " + addressHierarchyEntry.toString());
+                    addressHierarchyService.saveAddressHierarchyEntry(addressHierarchyEntry);
+                    if (StringUtils.isNotBlank(lrAddressHierarchyEntry.getLocalName())) {
+                        entryTranslationRepository.save(new AddressHierarchyEntryTranslation(addressHierarchyEntry.getId(), lrAddressHierarchyEntry.getLocalName()));
+                    }
                 }
-                addressHierarchyService.saveAddressHierarchyEntry(addressHierarchyEntry);
+
             } catch (Exception e) {
                 logger.error("Error during Save Or Update to Local Db : " + e.toString());
                 failedDuringSaveOrUpdateOperation.add(lrAddressHierarchyEntry.toString());
