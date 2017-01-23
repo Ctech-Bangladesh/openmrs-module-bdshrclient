@@ -21,9 +21,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Set;
 
-import static org.openmrs.module.fhir.OpenMRSConstants.MISC_CONCEPT_CLASS_NAME;
-import static org.openmrs.module.fhir.OpenMRSConstants.TEXT_CONCEPT_DATATYPE_NAME;
-
 
 @Component
 public class FHIRDiagnosticReportMapper implements FHIRResourceMapper {
@@ -59,8 +56,8 @@ public class FHIRDiagnosticReportMapper implements FHIRResourceMapper {
         Concept topLevelObsConcept = conceptService.getConceptByName(getFulfillmentFormConceptName(report));
         if (null == topLevelObsConcept) {
             String facilityId = FHIREncounterUtil.getFacilityId(shrEncounterBundle.getBundle());
-            ConceptClass miscClass = conceptService.getConceptClassByName(MISC_CONCEPT_CLASS_NAME);
-            ConceptDatatype textDataType = conceptService.getConceptDatatypeByName(TEXT_CONCEPT_DATATYPE_NAME);
+            ConceptClass miscClass = conceptService.getConceptClassByUuid(ConceptClass.MISC_UUID);
+            ConceptDatatype textDataType = conceptService.getConceptDatatypeByUuid(ConceptDatatype.TEXT_UUID);
             topLevelObsConcept = omrsConceptLookup.createLocalConceptFromCodings(report.getCategory().getCoding(), facilityId, miscClass, textDataType);
         }
         fulfillmentObs.setConcept(topLevelObsConcept);

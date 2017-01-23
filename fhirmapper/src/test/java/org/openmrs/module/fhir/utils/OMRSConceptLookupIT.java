@@ -8,6 +8,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openmrs.Concept;
+import org.openmrs.ConceptClass;
+import org.openmrs.ConceptDatatype;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -18,8 +20,6 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
-import static org.openmrs.module.fhir.OpenMRSConstants.MISC_CONCEPT_CLASS_NAME;
-import static org.openmrs.module.fhir.OpenMRSConstants.TEXT_CONCEPT_DATATYPE_NAME;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -71,7 +71,7 @@ public class OMRSConceptLookupIT extends BaseModuleWebContextSensitiveTest {
     public void shouldFindConceptFromCodingThatHasReferenceTermsWithoutAnyMatchingConceptPreferredName() {
         List<CodingDt> codings = asList(buildCoding(REF_TERM_URI, "1101", "A001", "xyz concept"),
                 buildCoding(REF_TERM_URI, "1102", "B001", "pqr concept"));
-        Concept concept = omrsConceptLookup.findOrCreateLocalConceptByCodings(codings, "101", MISC_CONCEPT_CLASS_NAME, TEXT_CONCEPT_DATATYPE_NAME);
+        Concept concept = omrsConceptLookup.findOrCreateLocalConceptByCodings(codings, "101", ConceptClass.MISC_UUID, ConceptDatatype.TEXT_UUID);
         assertNotNull(concept);
         assertTrue(concept.getName().getName().startsWith("xyz concept") || concept.getName().getName().startsWith("pqr concept"));
     }

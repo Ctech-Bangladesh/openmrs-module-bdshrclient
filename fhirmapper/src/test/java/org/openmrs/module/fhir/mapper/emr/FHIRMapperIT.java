@@ -24,7 +24,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.openmrs.module.fhir.MRSProperties.UNVERIFIED_BY_TR;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
-import static org.openmrs.module.fhir.OpenMRSConstants.MISC_CONCEPT_CLASS_NAME;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -281,7 +280,7 @@ public class FHIRMapperIT extends BaseModuleWebContextSensitiveTest {
         assertNotNull(concept);
         assertEquals(expectedShortName + UNVERIFIED_BY_TR, concept.getFullySpecifiedName(Locale.ENGLISH).getName());
         assertEquals("DLN-H10018686", concept.getVersion());
-        assertEquals(concept.getConceptClass(), conceptService.getConceptClassByName(MISC_CONCEPT_CLASS_NAME));
+        assertEquals(concept.getConceptClass(), conceptService.getConceptClassByUuid(ConceptClass.MISC_UUID));
         assertTrue(concept.getDatatype().isText());
     }
 

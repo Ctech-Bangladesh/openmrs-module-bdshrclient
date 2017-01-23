@@ -28,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static org.openmrs.module.fhir.MRSProperties.*;
-import static org.openmrs.module.fhir.OpenMRSConstants.NA_CONCEPT_DATATYPE_NAME;
-import static org.openmrs.module.fhir.OpenMRSConstants.PROCEDURE_CONCEPT_CLASS_NAME;
 
 @Component
 public class FHIRProcedureMapper implements FHIRResourceMapper {
@@ -179,7 +177,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     private Obs getProcedureType(Procedure procedure, Order procedureOrder, String facilityId) {
         CodeableConceptDt procedureType = procedure.getCode();
         Concept concept = conceptService.getConceptByName(MRS_CONCEPT_PROCEDURE_TYPE);
-        Concept answerConcept = omrsConceptLookup.findOrCreateLocalConceptByCodings(procedureType.getCoding(), facilityId, PROCEDURE_CONCEPT_CLASS_NAME, NA_CONCEPT_DATATYPE_NAME);
+        Concept answerConcept = omrsConceptLookup.findOrCreateLocalConceptByCodings(procedureType.getCoding(), facilityId, ConceptClass.PROCEDURE_UUID, ConceptDatatype.N_A_UUID);
         if (concept != null && answerConcept != null) {
             Obs obs = new Obs();
             obs.setConcept(concept);

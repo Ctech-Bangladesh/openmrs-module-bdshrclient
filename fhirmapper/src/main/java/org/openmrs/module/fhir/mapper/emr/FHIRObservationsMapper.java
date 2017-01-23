@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 
 import static org.openmrs.module.fhir.MRSProperties.LOCAL_CONCEPT_VERSION_PREFIX;
-import static org.openmrs.module.fhir.OpenMRSConstants.MISC_CONCEPT_CLASS_NAME;
-import static org.openmrs.module.fhir.OpenMRSConstants.TEXT_CONCEPT_DATATYPE_NAME;
 import static org.openmrs.module.fhir.utils.FHIRBundleHelper.findResourceByReference;
 
 @Component
@@ -92,6 +90,6 @@ public class FHIRObservationsMapper implements FHIRResourceMapper {
         if (observationName.getCoding() != null && observationName.getCoding().isEmpty()) {
             return null;
         }
-        return omrsConceptLookup.findOrCreateLocalConceptByCodings(observationName.getCoding(), facilityId, MISC_CONCEPT_CLASS_NAME, TEXT_CONCEPT_DATATYPE_NAME);
+        return omrsConceptLookup.findOrCreateLocalConceptByCodings(observationName.getCoding(), facilityId, ConceptClass.MISC_UUID, ConceptDatatype.TEXT_UUID);
     }
 }
