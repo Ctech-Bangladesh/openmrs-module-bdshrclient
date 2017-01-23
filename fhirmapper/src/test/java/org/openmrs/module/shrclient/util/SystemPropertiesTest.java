@@ -6,9 +6,12 @@ import org.openmrs.module.fhir.utils.PropertyKeyConstants;
 import java.util.HashMap;
 import java.util.Properties;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.openmrs.module.fhir.utils.PropertyKeyConstants.*;
+import static org.openmrs.module.fhir.utils.PropertyKeyConstants.FACILITY_ID;
+import static org.openmrs.module.fhir.utils.PropertyKeyConstants.FACILITY_REFERENCE_PATH;
+import static org.openmrs.module.fhir.utils.PropertyKeyConstants.FACILITY_URL_FORMAT;
 
 public class SystemPropertiesTest {
     @Test
@@ -16,7 +19,7 @@ public class SystemPropertiesTest {
         Properties instanceProperties = new Properties();
         instanceProperties.setProperty(FACILITY_ID, "foo");
         SystemProperties systemProperties = new SystemProperties(new Properties(), new Properties(), new Properties(), instanceProperties, null, new Properties());
-        assertThat(systemProperties.getFacilityId(), is("foo"));
+        assertThat(systemProperties.getFacilityId(), is(equalTo("foo")));
     }
 
 
@@ -48,8 +51,8 @@ public class SystemPropertiesTest {
         baseUrls.put("mci", "https://mci.com");
         baseUrls.put("fr", "https://fr.com");
         SystemProperties systemProperties = new SystemProperties(frProperties, new Properties(), new Properties(), new Properties(),mciProperties, new Properties());
-        assertThat(systemProperties.getMciPatientUrl(), is("https://mci.com/api/default/patients"));
-        assertThat(systemProperties.getFacilityResourcePath(), is("https://fr.com"));
+        assertThat(systemProperties.getMciPatientUrl(), is(equalTo("https://mci.com/api/default/patients")));
+        assertThat(systemProperties.getFacilityResourcePath(), is(equalTo("https://fr.com")));
     }
 
     @Test
@@ -62,7 +65,7 @@ public class SystemPropertiesTest {
         HashMap<String, String> baseUrls = new HashMap<>();
         baseUrls.put("tr", "http://172.18.46.56:9080");
         SystemProperties systemProperties = new SystemProperties(new Properties(), trProperties, new Properties(), new Properties(),null, new Properties());
-        assertThat(systemProperties.getTrValuesetUrl(PropertyKeyConstants.TR_VALUESET_ROUTE), is("http://172.18.46.56:9080/openmrs/ws/rest/v1/tr/vs/Route-of-Administration"));
-        assertThat(systemProperties.getTrValuesetUrl(PropertyKeyConstants.TR_VALUESET_QUANTITY_UNITS), is("http://172.18.46.56:9080/openmrs/ws/rest/v1/tr/vs/Quantity-Units"));
+        assertThat(systemProperties.getTrValuesetUrl(PropertyKeyConstants.TR_VALUESET_ROUTE), is(equalTo("http://172.18.46.56:9080/openmrs/ws/rest/v1/tr/vs/Route-of-Administration")));
+        assertThat(systemProperties.getTrValuesetUrl(PropertyKeyConstants.TR_VALUESET_QUANTITY_UNITS), is(equalTo("http://172.18.46.56:9080/openmrs/ws/rest/v1/tr/vs/Quantity-Units")));
     }
 }

@@ -57,13 +57,16 @@ public class ObservationValueMapperTest extends BaseModuleWebContextSensitiveTes
     @Test
     public void shouldMapNumericValues() throws Exception {
         Obs obs = new Obs();
-        ConceptNumeric concept = new ConceptNumeric(123);
-        String units = "Kg";
-        concept.setUnits(units);
+        Concept concept = new Concept(123);
+        concept.setConceptClass(conceptService.getConceptClassByName("Misc"));
         concept.setDatatype(conceptService.getConceptDatatypeByName("Numeric"));
         concept.setFullySpecifiedName(new ConceptName("Test Concept", Locale.ENGLISH));
+        ConceptNumeric conceptNumeric = new ConceptNumeric(concept);
+        String units = "Kg";
+        conceptNumeric.setUnits(units);
         conceptService.saveConcept(concept);
-        obs.setConcept(concept);
+        conceptService.saveConcept(conceptNumeric);
+        obs.setConcept(conceptNumeric);
         double valueNumeric = 10.0;
         obs.setValueNumeric(valueNumeric);
         IDatatype value = observationValueMapper.map(obs);
