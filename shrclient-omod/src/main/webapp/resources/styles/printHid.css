@@ -42,55 +42,88 @@ select.user {
 
 #printArea {
     display: none;
+    font-family: Helvetica, Arial SansSerif;
+
+}
+.print_wrap{
+    margin:0 auto;
+}
+
+.healthId_body{
+    padding: 5px 10px 5px 10px;
 }
 
 .healthId {
     border-style: solid;
-    width: 460px;
-    height:260px;
-    margin: 3.5px;
+    width: 8.5cm;
+    height: 5.3cm;
+    margin: 0.5cm;
     display: inline-block;
-    font-weight: bold;
-    font-size: 15px;
+    font-size: 10px;
+    border-color: #afafaf;
+    border-width: medium;
 }
 
-.patient_details{
-    height: 170px;
+.heading{
+    height : 26px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+#bdgov , #hidCard {
+    padding-left: 31px;
 }
 
 .details_1{
-    height:90px;
-}
-
-.hid_details{
-    height: 100px;
-    text-align: center;
+    padding-top: 15px;
 }
 
 .healthId img {
-    margin: 0 0 0 5px;
     float: left;
-    width:120px;
-    height:90px;
+    width:26px;
+    height:26px;
 }
 
-.healthId  label {
-    margin: 2px;
+.name{
+    display: block;
 }
 
- .name,.issued{
-    display:block
-}
-
-.dob{
-    float:right;
-    margin: 0 10px 0 0 !important
-}
-
-.healthId .address, .address_value{
+.issued,.dob, .gender, .hid{
     display: inline-block;
-    height: auto;
+    padding-top: 10px;
 }
+
+.gender,.issued{
+    float: right;
+}
+.address_details{
+    padding-top: 10px;
+    font-size: 9px;
+    line-height: 10px;
+    height: 25px;
+}
+
+.hid_footer{
+    background-color: lightgrey;
+}
+
+/*.healthId  label {*/
+    /*margin: 2px;*/
+/*}*/
+
+ /*.name,.issued{*/
+    /*display:block*/
+/*}*/
+
+/*.dob{*/
+    /*float:right;*/
+    /*margin: 0 10px 0 0 !important*/
+/*}*/
+
+/*.healthId .address, .address_value{*/
+    /*display: inline-block;*/
+    /*height: auto;*/
+/*}*/
 
 .errorMessage {
     padding: 2px 4px;
@@ -114,23 +147,52 @@ select.user {
     font-weight: bold;
 }
 
-.address_details{
-    margin:0 0 0 10px;
-}
+/*.address_details{*/
+    /*margin:0 0 0 10px;*/
+/*}*/
 
-.address_details .address{
-    float: left;
-    width: 80px;
-    display: inline;
-}
+/*.address_details .address{*/
+    /*float: left;*/
+    /*width: 80px;*/
+    /*display: inline;*/
+/*}*/
 
-.address_details .value{
-    width: 370px;
-    float:right;
-}
+/*.address_details .value{*/
+    /*width: 370px;*/
+    /*float:right;*/
+/*}*/
+
+@charset "UTF-8";
 
 @media print {
     #content > :not(#printArea) {
         display: none !important;
     }
+    @page {
+        margin-left: 0.2cm;
+        margin-right: 0.2cm;
+        margin-top: 0.5cm;
+        margin-bottom: 0.5cm;
+    }
+    .healthId {
+        border-style: solid;
+        width: 8.5cm;
+        height:5.3cm;
+        margin:10px;
+        display: inline-block;
+        font-size: 10px;
+        box-sizing: border-box;
+    }
+}
+
+.disclaimer{
+    font-size: 8px;
+    line-height: 10px;
+    padding-top: 2px;
+    text-align: center;
+}
+
+.barcode{
+    height: 25px !important;
+    width: 300px !important;
 }

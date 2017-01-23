@@ -160,9 +160,9 @@
                         if (gender == "M") {
                             return '&#2474;&#2497;&#2480;&#2497;&#2487;'
                         } else if (gender == "F") {
-                            return '&#2478;&#2489;&#2495;&#2482;&#2494;'
+                            return '&#2488;&#2509;&#2468;&#2509;&#2480;&#2496;'
                         } else if (gender == "O") {
-                            return '&#2489;&#2495;&#2460;&#2465;&#2492;&#2494;&#2470;&#2503;&#2480;'
+                            return '&#2489;&#2495;&#2460;&#2465;&#2492;&#2494;'
                         }
                     }
                 };
@@ -208,35 +208,50 @@
         <div id="info"></div>
 
         <div id="printArea">
-            {{#cards}}
-            <div class="healthId">
-                <div class="patient_details">
-                    <img src="${ui.resourceLink("shrclient", "images/gov_logo.jpg")}" alt="dhis_logo"/>
+            <div class="print_wrap">
+                {{#cards}}
+                <div class="healthId">
+                    <div class="healthId_body">
 
-                    <div class="details_1">
-                        <label class="name">&#2472;&#2494;&#2478;: {{name}}</label>
-                        <label class="gender">&#2482;&#2495;&#2457;&#2509;&#2455;: {{#getGenderInBangla}}{{gender}}{{/getGenderInBangla}}</label>
-                        <label class="dob">&#2460;&#2472;&#2509;&#2478; &#2468;&#2494;&#2480;&#2495;&#2454;: {{#convertDigitToBangla}}{{dob}}{{/convertDigitToBangla}}</label>
-                        <label class="issued">&#2474;&#2509;&#2480;&#2470;&#2494;&#2472;&#2503;&#2480; &#2468;&#2494;&#2480;&#2495;&#2454;: {{#convertDigitToBangla}}{{issuedDate}}{{/convertDigitToBangla}}</label>
+                        <div class="heading">
+                            <img src="${ui.resourceLink("shrclient", "images/gov_logo.jpg")}" alt="dhis_logo"/>
+
+                            <div id="bdgov">&#2455;&#2467;&#2474;&#2509;&#2480;&#2460;&#2494;&#2468;&#2472;&#2509;&#2468;&#2509;&#2480;&#2496;&#32;&#2476;&#2494;&#2434;&#2482;&#2494;&#2470;&#2503;&#2486;&#32;&#2488;&#2480;&#2453;&#2494;&#2480;&#44;&#32;&#2488;&#2509;&#2476;&#2494;&#2488;&#2509;&#2469;&#2509;&#2479;&#32;&#2451;&#32;&#2474;&#2480;&#2495;&#2476;&#2494;&#2480;&#32;&#2453;&#2482;&#2509;&#2479;&#2494;&#2467;&#32;&#2478;&#2472;&#2509;&#2468;&#2509;&#2480;&#2467;&#2494;&#2482;&#2527;</div>
+
+                            <div id="hidCard">Health ID card</div>
+                        </div>
+
+                        <div class="patient_details">
+                            <div class="details_1">
+                                <label class="name">&#2472;&#2494;&#2478;: <b>{{name}}</b></label>
+                                <label class="hid">Health Identifier number: <b>{{#convertDigitToBangla}}{{hid}}{{/convertDigitToBangla}}</b>
+                                </label>
+                                <label class="gender">&#2482;&#2495;&#2457;&#2509;&#2455;: <b>{{#getGenderInBangla}}{{gender}}{{/getGenderInBangla}}</b>
+                                </label>
+                                <label class="dob">&#2460;&#2472;&#2509;&#2478; &#2468;&#2494;&#2480;&#2495;&#2454;: <b>{{#convertDigitToBangla}}{{dob}}{{/convertDigitToBangla}}</b>
+                                </label>
+                                <label class="issued">&#2474;&#2509;&#2480;&#2470;&#2494;&#2472;&#2503;&#2480; &#2468;&#2494;&#2480;&#2495;&#2454;: <b>{{#convertDigitToBangla}}{{issuedDate}}{{/convertDigitToBangla}}</b>
+                                </label>
+                            </div>
+
+                            <div class="address_details">
+                                <div class="address">&#2464;&#2495;&#2453;&#2494;&#2472;&#2494;: {{address}}</div>
+                            </div>
+
+                        </div>
                     </div>
 
-                    <div class="address_details">
-                        <div class="address">Address:</div>
+                    <div class="hid_footer">
+                        <div class="hid_barcode">
+                            <svg class="barcode" jsbarcode-height="35px" jsbarcode-format="CODE39"
+                                 jsbarcode-value="{{hid}}" jsbarcode-displayValue="false" jsbarcode-background="lightgrey"/>
+                        </div>
 
-                        <div class="value">{{address}}</div>
+                        <div class="disclaimer">&#2447;&#2439;&#32;&#2453;&#2494;&#2480;&#2509;&#2465;&#32;&#2455;&#2467;&#2474;&#2509;&#2480;&#2460;&#2494;&#2468;&#2472;&#2509;&#2468;&#2509;&#2480;&#2496;&#32;&#2476;&#2494;&#2434;&#2482;&#2494;&#2470;&#2503;&#2486;&#32;&#32;&#2488;&#2480;&#2453;&#2494;&#2480;&#2503;&#2480;&#32;&#2488;&#2478;&#2509;&#2474;&#2468;&#2509;&#2468;&#2495;&#2404;&#32;&#2453;&#2494;&#2480;&#2509;&#2465;&#2463;&#2495;&#32;&#2486;&#2497;&#2471;&#2497;&#2478;&#2494;&#2468;&#2509;&#2480;&#32;&#2476;&#2509;&#2479;&#2476;&#2489;&#2494;&#2480;&#2453;&#2494;&#2480;&#2496;&#2480;&#32;&#2460;&#2472;&#2509;&#2479;&#2404;&#32;&#2453;&#2494;&#2480;&#2509;&#2465;&#2463;&#2495;&#32;&#2437;&#2472;&#2509;&#2479;&#32;&#2453;&#2507;&#2469;&#2494;&#2451;&#32;&#2474;&#2494;&#2451;&#2527;&#2494;&#32;&#2455;&#2503;&#2482;&#2503;&#32;&#2472;&#2495;&#2453;&#2463;&#2488;&#2509;&#2469;&#32;&#2488;&#2509;&#2476;&#2494;&#2488;&#2509;&#2469;&#2509;&#2479;&#2453;&#2503;&#2472;&#2509;&#2470;&#2509;&#2480;&#2503;&#32;&#2460;&#2478;&#2494;&#32;&#2470;&#2503;&#2451;&#2527;&#2494;&#2480;&#32;&#2460;&#2472;&#2509;&#2479;&#32;&#2437;&#2472;&#2497;&#2480;&#2507;&#2471;&#32;&#2453;&#2480;&#2494;&#32;&#2489;&#2482;&#2404;</div>
                     </div>
-
                 </div>
-
-                <div class="hid_details">
-                    <svg class="barcode" jsbarcode-height="35px" jsbarcode-format="CODE39"
-                         jsbarcode-value="{{hid}}" jsbarcode-textmargin="0"
-                         jsbarcode-fontoptions="bold"
-                         jsbarcode-text="{{#convertDigitToBangla}}{{hid}}{{/convertDigitToBangla}}"/>
-
-                </div>
+                {{/cards}}
             </div>
-            {{/cards}}
         </div>
     </div>
 </div>
