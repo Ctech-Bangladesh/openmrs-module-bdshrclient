@@ -11,7 +11,6 @@ import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.api.EncounterService;
 import org.openmrs.module.atomfeed.transaction.support.AtomFeedSpringTransactionManager;
-import org.openmrs.module.fhir.utils.GlobalPropertyLookUpService;
 import org.openmrs.module.fhir.utils.OMRSLocationService;
 
 import java.lang.reflect.Method;

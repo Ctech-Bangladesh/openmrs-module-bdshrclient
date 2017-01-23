@@ -35,17 +35,18 @@
     </modules>
 
     <properties>
-        <openMRSVersion>1.12.0</openMRSVersion>
-        <openMRSRuntimeVersion>1.12.0</openMRSRuntimeVersion>
+        <openMRSVersion>2.0.2</openMRSVersion>
+        <openMRSRuntimeVersion>2.0.2</openMRSRuntimeVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <webservicesRestModuleVersion>2.12</webservicesRestModuleVersion>
-        <openmrsAtomfeedVersion>2.5.2</openmrsAtomfeedVersion>
-        <openmrs.address.hierarchy.version>2.7</openmrs.address.hierarchy.version>
-        <atomfeed.version>1.9.2</atomfeed.version>
+        <webservicesRestModuleVersion>2.16</webservicesRestModuleVersion>
+        <openmrsAtomfeedVersion>2.5.5-SNAPSHOT</openmrsAtomfeedVersion>
+        <openmrs.address.hierarchy.version>2.9</openmrs.address.hierarchy.version>
+        <atomfeed.version>1.9.4</atomfeed.version>
         <jackson.version>2.3.3</jackson.version>
         <httpclient.version>4.3.3</httpclient.version>
         <log4j.version>1.2.15</log4j.version>
-        <idGenVersion>2.6</idGenVersion>
+        <idGenVersion>4.4-SNAPSHOT</idGenVersion>
+        <uiframeworkVersion>3.3.1</uiframeworkVersion>
     </properties>
 
     <dependencyManagement>
@@ -142,7 +143,7 @@
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>uiframework-api</artifactId>
-                <version>3.3.1</version>
+                <version>${uiframeworkVersion}</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
@@ -201,6 +202,36 @@
                 <artifactId>commons-collections4</artifactId>
                 <version>4.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-all</artifactId>
+                <version>1.3</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.10.19</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -211,8 +242,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <target>1.7</target>
-                        <source>1.7</source>
+                        <target>1.8</target>
+                        <source>1.8</source>
                     </configuration>
                 </plugin>
                 <plugin>
