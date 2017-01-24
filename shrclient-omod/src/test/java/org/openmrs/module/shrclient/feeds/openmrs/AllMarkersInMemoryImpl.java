@@ -5,9 +5,10 @@ import org.ict4h.atomfeed.client.repository.AllMarkers;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 
 public class AllMarkersInMemoryImpl implements AllMarkers {
-    private final HashMap<URI,Marker> map;
+    private final HashMap<URI, Marker> map;
 
     public AllMarkersInMemoryImpl() {
         map = new HashMap<>();
@@ -23,4 +24,8 @@ public class AllMarkersInMemoryImpl implements AllMarkers {
         map.put(feedUri, new Marker(feedUri, entryId, entryFeedUri));
     }
 
+    @Override
+    public List<Marker> getMarkerList() {
+        return (List) map.values();
+    }
 }

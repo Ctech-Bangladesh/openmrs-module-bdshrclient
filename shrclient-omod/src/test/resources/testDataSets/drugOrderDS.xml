@@ -252,8 +252,7 @@
                             uuid="baef67ac-b24e-ab04-7028-c3b994132b85"></concept_reference_term>
     <concept_reference_map concept_map_id="9" concept_id="301" concept_reference_term_id="9" concept_map_type_id="1"
                            creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-93kf-ix3d-c3b994132b85"/>
-    <drug drug_id="301" concept_id="301" dosage_form="51" name="Lactic Acid" combination="true" route="701" creator="1"
-          strength="200"
+    <drug drug_id="301" concept_id="301" dosage_form="51" name="Lactic Acid" combination="true" creator="1" strength="200"
           date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00b94-26fe-102b-80cb-0017a47871b2"/>
     <shr_id_mapping id="1" internal_id="baef67ac-b24e-ab04-7028-c3b994132b85" external_id="101"
                     type="concept_reference_term" uri="/referenceterms/101"></shr_id_mapping>

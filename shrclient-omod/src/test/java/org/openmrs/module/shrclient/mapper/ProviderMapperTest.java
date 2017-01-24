@@ -2,6 +2,7 @@ package org.openmrs.module.shrclient.mapper;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Provider;
 import org.openmrs.ProviderAttribute;
@@ -48,6 +49,7 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldCreateNewProvider() throws Exception {
         String identifier = "1022";
         ProviderEntry providerEntry = getProviderEntry(identifier, "1", true);
@@ -70,6 +72,7 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldUpdateProviderNameWithFacilityNameIfMapped() throws Exception {
         String identifier = "1023";
         ProviderEntry providerEntry = getProviderEntry(identifier, "1", true);
@@ -85,6 +88,7 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldUpdateProviderName() throws Exception {
         String identifier = "1023";
         ProviderEntry providerEntry = getProviderEntry(identifier, "1", false);
@@ -100,6 +104,7 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldUpdateProviderOrganization() throws Exception {
         ProviderAttributeType organizationAttributeType = providerService.getProviderAttributeType(1);
         ProviderEntry providerEntry = getProviderEntry("1024", "1", true);
@@ -115,6 +120,7 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldRetireProviderIfNotActive() throws Exception {
         String identifier = "1023";
         ProviderEntry providerEntry = getProviderEntry(identifier, "0", true);
@@ -131,6 +137,7 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldUnRetireProviderIfRetired() throws Exception {
         String identifier = "1025";
         ProviderEntry providerEntry = getProviderEntry(identifier, "1", true);
