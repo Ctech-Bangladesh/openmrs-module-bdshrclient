@@ -223,7 +223,8 @@
 
                         <div class="patient_details">
                             <div class="details_1">
-                                <label class="name">&#2472;&#2494;&#2478;: <b>{{name}}</b></label>
+                                <label class="name">&#2472;&#2494;&#2478;: <b>{{englishName}}</b> </label>
+                                <label class="bangla_name"> {{banglaName}} </label>
                                 <label class="hid">Health Identifier number: <b>{{#convertDigitToBangla}}{{hid}}{{/convertDigitToBangla}}</b>
                                 </label>
                                 <label class="gender">&#2482;&#2495;&#2457;&#2509;&#2455;: <b>{{#getGenderInBangla}}{{gender}}{{/getGenderInBangla}}</b>
