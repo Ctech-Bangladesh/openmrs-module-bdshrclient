@@ -29,13 +29,17 @@ public class HealthIdCard {
     public HealthIdCard() {
     }
 
-    @JsonProperty("name")
-    public String getName() {
-        if (StringUtils.isNotBlank(givenNameLocal) && StringUtils.isNotBlank(familyNameLocal)) {
+    @JsonProperty("englishName")
+    public String getEnglishName() {
+        return givenName + " " + familyName;
+    }
+    @JsonProperty("banglaName")
+    public String getBanglaName() {
+        if (StringUtils.isNotBlank(givenNameLocal) && StringUtils.isNotBlank(givenNameLocal))
             return givenNameLocal + " " + familyNameLocal;
-        } else {
-            return givenName + " " + familyName;
-        }
+        if (StringUtils.isNotBlank(givenNameLocal) ) return givenNameLocal;
+        if (StringUtils.isNotBlank(familyNameLocal) ) return familyNameLocal;
+        return "";
     }
 
     @JsonProperty("gender")

@@ -5,7 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openmrs.module.shrclient.model.HealthIdCard;
 import org.openmrs.module.shrclient.model.User;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,17 +61,17 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
         String content = result.getResponse().getContentAsString();
         Map[] healthIdCards = new ObjectMapper().readValue(content, Map[].class);
         assertEquals(4, healthIdCards.length);
-        assertHealthIdCard(healthIdCards[0], "M", "Sayed Azam", "22-10-1992",
+        assertHealthIdCard(healthIdCards[0], "M", "Sayed Azam", "", "22-10-1992",
                 "22-10-2016", "HID1",
                 "lane 1, Kaliganj, Gazipur, Dhaka");
         assertHealthIdCard(healthIdCards[1], "O", "Farukh Engineer",
-                "22-10-1993", "22-11-2016", "HID2",
+                "", "22-10-1993", "22-11-2016", "HID2",
                 "lane 1, ward-01, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
         assertHealthIdCard(healthIdCards[2], "F", "Babitha Chatterjee",
-                "22-10-1992", "22-12-2016", "HID3",
+                "", "22-10-1992", "22-12-2016", "HID3",
                 "lane 1, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
-        assertHealthIdCard(healthIdCards[3], "F", "বাবিথা ছাত্তের্জী",
-                "22-10-1992", "22-12-2016", "HID4",
+        assertHealthIdCard(healthIdCards[3], "F", "Babitha Chatterjee",
+                "বাবিথা ছাত্তের্জী", "22-10-1992", "22-12-2016", "HID4",
                 "lane 1, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
     }
 
@@ -85,21 +84,23 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
         String content = result.getResponse().getContentAsString();
         Map[] healthIdCards = new ObjectMapper().readValue(content, Map[].class);
         assertEquals(2, healthIdCards.length);
-        assertHealthIdCard(healthIdCards[0], "M", "Sayed Azam", "22-10-1992",
+        assertHealthIdCard(healthIdCards[0], "M", "Sayed Azam",
+                "", "22-10-1992",
                 "22-10-2016", "HID1",
                 "lane 1, Kaliganj, Gazipur, Dhaka");
         assertHealthIdCard(healthIdCards[1], "O", "Farukh Engineer",
-                "22-10-1993", "22-11-2016", "HID2",
+                "", "22-10-1993", "22-11-2016", "HID2",
                 "lane 1, ward-01, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
     }
 
 
 
-    private void assertHealthIdCard(Map healthIdCard, String expectedGender, String expectedName,
-                                    String expectedDob, String expectedIssuedDate, String expectedHid,
+    private void assertHealthIdCard(Map healthIdCard, String expectedGender, String expectedEnglishName,
+                                    String expectedBengaliName, String expectedDob, String expectedIssuedDate, String expectedHid,
                                     String expectedAddress) {
         assertEquals(expectedGender, healthIdCard.get("gender"));
-        assertEquals(expectedName, healthIdCard.get("name"));
+        assertEquals(expectedEnglishName, healthIdCard.get("englishName"));
+        assertEquals(expectedBengaliName, healthIdCard.get("banglaName"));
         assertEquals(expectedDob, healthIdCard.get("dob"));
         assertEquals(expectedIssuedDate, healthIdCard.get("issuedDate"));
         assertEquals(expectedHid, healthIdCard.get("hid"));
