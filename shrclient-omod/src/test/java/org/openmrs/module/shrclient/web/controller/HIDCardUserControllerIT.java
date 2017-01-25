@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.openmrs.module.shrclient.model.User;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
     @Autowired
     private WebApplicationContext wac;
@@ -63,16 +65,16 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(4, healthIdCards.length);
         assertHealthIdCard(healthIdCards[0], "M", "Sayed Azam", "", "22-10-1992",
                 "22-10-2016", "HID1",
-                "lane 1, Kaliganj, Gazipur, Dhaka");
+                "lane 1, কালীগঞ্জ, গাজীপুর, ঢাকা");
         assertHealthIdCard(healthIdCards[1], "O", "Farukh Engineer",
                 "", "22-10-1993", "22-11-2016", "HID2",
-                "lane 1, ward-01, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
+                "lane 1, ওয়ার্ডে কোন -1, বাহাদুরসাদী, কালীগঞ্জ, গাজীপুর, ঢাকা");
         assertHealthIdCard(healthIdCards[2], "F", "Babitha Chatterjee",
                 "", "22-10-1992", "22-12-2016", "HID3",
-                "lane 1, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
+                "lane 1, Urban Ward No-01, Kaliganj Paurashava, কালীগঞ্জ, গাজীপুর, ঢাকা");
         assertHealthIdCard(healthIdCards[3], "F", "Babitha Chatterjee",
                 "বাবিথা ছাত্তের্জী", "22-10-1992", "22-12-2016", "HID4",
-                "lane 1, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
+                "lane 1, Urban Ward No-01, Kaliganj Paurashava, কালীগঞ্জ, গাজীপুর, ঢাকা");
     }
 
     @Test
@@ -87,13 +89,11 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
         assertHealthIdCard(healthIdCards[0], "M", "Sayed Azam",
                 "", "22-10-1992",
                 "22-10-2016", "HID1",
-                "lane 1, Kaliganj, Gazipur, Dhaka");
+                "lane 1, কালীগঞ্জ, গাজীপুর, ঢাকা");
         assertHealthIdCard(healthIdCards[1], "O", "Farukh Engineer",
                 "", "22-10-1993", "22-11-2016", "HID2",
-                "lane 1, ward-01, Kaliganj Urban City, Unions of Kaliganj, Kaliganj, Gazipur, Dhaka");
+                "lane 1, ওয়ার্ডে কোন -1, বাহাদুরসাদী, কালীগঞ্জ, গাজীপুর, ঢাকা");
     }
-
-
 
     private void assertHealthIdCard(Map healthIdCard, String expectedGender, String expectedEnglishName,
                                     String expectedBengaliName, String expectedDob, String expectedIssuedDate, String expectedHid,

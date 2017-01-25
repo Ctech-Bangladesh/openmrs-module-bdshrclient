@@ -1,10 +1,14 @@
 package org.openmrs.module.shrclient.dao;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.addresshierarchy.AddressHierarchyEntry;
 import org.openmrs.module.fhir.OpenMRSConstants;
+import org.openmrs.module.shrclient.model.AddressHierarchyEntryTranslation;
 import org.openmrs.module.shrclient.model.HealthIdCard;
+import org.openmrs.module.shrclient.util.AddressHelper;
 import org.openmrs.module.shrclient.util.Database;
 
 import java.sql.*;
@@ -12,16 +16,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.openmrs.module.shrclient.model.Address.getAddressCodeForLevel;
+import static org.openmrs.module.shrclient.util.AddressLevel.*;
+
 public class HIDCardDao {
     private static final Logger logger = Logger.getLogger(HIDCardDao.class);
-    private Database database;
+
     private static Integer givenNameLocalAttributeId;
     private static Integer familyNameLocalAttributeId;
     private static Integer healthIdIssuedAttributeAttributeId;
     private static Integer healthIdIdentifierTypeId;
+    private final String PAURASAVA_TO_EXCLUDE_CODE = "99";
 
-    public HIDCardDao(Database database) {
+    private Database database;
+    private AddressHelper addressHelper;
+    private AddressHierarchyEntryTranslationRepository entryTranslationRepository;
+
+    public HIDCardDao(Database database, AddressHierarchyEntryTranslationRepository entryTranslationRepository) {
         this.database = database;
+        this.entryTranslationRepository = entryTranslationRepository;
     }
 
     public List<HealthIdCard> getAllCardsByUserWithinDateRange(final int userId, final java.util.Date from, final Date to) {
@@ -60,15 +73,65 @@ public class HIDCardDao {
         healthIdCard.setIssuedDate(resultSet.getDate("date_created"));
         healthIdCard.setGender(resultSet.getString("gender"));
         healthIdCard.setHid(resultSet.getString("identifier"));
-        HealthIdCard.HIDCardAddress hidCardAddress = healthIdCard.addAddress();
-        hidCardAddress.setAddress1(resultSet.getString("address1"));
-        hidCardAddress.setAddress2(resultSet.getString("address2"));
-        hidCardAddress.setAddress3(resultSet.getString("address3"));
-        hidCardAddress.setAddress4(resultSet.getString("address4"));
-        hidCardAddress.setAddress5(resultSet.getString("address5"));
-        hidCardAddress.setCountyDistrict(resultSet.getString("county_district"));
-        hidCardAddress.setStateProvince(resultSet.getString("state_province"));
+
+        createAddressForHIDCard(resultSet, healthIdCard);
         return healthIdCard;
+    }
+
+    private void createAddressForHIDCard(ResultSet resultSet, HealthIdCard healthIdCard) throws SQLException {
+        HealthIdCard.HIDCardAddress hidCardAddress = healthIdCard.addAddress();
+        if (addressHelper == null) {
+            addressHelper = new AddressHelper();
+        }
+
+        String division = resultSet.getString("state_province");
+        AddressHierarchyEntry divisionEntry = addressHelper.getAddressEntry(Division, division, null);
+        hidCardAddress.setStateProvince(getLocalOrEnglishName(divisionEntry));
+
+        String district = resultSet.getString("county_district");
+        AddressHierarchyEntry districtEntry = addressHelper.getAddressEntry(Zilla, district, divisionEntry);
+        hidCardAddress.setCountyDistrict(getLocalOrEnglishName(districtEntry));
+
+        String upazilla = resultSet.getString("address5");
+        AddressHierarchyEntry upazillaEntry = addressHelper.getAddressEntry(Upazilla, upazilla, districtEntry);
+        hidCardAddress.setAddress5(getLocalOrEnglishName(upazillaEntry));
+
+        String paurasava = resultSet.getString("address4");
+        AddressHierarchyEntry paurasavaEntry = addressHelper.getAddressEntry(Paurasava, paurasava, upazillaEntry);
+        if (paurasavaEntry != null) {
+            if (!PAURASAVA_TO_EXCLUDE_CODE.equals(getAddressCodeForLevel(paurasavaEntry.getUserGeneratedId(), Paurasava.getLevelNumber()))) {
+                String paurasavaName = getLocalOrEnglishName(paurasavaEntry);
+                if (StringUtils.isNotBlank(paurasavaName)) {
+                    hidCardAddress.setAddress4(paurasavaName);
+                }
+            }
+        }
+
+        String unionOrWard = resultSet.getString("address3");
+        AddressHierarchyEntry unionEntry = addressHelper.getAddressEntry(UnionOrWard, unionOrWard, paurasavaEntry);
+        String unionName = getLocalOrEnglishName(unionEntry);
+        if (StringUtils.isNotBlank(unionName)) {
+            hidCardAddress.setAddress3(unionName);
+        }
+
+        String ruralWard = resultSet.getString("address2");
+        AddressHierarchyEntry ruralWardEntry = addressHelper.getAddressEntry(RuralWard, ruralWard, unionEntry);
+        String ruralWardName = getLocalOrEnglishName(ruralWardEntry);
+        if (StringUtils.isNotBlank(ruralWardName)) {
+            hidCardAddress.setAddress2(ruralWardName);
+        }
+
+        hidCardAddress.setAddress1(resultSet.getString("address1"));
+    }
+
+    private String getLocalOrEnglishName(AddressHierarchyEntry entryForAddress) {
+        if (null == entryForAddress) return null;
+        AddressHierarchyEntryTranslation entryTranslation = entryTranslationRepository.get(entryForAddress.getId());
+        if (null != entryTranslation && StringUtils.isNotBlank(entryTranslation.getLocalName())) {
+            return entryTranslation.getLocalName();
+        } else {
+            return entryForAddress.getName();
+        }
     }
 
     private String getQueryStatement() {

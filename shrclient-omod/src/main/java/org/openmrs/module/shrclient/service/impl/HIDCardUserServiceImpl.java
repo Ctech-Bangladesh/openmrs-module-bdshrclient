@@ -7,6 +7,7 @@ import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.fhir.utils.GlobalPropertyLookUpService;
+import org.openmrs.module.shrclient.dao.AddressHierarchyEntryTranslationRepository;
 import org.openmrs.module.shrclient.dao.HIDCardDao;
 import org.openmrs.module.shrclient.model.HealthIdCard;
 import org.openmrs.module.shrclient.model.User;
@@ -29,15 +30,15 @@ import static org.openmrs.module.fhir.utils.DateUtil.parseDate;
 public class HIDCardUserServiceImpl extends BaseOpenmrsService implements HIDCardUserService {
     private static final Logger logger = Logger.getLogger(HIDCardUserServiceImpl.class);
 
-    private Database database;
-    private GlobalPropertyLookUpService globalPropertyLookUpService;
     private UserService userService;
     private final HIDCardDao hidCardDao;
+    private GlobalPropertyLookUpService globalPropertyLookUpService;
 
     @Autowired
-    public HIDCardUserServiceImpl(Database database, GlobalPropertyLookUpService globalPropertyLookUpService) {
-        hidCardDao = new HIDCardDao(database);
+    public HIDCardUserServiceImpl(Database database, GlobalPropertyLookUpService globalPropertyLookUpService,
+                                  AddressHierarchyEntryTranslationRepository entryTranslationRepository) {
         this.globalPropertyLookUpService = globalPropertyLookUpService;
+        this.hidCardDao = new HIDCardDao(database, entryTranslationRepository);
     }
 
     public List<User> getAllUsersWithFieldRole() {
@@ -57,7 +58,6 @@ public class HIDCardUserServiceImpl extends BaseOpenmrsService implements HIDCar
 
     @Override
     public List<HealthIdCard> getAllCardsByUserWithinDateRange(final int userId, final String from, final String to) throws IOException {
-
         try {
             return hidCardDao.getAllCardsByUserWithinDateRange(userId, parseDate(from, SIMPLE_DATE_WITH_SECS_FORMAT), parseDate(to, SIMPLE_DATE_WITH_SECS_FORMAT));
         } catch (ParseException e) {

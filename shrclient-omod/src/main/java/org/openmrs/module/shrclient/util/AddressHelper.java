@@ -68,7 +68,7 @@ public class AddressHelper {
         return hierarchyEntry.getUserGeneratedId();
     }
 
-    private AddressHierarchyEntry getAddressEntry(AddressLevel addressLevel, String name, AddressHierarchyEntry parent) {
+    public AddressHierarchyEntry getAddressEntry(AddressLevel addressLevel, String name, AddressHierarchyEntry parent) {
         if (StringUtils.isNotBlank(name)) {
             AddressHierarchyLevel hierarchyLevel = getAddressHierarchyLevel(addressLevel);
             List<AddressHierarchyEntry> entries;
