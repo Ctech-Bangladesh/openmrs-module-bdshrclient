@@ -9,9 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.openmrs.module.fhir.utils.PropertyKeyConstants.*;
 
@@ -146,11 +144,20 @@ public class PropertiesReader {
         return getMaxFailedEventCount(mciMaxFailedEventCount);
     }
 
+    public String getMCICatchmentPathPattern() {
+        return getMciProperties().getProperty(PropertyKeyConstants.MCI_PATIENT_CATCHMENT_PATH_PATTERN).trim();
+    }
+
+    public List<String> getFacilityCatchments() {
+        String facilityCatchmentString = getFacilityInstanceProperties().getProperty(FACILITY_CATCHMENTS).toString();
+
+        return Arrays.asList(facilityCatchmentString.split(","));
+    }
+
     public int getShrMaxFailedEvent() {
         String shrMaxFailedEventCount = getShrProperties().getProperty(PropertyKeyConstants.SHR_MAX_FAILED_EVENT);
         return getMaxFailedEventCount(shrMaxFailedEventCount);
     }
-
     public String getShrCatchmentPathPattern() {
         return getShrProperties().getProperty(PropertyKeyConstants.SHR_CATCHMENT_PATH_PATTERN).trim();
     }

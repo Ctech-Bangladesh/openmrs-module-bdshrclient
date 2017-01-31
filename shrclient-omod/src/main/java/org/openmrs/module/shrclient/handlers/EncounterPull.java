@@ -2,9 +2,9 @@ package org.openmrs.module.shrclient.handlers;
 
 
 import org.apache.log4j.Logger;
-import org.openmrs.module.fhir.utils.PropertyKeyConstants;
 import org.openmrs.module.shrclient.feeds.shr.DefaultEncounterFeedWorker;
-import org.openmrs.module.shrclient.feeds.shr.ShrEncounterFeedProcessor;
+import org.openmrs.module.shrclient.feeds.CatchmentFeedProcessor;
+import org.openmrs.module.shrclient.feeds.shr.ShrFeedEventWorker;
 import org.openmrs.module.shrclient.identity.IdentityStore;
 import org.openmrs.module.shrclient.identity.IdentityUnauthorizedException;
 import org.openmrs.module.shrclient.service.EMREncounterService;
@@ -14,18 +14,13 @@ import org.openmrs.module.shrclient.util.PropertiesReader;
 import org.openmrs.module.shrclient.util.StringUtil;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
-import static org.openmrs.module.fhir.utils.PropertyKeyConstants.FACILITY_ID;
 import static org.openmrs.module.shrclient.util.Headers.ACCEPT_HEADER_KEY;
 import static org.openmrs.module.shrclient.util.Headers.getHrmAccessTokenHeaders;
 import static org.springframework.http.MediaType.APPLICATION_ATOM_XML;
 
 public class EncounterPull {
-    private final static String FACILITY_ID_HEADER_KEY = "facilityId";
 
     private final Logger logger = Logger.getLogger(EncounterPull.class);
     private PropertiesReader propertiesReader;
@@ -44,11 +39,11 @@ public class EncounterPull {
             Map<String, String> requestHeaders = getRequestHeaders(propertiesReader);
             DefaultEncounterFeedWorker defaultEncounterFeedWorker = getEncounterFeedWorker();
             for (String encounterFeedUrl : encounterFeedUrls) {
-                ShrEncounterFeedProcessor feedProcessor =
-                        new ShrEncounterFeedProcessor(encounterFeedUrl, requestHeaders, defaultEncounterFeedWorker,
+                CatchmentFeedProcessor feedProcessor =
+                        new CatchmentFeedProcessor(encounterFeedUrl, requestHeaders,
                                 clientRegistry, propertiesReader);
                 try {
-                    feedProcessor.process();
+                    feedProcessor.process(new ShrFeedEventWorker(defaultEncounterFeedWorker));
                 } catch (URISyntaxException e) {
                     logger.error("Couldn't download catchment encounters. Error: ", e);
                 }
@@ -71,29 +66,16 @@ public class EncounterPull {
         Properties facilityInstanceProperties = propertiesReader.getFacilityInstanceProperties();
         headers.putAll(getHrmAccessTokenHeaders(clientRegistry.getOrCreateIdentityToken(), facilityInstanceProperties));
         headers.put(ACCEPT_HEADER_KEY, APPLICATION_ATOM_XML.toString());
-        headers.put(FACILITY_ID_HEADER_KEY, getFacilityId(facilityInstanceProperties));
         return headers;
     }
 
-    private String getFacilityId(Properties facilityInstanceProperties) {
-        Object facilityId = facilityInstanceProperties.getProperty(FACILITY_ID);
-        logger.info("Identified Facility:" + facilityId);
-        if (facilityId == null) {
-            throw new RuntimeException("Facility Id not defined.");
-        }
-        return (String) facilityId;
-    }
-
     public ArrayList<String> getEncounterFeedUrls(PropertiesReader propertiesReader) {
-        Properties facilityInstanceProperties = propertiesReader.getFacilityInstanceProperties();
         String shrBaseUrl = StringUtil.ensureSuffix(propertiesReader.getShrBaseUrl(), "/");
         String catchmentPathPattern = StringUtil.removePrefix(propertiesReader.getShrCatchmentPathPattern(), "/");
-        String catchments = facilityInstanceProperties.get(PropertyKeyConstants.FACILITY_CATCHMENTS).toString();
-        String[] facilityCatchments = catchments.split(",");
+        List<String> facilityCatchments = propertiesReader.getFacilityCatchments();
         ArrayList<String> catchmentsUrls = new ArrayList<>();
         for (String facilityCatchment : facilityCatchments) {
             String catchmentUrl = shrBaseUrl + String.format(catchmentPathPattern, facilityCatchment);
-            //catchmentsUrls.add(String.format("%s/catchments/%s/encounters", shrBaseUrl, facilityCatchment));
             catchmentsUrls.add(catchmentUrl);
         }
         return catchmentsUrls;
@@ -106,11 +88,11 @@ public class EncounterPull {
             Map<String, String> requestProperties = getRequestHeaders(propertiesReader);
             DefaultEncounterFeedWorker defaultEncounterFeedWorker = getEncounterFeedWorker();
             for (String encounterFeedUrl : encounterFeedUrls) {
-                ShrEncounterFeedProcessor feedProcessor =
-                        new ShrEncounterFeedProcessor(encounterFeedUrl, requestProperties, defaultEncounterFeedWorker,
+                CatchmentFeedProcessor feedProcessor =
+                        new CatchmentFeedProcessor(encounterFeedUrl, requestProperties,
                                 clientRegistry, propertiesReader);
                 try {
-                    feedProcessor.processFailedEvents();
+                    feedProcessor.processFailedEvents(new ShrFeedEventWorker(defaultEncounterFeedWorker));
                 } catch (URISyntaxException e) {
                     logger.error("Couldn't download catchment encounters. Error: ", e);
                 }

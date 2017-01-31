@@ -1,10 +1,7 @@
-package org.openmrs.module.shrclient.feeds.shr;
+package org.openmrs.module.shrclient.feeds;
 
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import org.ict4h.atomfeed.client.AtomFeedProperties;
-import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.AllMarkers;
@@ -16,10 +13,9 @@ import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.transaction.AFTransactionManager;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.transaction.support.AtomFeedSpringTransactionManager;
+import org.openmrs.module.shrclient.feeds.shr.ShrFeedEventWorker;
 import org.openmrs.module.shrclient.handlers.ClientRegistry;
-import org.openmrs.module.shrclient.util.FhirBundleContextHolder;
 import org.openmrs.module.shrclient.util.PropertiesReader;
-import org.openmrs.module.shrclient.web.controller.dto.EncounterEvent;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.net.URI;
@@ -27,31 +23,29 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-public class ShrEncounterFeedProcessor {
+public class CatchmentFeedProcessor {
 
-    private EncounterEventWorker shrEventWorker;
     private String feedUrl;
     private Map<String, String> requestHeaders;
     private ClientRegistry clientRegistry;
     private PropertiesReader propertiesReader;
 
-    public ShrEncounterFeedProcessor(String feedUrl,
-                                     Map<String, String> requestHeaders, EncounterEventWorker shrEventWorker,
-                                     ClientRegistry clientRegistry, PropertiesReader propertiesReader) {
-        this.shrEventWorker = shrEventWorker;
+    public CatchmentFeedProcessor(String feedUrl,
+                                  Map<String, String> requestHeaders,
+                                  ClientRegistry clientRegistry, PropertiesReader propertiesReader) {
         this.feedUrl = feedUrl;
         this.requestHeaders = requestHeaders;
         this.clientRegistry = clientRegistry;
         this.propertiesReader = propertiesReader;
     }
 
-    public void process() throws URISyntaxException {
-        atomFeedClient(new URI(this.feedUrl), new FeedEventWorker(shrEventWorker), 
+    public void process(ShrFeedEventWorker shrFeedEventWorker) throws URISyntaxException {
+        atomFeedClient(new URI(this.feedUrl), shrFeedEventWorker, 
                 propertiesReader.getShrMaxFailedEvent()).processEvents();
     }
 
-    public void processFailedEvents() throws URISyntaxException {
-        atomFeedClient(new URI(this.feedUrl), new FeedEventWorker(shrEventWorker),
+    public void processFailedEvents(ShrFeedEventWorker shrFeedEventWorker) throws URISyntaxException {
+        atomFeedClient(new URI(this.feedUrl), shrFeedEventWorker,
                 propertiesReader.getShrMaxFailedEvent()).processFailedEvents();
     }
 
@@ -85,36 +79,7 @@ public class ShrEncounterFeedProcessor {
     }
 
     private AllFeeds getAllFeeds(ClientRegistry clientRegistry) {
-        return new ShrEncounterFeeds(requestHeaders, clientRegistry);
-    }
-
-    private class FeedEventWorker implements EventWorker {
-        private EncounterEventWorker shrEventWorker;
-
-        FeedEventWorker(EncounterEventWorker shrEventWorker) {
-            this.shrEventWorker = shrEventWorker;
-        }
-
-        @Override
-        public void process(Event event) {
-            String content = event.getContent();
-            FhirContext fhirContext = FhirBundleContextHolder.getFhirContext();
-            Bundle bundle;
-            try {
-                bundle = fhirContext.newXmlParser().parseResource(Bundle.class, content);
-            } catch (Exception e) {
-                throw new RuntimeException("Unable to parse XML", e);
-            }
-            EncounterEvent encounterEvent = new EncounterEvent();
-            encounterEvent.setTitle(event.getTitle());
-            encounterEvent.addContent(bundle);
-            encounterEvent.setCategories(event.getCategories());
-            shrEventWorker.process(encounterEvent);
-        }
-
-        @Override
-        public void cleanUp(Event event) {
-        }
+        return new CatchmentFeeds(requestHeaders, clientRegistry);
     }
 
     private JdbcConnectionProvider getConnectionProvider(AFTransactionManager txMgr) {

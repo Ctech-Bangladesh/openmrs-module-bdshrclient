@@ -1,4 +1,4 @@
-package org.openmrs.module.shrclient.feeds.shr;
+package org.openmrs.module.shrclient.feeds;
 
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.FeedException;
@@ -11,7 +11,6 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
@@ -24,12 +23,12 @@ import java.io.StringReader;
 import java.net.URI;
 import java.util.Map;
 
-public class ShrEncounterFeeds extends AllFeeds {
+public class CatchmentFeeds extends AllFeeds {
     private Map<String, String> feedHeaders;
     private ClientRegistry clientRegistry;
-    private static final Logger logger = Logger.getLogger(ShrEncounterFeeds.class);
+    private static final Logger logger = Logger.getLogger(CatchmentFeeds.class);
 
-    public ShrEncounterFeeds(Map<String, String> feedHeaders, ClientRegistry clientRegistry) {
+    public CatchmentFeeds(Map<String, String> feedHeaders, ClientRegistry clientRegistry) {
         this.feedHeaders = feedHeaders;
         this.clientRegistry = clientRegistry;
     }
