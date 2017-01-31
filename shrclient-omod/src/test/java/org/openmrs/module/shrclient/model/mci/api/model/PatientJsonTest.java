@@ -76,18 +76,25 @@ public class PatientJsonTest {
         patient.setNationalId("nid-100");
         patient.setRelations(getRelationsForPatient(patient));
         patient.setActive(false);
+<<<<<<< HEAD
         Date dateOfBirth = DateUtil.parseDate("1970-11-06T00:00:00+05:30");
         patient.setDateOfBirth(dateOfBirth);
         String expected = "{\"nid\":\"nid-100\",\"given_name\":\"Scott\",\"sur_name\":\"Tiger\"," +
                 "\"date_of_birth\":\"" + DateUtil.toDateString(dateOfBirth, DateUtil.ISO_8601_DATE_IN_SECS_FORMAT2) +
                 "\",\"dob_type\":null,\"gender\":\"M\",\"occupation\":null," +
+=======
+        patient.setDateOfBirth(DateUtil.parseDate("1970-11-06T00:00:00+05:30"));
+        String expected = "{\"nid\":\"nid-100\",\"given_name\":\"Scott\",\"sur_name\":\"Tiger\"," +
+                "\"date_of_birth\":\"1970-11-06T00:00:00+05:30\",\"dob_type\":null,\"gender\":\"M\",\"occupation\":null," +
+>>>>>>> 94979d0... Neha,Abhilash | shr-1429 | adding patient catchment feed
                 "\"edu_level\":null,\"present_address\":{\"address_line\":null,\"division_id\":\"10\"," +
                 "\"district_id\":\"04\",\"upazila_id\":\"09\",\"city_corporation_id\":\"20\"," +
                 "\"union_or_urban_ward_id\":\"01\"},\"status\":null,\"bin_brn\":null,\"household_code\":null," +
                 "\"relations\":[{\"type\":\"mother\",\"given_name\":\"Mother of Scott\",\"sur_name\":\"Tiger\"}]," +
-                "\"active\":false,\"hid_card_status\":null}";
-        String actual = objectMapper.writeValueAsString(patient);
-        assertEquals(expected, actual);
+                "\"active\":false,\"hid_card_status\":null,\"created\": \"2017-01-30T17:28:54.363+05:30\",\n" +
+                "  \"modified\": \"2017-01-30T17:28:54.363+05:30\"}";
+        Patient expectedPatient = objectMapper.readValue(expected, Patient.class);
+        assertEquals(expectedPatient, patient);
     }
 
     @Test

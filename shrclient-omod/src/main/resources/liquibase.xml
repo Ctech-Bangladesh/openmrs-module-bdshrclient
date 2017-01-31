@@ -1285,7 +1285,6 @@
             <column name="uuid" valueComputed=" uuid() "/>
         </insert>
     </changeSet>
-
     <changeSet id="bdshrclient-070217-1208" author="Dubey/Abhilash" context="setup">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="1">

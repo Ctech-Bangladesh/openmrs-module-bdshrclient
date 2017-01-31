@@ -49,5 +49,10 @@
     <util:properties id="mciProperties" location="classpath:mci.properties" />
     <util:properties id="shrProperties" location="classpath:shr.properties" />
     <util:properties id="identityProperties" location="classpath:identity.properties" />
+    <util:properties id="facilityInstanceProperties" location="classpath:facility_instance.properties" />
+    <util:properties id="lrProperties" location="classpath:lr.properties" />
+    <util:properties id="frProperties" location="classpath:fr.properties" />
+    <util:properties id="prProperties" location="classpath:pr.properties" />
+    <util:properties id="trAtomfeedProperties" location="classpath:tr_atomfeed_properties.properties" />
 
 </beans>

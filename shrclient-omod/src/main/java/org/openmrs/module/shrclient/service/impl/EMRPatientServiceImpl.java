@@ -4,12 +4,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
-import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
+import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.fhir.utils.GlobalPropertyLookUpService;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
@@ -78,6 +78,12 @@ public class EMRPatientServiceImpl implements EMRPatientService {
         try {
             AddressHelper addressHelper = new AddressHelper();
             org.openmrs.Patient emrPatient = getEMRPatientByHealthId(mciPatient.getHealthId());
+            PatientIdMapping patientIdMapping = (PatientIdMapping) idMappingsRepository.findByExternalId(mciPatient.getHealthId(), IdMappingType.PATIENT);
+
+            if (!shouldProcessEvent(mciPatient, patientIdMapping)) {
+                return emrPatient;
+            }
+
             if (emrPatient == null) {
                 emrPatient = new org.openmrs.Patient();
             }
@@ -130,13 +136,25 @@ public class EMRPatientServiceImpl implements EMRPatientService {
 
             org.openmrs.Patient patient = patientService.savePatient(emrPatient);
             systemUserService.setOpenmrsShrSystemUserAsCreator(emrPatient);
-            addPatientToIdMapping(patient, mciPatient.getHealthId());
+            addPatientToIdMapping(patient, mciPatient.getHealthId(), mciPatient.getModifiedTime());
             return emrPatient;
         } catch (Exception e) {
             logger.error(String.format("error Occurred while trying to process Patient[%s] from MCI.", mciPatient.getHealthId()), e);
 
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean shouldProcessEvent(Patient updatePatient, PatientIdMapping patientIdMapping) {
+        if (patientIdMapping == null) return false;
+        Date serverUpdateDateTime = patientIdMapping.getServerUpdateDateTime();
+        Date lastSyncDateTime = patientIdMapping.getLastSyncDateTime();
+        Date patientModifiedTime = updatePatient.getModifiedTime();
+
+        if (serverUpdateDateTime != null && (patientModifiedTime.before(serverUpdateDateTime) || DateUtil.isEqualTo(patientModifiedTime, serverUpdateDateTime))) {
+            return lastSyncDateTime != null && (patientModifiedTime.before(lastSyncDateTime) || DateUtil.isEqualTo(patientModifiedTime, lastSyncDateTime));
+        }
+        return true;
     }
 
     private void setEducation(Patient mciPatient, org.openmrs.Patient emrPatient) {
@@ -300,7 +318,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
         return patientIdentifierByUuid;
     }
 
-    private void addPatientToIdMapping(org.openmrs.Patient emrPatient, String healthId) {
+    private void addPatientToIdMapping(org.openmrs.Patient emrPatient, String healthId, Date serverModifiedTime) {
         String patientUuid = emrPatient.getUuid();
         SystemProperties systemProperties = new SystemProperties(
                 propertiesReader.getFrProperties(),
@@ -309,7 +327,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
                 propertiesReader.getFacilityInstanceProperties(),
                 propertiesReader.getMciProperties(), new Properties());
         String url = new EntityReference().build(org.openmrs.Patient.class, systemProperties, healthId);
-        idMappingsRepository.saveOrUpdateIdMapping(new PatientIdMapping(patientUuid, healthId, url, new Date()));
+        idMappingsRepository.saveOrUpdateIdMapping(new PatientIdMapping(patientUuid, healthId, url, new Date(), new Date(), serverModifiedTime));
     }
 }
 

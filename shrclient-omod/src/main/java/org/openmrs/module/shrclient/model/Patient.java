@@ -3,7 +3,6 @@ package org.openmrs.module.shrclient.model;
 import com.fasterxml.jackson.annotation.*;
 import org.openmrs.module.fhir.utils.DateUtil;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
@@ -79,6 +78,14 @@ public class Patient {
 
     @JsonProperty("hid_card_status")
     private String hidCardStatus;
+
+    @JsonProperty(value = "modified", access = JsonProperty.Access.READ_ONLY)
+    @JsonInclude(NON_NULL)
+    private String modifiedTime;
+
+    @JsonProperty(value = "created", access = JsonProperty.Access.READ_ONLY)
+    @JsonInclude(NON_NULL)
+    private String createdTime;
 
     @Override
     public boolean equals(Object o) {
@@ -323,6 +330,14 @@ public class Patient {
 
     public void setHidCardStatus(String hidCardStatus) {
         this.hidCardStatus = hidCardStatus;
+    }
+
+    public Date getModifiedTime() {
+        return modifiedTime == null ? null : DateUtil.parseDate(modifiedTime);
+    }
+
+    public Date getCreatedTime() {
+        return createdTime == null ? null : DateUtil.parseDate(createdTime);
     }
 
 }

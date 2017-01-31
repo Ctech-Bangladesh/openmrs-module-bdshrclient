@@ -33,16 +33,14 @@ public class DefaultEncounterFeedWorker implements EncounterEventWorker {
         logger.info("Processing bundle with encounter id: " + encounterEvent.getEncounterId());
         String healthId = encounterEvent.getHealthId();
         try {
-            Patient patient = downloadActivePatient(healthId);
-            if(!healthId.equals(patient.getHealthId()))
-                encounterEvent.setHealthId(patient.getHealthId());
-            org.openmrs.Patient emrPatient = emrPatientService.createOrUpdateEmrPatient(patient);
-
+            org.openmrs.Patient emrPatient = emrPatientService.getEMRPatientByHealthId(healthId);
             if (null == emrPatient) {
-                String message = String.format("Can not identify patient[%s]", healthId);
-                logger.error(message);
-                throw new Exception(message);
+                Patient patient = downloadActivePatient(healthId);
+                if (!healthId.equals(patient.getHealthId()))
+                    encounterEvent.setHealthId(patient.getHealthId());
+                emrPatient = emrPatientService.createOrUpdateEmrPatient(patient);
             }
+
             emrEncounterService.createOrUpdateEncounter(emrPatient, encounterEvent);
         } catch (Exception e) {
             String message = String.format("Error occurred while trying to process encounter[%s] of patient[%s]",
@@ -55,10 +53,9 @@ public class DefaultEncounterFeedWorker implements EncounterEventWorker {
     private Patient downloadActivePatient(String healthId) throws IdentityUnauthorizedException {
         RestClient mciClient = clientRegistry.getMCIClient();
         Patient patient = mciClient.get(StringUtil.ensureSuffix(propertiesReader.getMciPatientContext(), "/") + healthId, Patient.class);
-        if(!patient.isActive() && patient.getMergedWith()!= null) {
+        if (!patient.isActive() && patient.getMergedWith() != null) {
             patient = downloadActivePatient(patient.getMergedWith());
         }
         return patient;
     }
-
 }

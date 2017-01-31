@@ -41,9 +41,31 @@ public class EncounterPull {
             for (String encounterFeedUrl : encounterFeedUrls) {
                 CatchmentFeedProcessor feedProcessor =
                         new CatchmentFeedProcessor(encounterFeedUrl, requestHeaders,
-                                clientRegistry, propertiesReader);
+                                clientRegistry);
                 try {
-                    feedProcessor.process(new ShrFeedEventWorker(defaultEncounterFeedWorker));
+                    feedProcessor.process(new ShrFeedEventWorker(defaultEncounterFeedWorker), propertiesReader.getShrMaxFailedEvent());
+                } catch (URISyntaxException e) {
+                    logger.error("Couldn't download catchment encounters. Error: ", e);
+                }
+            }
+        } catch (IdentityUnauthorizedException e) {
+            logger.info("Clearing unauthorized identity token.");
+            identityStore.clearToken();
+        }
+    }
+
+    public void retry() {
+        PropertiesReader propertiesReader = PlatformUtil.getPropertiesReader();
+        ArrayList<String> encounterFeedUrls = getEncounterFeedUrls(propertiesReader);
+        try {
+            Map<String, String> requestProperties = getRequestHeaders(propertiesReader);
+            DefaultEncounterFeedWorker defaultEncounterFeedWorker = getEncounterFeedWorker();
+            for (String encounterFeedUrl : encounterFeedUrls) {
+                CatchmentFeedProcessor feedProcessor =
+                        new CatchmentFeedProcessor(encounterFeedUrl, requestProperties,
+                                clientRegistry);
+                try {
+                    feedProcessor.processFailedEvents(new ShrFeedEventWorker(defaultEncounterFeedWorker), propertiesReader.getShrMaxFailedEvent());
                 } catch (URISyntaxException e) {
                     logger.error("Couldn't download catchment encounters. Error: ", e);
                 }
@@ -79,27 +101,5 @@ public class EncounterPull {
             catchmentsUrls.add(catchmentUrl);
         }
         return catchmentsUrls;
-    }
-
-    public void retry() {
-        PropertiesReader propertiesReader = PlatformUtil.getPropertiesReader();
-        ArrayList<String> encounterFeedUrls = getEncounterFeedUrls(propertiesReader);
-        try {
-            Map<String, String> requestProperties = getRequestHeaders(propertiesReader);
-            DefaultEncounterFeedWorker defaultEncounterFeedWorker = getEncounterFeedWorker();
-            for (String encounterFeedUrl : encounterFeedUrls) {
-                CatchmentFeedProcessor feedProcessor =
-                        new CatchmentFeedProcessor(encounterFeedUrl, requestProperties,
-                                clientRegistry, propertiesReader);
-                try {
-                    feedProcessor.processFailedEvents(new ShrFeedEventWorker(defaultEncounterFeedWorker));
-                } catch (URISyntaxException e) {
-                    logger.error("Couldn't download catchment encounters. Error: ", e);
-                }
-            }
-        } catch (IdentityUnauthorizedException e) {
-            logger.info("Clearing unauthorized identity token.");
-            identityStore.clearToken();
-        }
     }
 }
