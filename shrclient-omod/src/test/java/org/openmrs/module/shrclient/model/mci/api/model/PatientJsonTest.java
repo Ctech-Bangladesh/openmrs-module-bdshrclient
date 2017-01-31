@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.shrclient.model.Address;
 import org.openmrs.module.shrclient.model.Patient;
 import org.openmrs.module.shrclient.model.Relation;
@@ -76,15 +77,17 @@ public class PatientJsonTest {
         patient.setNationalId("nid-100");
         patient.setRelations(getRelationsForPatient(patient));
         patient.setActive(false);
+        patient.setDateOfBirth(DateUtil.parseDate("1970-11-06T00:00:00+05:30"));
         String expected = "{\"nid\":\"nid-100\",\"given_name\":\"Scott\",\"sur_name\":\"Tiger\"," +
-                "\"date_of_birth\":null,\"dob_type\":null,\"gender\":\"M\",\"occupation\":null," +
+                "\"date_of_birth\":\"1970-11-06T00:00:00+05:30\",\"dob_type\":null,\"gender\":\"M\",\"occupation\":null," +
                 "\"edu_level\":null,\"present_address\":{\"address_line\":null,\"division_id\":\"10\"," +
                 "\"district_id\":\"04\",\"upazila_id\":\"09\",\"city_corporation_id\":\"20\"," +
                 "\"union_or_urban_ward_id\":\"01\"},\"status\":null,\"bin_brn\":null,\"household_code\":null," +
                 "\"relations\":[{\"type\":\"mother\",\"given_name\":\"Mother of Scott\",\"sur_name\":\"Tiger\"}]," +
-                "\"active\":false,\"hid_card_status\":null}";
-        String actual = objectMapper.writeValueAsString(patient);
-        assertEquals(expected, actual);
+                "\"active\":false,\"hid_card_status\":null,\"created\": \"2017-01-30T17:28:54.363+05:30\",\n" +
+                "  \"modified\": \"2017-01-30T17:28:54.363+05:30\"}";
+        Patient expectedPatient = objectMapper.readValue(expected, Patient.class);
+        assertEquals(expectedPatient, patient);
     }
 
     @Test

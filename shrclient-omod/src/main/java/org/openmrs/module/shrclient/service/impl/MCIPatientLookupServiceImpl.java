@@ -26,7 +26,6 @@ import org.openmrs.module.shrclient.web.controller.dto.EncounterEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -52,7 +51,7 @@ public class MCIPatientLookupServiceImpl extends BaseOpenmrsService implements M
     @Autowired
     public MCIPatientLookupServiceImpl(@Qualifier("hieEmrPatientService") EMRPatientService emrPatientService, PropertiesReader propertiesReader,
                                        IdentityStore identityStore, @Qualifier("hieEmrEncounterService") EMREncounterService emrEncounterService,
-                                       EMRPatientMergeService emrPatientMergeService) {
+                                       @Qualifier("hieEmrPatientMergeService") EMRPatientMergeService emrPatientMergeService) {
         this.emrPatientService = emrPatientService;
         this.propertiesReader = propertiesReader;
         this.identityStore = identityStore;

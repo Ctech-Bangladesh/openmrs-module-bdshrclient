@@ -13,7 +13,6 @@ import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.transaction.AFTransactionManager;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.transaction.support.AtomFeedSpringTransactionManager;
-import org.openmrs.module.shrclient.feeds.shr.ShrFeedEventWorker;
 import org.openmrs.module.shrclient.handlers.ClientRegistry;
 import org.openmrs.module.shrclient.util.PropertiesReader;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -28,25 +27,23 @@ public class CatchmentFeedProcessor {
     private String feedUrl;
     private Map<String, String> requestHeaders;
     private ClientRegistry clientRegistry;
-    private PropertiesReader propertiesReader;
 
     public CatchmentFeedProcessor(String feedUrl,
                                   Map<String, String> requestHeaders,
-                                  ClientRegistry clientRegistry, PropertiesReader propertiesReader) {
+                                  ClientRegistry clientRegistry) {
         this.feedUrl = feedUrl;
         this.requestHeaders = requestHeaders;
         this.clientRegistry = clientRegistry;
-        this.propertiesReader = propertiesReader;
     }
 
-    public void process(ShrFeedEventWorker shrFeedEventWorker) throws URISyntaxException {
-        atomFeedClient(new URI(this.feedUrl), shrFeedEventWorker, 
-                propertiesReader.getShrMaxFailedEvent()).processEvents();
+    public void process(EventWorker feedEventWorker, int maxFailedEvent) throws URISyntaxException {
+        atomFeedClient(new URI(this.feedUrl), feedEventWorker,
+                maxFailedEvent).processEvents();
     }
 
-    public void processFailedEvents(ShrFeedEventWorker shrFeedEventWorker) throws URISyntaxException {
-        atomFeedClient(new URI(this.feedUrl), shrFeedEventWorker,
-                propertiesReader.getShrMaxFailedEvent()).processFailedEvents();
+    public void processFailedEvents(EventWorker feedEventWorker, int maxFailedEvent) throws URISyntaxException {
+        atomFeedClient(new URI(this.feedUrl), feedEventWorker,
+                maxFailedEvent).processFailedEvents();
     }
 
     private AtomFeedProperties getAtomFeedProperties(int maxFailedEvents) {
