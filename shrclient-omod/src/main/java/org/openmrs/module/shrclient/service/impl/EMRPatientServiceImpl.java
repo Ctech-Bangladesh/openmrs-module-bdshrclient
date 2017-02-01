@@ -147,7 +147,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
     }
 
     private boolean shouldProcessEvent(Patient updatePatient, PatientIdMapping patientIdMapping) {
-        if (patientIdMapping == null) return false;
+        if (patientIdMapping == null) return true;
         Date lastSyncDateTime = patientIdMapping.getLastSyncDateTime();
         Date patientModifiedTime = updatePatient.getModifiedTime();
 
