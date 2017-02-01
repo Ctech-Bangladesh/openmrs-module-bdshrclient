@@ -10,6 +10,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PatientService;
+import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -32,7 +34,6 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
     private EMRPatientService emrPatientService;
-
 
     @Test
     public void shouldSaveAMCIPatientAsEmrPatient() throws Exception {
@@ -180,7 +181,7 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         assertEquals("house 1", personAddress.getAddress1());
 
         org.openmrs.module.shrclient.model.Patient patientUpdateResponse = getPatientFromJson("patients_response/patient_with_updated_address.json");
-
+        patientUpdateResponse.setModifiedTime(DateUtil.addMinutes(new Date(), 15));
         emrPatientService.createOrUpdateEmrPatient(patientUpdateResponse);
 
         Patient updatedPatient = patientService.getPatient(1);
@@ -215,6 +216,7 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         assertAttribute(savedPatient, EDUCATION_ATTRIBUTE_TYPE, "304");
 
         org.openmrs.module.shrclient.model.Patient patientUpdateResponse = getPatientFromJson("patients_response/patient_with_removed_attribute.json");
+        patientUpdateResponse.setModifiedTime(DateUtil.addMinutes(new Date(), 15));
         emrPatientService.createOrUpdateEmrPatient(patientUpdateResponse);
 
         Patient updatedPatient = patientService.getPatient(1);
@@ -244,15 +246,15 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         assertAttribute(savedPatient, FATHER_NAME_ATTRIBUTE_TYPE, "Md. Sakib Ali Khan");
         assertAttribute(savedPatient, SPOUSE_NAME_ATTRIBUTE_TYPE, "Azad Khan");
 
-        org.openmrs.module.shrclient.model.Patient patientUpdateResponse = getPatientFromJson("patients_response/patientWithFatherAttribute.json" +
-                "");
+        org.openmrs.module.shrclient.model.Patient patientUpdateResponse = getPatientFromJson("patients_response/patientWithFatherAttribute.json");
+        patientUpdateResponse.setModifiedTime(DateUtil.addMinutes(new Date(), 15));
+
         emrPatientService.createOrUpdateEmrPatient(patientUpdateResponse);
 
         Patient updatedPatient = patientService.getPatient(1);
         assertAttribute(updatedPatient, FATHER_NAME_ATTRIBUTE_TYPE, "Md. Sakib Ali Khan");
         assertNull(updatedPatient.getAttribute(MOTHER_NAME_ATTRIBUTE_TYPE));
         assertNull(updatedPatient.getAttribute(SPOUSE_NAME_ATTRIBUTE_TYPE));
-
     }
 
     @Test
@@ -266,6 +268,7 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(2, savedPatient.getIdentifiers().size());
         PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE);
         assertEquals(healthId.getIdentifier(), "11421467785");
+        patient.setModifiedTime(new Date());
 
         emrPatientService.createOrUpdateEmrPatient(patient);
 

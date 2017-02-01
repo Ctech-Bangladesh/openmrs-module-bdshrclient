@@ -79,11 +79,11 @@ public class Patient {
     @JsonProperty("hid_card_status")
     private String hidCardStatus;
 
-    @JsonProperty(value = "modified", access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(value = "modified", access = JsonProperty.Access.WRITE_ONLY)
     @JsonInclude(NON_NULL)
     private String modifiedTime;
 
-    @JsonProperty(value = "created", access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(value = "created", access = JsonProperty.Access.WRITE_ONLY)
     @JsonInclude(NON_NULL)
     private String createdTime;
 
