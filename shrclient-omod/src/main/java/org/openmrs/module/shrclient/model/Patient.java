@@ -338,6 +338,10 @@ public class Patient {
         return modifiedTime == null ? null : DateUtil.parseDate(modifiedTime);
     }
 
+    public void setModifiedTime(Date modifiedTime) {
+        this.modifiedTime = modifiedTime == null ? null : DateUtil.toDateString(modifiedTime, DateUtil.ISO_8601_DATE_IN_SECS_FORMAT2);
+    }
+
     public Date getCreatedTime() {
         return createdTime == null ? null : DateUtil.parseDate(createdTime);
     }
