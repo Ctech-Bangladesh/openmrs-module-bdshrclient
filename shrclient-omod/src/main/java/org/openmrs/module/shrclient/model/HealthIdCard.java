@@ -35,7 +35,7 @@ public class HealthIdCard {
     }
     @JsonProperty("banglaName")
     public String getBanglaName() {
-        if (StringUtils.isNotBlank(givenNameLocal) && StringUtils.isNotBlank(givenNameLocal))
+        if (StringUtils.isNotBlank(givenNameLocal) && StringUtils.isNotBlank(familyNameLocal))
             return givenNameLocal + " " + familyNameLocal;
         if (StringUtils.isNotBlank(givenNameLocal) ) return givenNameLocal;
         if (StringUtils.isNotBlank(familyNameLocal) ) return familyNameLocal;
