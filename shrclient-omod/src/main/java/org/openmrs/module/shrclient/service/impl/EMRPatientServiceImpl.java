@@ -76,13 +76,14 @@ public class EMRPatientServiceImpl implements EMRPatientService {
     @Override
     public org.openmrs.Patient createOrUpdateEmrPatient(Patient mciPatient) {
         try {
-            AddressHelper addressHelper = new AddressHelper();
             org.openmrs.Patient emrPatient = getEMRPatientByHealthId(mciPatient.getHealthId());
             PatientIdMapping patientIdMapping = (PatientIdMapping) idMappingsRepository.findByExternalId(mciPatient.getHealthId(), IdMappingType.PATIENT);
 
-            if (!shouldProcessEvent(mciPatient, patientIdMapping)) {
+            if (shouldNotProcessEvent(mciPatient, patientIdMapping)) {
                 return emrPatient;
             }
+
+            AddressHelper addressHelper = new AddressHelper();
 
             if (emrPatient == null) {
                 emrPatient = new org.openmrs.Patient();
@@ -145,7 +146,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
         }
     }
 
-    private boolean shouldProcessEvent(Patient updatePatient, PatientIdMapping patientIdMapping) {
+    private boolean shouldNotProcessEvent(Patient updatePatient, PatientIdMapping patientIdMapping) {
         if (patientIdMapping == null) return false;
         Date serverUpdateDateTime = patientIdMapping.getServerUpdateDateTime();
         Date lastSyncDateTime = patientIdMapping.getLastSyncDateTime();
