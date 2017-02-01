@@ -16,15 +16,11 @@ import java.io.IOException;
 
 public class DefaultPatientFeedWorker implements EventWorker {
     private final EMRPatientService emrPatientService;
-    private final PropertiesReader propertiesReader;
-    private final ClientRegistry clientRegistry;
 
     private final Logger logger = Logger.getLogger(DefaultEncounterFeedWorker.class);
 
-    public DefaultPatientFeedWorker(EMRPatientService emrPatientService, PropertiesReader propertiesReader, ClientRegistry clientRegistry) {
+    public DefaultPatientFeedWorker(EMRPatientService emrPatientService) {
         this.emrPatientService = emrPatientService;
-        this.propertiesReader = propertiesReader;
-        this.clientRegistry = clientRegistry;
     }
 
     @Override
