@@ -22,7 +22,7 @@ input {
 }
 
 .container {
-    width: 960px;
+    width: 21cm;
     margin: 0 auto;
 }
 
@@ -47,31 +47,39 @@ select.user {
 }
 .print_wrap{
     margin:0 auto;
+    overflow: hidden;
+    clear: both;
 }
 
 .healthId_body{
-    padding: 5px 10px 5px 10px;
+    padding: 5px 10px 0px 10px;
 }
 
 .healthId {
     border-style: solid;
-    width: 8.5cm;
-    height: 5.3cm;
-    margin: 0.5cm;
-    display: inline-block;
-    font-size: 10px;
+    width: 8.5cm !important;
+    height: 5.3cm !important;
+    margin: 30px;
+    float: left;
     border-color: #afafaf;
     border-width: medium;
+    position: relative;
+    box-sizing: border-box;
+    page-break-inside: avoid;
 }
 
 .heading{
     height : 26px;
     font-size: 10px;
-    font-weight: bold;
 }
 
-#bdgov , #hidCard {
+#bdgov {
     padding-left: 31px;
+}
+
+#hidCard{
+    text-align: center;
+    font-weight: bold;
 }
 
 .details_1{
@@ -84,33 +92,60 @@ select.user {
     height:26px;
 }
 
-.name{
-    display: block;
+.label_tag{
+    font-size:8px;
 }
 
-.bangla_name{
-    display: block;
-    line-height: 4px;
-    padding-left: 20px;
+#english_and_bangla_name{
+    height: 36px;
 }
 
-.issued,.dob, .gender, .hid{
-    display: inline-block;
-    padding-top: 10px;
+#name,#hid,#gender,#dob,#issued{
+    font-size:12px;
+    display:inline;
 }
 
-.gender,.issued{
-    float: right;
+#name,#hid{
+    font-weight: bold;
 }
+
+#bangla_name{
+    display:block;
+    padding-left:19px;
+    font-size:12px;
+}
+
+#name_tag,#hid_tag, #gender_tag,#dob_tag,#issued_tag,#address_tag{
+    display:inline-block;
+}
+
+#hid_and_issued{
+    display:block;
+    clear: both;
+    overflow: hidden;
+}
+.form-field{
+    width:50%;
+    padding-right:5px;
+    float: left;
+    box-sizing: border-box;
+}
+
 .address_details{
-    padding-top: 10px;
-    font-size: 9px;
+    display: block;
     line-height: 10px;
-    height: 25px;
+}
+
+#address{
+    display:inline;
+    font-size: 10px;
 }
 
 .hid_footer{
     background-color: lightgrey;
+    padding-bottom: 5px;
+    bottom: 0;
+    position: absolute;
 }
 
 .errorMessage {
@@ -142,19 +177,21 @@ select.user {
         display: none !important;
     }
     @page {
-        margin-left: 0.2cm;
-        margin-right: 0.2cm;
+        margin-left: 0.3cm;
+        margin-right: 0.3cm;
         margin-top: 0.5cm;
         margin-bottom: 0.5cm;
     }
     .healthId {
         border-style: solid;
-        width: 8.5cm;
-        height:5.3cm;
-        margin:10px;
-        display: inline-block;
-        font-size: 10px;
+        width: 8.5cm !important;
+        height: 5.3cm !important;
+        margin: 30px;
+        border-color: #afafaf;
+        border-width: medium;
+        position: relative;
         box-sizing: border-box;
+        page-break-inside: avoid;
     }
 }
 

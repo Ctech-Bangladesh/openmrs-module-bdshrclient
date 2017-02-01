@@ -223,20 +223,44 @@
 
                         <div class="patient_details">
                             <div class="details_1">
-                                <label class="name">&#2472;&#2494;&#2478;: <b>{{englishName}}</b> </label>
-                                <label class="bangla_name"> {{banglaName}} </label>
-                                <label class="hid">Health Identifier number: <b>{{#convertDigitToBangla}}{{hid}}{{/convertDigitToBangla}}</b>
-                                </label>
-                                <label class="gender">&#2482;&#2495;&#2457;&#2509;&#2455;: <b>{{#getGenderInBangla}}{{gender}}{{/getGenderInBangla}}</b>
-                                </label>
-                                <label class="dob">&#2460;&#2472;&#2509;&#2478; &#2468;&#2494;&#2480;&#2495;&#2454;: <b>{{#convertDigitToBangla}}{{dob}}{{/convertDigitToBangla}}</b>
-                                </label>
-                                <label class="issued">&#2474;&#2509;&#2480;&#2470;&#2494;&#2472;&#2503;&#2480; &#2468;&#2494;&#2480;&#2495;&#2454;: <b>{{#convertDigitToBangla}}{{issuedDate}}{{/convertDigitToBangla}}</b>
-                                </label>
+                                <div id="english_and_bangla_name"><div class="label_tag" id="name_tag">&#2472;&#2494;&#2478;:</div>
+
+                                <div id="name">{{englishName}}</div>
+
+                                <div id="bangla_name">{{banglaName}}</div></div>
+
+
+                                <div id="dob_and_gender">
+                                   <div class = "form-field">
+                                        <div class="label_tag"
+                                            id="dob_tag">&#2460;&#2472;&#2509;&#2478; &#2468;&#2494;&#2480;&#2495;&#2454;:</div>
+
+                                       <div id="dob">{{#convertDigitToBangla}}{{dob}}{{/convertDigitToBangla}}</div>
+                                   </div>
+                                    <div class = "form-field">
+                                        <div class="label_tag" id="gender_tag">&#2482;&#2495;&#2457;&#2509;&#2455;:</div>
+
+                                        <div id="gender">{{#getGenderInBangla}}{{gender}}{{/getGenderInBangla}}</div></div>
+                                    </div>
+
+                                <div id="hid_and_issued">
+                                    <div class = "form-field">
+                                        <div class="label_tag" id="hid_tag">HID:</div>
+
+                                        <div id="hid">{{hid}}</div>
+                                    </div>
+                                    <div class = "form-field">
+                                        <div class="label_tag"
+                                             id="issued_tag">&#2474;&#2509;&#2480;&#2470;&#2494;&#2472;&#2503;&#2480; &#2468;&#2494;&#2480;&#2495;&#2454;:</div>
+
+                                        <div id="issued">{{#convertDigitToBangla}}{{issuedDate}}{{/convertDigitToBangla}}</div>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div class="address_details">
-                                <div class="address">&#2464;&#2495;&#2453;&#2494;&#2472;&#2494;: {{address}}</div>
+                                <div class="label_tag" id="address_tag">&#2464;&#2495;&#2453;&#2494;&#2472;&#2494;:</div> <div id="address">{{address}}</div>
                             </div>
 
                         </div>
