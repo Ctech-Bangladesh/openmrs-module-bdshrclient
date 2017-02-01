@@ -107,7 +107,7 @@
                         uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0"/>
 
     <patient_id_mapping id="50" internal_id="75e04d42-3ca8-11e3-bf2b-0800271c1b75" external_id="11421467785"
-                    uri="/patients/11421467785"/>
+                    uri="/patients/11421467785" last_sync_datetime="2015-04-06 15:05:16.916" created_at="2015-04-06 15:05:16.916"/>
 
     <users user_id="777" person_id="2" system_id="3-6" username="shrclientsystem" retired="false"
            password="ff6d1655327d385e11a04e1632b4f33ceb8fafd2" salt="5d32c5fd9fde391c755f1f4dfd5e1d6e3debe6"
