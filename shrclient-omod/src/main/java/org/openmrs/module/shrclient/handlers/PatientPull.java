@@ -74,7 +74,7 @@ public class PatientPull {
     private DefaultPatientFeedWorker getPatientFeedWorker() {
         EMRPatientService emrPatientService = PlatformUtil.getRegisteredComponent("hieEmrPatientService", EMRPatientService.class);
         PropertiesReader propertiesReader = PlatformUtil.getPropertiesReader();
-        return new DefaultPatientFeedWorker(emrPatientService, propertiesReader, clientRegistry);
+        return new DefaultPatientFeedWorker(emrPatientService);
     }
 
     private Map<String, String> getRequestHeaders(PropertiesReader propertiesReader) throws IdentityUnauthorizedException {

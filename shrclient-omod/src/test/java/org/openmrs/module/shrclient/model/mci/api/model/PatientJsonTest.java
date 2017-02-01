@@ -29,7 +29,6 @@ public class PatientJsonTest {
     public void setup() {
         
         objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         patient = new Patient();
         patient.setGivenName("Scott");
