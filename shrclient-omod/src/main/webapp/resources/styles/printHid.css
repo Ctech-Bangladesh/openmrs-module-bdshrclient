@@ -82,8 +82,8 @@ select.user {
     font-weight: bold;
 }
 
-.details_1{
-    padding-top: 10px;
+.patient_details {
+    padding-top: 2px;
 }
 
 .healthId img {
@@ -98,6 +98,13 @@ select.user {
 
 #english_and_bangla_name{
     height: 36px;
+}
+
+.name_no_overflow {
+    overflow: hidden;
+    height: 18px;
+    text-overflow: clip;
+    white-space: nowrap;
 }
 
 #name,#hid,#gender,#dob,#issued{
@@ -134,16 +141,29 @@ select.user {
 .address_details{
     display: block;
     line-height: 10px;
+    overflow: hidden;
+    height: 38px;
 }
 
-#address{
+.address {
     display:inline;
-    font-size: 10px;
+    font-size: 9px;
+    overflow: hidden;
+}
+
+.address_line {
+    height: 13px;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+.address .address_levels {
+    height: 30px;
 }
 
 .hid_footer{
     background-color: lightgrey;
-    padding-bottom: 5px;
+    padding-bottom: 1px;
     bottom: 0;
     position: absolute;
 }
@@ -197,8 +217,8 @@ select.user {
 
 .disclaimer{
     font-size: 8px;
-    line-height: 10px;
-    padding-top: 2px;
+    line-height: 9px;
+    padding-top: 0px;
     text-align: center;
 }
 
