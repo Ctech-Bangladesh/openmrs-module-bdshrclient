@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openmrs.module.shrclient.model.HealthIdCard;
 import org.openmrs.module.shrclient.model.User;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,18 +64,39 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
         String content = result.getResponse().getContentAsString();
         Map[] healthIdCards = new ObjectMapper().readValue(content, Map[].class);
         assertEquals(4, healthIdCards.length);
-        assertHealthIdCard(healthIdCards[0], "M", "Sayed Azam", "", "22-10-1992",
-                "22-10-2016", "HID1",
-                "lane 1, কালীগঞ্জ, গাজীপুর, ঢাকা");
-        assertHealthIdCard(healthIdCards[1], "O", "Farukh Engineer",
-                "", "22-10-1993", "22-11-2016", "HID2",
-                "lane 1, ওয়ার্ডে কোন -1, বাহাদুরসাদী, কালীগঞ্জ, গাজীপুর, ঢাকা");
-        assertHealthIdCard(healthIdCards[2], "F", "Babitha Chatterjee",
-                "", "22-10-1992", "22-12-2016", "HID3",
-                "lane 1, Urban Ward No-01, Kaliganj Paurashava, কালীগঞ্জ, গাজীপুর, ঢাকা");
-        assertHealthIdCard(healthIdCards[3], "F", "Babitha Chatterjee",
-                "বাবিথা", "22-10-1992", "22-12-2016", "HID4",
-                "lane 1, Urban Ward No-01, Kaliganj Paurashava, কালীগঞ্জ, গাজীপুর, ঢাকা");
+
+        HealthIdCard.HIDCardAddress hidCardAddress = new HealthIdCard().addAddress();
+        hidCardAddress.setAddress1("lane 1");
+        hidCardAddress.setAddress5("কালীগঞ্জ");
+        hidCardAddress.setCountyDistrict("গাজীপুর");
+        hidCardAddress.setStateProvince("ঢাকা");
+        assertHealthIdCard(healthIdCards[0], "M", "Sayed", "Azam",
+                null, null, "22-10-1992",
+                "22-10-2016", "HID1", hidCardAddress);
+
+        HealthIdCard.HIDCardAddress hidCardAddress1 = new HealthIdCard().addAddress();
+        hidCardAddress1.setAddress1("lane 1");
+        hidCardAddress1.setAddress2("ওয়ার্ডে কোন -1");
+        hidCardAddress1.setAddress3("বাহাদুরসাদী");
+        hidCardAddress1.setAddress5("কালীগঞ্জ");
+        hidCardAddress1.setCountyDistrict("গাজীপুর");
+        hidCardAddress1.setStateProvince("ঢাকা");
+        assertHealthIdCard(healthIdCards[1], "O", "Farukh", "Engineer",
+                null, null, "22-10-1993", "22-11-2016",
+                "HID2", hidCardAddress1);
+
+        HealthIdCard.HIDCardAddress hidCardAddress2 = new HealthIdCard().addAddress();
+        hidCardAddress2.setAddress1("lane 1");
+        hidCardAddress2.setAddress3("Urban Ward No-01");
+        hidCardAddress2.setAddress4("Kaliganj Paurashava");
+        hidCardAddress2.setAddress5("কালীগঞ্জ");
+        hidCardAddress2.setCountyDistrict("গাজীপুর");
+        hidCardAddress2.setStateProvince("ঢাকা");
+        assertHealthIdCard(healthIdCards[2], "F", "Babitha", "Chatterjee", null, null,
+                "22-10-1992", "22-12-2016", "HID3", hidCardAddress2);
+
+        assertHealthIdCard(healthIdCards[3], "F", "Babitha", "Chatterjee", "বাবিথা", null,
+                "22-10-1992", "22-12-2016", "HID4", hidCardAddress2);
     }
 
     @Test
@@ -86,24 +108,44 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
         String content = result.getResponse().getContentAsString();
         Map[] healthIdCards = new ObjectMapper().readValue(content, Map[].class);
         assertEquals(2, healthIdCards.length);
-        assertHealthIdCard(healthIdCards[0], "M", "Sayed Azam",
-                "", "22-10-1992",
-                "22-10-2016", "HID1",
-                "lane 1, কালীগঞ্জ, গাজীপুর, ঢাকা");
-        assertHealthIdCard(healthIdCards[1], "O", "Farukh Engineer",
-                "", "22-10-1993", "22-11-2016", "HID2",
-                "lane 1, ওয়ার্ডে কোন -1, বাহাদুরসাদী, কালীগঞ্জ, গাজীপুর, ঢাকা");
+        HealthIdCard.HIDCardAddress hidCardAddress = new HealthIdCard().addAddress();
+        hidCardAddress.setAddress1("lane 1");
+        hidCardAddress.setAddress5("কালীগঞ্জ");
+        hidCardAddress.setCountyDistrict("গাজীপুর");
+        hidCardAddress.setStateProvince("ঢাকা");
+        assertHealthIdCard(healthIdCards[0], "M", "Sayed", "Azam",
+                null, null, "22-10-1992",
+                "22-10-2016", "HID1", hidCardAddress);
+
+        HealthIdCard.HIDCardAddress hidCardAddress1 = new HealthIdCard().addAddress();
+        hidCardAddress1.setAddress1("lane 1");
+        hidCardAddress1.setAddress2("ওয়ার্ডে কোন -1");
+        hidCardAddress1.setAddress3("বাহাদুরসাদী");
+        hidCardAddress1.setAddress5("কালীগঞ্জ");
+        hidCardAddress1.setCountyDistrict("গাজীপুর");
+        hidCardAddress1.setStateProvince("ঢাকা");
+        assertHealthIdCard(healthIdCards[1], "O", "Farukh", "Engineer", null,
+                null, "22-10-1993", "22-11-2016", "HID2", hidCardAddress1);
     }
 
-    private void assertHealthIdCard(Map healthIdCard, String expectedGender, String expectedEnglishName,
-                                    String expectedBengaliName, String expectedDob, String expectedIssuedDate, String expectedHid,
-                                    String expectedAddress) {
+    private void assertHealthIdCard(Map healthIdCard, String expectedGender, String expectedGivenName, String expectedFamilyName,
+                                    String expectedGivenNameLocal, String expectedFamilyNameLocal, String expectedDob, String expectedIssuedDate, String expectedHid,
+                                    HealthIdCard.HIDCardAddress expectedAddress) {
         assertEquals(expectedGender, healthIdCard.get("gender"));
-        assertEquals(expectedEnglishName, healthIdCard.get("englishName"));
-        assertEquals(expectedBengaliName, healthIdCard.get("banglaName"));
+        assertEquals(expectedGivenName, healthIdCard.get("givenName"));
+        assertEquals(expectedFamilyName, healthIdCard.get("familyName"));
+        assertEquals(expectedGivenNameLocal, healthIdCard.get("givenNameLocal"));
+        assertEquals(expectedFamilyNameLocal, healthIdCard.get("familyNameLocal"));
         assertEquals(expectedDob, healthIdCard.get("dob"));
         assertEquals(expectedIssuedDate, healthIdCard.get("issuedDate"));
         assertEquals(expectedHid, healthIdCard.get("hid"));
-        assertEquals(expectedAddress, healthIdCard.get("address"));
+        Map address = (Map) healthIdCard.get("address");
+        assertEquals(expectedAddress.getAddress1(), address.get("address1"));
+        assertEquals(expectedAddress.getAddress2(), address.get("address2"));
+        assertEquals(expectedAddress.getAddress3(), address.get("address3"));
+        assertEquals(expectedAddress.getAddress4(), address.get("address4"));
+        assertEquals(expectedAddress.getAddress5(), address.get("address5"));
+        assertEquals(expectedAddress.getCountyDistrict(), address.get("countyDistrict"));
+        assertEquals(expectedAddress.getStateProvince(), address.get("stateProvince"));
     }
 }

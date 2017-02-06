@@ -225,10 +225,10 @@
                             <div id="english_and_bangla_name">
                                 <div class="name_no_overflow">
                                     <span class="label_tag" id="name_tag">&#2472;&#2494;&#2478;:</span>
-                                    <span id="name">{{englishName}}</span>
+                                    <span id="name">{{givenName}} {{familyName}}</span>
                                 </div>
 
-                                <div id="bangla_name" class="name_no_overflow">{{banglaName}}</div>
+                                <div id="bangla_name" class="name_no_overflow">{{#givenNameLocal}}{{#familyNameLocal}}{{givenNameLocal}} {{familyNameLocal}}{{/familyNameLocal}}{{/givenNameLocal}}</div>
                             </div>
 
                             <div id="dob_and_gender">
@@ -262,9 +262,16 @@
                                 <div class="address_line">
                                     <span class="label_tag"
                                           id="address_tag">&#2464;&#2495;&#2453;&#2494;&#2472;&#2494;:</span>
-                                    <span id="address_line" class="address">{{address}}</span>
+                                    <span id="address_line" class="address">{{address.address1}}</span>
                                 </div>
-                                <div id="address_levels" class="address address_levels">{{address}}</div>
+                                <div id="address_levels" class="address address_levels">
+                                    <span>{{#address.address2}}{{address.address2}}, {{/address.address2}}</span>
+                                    <span>{{#address.address3}}{{address.address3}}, {{/address.address3}}</span>
+                                    <span>{{#address.address4}}{{address.address4}}, {{/address.address4}}</span>
+                                    <span>{{#address.address5}}{{address.address5}}, {{/address.address5}}</span>
+                                    <span>{{#address.countyDistrict}}{{address.countyDistrict}}, {{/address.countyDistrict}}</span>
+                                    <span>{{#address.stateProvince}}{{address.stateProvince}}{{/address.stateProvince}}</span>
+                                </div>
                             </div>
                         </div>
                     </div>

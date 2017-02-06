@@ -1,20 +1,10 @@
 package org.openmrs.module.shrclient.model;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.StringUtils;
-import org.openmrs.module.fhir.utils.DateUtil;
-
-import java.text.ParseException;
 import java.util.Date;
 
 import static org.openmrs.module.fhir.utils.DateUtil.SIMPLE_DATE_FORMAT_DATE_MONTH_YEAR_ORDER;
 import static org.openmrs.module.fhir.utils.DateUtil.toDateString;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.DEFAULT, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class HealthIdCard {
     private String givenName;
     private String familyName;
@@ -29,20 +19,22 @@ public class HealthIdCard {
     public HealthIdCard() {
     }
 
-    @JsonProperty("englishName")
-    public String getEnglishName() {
-        return givenName + " " + familyName;
-    }
-    @JsonProperty("banglaName")
-    public String getBanglaName() {
-        if (StringUtils.isNotBlank(givenNameLocal) && StringUtils.isNotBlank(familyNameLocal))
-            return givenNameLocal + " " + familyNameLocal;
-        if (StringUtils.isNotBlank(givenNameLocal) ) return givenNameLocal;
-        if (StringUtils.isNotBlank(familyNameLocal) ) return familyNameLocal;
-        return "";
+    public String getGivenName() {
+        return givenName;
     }
 
-    @JsonProperty("gender")
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public String getGivenNameLocal() {
+        return givenNameLocal;
+    }
+
+    public String getFamilyNameLocal() {
+        return familyNameLocal;
+    }
+
     public String getGender() {
         return gender;
     }
@@ -51,7 +43,6 @@ public class HealthIdCard {
         this.gender = gender;
     }
 
-    @JsonProperty("dob")
     public String getDob() {
         return toDateString(dob, SIMPLE_DATE_FORMAT_DATE_MONTH_YEAR_ORDER);
     }
@@ -60,12 +51,10 @@ public class HealthIdCard {
         this.dob = dob;
     }
 
-    @JsonProperty("address")
-    public String getAddress() {
-        return address.getAsString();
+    public HIDCardAddress getAddress() {
+        return address;
     }
 
-    @JsonProperty("hid")
     public String getHid() {
         return hid;
     }
@@ -74,12 +63,10 @@ public class HealthIdCard {
         this.hid = hid;
     }
 
-    @JsonProperty("issuedDate")
     public String getIssuedDate() {
         return toDateString(issuedDate, SIMPLE_DATE_FORMAT_DATE_MONTH_YEAR_ORDER);
     }
 
-    @JsonIgnore
     public void setIssuedDate(Date issuedDate) {
         this.issuedDate = issuedDate;
     }
@@ -114,6 +101,9 @@ public class HealthIdCard {
         private String address5;
         private String countyDistrict;
         private String stateProvince;
+
+        public HIDCardAddress() {
+        }
 
         public String getAddress1() {
             return address1;
@@ -169,25 +159,6 @@ public class HealthIdCard {
 
         public void setStateProvince(String stateProvince) {
             this.stateProvince = stateProvince;
-        }
-
-        public String getAsString() {
-            String delimiter = ", ";
-            StringBuilder builder = new StringBuilder(address1);
-            builder.append(delimiter);
-            if (StringUtils.isNotBlank(address2)) {
-                builder.append(address2).append(delimiter);
-            }
-            if (StringUtils.isNotBlank(address3)) {
-                builder.append(address3).append(delimiter);
-            }
-            if (StringUtils.isNotBlank(address4)) {
-                builder.append(address4).append(delimiter);
-            }
-            if (StringUtils.isNotBlank(address5)) {
-                builder.append(address5).append(delimiter);
-            }
-            return builder.append(countyDistrict).append(delimiter).append(stateProvince).toString();
         }
     }
 }

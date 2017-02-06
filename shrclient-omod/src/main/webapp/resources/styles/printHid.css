@@ -142,7 +142,7 @@ select.user {
     display: block;
     line-height: 10px;
     overflow: hidden;
-    height: 38px;
+    height: 32px;
 }
 
 .address {
@@ -155,10 +155,6 @@ select.user {
     height: 13px;
     text-overflow: clip;
     white-space: nowrap;
-}
-
-.address .address_levels {
-    height: 30px;
 }
 
 .hid_footer{
