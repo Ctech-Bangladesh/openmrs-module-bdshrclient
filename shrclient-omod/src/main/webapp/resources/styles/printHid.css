@@ -158,10 +158,11 @@ select.user {
 }
 
 .hid_footer{
-    background-color: lightgrey;
     padding-bottom: 1px;
     bottom: 0;
     position: absolute;
+    border: medium none;
+    border-top: groove #eee;
 }
 
 .errorMessage {
