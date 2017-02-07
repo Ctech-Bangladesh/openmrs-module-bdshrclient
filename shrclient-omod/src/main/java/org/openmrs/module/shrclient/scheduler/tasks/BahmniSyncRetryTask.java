@@ -12,12 +12,8 @@ public class BahmniSyncRetryTask extends AbstractBahmniSyncTask {
 
     @Override
     protected void executeBahmniTask(PatientPush patientPush, EncounterPush encounterPush, PropertiesReader propertiesReader) {
-        log.debug("SCHEDULED JOB : SHR Patient retry Sync Task");
-        try {
-            getFeedClient(OPENMRS_PATIENT_FEED_URI, patientPush, propertiesReader.getMciMaxFailedEvent()).processFailedEvents();
-            getFeedClient(OPENMRS_ENCOUNTER_FEED_URI, encounterPush, propertiesReader.getShrMaxFailedEvent()).processFailedEvents();
-        } catch (URISyntaxException e) {
-            log.error(e.getMessage());
-        }
+        /*
+        * todo: for now BahmniSyncTask processes new and failed events both. Failed events should be processed here.
+        * */
     }
 }
