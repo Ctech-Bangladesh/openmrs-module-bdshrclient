@@ -1285,4 +1285,18 @@
             <column name="uuid" valueComputed=" uuid() "/>
         </insert>
     </changeSet>
+
+    <changeSet id="bdshrclient-070217-1208" author="Dubey/Abhilash" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.BahmniSyncRetryTask';
+            </sqlCheck>
+        </preConditions>
+        <comment>Removing BahmniSyncRetryTask</comment>
+        <sql>
+            delete from scheduler_task_config where
+            schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.BahmniSyncRetryTask';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
