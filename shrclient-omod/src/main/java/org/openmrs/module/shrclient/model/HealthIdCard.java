@@ -14,6 +14,7 @@ public class HealthIdCard {
     private Date dob;
     private HIDCardAddress address;
     private String hid;
+    private String nid;
     private Date issuedDate;
 
     public HealthIdCard() {
@@ -91,6 +92,14 @@ public class HealthIdCard {
 
     public void setFamilyNameLocal(String familyNameLocal) {
         this.familyNameLocal = familyNameLocal;
+    }
+
+    public String getNid() {
+        return nid;
+    }
+
+    public void setNid(String nid) {
+        this.nid = nid;
     }
 
     public class HIDCardAddress {
