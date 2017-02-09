@@ -1,3 +1,8 @@
+@font-face {font-family:"SolaimanLipi";src:url("SolaimanLipi_29-05-06.eot?") format("eot"),
+                                            url("SolaimanLipi_29-05-06.woff") format("woff"),
+                                            url("SolaimanLipi_29-05-06.ttf") format("truetype"),
+                                            url("SolaimanLipi_29-05-06.svg#SolaimanLipi") format("svg");font-weight:normal;font-style:normal;}
+
 body {
     font-family: Arial, Sans-serif !important;
     color: #333 !important;
@@ -42,17 +47,12 @@ select.user {
 
 #printArea {
     display: none;
-    font-family: Helvetica, Arial SansSerif;
-
+    font-family: SolaimanLipi !important;
 }
 .print_wrap{
     margin:0 auto;
     overflow: hidden;
     clear: both;
-}
-
-.healthId_body{
-    padding: 5px 10px 0px 10px;
 }
 
 .healthId {
@@ -69,35 +69,53 @@ select.user {
 }
 
 .heading{
+    padding: 3px 10px 14px 10px;
     height : 26px;
-    font-size: 10px;
+    font-size: 11px;
+    border: medium none;
+    border-bottom: groove #eee;
+    line-height: 14px;
 }
 
-#bdgov {
-    padding-left: 31px;
+.bdgov {
+    display: block;
+    text-align: center;
 }
 
 #hidCard{
     text-align: center;
     font-weight: bold;
+    font-size: 11px !important;
 }
 
 .patient_details {
-    padding-top: 2px;
+    padding: 0px 10px 0px 10px;
 }
 
 .healthId img {
     float: left;
-    width:26px;
-    height:26px;
+    width:39px;
+    height:39px;
 }
 
 .label_tag{
-    font-size:8px;
+    font-size:10px;
 }
 
-#english_and_bangla_name{
-    height: 36px;
+#english_name{
+    display: block;
+    clear: both;
+    overflow: hidden;
+    height: 16px;
+}
+
+#bangla_name{
+    display: block;
+    clear: both;
+    overflow: hidden;
+    height: 14px;
+    padding-top: 2px;
+    font-size:10px;
 }
 
 .name_no_overflow {
@@ -107,29 +125,22 @@ select.user {
     white-space: nowrap;
 }
 
-#name,#hid,#gender,#dob,#issued{
-    font-size:12px;
+#name,#nid,#gender,#dob,#issued{
+    font-size:10px;
     display:inline;
 }
 
-#name,#hid{
-    font-weight: bold;
-}
-
-#bangla_name{
-    display:block;
-    padding-left:19px;
-    font-size:12px;
-}
-
-#name_tag,#hid_tag, #gender_tag,#dob_tag,#issued_tag,#address_tag{
+#name_tag,#nid_tag, #gender_tag,#dob_tag,#issued_tag,#address_tag{
     display:inline-block;
 }
 
-#hid_and_issued{
+#dob_and_gender, #nid_and_issued{
     display:block;
     clear: both;
     overflow: hidden;
+    height: 16px;
+    line-height: 16px;
+    font-size:10px;
 }
 .form-field{
     width:50%;
@@ -140,21 +151,15 @@ select.user {
 
 .address_details{
     display: block;
-    line-height: 10px;
+    line-height: 14px;
     overflow: hidden;
-    height: 32px;
+    height: 30px;
 }
 
 .address {
     display:inline;
-    font-size: 9px;
+    font-size: 10px;
     overflow: hidden;
-}
-
-.address_line {
-    height: 13px;
-    text-overflow: clip;
-    white-space: nowrap;
 }
 
 .hid_footer{
@@ -209,11 +214,12 @@ select.user {
         position: relative;
         box-sizing: border-box;
         page-break-inside: avoid;
+        float: left;
     }
 }
 
 .disclaimer{
-    font-size: 8px;
+    font-size: 7px;
     line-height: 9px;
     padding-top: 0px;
     text-align: center;

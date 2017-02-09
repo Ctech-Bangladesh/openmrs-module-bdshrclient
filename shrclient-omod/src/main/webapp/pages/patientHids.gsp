@@ -216,61 +216,73 @@
                         <div class="heading">
                             <img src="${ui.resourceLink("shrclient", "images/gov_logo.jpg")}" alt="dhis_logo"/>
 
-                            <div id="bdgov">&#2455;&#2467;&#2474;&#2509;&#2480;&#2460;&#2494;&#2468;&#2472;&#2509;&#2468;&#2509;&#2480;&#2496;&#32;&#2476;&#2494;&#2434;&#2482;&#2494;&#2470;&#2503;&#2486;&#32;&#2488;&#2480;&#2453;&#2494;&#2480;&#44;&#32;&#2488;&#2509;&#2476;&#2494;&#2488;&#2509;&#2469;&#2509;&#2479;&#32;&#2451;&#32;&#2474;&#2480;&#2495;&#2476;&#2494;&#2480;&#32;&#2453;&#2482;&#2509;&#2479;&#2494;&#2467;&#32;&#2478;&#2472;&#2509;&#2468;&#2509;&#2480;&#2467;&#2494;&#2482;&#2527;</div>
+                            <div><span
+                                    class="bdgov">&#2455;&#2467;&#2474;&#2509;&#2480;&#2460;&#2494;&#2468;&#2472;&#2509;&#2468;&#2509;&#2480;&#2496;&#32;&#2476;&#2494;&#2434;&#2482;&#2494;&#2470;&#2503;&#2486;&#32;&#2488;&#2480;&#2453;&#2494;&#2480;</span>
+                            </div>
 
-                            <div id="hidCard">Health ID card</div>
+                            <div><span
+                                    class="bdgov">&#32;&#2488;&#2509;&#2476;&#2494;&#2488;&#2509;&#2469;&#2509;&#2479;&#32;&#2451;&#32;&#2474;&#2480;&#2495;&#2476;&#2494;&#2480;&#32;&#2453;&#2482;&#2509;&#2479;&#2494;&#2467;&#32;&#2478;&#2472;&#2509;&#2468;&#2509;&#2480;&#2467;&#2494;&#2482;&#2527;</span>
+                            </div>
+
+                            <div id="hidCard">Health ID: {{hid}}</div>
                         </div>
 
                         <div class="patient_details">
-                            <div id="english_and_bangla_name">
+                            <div id="english_name">
                                 <div class="name_no_overflow">
-                                    <span class="label_tag" id="name_tag">&#2472;&#2494;&#2478;:</span>
+                                    <span class="label_tag" id="name_tag">Name:</span>
                                     <span id="name">{{givenName}} {{familyName}}</span>
                                 </div>
+                            </div>
 
-                                <div id="bangla_name" class="name_no_overflow">{{#givenNameLocal}}{{#familyNameLocal}}{{givenNameLocal}} {{familyNameLocal}}{{/familyNameLocal}}{{/givenNameLocal}}</div>
+
+                            <div id="bangla_name" class="name_no_overflow">
+                                {{#givenNameLocal}}{{#familyNameLocal}}
+                                <span class="label_tag" id="bangla_name_tag">&#2472;&#2494;&#2478;&#2435;</span>
+                                <span>{{givenNameLocal}} {{familyNameLocal}}</span>
+                                {{/familyNameLocal}}{{/givenNameLocal}}
                             </div>
 
                             <div id="dob_and_gender">
                                 <div class="form-field">
                                     <span class="label_tag"
-                                          id="dob_tag">&#2460;&#2472;&#2509;&#2478; &#2468;&#2494;&#2480;&#2495;&#2454;:</span>
-                                    <span id="dob">{{#convertDigitToBangla}}{{dob}}{{/convertDigitToBangla}}</span>
+                                          id="dob_tag">&#2460;&#2472;&#2509;&#2478; &#2468;&#2494;&#2480;&#2495;&#2454;&#2435;</span>
+                                    <span id="dob">{{#convertDigitToBangla}}{{dob}}{{/convertDigitToBangla}} &#2439;&#2434;</span>
                                 </div>
 
                                 <div class="form-field">
                                     <span class="label_tag"
-                                          id="gender_tag">&#2482;&#2495;&#2457;&#2509;&#2455;:</span>
+                                          id="gender_tag">&#2482;&#2495;&#2457;&#2509;&#2455;&#2435;</span>
                                     <span id="gender">{{#getGenderInBangla}}{{gender}}{{/getGenderInBangla}}</span>
                                 </div>
                             </div>
 
-                            <div id="hid_and_issued">
+                            <div id="nid_and_issued">
                                 <div class="form-field">
-                                    <span class="label_tag" id="hid_tag">HID:</span>
-                                    <span id="hid">{{hid}}</span>
+                                    <span class="label_tag"
+                                          id="issued_tag">&#2474;&#2509;&#2480;&#2470;&#2494;&#2472;&#2503;&#2480; &#2468;&#2494;&#2480;&#2495;&#2454;&#2435;</span>
+                                    <span id="issued">{{#convertDigitToBangla}}{{issuedDate}}{{/convertDigitToBangla}} &#2439;&#2434;</span>
                                 </div>
 
                                 <div class="form-field">
-                                    <span class="label_tag"
-                                          id="issued_tag">&#2474;&#2509;&#2480;&#2470;&#2494;&#2472;&#2503;&#2480; &#2468;&#2494;&#2480;&#2495;&#2454;:</span>
-                                    <span id="issued">{{#convertDigitToBangla}}{{issuedDate}}{{/convertDigitToBangla}}</span>
+                                    {{#nid}}
+                                    <span class="label_tag" id="nid_tag">NID:</span>
+                                    <span id="nid">{{nid}}</span>
+                                    {{/nid}}
                                 </div>
                             </div>
 
                             <div class="address_details">
                                 <div class="address_line">
                                     <span class="label_tag"
-                                          id="address_tag">&#2464;&#2495;&#2453;&#2494;&#2472;&#2494;:</span>
-                                    <span id="address_line" class="address">{{address.address1}}</span>
-                                </div>
-                                <div id="address_levels" class="address address_levels">
-                                    <span>{{#address.address2}}{{address.address2}}, {{/address.address2}}</span>
-                                    <span>{{#address.address3}}{{address.address3}}, {{/address.address3}}</span>
-                                    <span>{{#address.address4}}{{address.address4}}, {{/address.address4}}</span>
-                                    <span>{{#address.address5}}{{address.address5}}, {{/address.address5}}</span>
-                                    <span>{{#address.countyDistrict}}{{address.countyDistrict}}, {{/address.countyDistrict}}</span>
-                                    <span>{{#address.stateProvince}}{{address.stateProvince}}{{/address.stateProvince}}</span>
+                                          id="address_tag">&#2464;&#2495;&#2453;&#2494;&#2472;&#2494;&#2435;</span>
+                                    <span id="address_line" class="address">{{address.address1}},
+                                    {{#address.address2}}{{address.address2}}, {{/address.address2}}
+                                    {{#address.address3}}{{address.address3}}, {{/address.address3}}
+                                    {{#address.address4}}{{address.address4}}, {{/address.address4}}
+                                    {{#address.address5}}{{address.address5}}, {{/address.address5}}
+                                    {{#address.countyDistrict}}{{address.countyDistrict}}, {{/address.countyDistrict}}
+                                    {{#address.stateProvince}}{{address.stateProvince}}{{/address.stateProvince}}</span>
                                 </div>
                             </div>
                         </div>
@@ -280,7 +292,7 @@
                         <svg class="barcode" jsbarcode-height="35px" jsbarcode-format="CODE39"
                              jsbarcode-value="{{hid}}" jsbarcode-displayValue="false"/>
 
-                        <div class="disclaimer">&#2447;&#2439;&#32;&#2453;&#2494;&#2480;&#2509;&#2465;&#32;&#2455;&#2467;&#2474;&#2509;&#2480;&#2460;&#2494;&#2468;&#2472;&#2509;&#2468;&#2509;&#2480;&#2496;&#32;&#2476;&#2494;&#2434;&#2482;&#2494;&#2470;&#2503;&#2486;&#32;&#32;&#2488;&#2480;&#2453;&#2494;&#2480;&#2503;&#2480;&#32;&#2488;&#2478;&#2509;&#2474;&#2468;&#2509;&#2468;&#2495;&#2404;&#32;&#2453;&#2494;&#2480;&#2509;&#2465;&#2463;&#2495;&#32;&#2486;&#2497;&#2471;&#2497;&#2478;&#2494;&#2468;&#2509;&#2480;&#32;&#2476;&#2509;&#2479;&#2476;&#2489;&#2494;&#2480;&#2453;&#2494;&#2480;&#2496;&#2480;&#32;&#2460;&#2472;&#2509;&#2479;&#2404;&#32;&#2453;&#2494;&#2480;&#2509;&#2465;&#2463;&#2495;&#32;&#2437;&#2472;&#2509;&#2479;&#32;&#2453;&#2507;&#2469;&#2494;&#2451;&#32;&#2474;&#2494;&#2451;&#2527;&#2494;&#32;&#2455;&#2503;&#2482;&#2503;&#32;&#2472;&#2495;&#2453;&#2463;&#2488;&#2509;&#2469;&#32;&#2488;&#2509;&#2476;&#2494;&#2488;&#2509;&#2469;&#2509;&#2479;&#2453;&#2503;&#2472;&#2509;&#2470;&#2509;&#2480;&#2503;&#32;&#2460;&#2478;&#2494;&#32;&#2470;&#2503;&#2451;&#2527;&#2494;&#2480;&#32;&#2460;&#2472;&#2509;&#2479;&#32;&#2437;&#2472;&#2497;&#2480;&#2507;&#2471;&#32;&#2453;&#2480;&#2494;&#32;&#2489;&#2482;&#2404;</div>
+                        <div class="disclaimer">&#2447;&#2439;&#32;&#2453;&#2494;&#2480;&#2509;&#2465;&#32;&#2455;&#2467;&#2474;&#2509;&#2480;&#2460;&#2494;&#2468;&#2472;&#2509;&#2468;&#2509;&#2480;&#2496;&#32;&#2476;&#2494;&#2434;&#2482;&#2494;&#2470;&#2503;&#2486;&#32;&#2488;&#2480;&#2453;&#2494;&#2480;&#2503;&#2480;&#32;&#2488;&#2478;&#2509;&#2474;&#2468;&#2509;&#2468;&#2495;&#2404;&#32;&#2439;&#2489;&#2494;&#32;&#2486;&#2497;&#2471;&#2497;&#2478;&#2494;&#2468;&#2509;&#2480;&#32;&#2441;&#2474;&#2480;&#2507;&#2453;&#2509;&#2468;&#32;&#2476;&#2509;&#2479;&#2476;&#2489;&#2494;&#2480;&#2453;&#2494;&#2480;&#2496;&#2480;&#32;&#2460;&#2472;&#2509;&#2479;&#32;&#2474;&#2509;&#2480;&#2479;&#2507;&#2460;&#2509;&#2479;&#2404;&#32;&#2453;&#2494;&#2480;&#2509;&#2465;&#2463;&#2495;&#32;&#2437;&#2472;&#2509;&#2479;&#32;&#2453;&#2507;&#2469;&#2494;&#2451;&#32;&#2474;&#2494;&#2451;&#2527;&#2494;&#32;&#2455;&#2503;&#2482;&#2503;&#32;&#2472;&#2495;&#2453;&#2463;&#2488;&#2509;&#2469;&#32;&#2488;&#2509;&#2476;&#2494;&#2488;&#2509;&#2469;&#2509;&#2479;&#2453;&#2503;&#2472;&#2509;&#2470;&#2509;&#2480;&#2503;&#32;&#2460;&#2478;&#2494;&#32;&#2470;&#2503;&#2451;&#2527;&#2494;&#2480;&#32;&#2460;&#2472;&#2509;&#2479;&#32;&#2437;&#2472;&#2497;&#2480;&#2507;&#2471;&#32;&#2453;&#2480;&#2494;&#32;&#2489;&#2482;&#2404;</div>
                     </div>
                 </div>
                 {{/cards}}

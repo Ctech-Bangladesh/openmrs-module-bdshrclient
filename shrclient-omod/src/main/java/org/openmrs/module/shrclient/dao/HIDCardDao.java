@@ -25,6 +25,7 @@ public class HIDCardDao {
     private static Integer givenNameLocalAttributeId;
     private static Integer familyNameLocalAttributeId;
     private static Integer healthIdIssuedAttributeAttributeId;
+    private static Integer nationalIdAttributeAttributeId;
     private static Integer healthIdIdentifierTypeId;
     private final String PAURASAVA_TO_EXCLUDE_CODE = "99";
 
@@ -46,11 +47,12 @@ public class HIDCardDao {
                     PreparedStatement statement = connection.prepareStatement(getQueryStatement());
                     statement.setInt(1, getGivenNameLocalAttributeId());
                     statement.setInt(2, getFamilyNameLocalAttributeId());
-                    statement.setInt(3, userId);
-                    statement.setInt(4, getHealthIdIdentifierTypeId());
-                    statement.setTimestamp(5, new Timestamp(from.getTime()));
-                    statement.setTimestamp(6, new Timestamp(to.getTime()));
-                    statement.setInt(7, getHealthIdIssuedStatusAttributeId());
+                    statement.setInt(3, getNationalIdAttributeId());
+                    statement.setInt(4, userId);
+                    statement.setInt(5, getHealthIdIdentifierTypeId());
+                    statement.setTimestamp(6, new Timestamp(from.getTime()));
+                    statement.setTimestamp(7, new Timestamp(to.getTime()));
+                    statement.setInt(8, getHealthIdIssuedStatusAttributeId());
                     ResultSet resultSet = statement.executeQuery();
                     while (resultSet.next()) {
                         healthIdCards.add(createHealthIdCard(resultSet));
@@ -73,6 +75,7 @@ public class HIDCardDao {
         healthIdCard.setIssuedDate(resultSet.getDate("date_created"));
         healthIdCard.setGender(resultSet.getString("gender"));
         healthIdCard.setHid(resultSet.getString("identifier"));
+        healthIdCard.setNid(resultSet.getString("national_id"));
 
         createAddressForHIDCard(resultSet, healthIdCard);
         return healthIdCard;
@@ -135,10 +138,11 @@ public class HIDCardDao {
     }
 
     private String getQueryStatement() {
-        return "SELECT pn.given_name, pn.family_name, p.gender, p.birthdate, p.date_created, pi.identifier, pa.address1, pa.address2, pa.address3, pa.address4, pa.address5, pa.county_district, pa.state_province, pt1.value AS given_name_local, pt2.value AS family_name_local " +
+        return "SELECT pn.given_name, pn.family_name, p.gender, p.birthdate, p.date_created, pi.identifier, pa.address1, pa.address2, pa.address3, pa.address4, pa.address5, pa.county_district, pa.state_province, pt1.value AS given_name_local, pt2.value AS family_name_local, pt3.value as national_id " +
                 "FROM person_name pn, patient_identifier pi, person_address pa, person p " +
                 "LEFT JOIN person_attribute pt1 ON (p.person_id = pt1.person_id AND pt1.person_attribute_type_id = ? AND pt1.voided = 0) " +
                 "LEFT JOIN person_attribute pt2 ON (p.person_id = pt2.person_id AND pt2.person_attribute_type_id = ? AND pt2.voided = 0) " +
+                "LEFT JOIN person_attribute pt3 ON (p.person_id = pt3.person_id AND pt3.person_attribute_type_id = ? AND pt3.voided = 0) " +
                 "WHERE p.person_id=pn.person_id AND p.person_id = pa.person_id AND p.person_id = pi.patient_id " +
                 "AND p.voided = 0 AND pi.voided = 0 AND pn.voided = 0 AND pa.voided = 0 " +
                 "AND pn.preferred = 1 AND pa.preferred = 1 " +
@@ -168,6 +172,13 @@ public class HIDCardDao {
         }
         return healthIdIssuedAttributeAttributeId;
     }
+ private static final int getNationalIdAttributeId() {
+        if (nationalIdAttributeAttributeId == null) {
+            nationalIdAttributeAttributeId = Context.getPersonService().getPersonAttributeTypeByName(OpenMRSConstants.NATIONAL_ID_ATTRIBUTE_TYPE).getPersonAttributeTypeId();
+        }
+        return nationalIdAttributeAttributeId;
+    }
+
 
     private static final Integer getHealthIdIdentifierTypeId() {
         if (healthIdIdentifierTypeId == null) {
