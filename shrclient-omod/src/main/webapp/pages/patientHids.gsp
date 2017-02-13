@@ -224,12 +224,12 @@
                                     class="bdgov">&#32;&#2488;&#2509;&#2476;&#2494;&#2488;&#2509;&#2469;&#2509;&#2479;&#32;&#2451;&#32;&#2474;&#2480;&#2495;&#2476;&#2494;&#2480;&#32;&#2453;&#2482;&#2509;&#2479;&#2494;&#2467;&#32;&#2478;&#2472;&#2509;&#2468;&#2509;&#2480;&#2467;&#2494;&#2482;&#2527;</span>
                             </div>
 
-                            <div id="hidCard">Health ID: {{hid}}</div>
+                            <div class="eng_name" id="hidCard">Health ID: {{hid}}</div>
                         </div>
 
                         <div class="patient_details">
                             <div id="english_name">
-                                <div class="name_no_overflow">
+                                <div class="eng_name name_no_overflow">
                                     <span class="label_tag" id="name_tag">Name:</span>
                                     <span id="name">{{givenName}} {{familyName}}</span>
                                 </div>
@@ -264,7 +264,7 @@
                                     <span id="issued">{{#convertDigitToBangla}}{{issuedDate}}{{/convertDigitToBangla}} &#2439;&#2434;</span>
                                 </div>
 
-                                <div class="form-field">
+                                <div class="eng_name form-field">
                                     {{#nid}}
                                     <span class="label_tag" id="nid_tag">NID:</span>
                                     <span id="nid">{{nid}}</span>
