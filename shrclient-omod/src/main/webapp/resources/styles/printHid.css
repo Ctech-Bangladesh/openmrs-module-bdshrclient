@@ -72,11 +72,11 @@ select.user {
 
 .heading{
     padding: 3px 10px 14px 10px;
-    height : 26px;
+    height : 27px;
     font-size: 11px;
     border: medium none;
     border-bottom: groove #eee;
-    line-height: 14px;
+    line-height: 13px;
 }
 
 .bdgov {
