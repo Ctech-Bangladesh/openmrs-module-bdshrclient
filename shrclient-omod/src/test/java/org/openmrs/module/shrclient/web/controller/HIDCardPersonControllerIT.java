@@ -65,14 +65,14 @@ public class HIDCardPersonControllerIT extends BaseModuleWebContextSensitiveTest
         hidCardAddress.setStateProvince("ঢাকা");
         assertHealthIdCard(healthIdCard, "M", "Sayed", "Azam",
                 null, null, "22-10-1992",
-                "22-10-2016", "HID1", null, hidCardAddress);
+                "22-10-2016", "HID1", null,null, hidCardAddress);
 
 
     }
 
     private void assertHealthIdCard(Map healthIdCard, String expectedGender, String expectedGivenName, String expectedFamilyName,
                                     String expectedGivenNameLocal, String expectedFamilyNameLocal, String expectedDob, String expectedIssuedDate, String expectedHid,
-                                    String expectednid, HealthIdCard.HIDCardAddress expectedAddress) {
+                                    String expectednid,String expectedbrn, HealthIdCard.HIDCardAddress expectedAddress) {
         assertEquals(expectedGender, healthIdCard.get("gender"));
         assertEquals(expectedGivenName, healthIdCard.get("givenName"));
         assertEquals(expectedFamilyName, healthIdCard.get("familyName"));
@@ -82,6 +82,7 @@ public class HIDCardPersonControllerIT extends BaseModuleWebContextSensitiveTest
         assertEquals(expectedIssuedDate, healthIdCard.get("issuedDate"));
         assertEquals(expectedHid, healthIdCard.get("hid"));
         assertEquals(expectednid, healthIdCard.get("nid"));
+        assertEquals(expectedbrn, healthIdCard.get("brn"));
         Map address = (Map) healthIdCard.get("address");
         assertEquals(expectedAddress.getAddress1(), address.get("address1"));
         assertEquals(expectedAddress.getAddress2(), address.get("address2"));

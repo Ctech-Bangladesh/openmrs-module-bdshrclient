@@ -270,6 +270,12 @@
                                     <span class="label_tag" id="nid_tag">NID:</span>
                                     <span id="nid">{{nid}}</span>
                                     {{/nid}}
+                                    {{^nid}}
+                                        {{#brn}}
+                                            <span class="label_tag" id="brn_tag">BRN:</span>
+                                            <span id="brn">{{brn}}</span>
+                                        {{/brn}}
+                                    {{/nid}}
                                 </div>
                             </div>
 

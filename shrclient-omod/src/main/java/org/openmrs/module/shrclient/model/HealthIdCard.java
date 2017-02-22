@@ -16,6 +16,7 @@ public class HealthIdCard {
     private String hid;
     private String nid;
     private Date issuedDate;
+    private String brn;
 
     public HealthIdCard() {
     }
@@ -100,6 +101,14 @@ public class HealthIdCard {
 
     public void setNid(String nid) {
         this.nid = nid;
+    }
+
+    public String getBrn() {
+        return brn;
+    }
+
+    public void setBrn(String brn) {
+        this.brn = brn;
     }
 
     public class HIDCardAddress {
