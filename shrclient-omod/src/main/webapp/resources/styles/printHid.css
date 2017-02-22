@@ -4,6 +4,10 @@
     font-weight: normal;
     font-style: normal;
 }
+.user_selection {
+    padding-left: 31px;
+    padding-right: 31px;
+}
 
 body {
     font-family: Arial, Sans-serif !important;
@@ -29,7 +33,6 @@ input {
 }
 
 .container {
-    width: 21cm;
     margin: 0 auto;
 }
 
@@ -59,8 +62,8 @@ select.user {
 
 .healthId {
     border-style: solid;
-    width: 8.5cm !important;
-    height: 5.3cm !important;
+    width: 8.2cm !important;
+    height: 5.1cm !important;
     margin: 30px;
     float: left;
     border-color: #afafaf;
@@ -157,7 +160,7 @@ select.user {
 
 .address_details{
     display: block;
-    line-height: 14px;
+    line-height: 13px;
     overflow: hidden;
     height: 30px;
 }
@@ -170,10 +173,22 @@ select.user {
 
 .hid_footer{
     padding-bottom: 1px;
-    bottom: 0;
     position: absolute;
+    bottom: 0;
     border: medium none;
     border-top: groove #eee;
+}
+
+.disclaimer{
+    font-size: 7px;
+    line-height: 9px;
+    padding-top: 0px;
+    text-align: center;
+}
+
+.barcode{
+    height: 25px !important;
+    width: 300px !important;
 }
 
 .errorMessage {
@@ -203,17 +218,13 @@ select.user {
 @media print {
     #content > :not(#printArea) {
         display: none !important;
-    }
-    @page {
-        margin-left: 0.3cm;
-        margin-right: 0.3cm;
-        margin-top: 0.5cm;
-        margin-bottom: 0.5cm;
+        width: 0cm;
+        height: 0cm;
     }
     .healthId {
         border-style: solid;
-        width: 8.5cm !important;
-        height: 5.3cm !important;
+        width: 8.2cm !important;
+        height: 5.1cm !important;
         margin: 30px;
         border-color: #afafaf;
         border-width: medium;
@@ -224,14 +235,3 @@ select.user {
     }
 }
 
-.disclaimer{
-    font-size: 7px;
-    line-height: 9px;
-    padding-top: 0px;
-    text-align: center;
-}
-
-.barcode{
-    height: 25px !important;
-    width: 300px !important;
-}
