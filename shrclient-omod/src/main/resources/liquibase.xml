@@ -245,7 +245,7 @@
 
         <insert tableName="scheduler_task_config">
             <column name="name" value="Catchment Encounters Sync Task"/>
-            <column name="schedulable_class" value="org.openmrs.module.shrclient.scheduler.tasks.CatchmentDownloadTask"/>
+            <column name="schedulable_class" value="org.openmrs.module.shrclient.scheduler.tasks.CatchmentEncounterDownloadTask"/>
             <column name="start_time" valueDate=" now() "/>
             <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
             <column name="repeat_interval" value="60"/>
@@ -1312,7 +1312,7 @@
             where schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.CatchmentEncounterDownloadTask';
         </sql>
     </changeSet>
-    <changeSet id="bdshrclient-070217-1209" author="Neha" context="setup">
+    <changeSet id="bdshrclient-220217-1209" author="Neha" context="setup">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="1">
                 select count(*) from scheduler_task_config where
