@@ -1312,7 +1312,7 @@
             where schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.CatchmentEncounterDownloadTask';
         </sql>
     </changeSet>
-    <changeSet id="bdshrclient-070217-1208" author="Dubey/Abhilash" context="setup">
+    <changeSet id="bdshrclient-070217-1209" author="Neha" context="setup">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="1">
                 select count(*) from scheduler_task_config where
