@@ -62,6 +62,8 @@ public class VisitLookupService {
                 else
                     applicableVisit.setStopDatetime(getEndOfDay(new DateTime(encounterDate)).toDate());
             }
+        } else {
+            applicableVisit.setStopDatetime(givenVisitStopDate);
         }
         return applicableVisit;
     }
