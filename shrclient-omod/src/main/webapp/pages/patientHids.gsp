@@ -166,6 +166,15 @@
                         }
                     }
                 };
+                data.getNameInTitleCase = function(){
+                    return function (text,render) {
+                        var name = render(text);
+                        return name.split(" ").map(function (part) {
+                            return part[0].toUpperCase() + part.slice(1).toLowerCase();
+                        }).join(" ");
+
+                    }
+                }
 
                 var rendered = Mustache.render(template, data);
                 printArea.html(rendered);
@@ -232,7 +241,7 @@
                             <div id="english_name">
                                 <div class="eng_name name_no_overflow">
                                     <span class="label_tag" id="name_tag">Name:</span>
-                                    <span id="name">{{givenName}} {{familyName}}</span>
+                                    <span id="name">{{#getNameInTitleCase}}{{givenName}} {{familyName}}{{/getNameInTitleCase}}</span>
                                 </div>
                             </div>
 
