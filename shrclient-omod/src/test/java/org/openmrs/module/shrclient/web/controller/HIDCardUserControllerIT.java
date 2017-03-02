@@ -65,14 +65,18 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
         Map[] healthIdCards = new ObjectMapper().readValue(content, Map[].class);
         assertEquals(4, healthIdCards.length);
 
-        HealthIdCard.HIDCardAddress hidCardAddress = new HealthIdCard().addAddress();
-        hidCardAddress.setAddress1("lane 1");
-        hidCardAddress.setAddress5("কালীগঞ্জ");
-        hidCardAddress.setCountyDistrict("গাজীপুর");
-        hidCardAddress.setStateProvince("ঢাকা");
-        assertHealthIdCard(healthIdCards[0], "M", "Sayed", "Azam",
-                null, null, "22-10-1992",
-                "22-10-2016", "HID1", null,null, hidCardAddress);
+        HealthIdCard.HIDCardAddress hidCardAddress2 = new HealthIdCard().addAddress();
+        hidCardAddress2.setAddress1("lane 1");
+        hidCardAddress2.setAddress3("Urban Ward No-01");
+        hidCardAddress2.setAddress4("Kaliganj Paurashava");
+        hidCardAddress2.setAddress5("কালীগঞ্জ");
+        hidCardAddress2.setCountyDistrict("গাজীপুর");
+        hidCardAddress2.setStateProvince("ঢাকা");
+
+        assertHealthIdCard(healthIdCards[0], "F", "Babitha", "Banarjee", "বাবিথা", null,
+                "22-10-1992", "22-12-2016", "HID4", "NID2","BRN1", hidCardAddress2);
+        assertHealthIdCard(healthIdCards[1], "F", "Babitha", "Chatterjee", null, null,
+                "22-10-1992", "22-12-2016", "HID3", null,null, hidCardAddress2);
 
         HealthIdCard.HIDCardAddress hidCardAddress1 = new HealthIdCard().addAddress();
         hidCardAddress1.setAddress1("lane 1");
@@ -81,22 +85,18 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
         hidCardAddress1.setAddress5("কালীগঞ্জ");
         hidCardAddress1.setCountyDistrict("গাজীপুর");
         hidCardAddress1.setStateProvince("ঢাকা");
-        assertHealthIdCard(healthIdCards[1], "O", "Farukh", "Engineer",
+        assertHealthIdCard(healthIdCards[2], "O", "Farukh", "Engineer",
                 null, null, "22-10-1993", "22-11-2016",
                 "HID2", null,null,hidCardAddress1);
 
-        HealthIdCard.HIDCardAddress hidCardAddress2 = new HealthIdCard().addAddress();
-        hidCardAddress2.setAddress1("lane 1");
-        hidCardAddress2.setAddress3("Urban Ward No-01");
-        hidCardAddress2.setAddress4("Kaliganj Paurashava");
-        hidCardAddress2.setAddress5("কালীগঞ্জ");
-        hidCardAddress2.setCountyDistrict("গাজীপুর");
-        hidCardAddress2.setStateProvince("ঢাকা");
-        assertHealthIdCard(healthIdCards[2], "F", "Babitha", "Chatterjee", null, null,
-                "22-10-1992", "22-12-2016", "HID3", null,null, hidCardAddress2);
-
-        assertHealthIdCard(healthIdCards[3], "F", "Babitha", "Chatterjee", "বাবিথা", null,
-                "22-10-1992", "22-12-2016", "HID4", "NID2","BRN1", hidCardAddress2);
+        HealthIdCard.HIDCardAddress hidCardAddress = new HealthIdCard().addAddress();
+        hidCardAddress.setAddress1("lane 1");
+        hidCardAddress.setAddress5("কালীগঞ্জ");
+        hidCardAddress.setCountyDistrict("গাজীপুর");
+        hidCardAddress.setStateProvince("ঢাকা");
+        assertHealthIdCard(healthIdCards[3], "M", "Sayed", "Azam",
+                null, null, "22-10-1992",
+                "22-10-2016", "HID1", null,null, hidCardAddress);
     }
 
     @Test
@@ -108,14 +108,6 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
         String content = result.getResponse().getContentAsString();
         Map[] healthIdCards = new ObjectMapper().readValue(content, Map[].class);
         assertEquals(2, healthIdCards.length);
-        HealthIdCard.HIDCardAddress hidCardAddress = new HealthIdCard().addAddress();
-        hidCardAddress.setAddress1("lane 1");
-        hidCardAddress.setAddress5("কালীগঞ্জ");
-        hidCardAddress.setCountyDistrict("গাজীপুর");
-        hidCardAddress.setStateProvince("ঢাকা");
-        assertHealthIdCard(healthIdCards[0], "M", "Sayed", "Azam",
-                null, null, "22-10-1992",
-                "22-10-2016", "HID1", "NID1","BRN2", hidCardAddress);
 
         HealthIdCard.HIDCardAddress hidCardAddress1 = new HealthIdCard().addAddress();
         hidCardAddress1.setAddress1("lane 1");
@@ -124,8 +116,18 @@ public class HIDCardUserControllerIT extends BaseModuleWebContextSensitiveTest {
         hidCardAddress1.setAddress5("কালীগঞ্জ");
         hidCardAddress1.setCountyDistrict("গাজীপুর");
         hidCardAddress1.setStateProvince("ঢাকা");
-        assertHealthIdCard(healthIdCards[1], "O", "Farukh", "Engineer", null,
+        assertHealthIdCard(healthIdCards[0], "O", "Farukh", "Engineer", null,
                 null, "22-10-1993", "22-11-2016", "HID2",null,null, hidCardAddress1);
+
+        HealthIdCard.HIDCardAddress hidCardAddress = new HealthIdCard().addAddress();
+        hidCardAddress.setAddress1("lane 1");
+        hidCardAddress.setAddress5("কালীগঞ্জ");
+        hidCardAddress.setCountyDistrict("গাজীপুর");
+        hidCardAddress.setStateProvince("ঢাকা");
+        assertHealthIdCard(healthIdCards[1], "M", "Sayed", "Azam",
+                null, null, "22-10-1992",
+                "22-10-2016", "HID1", "NID1","BRN2", hidCardAddress);
+
     }
 
     private void assertHealthIdCard(Map healthIdCard, String expectedGender, String expectedGivenName, String expectedFamilyName,

@@ -154,7 +154,7 @@ public class HIDCardDao {
                 "AND p.creator = ? AND pi.identifier_type = ? " +
                 "AND p.date_created >= ? AND p.date_created <= ? " +
                 "AND p.person_id NOT IN " +
-                "(SELECT ptt.person_id FROM person_attribute ptt WHERE ptt.value='true' AND ptt.person_attribute_type_id = ?);";
+                "(SELECT ptt.person_id FROM person_attribute ptt WHERE ptt.value='true' AND ptt.person_attribute_type_id = ?) ORDER BY pn.given_name, pn.family_name;";
     }
 
     private static final Integer getGivenNameLocalAttributeId() {
