@@ -104,6 +104,10 @@
         jQuery('#user, #fromDate, #toDate').change(toggleGetAllButton);
 
         jQuery('#getAll').click(function (e) {
+            jQuery('#printArea').hide();
+            jQuery('#info').hide();
+            jQuery('.errorMessage').hide();
+
             var userId = jQuery('#user').val();
             var fromDate = jQuery('#fromDate').val();
             var toDate = jQuery('#toDate').val();
@@ -123,7 +127,7 @@
                     return;
                 }
                 infoMessage = "Showing " + noOfHIDCards + " Health ID card(s).";
-                jQuery("#info").text(infoMessage).show();
+                jQuery("#info").text(infoMessage);
 
                 template = template || printArea.html();
                 Mustache.parse(template);
@@ -170,17 +174,25 @@
                     return function (text,render) {
                         var name = render(text);
                         return name.split(" ").map(function (part) {
+                            if(!part) return;
                             return part[0].toUpperCase() + part.slice(1).toLowerCase();
                         }).join(" ");
 
                     }
                 }
 
-                var rendered = Mustache.render(template, data);
-                printArea.html(rendered);
-                JsBarcode(".barcode").init();
-                printArea.show();
-                jQuery('#print').prop('disabled', false);
+                try {
+                    var rendered = Mustache.render(template, data);
+                    printArea.html(rendered);
+                    JsBarcode(".barcode").init();
+                    jQuery('#info').show();
+                    printArea.show();
+                    jQuery('#print').prop('disabled', false);
+                } catch (e) {
+                    jQuery('.errorMessage').text("Error while showing HID cards")
+                    jQuery('.errorMessage').show();
+                    console.log(e)
+                }
             }).fail(onError);
         })
     })
