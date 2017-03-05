@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.Provider;
 import org.openmrs.ProviderAttributeType;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
@@ -48,6 +49,8 @@ public class ProviderPullTest {
     private ProviderService providerService;
     @Mock
     private IdMappingRepository idMappingRepository;
+    @Mock
+    private PersonService personService;
 
     private ProviderEntry[] providerEntries;
     private ProviderPull providerPull;
@@ -55,7 +58,7 @@ public class ProviderPullTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        ProviderMapper providerMapper = new ProviderMapper(providerService, idMappingRepository);
+        ProviderMapper providerMapper = new ProviderMapper(providerService, idMappingRepository, personService);
         providerPull = new ProviderPull(propertiesReader, prClient, scheduledTaskHistory, providerMapper);
         providerEntries = getProviderEntries();
         Properties properties = new Properties();

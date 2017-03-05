@@ -1,9 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
+    <person person_id="122" birthdate_estimated="0" dead="0" deathdate_estimated="0" voided="0"
+            date_created="2015-02-17 15:06:06" uuid="331c6bf8-7ut6-11e3-a96a-0900271c1b75"/>
+    <person_name person_name_id="122" preferred="1" person_id="122" given_name="test" family_name="provider" creator="1"
+                 date_created="2015-02-17 15:06:06" voided="0" uuid="331c6bf8-jh45-11e3-a96a-0900271c1b75"/>
+
+    <person person_id="123" birthdate_estimated="0" dead="0" deathdate_estimated="0" voided="1" void_reason="test"
+            date_created="2015-02-17 15:06:06" uuid="331c6bf8-7ut6-78yu-a96a-0900271c1b75"/>
+    <person_name person_name_id="123" preferred="1" person_id="123" given_name="test" family_name="provider" creator="1"
+                 date_created="2015-02-17 15:06:06" voided="0" uuid="331c6bf8-jh45-jh76-a96a-0900271c1b75"/>
+
     <provider_attribute_type provider_attribute_type_id="1" name="Organization" datatype="org.openmrs.customdatatype.datatype.FreeTextDatatype"
                              creator="1" date_created="2015-02-17 15:06:06" retired="0" min_occurs="0" uuid="5b19584d-10ab-11e4-b4e1-1e55d8e9e2ae" />
 
-    <provider provider_id="22" name="test provider" identifier="1023" creator="1" date_created="2015-02-17 15:06:06"
+    <provider provider_id="22" person_id="122" name="test provider" identifier="1023" creator="1" date_created="2015-02-17 15:06:06"
               retired="false" uuid="331c6bf8-7846-11e3-a96a-0900271c1b75"/>
     <provider_id_mapping id="1" internal_id="331c6bf8-7846-11e3-a96a-0900271c1b75" external_id="1023"
                          uri="http://pr.com/provider/1023.json"/>
@@ -17,7 +27,7 @@
                          uri="http://pr.com/provider/1024.json"/>
 
 
-    <provider provider_id="24" name="Retired Provider" identifier="1025" creator="1" date_created="2015-02-17 15:06:06"
+    <provider provider_id="24" person_id="123" name="Retired Provider" identifier="1025" creator="1" date_created="2015-02-17 15:06:06"
               retired="true" uuid="331c6bf8-7846-11e3-a96a-0900271c2w12"/>
     <provider_id_mapping id="3" internal_id="331c6bf8-7846-11e3-a96a-0900271c2w12" external_id="1025"
                          uri="http://pr.com/provider/1025.json"/>
