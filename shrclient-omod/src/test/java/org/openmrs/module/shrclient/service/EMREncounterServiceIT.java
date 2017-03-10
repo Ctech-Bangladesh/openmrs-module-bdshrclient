@@ -156,7 +156,6 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         assertNull(allObs.iterator().next().getOrder());
     }
 
-    @Ignore
     @Test
     public void shouldDiscontinueATestOrderIfUpdated() throws Exception {
         executeDataSet("testDataSets/shrDiagnosticOrderSyncTestDS.xml");
@@ -209,7 +208,6 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(1, orders.size());
     }
 
-    @Ignore
     @Test
     public void shouldDiscontinueAProcedureOrderIfUpdated() throws Exception {
         executeDataSet("testDataSets/shrProcedureOrderSyncTestDS.xml");
@@ -303,7 +301,6 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    @Ignore("Right now this fails because we have to save encounter which doesn't support retrospective save of encounter")
     public void shouldSaveDrugOrderEditedInDifferentEncounter() throws Exception {
         executeDataSet("testDataSets/drugOrderDS.xml");
         String shrEncounterId = "shr-enc-id";
@@ -323,7 +320,6 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    @Ignore("Right now this fails because we have to save encounter which doesn't support retrospective save of encounter")
     public void shouldSaveDrugOrderEditedInSameEncounter() throws Exception {
         executeDataSet("testDataSets/drugOrderDS.xml");
         String shrEncounterId = "shr-enc-id";
@@ -402,7 +398,6 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(DateUtil.parseDate("2014-07-27 16:05:09"), finalVisit.getStopDatetime());
     }
 
-    @Ignore
     @Test
     public void shouldVoidOlderObservationsAndRecreateWithNewValues() throws Exception {
         executeDataSet("testDataSets/shrClientEncounterWithObservationTestDs.xml");

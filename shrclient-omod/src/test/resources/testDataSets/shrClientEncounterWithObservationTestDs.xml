@@ -51,6 +51,7 @@
 
     <concept concept_id="303" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-bb88-8122ctpulse"/>
     <concept_name concept_id="303" concept_name_id="3013" name="Pulse" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="juydg80f-1yz9-4da3-bb88-8122ctuiopl"/>
+    <concept_numeric concept_id="303" precise="0"/>
     <concept_set concept_set_id="2" concept_id="303" concept_set="301" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
     <concept_reference_term concept_reference_term_id="1" concept_source_id="1" code="M54.418965" creator="1"
                             date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-ab04-7028-c3b9941hji94"></concept_reference_term>
@@ -60,6 +61,7 @@
 
     <concept concept_id="305" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-bb88-8122ctdiast"/>
     <concept_name concept_id="305" concept_name_id="3015" name="Diastolic" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="juydg80f-1yz9-4da3-bb88-812rrtdiast"/>
+    <concept_numeric concept_id="305" precise="0"/>
     <concept_set concept_set_id="4" concept_id="305" concept_set="302" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
     <shr_id_mapping id="5" internal_id="juydg80f-1yz9-4da3-bb88-8122ctdiast" external_id="105" type="concept" uri="/concepts/105"></shr_id_mapping>
 

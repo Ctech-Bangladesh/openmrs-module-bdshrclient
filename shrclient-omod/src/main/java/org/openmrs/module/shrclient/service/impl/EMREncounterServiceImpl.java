@@ -116,10 +116,17 @@ public class EMREncounterServiceImpl implements EMREncounterService {
         Visit visit = visitLookupService.findOrInitializeVisit(emrPatient, newEmrEncounter.getEncounterDatetime(), visitType, newEmrEncounter.getLocation(), visitPeriod.getStart(), visitPeriod.getEnd());
 
         visit.addEncounter(newEmrEncounter);
+        ArrayList<Order> orders = new ArrayList<>(newEmrEncounter.getOrders());
+        for (Order order : orders) {
+            newEmrEncounter.removeOrder(order);
+        }
         encounterService.saveEncounter(newEmrEncounter);
+        for (Order order : orders) {
+            newEmrEncounter.addOrder(order);
+        }
         visitService.saveVisit(visit);
         //identify location, provider(s), visit
-        saveOrders(newEmrEncounter);
+        saveOrders(orders);
         Date encounterUpdatedDate = getEncounterUpdatedDate(encounterEvent);
         addEncounterToIdMapping(newEmrEncounter, shrEncounterId, healthId, systemProperties, encounterUpdatedDate);
         shrEncounterEventService.raiseShrEncounterDownloadEvent(newEmrEncounter);
@@ -138,8 +145,8 @@ public class EMREncounterServiceImpl implements EMREncounterService {
         idMappingRepository.saveOrUpdateIdMapping(encounterIdMapping);
     }
 
-    private void saveOrders(Encounter newEmrEncounter) {
-        List<Order> ordersList = sortOrdersOnDateActivated(newEmrEncounter);
+    private void saveOrders(ArrayList<Order> orders) {
+        List<Order> ordersList = sortOrdersOnDateActivated(orders);
         for (Order order : ordersList) {
             if (isNewOrder(order)) {
                 orderService.saveRetrospectiveOrder(order, null);
@@ -147,14 +154,9 @@ public class EMREncounterServiceImpl implements EMREncounterService {
         }
     }
 
-    private List<Order> sortOrdersOnDateActivated(Encounter newEmrEncounter) {
-        List<Order> ordersList = new ArrayList<>(newEmrEncounter.getOrders());
-        Collections.sort(ordersList, new Comparator<Order>() {
-            @Override
-            public int compare(Order o1, Order o2) {
-                return o1.getDateActivated().compareTo(o2.getDateActivated());
-            }
-        });
+    private List<Order> sortOrdersOnDateActivated(ArrayList<Order> orders) {
+        List<Order> ordersList = new ArrayList<>(orders);
+        ordersList.sort(Comparator.comparing(Order::getDateActivated));
         return ordersList;
     }
 

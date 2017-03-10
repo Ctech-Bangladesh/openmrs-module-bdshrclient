@@ -44,29 +44,34 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
     private static final int DEFAULT_NUM_REFILLS = 0;
     private final ObjectMapper objectMapper;
 
-    @Autowired
-    private OMRSConceptLookup omrsConceptLookup;
-    @Autowired
-    private ConceptService conceptService;
-    @Autowired
-    private OrderService orderService;
-    @Autowired
-    private FrequencyMapperUtil frequencyMapperUtil;
-    @Autowired
-    private DurationMapperUtil durationMapperUtil;
-    @Autowired
-    private ProviderLookupService providerLookupService;
-    @Autowired
-    private OrderCareSettingLookupService orderCareSettingLookupService;
-    @Autowired
-    private GlobalPropertyLookUpService globalPropertyLookUpService;
-    @Autowired
-    private IdMappingRepository idMappingRepository;
+    private final OMRSConceptLookup omrsConceptLookup;
+    private final ConceptService conceptService;
+    private final OrderService orderService;
+    private final FrequencyMapperUtil frequencyMapperUtil;
+    private final DurationMapperUtil durationMapperUtil;
+    private final ProviderLookupService providerLookupService;
+    private final OrderCareSettingLookupService orderCareSettingLookupService;
+    private final GlobalPropertyLookUpService globalPropertyLookUpService;
+    private final IdMappingRepository idMappingRepository;
 
     private static final Logger logger = Logger.getLogger(FHIRMedicationOrderMapper.class);
 
-    public FHIRMedicationOrderMapper() {
+    @Autowired
+    public FHIRMedicationOrderMapper(OMRSConceptLookup omrsConceptLookup, ConceptService conceptService,
+                                     OrderService orderService, FrequencyMapperUtil frequencyMapperUtil,
+                                     DurationMapperUtil durationMapperUtil, ProviderLookupService providerLookupService,
+                                     OrderCareSettingLookupService orderCareSettingLookupService, GlobalPropertyLookUpService globalPropertyLookUpService,
+                                     IdMappingRepository idMappingRepository) {
         objectMapper = new ObjectMapper();
+        this.omrsConceptLookup = omrsConceptLookup;
+        this.conceptService = conceptService;
+        this.orderService = orderService;
+        this.frequencyMapperUtil = frequencyMapperUtil;
+        this.durationMapperUtil = durationMapperUtil;
+        this.providerLookupService = providerLookupService;
+        this.orderCareSettingLookupService = orderCareSettingLookupService;
+        this.globalPropertyLookUpService = globalPropertyLookUpService;
+        this.idMappingRepository = idMappingRepository;
     }
 
     @Override

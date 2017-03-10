@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.IdMappingType;
+import org.openmrs.test.Verifies;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -26,12 +26,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.openmrs.module.fhir.OpenMRSConstants.*;
-import static org.openmrs.module.fhir.OpenMRSConstants.HEALTH_ID_IDENTIFIER_TYPE;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class EMRPatientMergeServiceIT extends BaseModuleWebContextSensitiveTest {
-
     @Autowired
     private PatientService patientService;
     @Autowired
@@ -317,6 +315,36 @@ public class EMRPatientMergeServiceIT extends BaseModuleWebContextSensitiveTest 
         assertEquals(1, idMappingRepository.findByHealthId(retainedHealthId, IdMappingType.PATIENT).size());
         assertEquals(0, idMappingRepository.findByHealthId(retiredHealthId, IdMappingType.MEDICATION_ORDER).size());
         assertEquals(1, idMappingRepository.findByHealthId(retainedHealthId, IdMappingType.MEDICATION_ORDER).size());
+    }
+
+    @Test
+    @Verifies(value = "This is to reproduce openmrs problem after patient merge", method = "mergePatient(Patient)")
+    public void shouldMoveAllObsWithSameHierarchy() throws Exception {
+        executeDataSet("testDataSets/mergeDS/obsPatientMergeDS.xml");
+
+        Patient notPreffered = patientService.getPatient(11);
+        Patient preffered = patientService.getPatient(21);
+
+        List<Encounter> prefferedEncounters = encounterService.getEncountersByPatient(preffered);
+        List<Encounter> notPrefferedEncounters = encounterService.getEncountersByPatient(notPreffered);
+        assertEquals(1, prefferedEncounters.size());
+        assertEquals(1, notPrefferedEncounters.size());
+        assertEquals(0, prefferedEncounters.get(0).getAllObs(true).size());
+        assertEquals(1, notPrefferedEncounters.get(0).getObsAtTopLevel(true).size());
+        assertEquals(4, notPrefferedEncounters.get(0).getAllObs(true).size());
+
+        patientService.mergePatients(preffered, notPreffered);
+
+        List<Encounter> mergedPrefferedEncounters = encounterService.getEncountersByPatient(preffered);
+        List<Encounter> mergedNotPrefferedEncounters = encounterService.getEncountersByPatient(notPreffered);
+        assertEquals(0, mergedNotPrefferedEncounters.size());
+        assertEquals(2, mergedPrefferedEncounters.size());
+
+        assertEquals(1,mergedPrefferedEncounters.get(0).getObsAtTopLevel(false).size());
+        // Call to getAllObs also just returns only one obs. It should return 4 obs ideally.
+        assertEquals(1, mergedPrefferedEncounters.get(0).getAllObs(false).size());
+
+
     }
 
     private org.openmrs.module.shrclient.model.Patient getPatientFromJson(String patientJson) throws IOException {
