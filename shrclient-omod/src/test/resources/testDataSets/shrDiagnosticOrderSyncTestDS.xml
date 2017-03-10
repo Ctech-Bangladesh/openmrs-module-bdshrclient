@@ -9,6 +9,8 @@
 
     <encounter_type encounter_type_id="2" name="OPD" description="Some desc 2" creator="1"
                     date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
+    <encounter_type encounter_type_id="3" name="LAB_RESULT" description="LAB Result Enconter Type" creator="1"
+                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-kj76-4720-a6bf-a61a17c4d05b"/>
     <visit_type visit_type_id="100" name="outpatient" description="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c0c579b0-8e59-401d-aaaa-976a0b183519"/>
 
     <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0"
@@ -49,6 +51,7 @@
 
     <concept concept_id="303" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
+    <concept_numeric concept_id="303" precise="0"/>
     <concept_name concept_name_id="303" concept_id="303" name="Hemoglobin" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>

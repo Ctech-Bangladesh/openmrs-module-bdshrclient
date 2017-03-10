@@ -92,7 +92,7 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldUploadANewPatient() throws Exception {
         executeDataSet("testDataSets/attributeDS.xml");
-        Date date = DateUtil.parseDate("1992-12-24 20:03:00");
+        Date date = DateUtil.parseDate("1992-12-24 00:00:00");
         PhoneNumber expected = new PhoneNumber();
         expected.setNumber("Phone Number");
 
@@ -137,7 +137,7 @@ public class PatientPushIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldUploadAPatientVoidedAttributes() throws Exception {
         executeDataSet("testDataSets/attributeVoidedDS.xml");
-        Date date = DateUtil.parseDate("1992-12-24 20:03:00");
+        Date date = DateUtil.parseDate("1992-12-24 00:00:00");
 
         String mciResponse = "{\"http_status\" : \"" + 201 + "\", \"id\" : \"hid-1\"}";
         givenThat(post(urlEqualTo("/api/default/patients"))

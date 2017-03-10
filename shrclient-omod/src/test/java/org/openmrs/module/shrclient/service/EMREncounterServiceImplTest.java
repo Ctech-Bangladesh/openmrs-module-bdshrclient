@@ -12,14 +12,13 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.openmrs.*;
-import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderContext;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.fhir.mapper.emr.FHIRMapper;
 import org.openmrs.module.fhir.mapper.model.ShrEncounterBundle;
 import org.openmrs.module.fhir.utils.DateUtil;
-import org.openmrs.module.fhir.utils.GlobalPropertyLookUpService;
 import org.openmrs.module.shrclient.advice.SHREncounterEventService;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.EncounterIdMapping;
@@ -38,10 +37,7 @@ import java.util.UUID;
 import static java.util.Arrays.asList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.isNull;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.openmrs.module.fhir.utils.PropertyKeyConstants.SHR_PATIENT_ENC_PATH_PATTERN;
 import static org.openmrs.module.fhir.utils.PropertyKeyConstants.SHR_REFERENCE_PATH;
@@ -60,10 +56,6 @@ public class EMREncounterServiceImplTest {
     @Mock
     private PropertiesReader mockPropertiesReader;
     @Mock
-    private GlobalPropertyLookUpService mockGlobalPropertyLookUpService;
-    @Mock
-    private ConceptService mockConceptService;
-    @Mock
     private EMRPatientDeathService patientDeathService;
     @Mock
     private EMRPatientMergeService emrPatientMergeService;
@@ -75,6 +67,8 @@ public class EMREncounterServiceImplTest {
     private VisitLookupService mockVisitLookupService;
     @Mock
     private SHREncounterEventService mockShrEncounterEventService;
+    @Mock
+    private EncounterService encounterService;
 
     private EMREncounterService emrEncounterService;
 
@@ -85,7 +79,7 @@ public class EMREncounterServiceImplTest {
     public void setUp() throws Exception {
         initMocks(this);
         emrEncounterService = new EMREncounterServiceImpl(mockEMRPatientService, mockIdMappingRepository, mockPropertiesReader,
-                mockSystemUserService, mockVisitService, mockFhirmapper, mockOrderService, patientDeathService, emrPatientMergeService, mockVisitLookupService, mockShrEncounterEventService);
+                mockSystemUserService, mockVisitService, mockFhirmapper, mockOrderService, patientDeathService, emrPatientMergeService, mockVisitLookupService, mockShrEncounterEventService, encounterService);
     }
 
     @Test
@@ -235,7 +229,7 @@ public class EMREncounterServiceImplTest {
         shrProperties.put(SHR_PATIENT_ENC_PATH_PATTERN, "/patients/%s/encounters");
         when(mockPropertiesReader.getShrProperties()).thenReturn(shrProperties);
         when(mockFhirmapper.getVisitPeriod(any(ShrEncounterBundle.class))).thenReturn(new PeriodDt());
-        when(mockVisitLookupService.findOrInitializeVisit(eq(emrPatient), any(Date.class), any(VisitType.class), any(Location.class), any(Date.class) ,any(Date.class) )).thenReturn(new Visit());
+        when(mockVisitLookupService.findOrInitializeVisit(eq(emrPatient), any(Date.class), any(VisitType.class), any(Location.class), any(Date.class), any(Date.class))).thenReturn(new Visit());
 
         emrEncounterService.createOrUpdateEncounter(emrPatient, encounterEvent);
         verify(mockFhirmapper, times(1)).map(eq(emrPatient), any(ShrEncounterBundle.class), any(SystemProperties.class));
@@ -275,7 +269,7 @@ public class EMREncounterServiceImplTest {
         shrProperties.put(SHR_PATIENT_ENC_PATH_PATTERN, "/patients/%s/encounters");
         when(mockPropertiesReader.getShrProperties()).thenReturn(shrProperties);
         when(mockFhirmapper.getVisitPeriod(any(ShrEncounterBundle.class))).thenReturn(new PeriodDt());
-        when(mockVisitLookupService.findOrInitializeVisit(eq(emrPatient), any(Date.class), any(VisitType.class), any(Location.class), any(Date.class) ,any(Date.class) )).thenReturn(new Visit());
+        when(mockVisitLookupService.findOrInitializeVisit(eq(emrPatient), any(Date.class), any(VisitType.class), any(Location.class), any(Date.class), any(Date.class))).thenReturn(new Visit());
 
         emrEncounterService.createOrUpdateEncounter(emrPatient, encounterEvent);
         verify(mockFhirmapper, times(1)).map(eq(emrPatient), any(ShrEncounterBundle.class), any(SystemProperties.class));

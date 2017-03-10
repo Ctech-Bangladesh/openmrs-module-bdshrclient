@@ -41,10 +41,12 @@ public class FHIRMapper {
     public Encounter map(Patient emrPatient, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) throws ParseException {
         ca.uhn.fhir.model.dstu2.resource.Encounter fhirEncounter = FHIRBundleHelper.getEncounter(shrEncounterBundle.getBundle());
         Encounter openmrsEncounter = fhirEncounterMapper.map(emrPatient, shrEncounterBundle, systemProperties);
-        fhirSubResourceMapper.map(openmrsEncounter, shrEncounterBundle, systemProperties);
+
         addEncounterType(fhirEncounter, openmrsEncounter);
         addEncounterLocation(fhirEncounter, openmrsEncounter);
         addEncounterProviders(fhirEncounter, openmrsEncounter);
+
+        fhirSubResourceMapper.map(openmrsEncounter, shrEncounterBundle, systemProperties);
         return openmrsEncounter;
     }
 

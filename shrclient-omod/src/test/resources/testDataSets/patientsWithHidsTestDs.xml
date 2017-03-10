@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
     <patient_identifier_type patient_identifier_type_id="11" name="Health Id" description="Test description"
-                             check_digit="false" creator="1" date_created="2016-12-22 14:34:21.6" required="false" retired="false"
+                             creator="1" date_created="2016-12-22 14:34:21.6" required="false" retired="false"
                              uuid="2238b039-7f77-4384-a912-360dd154f0d1"/>
     <person_attribute_type person_attribute_type_id="11" name="hidCardIssued" description="Health Id Card Issued"
                            format="java.lang.Boolean" retired="0" creator="1" sort_weight="1"

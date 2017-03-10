@@ -32,20 +32,18 @@ import static org.openmrs.module.fhir.utils.FHIREncounterUtil.getSHREncounterUrl
 
 @Component
 public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
-
     private final Map<ConditionVerificationStatusEnum, String> diaConditionStatus = new HashMap<>();
-    @Autowired
-    private ConceptService conceptService;
-    @Autowired
-    private OMRSConceptLookup omrsConceptLookup;
-    @Autowired
-    private IdMappingRepository idMappingsRepository;
-    @Autowired
-    private ObsService obsService;
+    private final ConceptService conceptService;
+    private final OMRSConceptLookup omrsConceptLookup;
+    private final IdMappingRepository idMappingsRepository;
 
-    public FHIRDiagnosisConditionMapper() {
+    @Autowired
+    public FHIRDiagnosisConditionMapper(ConceptService conceptService, OMRSConceptLookup omrsConceptLookup, IdMappingRepository idMappingsRepository) {
         diaConditionStatus.put(ConditionVerificationStatusEnum.PROVISIONAL, MRSProperties.MRS_DIAGNOSIS_STATUS_PRESUMED);
         diaConditionStatus.put(ConditionVerificationStatusEnum.CONFIRMED, MRSProperties.MRS_DIAGNOSIS_STATUS_CONFIRMED);
+        this.conceptService = conceptService;
+        this.omrsConceptLookup = omrsConceptLookup;
+        this.idMappingsRepository = idMappingsRepository;
     }
 
     @Override
@@ -95,7 +93,8 @@ public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
         codedObs.setValueCoded(diagnosisConceptAnswer);
 
         Obs bahmniDiagStatusObs = addToObsGroup(visitDiagnosisObs, bahmniDiagnosisStatus);
-        bahmniDiagStatusObs.setValueBoolean(false);
+        //todo: this is a coded concept it should have value according to https://www.hl7.org/fhir/valueset-condition-clinical.html
+        bahmniDiagStatusObs.setValueCoded(conceptService.getFalseConcept());
 
         Obs bahmniDiagRevisedObs = addToObsGroup(visitDiagnosisObs, bahmniDiagnosisRevised);
         bahmniDiagRevisedObs.setValueBoolean(false);

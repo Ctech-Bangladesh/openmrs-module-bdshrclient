@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
@@ -177,7 +178,10 @@ public class EMRPatientMergeServiceIT extends BaseModuleWebContextSensitiveTest 
         assertEquals(1, encountersOfToBeRetiredPatient.size());
         assertEquals(2, encountersOfToBeRetiredPatient.get(0).getOrders().size());
         assertEquals(4, encountersOfToBeRetiredPatient.get(0).getAllObs(true).size());
+
         assertEquals(1, encountersOfToBeRetainedPatient.size());
+        assertEquals(0, encountersOfToBeRetainedPatient.get(0).getOrders().size());
+        assertEquals(0, encountersOfToBeRetainedPatient.get(0).getAllObs(true).size());
 
         emrPatientMergeService.mergePatients(retainedHealthId, patientToBeRetired.getHealthId());
 
@@ -188,7 +192,7 @@ public class EMRPatientMergeServiceIT extends BaseModuleWebContextSensitiveTest 
         assertEquals(0, encounterService.getEncountersByPatientId(11).size());
         assertEquals(2, encountersOfRetainedPatients.size());
         assertEquals(2, mergedEncounterOne.getOrders().size());
-        assertEquals(4, mergedEncounterOne.getAllObs(true).size());
+        assertEquals(5, mergedEncounterOne.getAllObs(true).size());
 
         assertEquals(visitIdOfRetiredPatient, mergedEncounterOne.getVisit().getId());
         assertEquals(visitIdOfRetainedPatient, mergedEncounterTwo.getVisit().getId());
@@ -200,7 +204,6 @@ public class EMRPatientMergeServiceIT extends BaseModuleWebContextSensitiveTest 
         Iterator<Order> orderIterator = mergedEncounterOne.getOrders().iterator();
         assertTrue(orderIterator.next().isVoided());
         assertFalse(orderIterator.next().isVoided());
-
     }
 
     @Test

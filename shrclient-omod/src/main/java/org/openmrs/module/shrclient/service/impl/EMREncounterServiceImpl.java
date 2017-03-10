@@ -7,6 +7,7 @@ import com.sun.syndication.feed.atom.Category;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.openmrs.*;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.fhir.mapper.emr.FHIRMapper;
@@ -47,13 +48,14 @@ public class EMREncounterServiceImpl implements EMREncounterService {
     private EMRPatientMergeService emrPatientMergeService;
     private VisitLookupService visitLookupService;
     private SHREncounterEventService shrEncounterEventService;
+    private EncounterService encounterService;
 
     @Autowired
     public EMREncounterServiceImpl(@Qualifier("hieEmrPatientService") EMRPatientService emrPatientService, IdMappingRepository idMappingRepository,
                                    PropertiesReader propertiesReader, SystemUserService systemUserService,
                                    VisitService visitService, FHIRMapper fhirMapper, OrderService orderService,
                                    EMRPatientDeathService patientDeathService, EMRPatientMergeService emrPatientMergeService,
-                                   VisitLookupService visitLookupService, SHREncounterEventService shrEncounterEventService) {
+                                   VisitLookupService visitLookupService, SHREncounterEventService shrEncounterEventService, EncounterService encounterService) {
         this.emrPatientService = emrPatientService;
         this.idMappingRepository = idMappingRepository;
         this.propertiesReader = propertiesReader;
@@ -65,6 +67,7 @@ public class EMREncounterServiceImpl implements EMREncounterService {
         this.emrPatientMergeService = emrPatientMergeService;
         this.visitLookupService = visitLookupService;
         this.shrEncounterEventService = shrEncounterEventService;
+        this.encounterService = encounterService;
     }
 
     @Override
@@ -110,11 +113,12 @@ public class EMREncounterServiceImpl implements EMREncounterService {
 
         VisitType visitType = fhirMapper.getVisitType(shrEncounterBundle);
         PeriodDt visitPeriod = fhirMapper.getVisitPeriod(shrEncounterBundle);
-        Visit visit = visitLookupService.findOrInitializeVisit(emrPatient, newEmrEncounter.getEncounterDatetime(), visitType , newEmrEncounter.getLocation(), visitPeriod.getStart(),visitPeriod.getEnd() );
-        visit.addEncounter(newEmrEncounter);
+        Visit visit = visitLookupService.findOrInitializeVisit(emrPatient, newEmrEncounter.getEncounterDatetime(), visitType, newEmrEncounter.getLocation(), visitPeriod.getStart(), visitPeriod.getEnd());
 
-        //identify location, provider(s), visit 
-        visitService.saveVisit(newEmrEncounter.getVisit());
+        visit.addEncounter(newEmrEncounter);
+        encounterService.saveEncounter(newEmrEncounter);
+        visitService.saveVisit(visit);
+        //identify location, provider(s), visit
         saveOrders(newEmrEncounter);
         Date encounterUpdatedDate = getEncounterUpdatedDate(encounterEvent);
         addEncounterToIdMapping(newEmrEncounter, shrEncounterId, healthId, systemProperties, encounterUpdatedDate);
