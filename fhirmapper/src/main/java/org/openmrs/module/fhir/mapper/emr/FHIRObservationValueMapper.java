@@ -22,10 +22,12 @@ import java.util.List;
 @Component
 public class FHIRObservationValueMapper {
 
+    private final OMRSConceptLookup omrsConceptLookup;
+
     @Autowired
-    private OMRSConceptLookup omrsConceptLookup;
-    @Autowired
-    private ConceptService conceptService;
+    public FHIRObservationValueMapper(OMRSConceptLookup omrsConceptLookup) {
+        this.omrsConceptLookup = omrsConceptLookup;
+    }
 
     public Obs map(IDatatype value, Obs obs) {
         if (value != null && !value.isEmpty()) {

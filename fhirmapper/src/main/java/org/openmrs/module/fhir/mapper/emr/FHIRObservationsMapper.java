@@ -4,6 +4,7 @@ import ca.uhn.fhir.model.api.IDatatype;
 import ca.uhn.fhir.model.api.IResource;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.Observation;
+import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.*;
 import org.openmrs.module.fhir.mapper.model.EmrEncounter;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
@@ -41,6 +42,7 @@ public class FHIRObservationsMapper implements FHIRResourceMapper {
     }
 
     public Obs mapObs(ShrEncounterBundle shrEncounterBundle, EmrEncounter emrEncounter, Observation observation) {
+        if (observation.getValue() == null && CollectionUtils.isEmpty(observation.getRelated())) return null;
         String facilityId = FHIREncounterUtil.getFacilityId(shrEncounterBundle.getBundle());
         Concept concept = mapConcept(observation, facilityId);
         if (concept == null) return null;

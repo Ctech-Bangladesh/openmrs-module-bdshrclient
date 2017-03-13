@@ -62,8 +62,6 @@ public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
     public void map(IResource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         Condition condition = (Condition) resource;
 
-        Obs visitDiagnosisObs = new Obs();
-
         Concept diagnosisOrder = conceptService.getConceptByName(MRSProperties.MRS_CONCEPT_NAME_DIAGNOSIS_ORDER);
         Concept diagnosisCertainty = conceptService.getConceptByName(MRSProperties.MRS_CONCEPT_NAME_DIAGNOSIS_CERTAINTY);
         Concept codedDiagnosis = conceptService.getConceptByName(MRSProperties.MRS_CONCEPT_NAME_CODED_DIAGNOSIS);
@@ -81,13 +79,18 @@ public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
             return;
         }
 
+        Obs visitDiagnosisObs = new Obs();
         visitDiagnosisObs.setConcept(visitDiagnosis);
 
-        Obs orderObs = addToObsGroup(visitDiagnosisObs, diagnosisOrder);
-        orderObs.setValueCoded(diagnosisSeverityAnswer);
+        if (diagnosisSeverityAnswer != null){
+            Obs orderObs = addToObsGroup(visitDiagnosisObs, diagnosisOrder);
+            orderObs.setValueCoded(diagnosisSeverityAnswer);
+        }
 
-        Obs certaintyObs = addToObsGroup(visitDiagnosisObs, diagnosisCertainty);
-        certaintyObs.setValueCoded(diagnosisCertaintyAnswer);
+        if (diagnosisCertaintyAnswer != null){
+            Obs certaintyObs = addToObsGroup(visitDiagnosisObs, diagnosisCertainty);
+            certaintyObs.setValueCoded(diagnosisCertaintyAnswer);
+        }
 
         Obs codedObs = addToObsGroup(visitDiagnosisObs, codedDiagnosis);
         codedObs.setValueCoded(diagnosisConceptAnswer);

@@ -7,7 +7,6 @@ import com.sun.syndication.feed.atom.Category;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.*;
@@ -468,6 +467,26 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         assertNotNull(firstObs.getPerson());
         assertNotNull(firstObs.getEncounter());
     }
+
+    @Test
+    public void shouldCreateObsWithLocationIdOfSourceSystem() throws Exception {
+        executeDataSet("testDataSets/shrClientEncounterWithObservationTestDs.xml");
+        Patient patient = patientService.getPatient(1);
+        String shrEncounterId = "shr-enc-id";
+        String facilityId = "10019841";
+
+        List<EncounterEvent> bundles1 = getEncounterEvents(shrEncounterId, "encounterBundles/dstu2/encounterWithObservations.xml");
+        emrEncounterService.createOrUpdateEncounters(patient, bundles1);
+        IdMapping mapping = idMappingRepository.findByExternalId(shrEncounterId, ENCOUNTER);
+        Encounter encounter = encounterService.getEncounterByUuid(mapping.getInternalId());
+        IdMapping frLocationMapping = idMappingRepository.findByExternalId(facilityId, IdMappingType.FACILITY);
+
+        assertEquals(frLocationMapping.getInternalId(), encounter.getLocation().getUuid());
+        for (Obs obs : encounter.getAllObs()) {
+            assertEquals(frLocationMapping.getInternalId(), obs.getLocation().getUuid());
+        }
+    }
+
 
     private Order getDiscontinuedOrder(Set<Order> updatedEncounterOrders) {
         for (Order order : updatedEncounterOrders) {

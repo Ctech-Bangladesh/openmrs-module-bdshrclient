@@ -32,20 +32,22 @@ import static org.openmrs.module.fhir.MRSProperties.*;
 @Component
 public class FHIRProcedureMapper implements FHIRResourceMapper {
 
-    @Autowired
-    private ConceptService conceptService;
+    private final ConceptService conceptService;
+    private final OMRSConceptLookup omrsConceptLookup;
+    private final FHIRObservationValueMapper observationValueMapper;
+    private final IdMappingRepository idMappingRepository;
+    private final OrderService orderService;
 
     @Autowired
-    private OMRSConceptLookup omrsConceptLookup;
-
-    @Autowired
-    private FHIRObservationValueMapper observationValueMapper;
-
-    @Autowired
-    private IdMappingRepository idMappingRepository;
-
-    @Autowired
-    private OrderService orderService;
+    public FHIRProcedureMapper(ConceptService conceptService, OMRSConceptLookup omrsConceptLookup,
+                               FHIRObservationValueMapper observationValueMapper,
+                               IdMappingRepository idMappingRepository, OrderService orderService) {
+        this.conceptService = conceptService;
+        this.omrsConceptLookup = omrsConceptLookup;
+        this.observationValueMapper = observationValueMapper;
+        this.idMappingRepository = idMappingRepository;
+        this.orderService = orderService;
+    }
 
     @Override
     public boolean canHandle(IResource resource) {
@@ -128,6 +130,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
 
     private void getProcedureNotesObs(Procedure procedure, Obs proceduresObs, Order procedureOrder) {
         for (AnnotationDt annotationDt : procedure.getNotes()) {
+            if (annotationDt.getText() == null) continue;
             Obs procedureNotesObs = new Obs();
             procedureNotesObs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_PROCEDURE_NOTES));
             procedureNotesObs.setValueText(annotationDt.getText());
@@ -165,9 +168,10 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     private void addDiagnosticResults(DiagnosticReport diagnosticReport, Bundle bundle, Obs diagnosisStudyObs, Order procedureOrder) {
         Concept diagnosticResultConcept = conceptService.getConceptByName(MRS_CONCEPT_PROCEDURE_DIAGNOSTIC_RESULT);
         for (ResourceReferenceDt resultReference : diagnosticReport.getResult()) {
+            Observation resultObservation = (Observation) FHIRBundleHelper.findResourceByReference(bundle, resultReference);
+            if (resultObservation == null || resultObservation.getValue() == null) continue;
             Obs result = new Obs();
             result.setConcept(diagnosticResultConcept);
-            Observation resultObservation = (Observation) FHIRBundleHelper.findResourceByReference(bundle, resultReference);
             observationValueMapper.map(resultObservation.getValue(), result);
             result.setOrder(procedureOrder);
             diagnosisStudyObs.addGroupMember(result);
@@ -191,7 +195,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     private Obs getStartDate(Procedure procedure, Order procedureOrder) {
         PeriodDt period = (PeriodDt) procedure.getPerformed();
         Obs startDate = null;
-        if (period != null) {
+        if (period != null && period.getStart() != null) {
             startDate = new Obs();
             startDate.setConcept(conceptService.getConceptByName(MRS_CONCEPT_PROCEDURE_START_DATE));
             startDate.setValueDate(period.getStart());
@@ -203,7 +207,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     private Obs getEndDate(Procedure procedure, Order procedureOrder) {
         PeriodDt period = (PeriodDt) procedure.getPerformed();
         Obs endDate = null;
-        if (period != null) {
+        if (period != null && period.getEnd() != null) {
             endDate = new Obs();
             endDate.setConcept(conceptService.getConceptByName(MRS_CONCEPT_PROCEDURE_END_DATE));
             endDate.setValueDate(period.getEnd());
@@ -213,14 +217,14 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     }
 
     private Obs getOutCome(Procedure procedure, Order procedureOrder) {
-        if (procedure.getOutcome() != null && !procedure.getOutcome().isEmpty()) {
-            Obs outcome = new Obs();
-            outcome.setConcept(omrsConceptLookup.findTRConceptOfType(TrValueSetType.PROCEDURE_OUTCOME));
-            outcome.setValueCoded(omrsConceptLookup.findConceptByCodeOrDisplay(procedure.getOutcome().getCoding()));
-            outcome.setOrder(procedureOrder);
-            return outcome;
-        }
-        return null;
+        if (procedure.getOutcome() == null || procedure.getOutcome().isEmpty()) return null;
+        Concept outcomeAnswerConcept = omrsConceptLookup.findConceptByCodeOrDisplay(procedure.getOutcome().getCoding());
+        if (outcomeAnswerConcept == null) return null;
+        Obs outcome = new Obs();
+        outcome.setConcept(omrsConceptLookup.findTRConceptOfType(TrValueSetType.PROCEDURE_OUTCOME));
+        outcome.setValueCoded(outcomeAnswerConcept);
+        outcome.setOrder(procedureOrder);
+        return outcome;
     }
 
     private void setFollowUpObses(Procedure procedure, Obs procedureObs, Order procedureOrder) {

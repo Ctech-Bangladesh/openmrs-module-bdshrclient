@@ -27,14 +27,16 @@ import static org.openmrs.module.fhir.MRSProperties.*;
 
 @Component
 public class FHIRFamilyMemberHistoryMapper implements FHIRResourceMapper {
-    @Autowired
-    private IdMappingRepository idMappingsRepository;
+    private final IdMappingRepository idMappingsRepository;
+    private final ConceptService conceptService;
+    private final OMRSConceptLookup conceptLookup;
 
     @Autowired
-    private ConceptService conceptService;
-
-    @Autowired
-    private OMRSConceptLookup conceptLookup;
+    public FHIRFamilyMemberHistoryMapper(IdMappingRepository idMappingsRepository, ConceptService conceptService, OMRSConceptLookup conceptLookup) {
+        this.idMappingsRepository = idMappingsRepository;
+        this.conceptService = conceptService;
+        this.conceptLookup = conceptLookup;
+    }
 
     @Override
     public boolean canHandle(IResource resource) {
@@ -74,17 +76,18 @@ public class FHIRFamilyMemberHistoryMapper implements FHIRResourceMapper {
     }
 
     private Obs mapRelationCondition(FamilyMemberHistory.Condition conditon) {
+        Concept familyMemberConditionAnswerConcept = getAnswer(conditon);
+        if (familyMemberConditionAnswerConcept == null) return null;
         Obs result = new Obs();
         result.setConcept(conceptService.getConceptByName(MRS_CONCEPT_NAME_RELATIONSHIP_CONDITION));
         mapOnsetDate(result, conditon.getOnset());
         mapNotes(result, conditon);
-        mapCondition(conditon, result);
+        mapCondition(familyMemberConditionAnswerConcept, result);
         return result;
     }
 
-    private void mapCondition(FamilyMemberHistory.Condition condition, Obs result) {
+    private void mapCondition(Concept answerConcept, Obs result) {
         Obs value = new Obs();
-        Concept answerConcept = getAnswer(condition);
         value.setConcept(conceptService.getConceptByName(MRS_CONCEPT_NAME_RELATIONSHIP_DIAGNOSIS));
         value.setValueCoded(answerConcept);
         result.addGroupMember(value);

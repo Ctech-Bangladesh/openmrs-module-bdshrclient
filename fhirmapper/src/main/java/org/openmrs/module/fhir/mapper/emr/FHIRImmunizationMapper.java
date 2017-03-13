@@ -25,11 +25,14 @@ import static org.openmrs.module.fhir.MRSProperties.*;
 @Component
 public class FHIRImmunizationMapper implements FHIRResourceMapper {
 
-    @Autowired
-    private ConceptService conceptService;
+    private final ConceptService conceptService;
+    private final OMRSConceptLookup omrsConceptLookup;
 
     @Autowired
-    private OMRSConceptLookup omrsConceptLookup;
+    public FHIRImmunizationMapper(ConceptService conceptService, OMRSConceptLookup omrsConceptLookup) {
+        this.conceptService = conceptService;
+        this.omrsConceptLookup = omrsConceptLookup;
+    }
 
     @Override
     public boolean canHandle(IResource resource) {
@@ -45,14 +48,19 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
 
         Obs immunizationIncidentGroup = new Obs();
         immunizationIncidentGroup.setConcept(conceptService.getConceptByName(MRS_CONCEPT_IMMUNIZATION_INCIDENT_GROUP));
+
+        Obs obsForVaccinceCode = createObsForVaccinceCode(immunization);
+        if (obsForVaccinceCode.getValueCoded() == null) {
+            return;
+        }
+        immunizationIncidentGroup.addGroupMember(obsForVaccinceCode);
+        immunizationIncidentGroup.addGroupMember(getDosage(immunization));
+        immunizationIncidentGroup.addGroupMember(getQuantityUnits(immunization));
+        immunizationIncidentGroup.addGroupMember(getRoute(immunization));
         immunizationIncidentGroup.addGroupMember(getVaccinationDate(immunization));
         immunizationIncidentGroup.addGroupMember(getVaccineReported(immunization));
         immunizationIncidentGroup.addGroupMember(getVaccineRefused(immunization));
         immunizationIncidentGroup.addGroupMember(getImmunizationStatus(immunization));
-        immunizationIncidentGroup.addGroupMember(getDosage(immunization));
-        immunizationIncidentGroup.addGroupMember(getQuantityUnits(immunization));
-        immunizationIncidentGroup.addGroupMember(getVaccineCode(immunization));
-        immunizationIncidentGroup.addGroupMember(getRoute(immunization));
         addImmunizationReasons(immunization, immunizationIncidentGroup);
         addImmunizationRefusalReasons(immunization, immunizationIncidentGroup);
         addImmunizationNotes(immunization, immunizationIncidentGroup);
@@ -73,9 +81,10 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     private Obs getImmunizationStatus(Immunization immunization) {
+        Concept statusConcept = omrsConceptLookup.findValuesetConceptFromTrValuesetType(TrValueSetType.IMMUNIZATION_STATUS, immunization.getStatus());
+        if (statusConcept == null) return null;
         Obs statusObs = new Obs();
         statusObs.setConcept(omrsConceptLookup.findTRConceptOfType(TrValueSetType.IMMUNIZATION_STATUS));
-        Concept statusConcept = omrsConceptLookup.findValuesetConceptFromTrValuesetType(TrValueSetType.IMMUNIZATION_STATUS, immunization.getStatus());
         statusObs.setValueCoded(statusConcept);
         return statusObs;
     }
@@ -87,9 +96,11 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
             if (reasons != null && !reasons.isEmpty()) {
                 Concept immunizationReasonConcept = omrsConceptLookup.findTRConceptOfType(TrValueSetType.IMMUNIZATION_REASON);
                 for (CodeableConceptDt reason : reasons) {
+                    Concept valueCoded = omrsConceptLookup.findConceptByCodeOrDisplay(reason.getCoding());
+                    if (valueCoded == null) continue;
                     Obs immunizationReasonObs = new Obs();
                     immunizationReasonObs.setConcept(immunizationReasonConcept);
-                    immunizationReasonObs.setValueCoded(omrsConceptLookup.findConceptByCodeOrDisplay(reason.getCoding()));
+                    immunizationReasonObs.setValueCoded(valueCoded);
                     immunizationIncident.addGroupMember(immunizationReasonObs);
                 }
             }
@@ -104,9 +115,11 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
             if (reasons != null && !reasons.isEmpty()) {
                 Concept immunizationRefusalReasonConcept = omrsConceptLookup.findTRConceptOfType(TrValueSetType.IMMUNIZATION_REFUSAL_REASON);
                 for (CodeableConceptDt reason : reasons) {
+                    Concept valueCoded = omrsConceptLookup.findConceptByCodeOrDisplay(reason.getCoding());
+                    if (valueCoded == null) continue;
                     Obs immunizationRefusalReasonObs = new Obs();
                     immunizationRefusalReasonObs.setConcept(immunizationRefusalReasonConcept);
-                    immunizationRefusalReasonObs.setValueCoded(omrsConceptLookup.findConceptByCodeOrDisplay(reason.getCoding()));
+                    immunizationRefusalReasonObs.setValueCoded(valueCoded);
                     immunizationIncident.addGroupMember(immunizationRefusalReasonObs);
                 }
             }
@@ -115,17 +128,19 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     private Obs getRoute(Immunization immunization) {
+        Concept routeAnswerConcept = omrsConceptLookup.findConceptByCodeOrDisplay(immunization.getRoute().getCoding());
+        Concept routeOfAdministrationConcept = omrsConceptLookup.findTRConceptOfType(TrValueSetType.ROUTE_OF_ADMINISTRATION);
+        if (null == routeAnswerConcept || null == routeOfAdministrationConcept) return null;
         if (immunization.getRoute() != null && !immunization.getRoute().isEmpty()) {
-            Concept routeOfAdministrationConcept = omrsConceptLookup.findTRConceptOfType(TrValueSetType.ROUTE_OF_ADMINISTRATION);
             Obs routeOfObservationObs = new Obs();
             routeOfObservationObs.setConcept(routeOfAdministrationConcept);
-            routeOfObservationObs.setValueCoded(omrsConceptLookup.findConceptByCodeOrDisplay(immunization.getRoute().getCoding()));
+            routeOfObservationObs.setValueCoded(routeAnswerConcept);
             return routeOfObservationObs;
         }
         return null;
     }
 
-    private Obs getVaccineCode(Immunization immunization) {
+    private Obs createObsForVaccinceCode(Immunization immunization) {
         Obs obs = new Obs();
         obs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_VACCINE));
         Drug drug = omrsConceptLookup.findDrug(immunization.getVaccineCode().getCoding());
@@ -167,23 +182,30 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     private Obs getVaccineReported(Immunization immunization) {
+        Boolean reported = immunization.getReported();
+        if (reported == null) return null;
         Obs obs = new Obs();
         obs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_VACCINATION_REPORTED));
-        obs.setValueBoolean(immunization.getReported());
+        obs.setValueBoolean(reported);
         return obs;
     }
 
     private Obs getVaccineRefused(Immunization immunization) {
+        Boolean wasNotGiven = immunization.getWasNotGiven();
+        if (wasNotGiven == null) return null;
         Obs obs = new Obs();
         obs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_VACCINATION_REFUSED));
-        obs.setValueBoolean(immunization.getWasNotGiven());
+        obs.setValueBoolean(wasNotGiven);
         return obs;
     }
 
     private Obs getVaccinationDate(Immunization immunization) {
-        Obs obs = new Obs();
-        obs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_VACCINATION_DATE));
-        obs.setValueDate(immunization.getDate());
-        return obs;
+        if (immunization.getDate() != null) {
+            Obs obs = new Obs();
+            obs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_VACCINATION_DATE));
+            obs.setValueDate(immunization.getDate());
+            return obs;
+        }
+        return null;
     }
 }

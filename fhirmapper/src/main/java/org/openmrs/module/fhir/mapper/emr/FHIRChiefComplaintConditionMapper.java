@@ -5,6 +5,7 @@ import ca.uhn.fhir.model.dstu2.composite.CodingDt;
 import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
 import ca.uhn.fhir.model.dstu2.resource.Condition;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
@@ -22,13 +23,16 @@ import java.util.List;
 @Component
 public class FHIRChiefComplaintConditionMapper implements FHIRResourceMapper {
 
-    @Autowired
-    private OMRSConceptLookup omrsConceptLookup;
-
-    @Autowired
-    private ConceptService conceptService;
+    private final OMRSConceptLookup omrsConceptLookup;
+    private final ConceptService conceptService;
 
     private static final int CONVERTION_PARAMETER_FOR_MINUTES = (60 * 1000);
+
+    @Autowired
+    public FHIRChiefComplaintConditionMapper(OMRSConceptLookup omrsConceptLookup, ConceptService conceptService) {
+        this.omrsConceptLookup = omrsConceptLookup;
+        this.conceptService = conceptService;
+    }
 
     @Override
     public boolean canHandle(IResource resource) {
@@ -58,7 +62,8 @@ public class FHIRChiefComplaintConditionMapper implements FHIRResourceMapper {
                 String displayName = conditionCoding.get(0).getDisplay();
                 Concept nonCodedChiefComplaintConcept = conceptService.getConceptByName(MRSProperties.MRS_CONCEPT_NAME_NON_CODED_CHIEF_COMPLAINT);
                 chiefComplaintObs.setConcept(nonCodedChiefComplaintConcept);
-                chiefComplaintObs.setValueText(displayName);
+                String valueText = StringUtils.isNotBlank(displayName) ? displayName : "";
+                chiefComplaintObs.setValueText(valueText);
             } else {
                 return;
             }

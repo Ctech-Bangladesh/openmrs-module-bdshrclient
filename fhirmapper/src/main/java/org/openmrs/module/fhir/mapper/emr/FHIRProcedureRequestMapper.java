@@ -40,16 +40,20 @@ import static org.openmrs.module.fhir.MRSProperties.RESOURCE_MAPPING_EXTERNAL_ID
 
 @Component
 public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
+    private final OrderService orderService;
+    private final OMRSConceptLookup omrsConceptLookup;
+    private final ProviderLookupService providerLookupService;
+    private final OrderCareSettingLookupService orderCareSettingLookupService;
+    private final IdMappingRepository idMappingRepository;
+
     @Autowired
-    private OrderService orderService;
-    @Autowired
-    private OMRSConceptLookup omrsConceptLookup;
-    @Autowired
-    private ProviderLookupService providerLookupService;
-    @Autowired
-    private OrderCareSettingLookupService orderCareSettingLookupService;
-    @Autowired
-    private IdMappingRepository idMappingRepository;
+    public FHIRProcedureRequestMapper(OrderService orderService, OMRSConceptLookup omrsConceptLookup, ProviderLookupService providerLookupService, OrderCareSettingLookupService orderCareSettingLookupService, IdMappingRepository idMappingRepository) {
+        this.orderService = orderService;
+        this.omrsConceptLookup = omrsConceptLookup;
+        this.providerLookupService = providerLookupService;
+        this.orderCareSettingLookupService = orderCareSettingLookupService;
+        this.idMappingRepository = idMappingRepository;
+    }
 
     @Override
     public boolean canHandle(IResource resource) {

@@ -67,22 +67,4 @@
 
     <global_property property="shr.system.user" property_value="777" description="Shr System User" uuid="lkieyg88-efd9-fda3-2b99-z12aalsa677h"/>
     <!--Vitals concept set-->
-
-    <!--Encounter With Vitals-->
-    <!--<encounter encounter_id="36" encounter_type="2" patient_id="1" visit_id="1" location_id="12"-->
-               <!--encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"-->
-               <!--voided="false" uuid="6d0af6767-707a-4629-9850-f15206e63ab0"/>-->
-
-    <!--<encounter_provider encounter_provider_id="2" encounter_id="36" provider_id="22" creator="1" date_created="2008-07-01 14:09:05.0"-->
-                        <!--voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>-->
-
-    <!--<obs obs_id="11" encounter_id="36" person_id="1" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"-->
-         <!--uuid="ef4554cb-22gg-471a-lld7-1434552c337c1" creator="1" concept_id="301" voided="0" />-->
-    <!--<obs obs_id="12" encounter_id="36" person_id="1" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"-->
-         <!--uuid="eee554cb-2afa-471a-9cd7-1434552c337c2" creator="1" obs_group_id="11" concept_id="302" voided="0" />-->
-    <!--<obs obs_id="21" encounter_id="36" person_id="1" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"-->
-         <!--uuid="eee554cb-22ff-471a-9cd7-1434552c337c2" creator="1" obs_group_id="12" value_numeric="120" concept_id="305" voided="0" />-->
-    <!--<obs obs_id="41" encounter_id="36" person_id="1" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"-->
-         <!--uuid="eeea54cb-2aee-471a-9cd7-1434a5aa337a4" creator="1" obs_group_id="11" value_numeric="133" concept_id="303" voided="0" />-->
-    <!--&lt;!&ndash;Encounter With Vitals&ndash;&gt;-->
 </dataset>
