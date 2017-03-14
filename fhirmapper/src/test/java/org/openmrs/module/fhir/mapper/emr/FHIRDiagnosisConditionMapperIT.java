@@ -71,7 +71,7 @@ public class FHIRDiagnosisConditionMapperIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldMapADiagnosisCondition() throws Exception {
-        EmrEncounter emrEncounter = mapDiagnosis("encounterBundles/dstu2/encounterWithDiagnosisCondition.xml", "SHR_ENC_ID", "HID-123");
+        EmrEncounter emrEncounter = mapDiagnosis("encounterBundles/dstu2/encounterWithDiagnosisCondition.xml");
         String conditionUuid = "35b57256-f229-476e-b5a1-c73af110485d";
 
         Set<Obs> topLevelObs = emrEncounter.getTopLevelObs();
@@ -89,7 +89,7 @@ public class FHIRDiagnosisConditionMapperIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldNotMapWhenTheAnswerConceptIsNotPresent() throws Exception {
-        EmrEncounter emrEncounter = mapDiagnosis("encounterBundles/dstu2/encounterWithDiagnosisConditionHavingNotSyncedConcept.xml", "SHR_ENC_ID", "HID-123");
+        EmrEncounter emrEncounter = mapDiagnosis("encounterBundles/dstu2/encounterWithDiagnosisConditionHavingNotSyncedConcept.xml");
         Set<Obs> topLevelObs = emrEncounter.getTopLevelObs();
         assertTrue(topLevelObs.isEmpty());
     }
@@ -154,7 +154,7 @@ public class FHIRDiagnosisConditionMapperIT extends BaseModuleWebContextSensitiv
 
     private void assertVisitDiagnosis(Obs visitDiagnosisObs, String healthId, String shrEncounterId, String conditionUuid, String comments) {
         assertEquals(MRS_CONCEPT_NAME_VISIT_DIAGNOSES, visitDiagnosisObs.getConcept().getName().getName());
-        assertEquals(6, visitDiagnosisObs.getGroupMembers().size());
+        assertEquals(5, visitDiagnosisObs.getGroupMembers().size());
         assertEquals(comments, visitDiagnosisObs.getComment());
 
         String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, conditionUuid);
@@ -166,10 +166,10 @@ public class FHIRDiagnosisConditionMapperIT extends BaseModuleWebContextSensitiv
 
     }
 
-    private EmrEncounter mapDiagnosis(String filePath, String shrEncounterId, String healthId) throws Exception {
+    private EmrEncounter mapDiagnosis(String filePath) throws Exception {
         Encounter encounter = new Encounter();
         encounter.setEncounterDatetime(new Date());
-        return mapDiagnosis(filePath, encounter, healthId, shrEncounterId);
+        return mapDiagnosis(filePath, encounter, "HID-123", "SHR_ENC_ID");
     }
 
     private EmrEncounter mapDiagnosis(String filePath, Encounter encounter, String healthId, String shrEncounterId) throws Exception {

@@ -128,10 +128,10 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     private Obs getRoute(Immunization immunization) {
-        Concept routeAnswerConcept = omrsConceptLookup.findConceptByCodeOrDisplay(immunization.getRoute().getCoding());
-        Concept routeOfAdministrationConcept = omrsConceptLookup.findTRConceptOfType(TrValueSetType.ROUTE_OF_ADMINISTRATION);
-        if (null == routeAnswerConcept || null == routeOfAdministrationConcept) return null;
         if (immunization.getRoute() != null && !immunization.getRoute().isEmpty()) {
+            Concept routeAnswerConcept = omrsConceptLookup.findConceptByCodeOrDisplay(immunization.getRoute().getCoding());
+            Concept routeOfAdministrationConcept = omrsConceptLookup.findTRConceptOfType(TrValueSetType.ROUTE_OF_ADMINISTRATION);
+            if (null == routeAnswerConcept || null == routeOfAdministrationConcept) return null;
             Obs routeOfObservationObs = new Obs();
             routeOfObservationObs.setConcept(routeOfAdministrationConcept);
             routeOfObservationObs.setValueCoded(routeAnswerConcept);

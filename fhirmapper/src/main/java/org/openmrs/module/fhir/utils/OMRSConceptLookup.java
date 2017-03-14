@@ -1,6 +1,7 @@
 package org.openmrs.module.fhir.utils;
 
 import ca.uhn.fhir.model.dstu2.composite.CodingDt;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -16,9 +17,7 @@ import java.util.*;
 
 import static org.apache.commons.collections4.CollectionUtils.exists;
 import static org.apache.commons.collections4.CollectionUtils.select;
-import static org.openmrs.module.fhir.MRSProperties.CONCEPT_MAP_TYPE_MAY_BE_A;
-import static org.openmrs.module.fhir.MRSProperties.LOCAL_CONCEPT_VERSION_PREFIX;
-import static org.openmrs.module.fhir.MRSProperties.UNVERIFIED_BY_TR;
+import static org.openmrs.module.fhir.MRSProperties.*;
 
 @Component
 public class OMRSConceptLookup {
@@ -41,6 +40,7 @@ public class OMRSConceptLookup {
     }
 
     public Concept findConceptByCodeOrDisplay(List<CodingDt> codings) {
+        if (CollectionUtils.isEmpty(codings)) return null;
         Concept conceptByCode = findConceptByCode(codings);
         return conceptByCode != null ? conceptByCode : conceptService.getConceptByName(codings.get(0).getDisplay());
     }
@@ -253,9 +253,9 @@ public class OMRSConceptLookup {
 
     public Concept findOrCreateLocalConceptByCodings(List<CodingDt> codings, String facilityId, String conceptClassUuid, String conceptDatatypeUuid) {
         Concept conceptByCoding = findConceptByCode(codings);
-        if(conceptByCoding != null) return conceptByCoding;
-        ConceptClass conceptClass = conceptService.getConceptClassByUuid(conceptClassUuid);
-        ConceptDatatype conceptDatatype = conceptService.getConceptDatatypeByUuid(conceptDatatypeUuid);
+        if (conceptByCoding != null) return conceptByCoding;
+        ConceptClass conceptClass = conceptService.getConceptClassByName(conceptClassName);
+        ConceptDatatype conceptDatatype = conceptService.getConceptDatatypeByName(conceptDatatypeName);
         return createLocalConceptFromCodings(codings, facilityId, conceptClass, conceptDatatype);
     }
 

@@ -95,10 +95,6 @@ public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
         Obs codedObs = addToObsGroup(visitDiagnosisObs, codedDiagnosis);
         codedObs.setValueCoded(diagnosisConceptAnswer);
 
-        Obs bahmniDiagStatusObs = addToObsGroup(visitDiagnosisObs, bahmniDiagnosisStatus);
-        //todo: this is a coded concept it should have value according to https://www.hl7.org/fhir/valueset-condition-clinical.html
-        bahmniDiagStatusObs.setValueCoded(conceptService.getFalseConcept());
-
         Obs bahmniDiagRevisedObs = addToObsGroup(visitDiagnosisObs, bahmniDiagnosisRevised);
         bahmniDiagRevisedObs.setValueBoolean(false);
 

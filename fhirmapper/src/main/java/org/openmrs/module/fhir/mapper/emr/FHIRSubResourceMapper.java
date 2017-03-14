@@ -1,6 +1,7 @@
 package org.openmrs.module.fhir.mapper.emr;
 
 import ca.uhn.fhir.model.api.IResource;
+import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -51,10 +52,20 @@ public class FHIRSubResourceMapper {
     }
 
     private void voidExistingObs(Encounter emrEncounter) {
-        Set<Obs> existingObs = emrEncounter.getAllObs(false);
-        for (Obs obs : existingObs) {
-            obs.setVoided(true);
-            obs.setVoidReason(ENCOUNTER_UPDATE_VOID_REASON);
+        Set<Obs> topLevelObs = emrEncounter.getObsAtTopLevel(false);
+        voidObsAndGroupMembers(topLevelObs);
+    }
+
+    private void voidObsAndGroupMembers(Set<Obs> obs) {
+        for (Obs topLevelOb : obs) {
+            Set<Obs> groupMembers = topLevelOb.getGroupMembers();
+            if (!topLevelOb.getVoided()) {
+                topLevelOb.setVoided(true);
+                topLevelOb.setVoidReason(ENCOUNTER_UPDATE_VOID_REASON);
+            }
+            if (CollectionUtils.isNotEmpty(groupMembers)) {
+                voidObsAndGroupMembers(groupMembers);
+            }
         }
     }
 }
