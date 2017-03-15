@@ -5,11 +5,10 @@ import ca.uhn.fhir.model.api.IResource;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.Observation;
 import org.apache.commons.collections.CollectionUtils;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Obs;
 import org.openmrs.module.fhir.mapper.model.EmrEncounter;
-import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.ShrEncounterBundle;
-import org.openmrs.module.fhir.utils.FHIRBundleHelper;
 import org.openmrs.module.fhir.utils.FHIREncounterUtil;
 import org.openmrs.module.fhir.utils.OMRSConceptLookup;
 import org.openmrs.module.shrclient.util.SystemProperties;
@@ -19,6 +18,8 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 
 import static org.openmrs.module.fhir.MRSProperties.LOCAL_CONCEPT_VERSION_PREFIX;
+import static org.openmrs.module.fhir.OpenMRSConstants.MISC_CONCEPT_CLASS_NAME;
+import static org.openmrs.module.fhir.OpenMRSConstants.TEXT_CONCEPT_DATATYPE_NAME;
 import static org.openmrs.module.fhir.utils.FHIRBundleHelper.findResourceByReference;
 
 @Component
@@ -92,6 +93,6 @@ public class FHIRObservationsMapper implements FHIRResourceMapper {
         if (observationName.getCoding() != null && observationName.getCoding().isEmpty()) {
             return null;
         }
-        return omrsConceptLookup.findOrCreateLocalConceptByCodings(observationName.getCoding(), facilityId, ConceptClass.MISC_UUID, ConceptDatatype.TEXT_UUID);
+        return omrsConceptLookup.findOrCreateLocalConceptByCodings(observationName.getCoding(), facilityId, MISC_CONCEPT_CLASS_NAME, TEXT_CONCEPT_DATATYPE_NAME);
     }
 }

@@ -209,7 +209,7 @@ public class EMREncounterServiceImpl implements EMREncounterService {
     }
 
     private void savePatientDeathInfo(org.openmrs.Patient emrPatient) {
-        if (emrPatient.isDead()) {
+        if (emrPatient.getDead()) {
             emrPatient.setCauseOfDeath(patientDeathService.getCauseOfDeath(emrPatient));
             emrPatientService.savePatient(emrPatient);
             systemUserService.setOpenmrsShrSystemUserAsCreator(emrPatient);

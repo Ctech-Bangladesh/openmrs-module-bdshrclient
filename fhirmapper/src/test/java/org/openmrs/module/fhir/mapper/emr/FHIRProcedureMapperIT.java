@@ -19,6 +19,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.MapperTestHelper;
 import org.openmrs.module.fhir.ObsHelper;
+import org.openmrs.module.fhir.OpenMRSConstants;
 import org.openmrs.module.fhir.mapper.model.CompoundObservation;
 import org.openmrs.module.fhir.mapper.model.EmrEncounter;
 import org.openmrs.module.fhir.mapper.model.ShrEncounterBundle;
@@ -37,6 +38,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openmrs.module.fhir.MRSProperties.*;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
+import static org.openmrs.module.fhir.OpenMRSConstants.PROCEDURE_CONCEPT_CLASS_NAME;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -169,7 +171,7 @@ public class FHIRProcedureMapperIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(createdConcept, obs.getValueCoded());
         String version = String.format("%s%s", LOCAL_CONCEPT_VERSION_PREFIX, "10019842");
         assertEquals(version, createdConcept.getVersion());
-        assertEquals(conceptService.getConceptClassByUuid(ConceptClass.PROCEDURE_UUID), createdConcept.getConceptClass());
+        assertEquals(conceptService.getConceptClassByName(PROCEDURE_CONCEPT_CLASS_NAME), createdConcept.getConceptClass());
     }
 
     @Test

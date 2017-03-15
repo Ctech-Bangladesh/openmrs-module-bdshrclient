@@ -40,17 +40,17 @@ public class EMRPatientDeathServiceImpl implements EMRPatientDeathService {
         String unspecifiedCauseOfDeathConceptId = globalPropertyLookUpService.getGlobalPropertyValue(GLOBAL_PROPERTY_CONCEPT_CAUSE_OF_DEATH);
         Concept causeOfDeathConcept = unspecifiedCauseOfDeathConceptId != null ? conceptService.getConcept(Integer.parseInt(unspecifiedCauseOfDeathConceptId)) : conceptService.getConceptByName(TR_CONCEPT_UNSPECIFIED_CAUSE_OF_DEATH);
         String error = null;
-        if (emrPatient.isDead() && unspecifiedCauseOfDeathConcept == null) {
+        if (emrPatient.getDead() && unspecifiedCauseOfDeathConcept == null) {
             error = String.format("Global Property %s is not set & Concept with name %s is not found", GLOBAL_PROPERTY_CONCEPT_UNSPECIFIED_CAUSE_OF_DEATH, TR_CONCEPT_UNSPECIFIED_CAUSE_OF_DEATH);
             logger.error(error);
             throw new RuntimeException(error);
         }
-        if (emrPatient.isDead() && causeOfDeathConcept == null) {
+        if (emrPatient.getDead() && causeOfDeathConcept == null) {
             error = String.format("Global Property %s is not set & Concept with name %s is not found", GLOBAL_PROPERTY_CONCEPT_CAUSE_OF_DEATH, TR_CONCEPT_CAUSE_OF_DEATH);
             logger.error(error);
             throw new RuntimeException(error);
         }
-        if (emrPatient.isDead() && emrPatient.getCauseOfDeath() != null && emrPatient.getCauseOfDeath() != unspecifiedCauseOfDeathConcept) {
+        if (emrPatient.getDead() && emrPatient.getCauseOfDeath() != null && emrPatient.getCauseOfDeath() != unspecifiedCauseOfDeathConcept) {
             return emrPatient.getCauseOfDeath();
         }
         Concept causeOfDeath = unspecifiedCauseOfDeathConcept;
@@ -58,7 +58,7 @@ public class EMRPatientDeathServiceImpl implements EMRPatientDeathService {
             List<Obs> obsForCauseOfDeath = obsService.getObservationsByPersonAndConcept(emrPatient, causeOfDeathConcept);
             if ((obsForCauseOfDeath != null) && !obsForCauseOfDeath.isEmpty()) {
                 for (Obs obs : obsForCauseOfDeath) {
-                    if (!obs.isVoided()) {
+                    if (!obs.getVoided()) {
                         causeOfDeath = obs.getValueCoded();
                     }
                 }

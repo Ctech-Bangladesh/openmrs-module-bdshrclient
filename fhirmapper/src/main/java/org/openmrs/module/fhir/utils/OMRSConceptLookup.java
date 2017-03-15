@@ -251,7 +251,7 @@ public class OMRSConceptLookup {
         }
     }
 
-    public Concept findOrCreateLocalConceptByCodings(List<CodingDt> codings, String facilityId, String conceptClassUuid, String conceptDatatypeUuid) {
+    public Concept findOrCreateLocalConceptByCodings(List<CodingDt> codings, String facilityId, String conceptClassName, String conceptDatatypeName) {
         Concept conceptByCoding = findConceptByCode(codings);
         if (conceptByCoding != null) return conceptByCoding;
         ConceptClass conceptClass = conceptService.getConceptClassByName(conceptClassName);

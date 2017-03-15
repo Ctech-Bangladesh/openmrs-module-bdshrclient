@@ -112,12 +112,12 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         Patient patient = patientService.getPatient(1);
         List<EncounterEvent> bundles = getEncounterEvents("shrEncounterId", "classpath:encounterBundles/dstu2/encounterWithDiagnosticOrder.xml");
 
-        assertEquals(true, patient.isDead());
+        assertEquals(true, patient.getDead());
         assertEquals("Unspecified Cause Of Death", patient.getCauseOfDeath().getName().getName());
 
         emrEncounterService.createOrUpdateEncounter(patient, bundles.get(0));
 
-        assertEquals(true, patient.isDead());
+        assertEquals(true, patient.getDead());
         assertEquals("HIV", patient.getCauseOfDeath().getName().getName());
     }
 

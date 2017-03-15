@@ -75,7 +75,7 @@ public class EMRPatientMergeServiceIT extends BaseModuleWebContextSensitiveTest 
         assertEquals(retainedHID, retainedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE).getIdentifier());
 
         Patient retiredPatient = emrPatientService.getEMRPatientByHealthId(retiredHID);
-        assertTrue(retiredPatient.isVoided());
+        assertTrue(retiredPatient.getVoided());
         List<PatientIdentifier> retiredPatientActiveIdentifiers = retiredPatient.getActiveIdentifiers();
         assertEquals(0, retiredPatientActiveIdentifiers.size());
         assertNull(retiredPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE));
@@ -202,8 +202,8 @@ public class EMRPatientMergeServiceIT extends BaseModuleWebContextSensitiveTest 
         assertEquals(stopDatetimeForVisitOfToBeRetainedPatient, mergedEncounterTwo.getVisit().getStopDatetime());
 
         Iterator<Order> orderIterator = mergedEncounterOne.getOrders().iterator();
-        assertTrue(orderIterator.next().isVoided());
-        assertFalse(orderIterator.next().isVoided());
+        assertTrue(orderIterator.next().getVoided());
+        assertFalse(orderIterator.next().getVoided());
     }
 
     @Test

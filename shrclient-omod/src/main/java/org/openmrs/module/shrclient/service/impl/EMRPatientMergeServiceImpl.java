@@ -42,7 +42,7 @@ public class EMRPatientMergeServiceImpl implements EMRPatientMergeService {
                 Patient toBeRetainedPatient = emrPatientService.getEMRPatientByHealthId(toBeRetainedHealthId);
                 Patient toBeRetiredPatient = emrPatientService.getEMRPatientByHealthId(toBeRetiredHealthId);
 
-                if (toBeRetiredPatient == null || toBeRetiredPatient.isVoided()) continue;
+                if (toBeRetiredPatient == null || toBeRetiredPatient.getVoided()) continue;
 
                 merge(toBeRetainedHealthId, toBeRetiredHealthId, toBeRetainedPatient, toBeRetiredPatient);
                 mergedHealthIds.add(toBeRetiredHealthId);
@@ -102,7 +102,7 @@ public class EMRPatientMergeServiceImpl implements EMRPatientMergeService {
         List<Order> voidedOrders = new ArrayList<>();
         List<Order> orders = orderService.getAllOrdersByPatient(patient);
         for (Order order : orders) {
-            if (!order.isVoided()) {
+            if (!order.getVoided()) {
                 order.setVoided(true);
                 voidedOrders.add(order);
 

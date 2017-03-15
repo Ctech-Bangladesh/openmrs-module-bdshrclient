@@ -11,16 +11,13 @@ import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.api.EncounterService;
 import org.openmrs.module.atomfeed.transaction.support.AtomFeedSpringTransactionManager;
-import org.openmrs.module.fhir.utils.GlobalPropertyLookUpService;
 import org.openmrs.module.fhir.utils.OMRSLocationService;
 
 import java.lang.reflect.Method;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ShrEncounterAdviceTest {

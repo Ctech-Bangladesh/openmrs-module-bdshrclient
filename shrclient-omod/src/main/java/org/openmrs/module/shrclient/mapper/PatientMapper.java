@@ -132,7 +132,7 @@ public class PatientMapper {
     private Status getMciPatientStatus(org.openmrs.Patient openMrsPatient) {
         Status status = new Status();
         Character type = '1';
-        Boolean isDead = openMrsPatient.isDead();
+        Boolean isDead = openMrsPatient.getDead();
         if (isDead) {
             type = '2';
         }

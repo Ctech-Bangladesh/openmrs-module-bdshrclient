@@ -22,4 +22,11 @@ public class OpenMRSConstants {
     public final static String ORGANIZATION_ATTRIBUTE_TYPE = "Organization";
 
     public static final String HEALTH_ID_IDENTIFIER_TYPE = "Health Id";
+
+
+    public static final String MISC_CONCEPT_CLASS_NAME = "Misc";
+    public static final String PROCEDURE_CONCEPT_CLASS_NAME = "Procedure";
+
+    public static final String TEXT_CONCEPT_DATATYPE_NAME = "Text";
+    public static final String NA_CONCEPT_DATATYPE_NAME = "N/A";
 }

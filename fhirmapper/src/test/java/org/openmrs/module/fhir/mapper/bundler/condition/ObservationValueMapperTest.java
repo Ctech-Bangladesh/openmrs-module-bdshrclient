@@ -21,8 +21,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import static java.lang.Boolean.FALSE;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.openmrs.module.fhir.MapperTestHelper.containsCoding;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -57,13 +57,16 @@ public class ObservationValueMapperTest extends BaseModuleWebContextSensitiveTes
     @Test
     public void shouldMapNumericValues() throws Exception {
         Obs obs = new Obs();
-        ConceptNumeric concept = new ConceptNumeric(123);
-        String units = "Kg";
-        concept.setUnits(units);
+        Concept concept = new Concept(123);
+        concept.setConceptClass(conceptService.getConceptClassByName("Misc"));
         concept.setDatatype(conceptService.getConceptDatatypeByName("Numeric"));
         concept.setFullySpecifiedName(new ConceptName("Test Concept", Locale.ENGLISH));
+        ConceptNumeric conceptNumeric = new ConceptNumeric(concept);
+        String units = "Kg";
+        conceptNumeric.setUnits(units);
         conceptService.saveConcept(concept);
-        obs.setConcept(concept);
+        conceptService.saveConcept(conceptNumeric);
+        obs.setConcept(conceptNumeric);
         double valueNumeric = 10.0;
         obs.setValueNumeric(valueNumeric);
         IDatatype value = observationValueMapper.map(obs);

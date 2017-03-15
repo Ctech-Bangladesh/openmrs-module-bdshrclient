@@ -263,7 +263,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
     private void setDeathInfo(org.openmrs.Patient emrPatient, Patient mciPatient) {
         Status status = mciPatient.getStatus();
         boolean isAliveMciPatient = status.getType() == '1';
-        boolean isAliveEmrPatient = !emrPatient.isDead();
+        boolean isAliveEmrPatient = !emrPatient.getDead();
         if (isAliveMciPatient && isAliveEmrPatient) return;
         if (isAliveMciPatient) {
             emrPatient.setDead(false);
