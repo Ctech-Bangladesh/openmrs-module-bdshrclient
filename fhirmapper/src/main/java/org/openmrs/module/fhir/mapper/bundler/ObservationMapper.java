@@ -2,8 +2,10 @@ package org.openmrs.module.fhir.mapper.bundler;
 
 import ca.uhn.fhir.model.api.IDatatype;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.resource.Observation;
 import ca.uhn.fhir.model.dstu2.valueset.ObservationStatusEnum;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Obs;
 import org.openmrs.module.fhir.MRSProperties;
@@ -21,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.openmrs.module.fhir.MRSProperties.MRS_ENC_TYPE_LAB_RESULT;
 import static org.openmrs.module.fhir.mapper.model.ObservationType.*;
 
 @Component("FHIRObservationMapper")
@@ -52,7 +53,11 @@ public class ObservationMapper implements EmrObsResourceHandler {
     @Override
     public List<FHIRResource> map(Obs obs, FHIREncounter fhirEncounter, SystemProperties systemProperties) {
         List<FHIRResource> result = new ArrayList<>();
-        mapObs(obs, fhirEncounter, null, result, systemProperties);
+        FHIRResource rootObservationEntry = mapObs(obs, fhirEncounter, null, result, systemProperties);
+        if (rootObservationEntry != null) {
+            removeObservationsHierarchyWithoutValues(result, rootObservationEntry);
+        }
+
         return result;
     }
 
@@ -122,5 +127,47 @@ public class ObservationMapper implements EmrObsResourceHandler {
 
     private RelatedObservation mapRelatedObservation(Observation observation) {
         return new RelatedObservation(observation);
+    }
+
+    private boolean removeObservationsHierarchyWithoutValues(List<FHIRResource> result, FHIRResource observationResource) {
+        //this takes an obs and checks if there is any obs in it's hierarchy having value.
+        //if none it will remove the entire hierarchy and reference in parent if any
+        boolean shouldRemove = true;
+        ArrayList<Observation.Related> childrenToRemove = new ArrayList<>();
+        Observation observation = (Observation) observationResource.getResource();
+        // if it's a leaf node and doesn't have value, it should be removed
+        if (CollectionUtils.isEmpty(observation.getRelated())) {
+            shouldRemove = (observation.getValue() == null);
+        }
+
+        for (Observation.Related related : observation.getRelated()) {
+            ResourceReferenceDt target = related.getTarget();
+            FHIRResource targetObservation = findObservationById(target, result);
+            boolean withoutValuesAndChild = removeObservationsHierarchyWithoutValues(result, targetObservation);
+            //if any of the children has value this obs will not be removed
+            if (!withoutValuesAndChild) {
+                shouldRemove = false;
+            } else {
+                // we need to remove this related later
+                childrenToRemove.add(related);
+            }
+        }
+
+        List<Observation.Related> relatedList = observation.getRelated();
+        relatedList.removeAll(childrenToRemove);
+        observation.setRelated(new ArrayList<>(relatedList));
+        if (shouldRemove) {
+            result.remove(observationResource);
+        }
+        return shouldRemove;
+    }
+
+    private FHIRResource findObservationById(ResourceReferenceDt target, List<FHIRResource> result) {
+        for (FHIRResource fhirResource : result) {
+            if (fhirResource.getResource().getId().getValue().equals(target.getReference().getValue())) {
+                return fhirResource;
+            }
+        }
+        return null;
     }
 }

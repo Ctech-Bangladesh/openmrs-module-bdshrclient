@@ -59,6 +59,10 @@
     <concept_name concept_id="305" concept_name_id="3015" name="Diastolic" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="juydg80f-1yz9-4da3-bb88-812rrtdiast"/>
     <concept_set concept_set_id="4" concept_id="305" concept_set="302" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
     <shr_id_mapping id="5" internal_id="juydg80f-1yz9-4da3-bb88-8122ctdiast" external_id="105" type="concept" uri="/concepts/105"></shr_id_mapping>
+
+    <concept concept_id="306" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-j67y-4da3-8u6t-8122ctpulse"/>
+    <concept_name concept_id="306" concept_name_id="3016" name="Systolic" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="juydg80f-1yz9-g56r-h56t-8122ctuiopl"/>
+    <concept_set concept_set_id="5" concept_id="306" concept_set="302" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
     <!--Vitals concept set-->
 
     <!--Encounter With Vitals-->
@@ -75,6 +79,8 @@
          uuid="eee554cb-2afa-471a-9cd7-1434552c337c2" creator="1" obs_group_id="11" concept_id="302" voided="0" />
     <obs obs_id="21" encounter_id="36" person_id="1" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
          uuid="eee554cb-22ff-471a-9cd7-1434552c337c2" creator="1" obs_group_id="12" value_numeric="120" concept_id="305" voided="0" />
+    <obs obs_id="51" encounter_id="37" person_id="3" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="eeea54cb-2aee-471a-uy76-1434a5aa33744" creator="1" obs_group_id="12" value_numeric="86" concept_id="306" voided="0" />
     <obs obs_id="41" encounter_id="36" person_id="1" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
          uuid="eeea54cb-2aee-471a-9cd7-1434a5aa337a4" creator="1" obs_group_id="11" value_numeric="133" concept_id="303" voided="0" />
     <!--Encounter With Vitals-->
