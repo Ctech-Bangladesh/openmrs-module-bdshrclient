@@ -130,12 +130,9 @@ public class ObservationMapper implements EmrObsResourceHandler {
     }
 
     private boolean removeObservationsHierarchyWithoutValues(List<FHIRResource> result, FHIRResource observationResource) {
-        //this takes an obs and checks if there is any obs in it's hierarchy having value.
-        //if none it will remove the entire hierarchy and reference in parent if any
         boolean shouldRemove = true;
         ArrayList<Observation.Related> childrenToRemove = new ArrayList<>();
         Observation observation = (Observation) observationResource.getResource();
-        // if it's a leaf node and doesn't have value, it should be removed
         if (CollectionUtils.isEmpty(observation.getRelated())) {
             shouldRemove = (observation.getValue() == null);
         }
@@ -144,11 +141,9 @@ public class ObservationMapper implements EmrObsResourceHandler {
             ResourceReferenceDt target = related.getTarget();
             FHIRResource targetObservation = findObservationById(target, result);
             boolean withoutValuesAndChild = removeObservationsHierarchyWithoutValues(result, targetObservation);
-            //if any of the children has value this obs will not be removed
             if (!withoutValuesAndChild) {
                 shouldRemove = false;
             } else {
-                // we need to remove this related later
                 childrenToRemove.add(related);
             }
         }

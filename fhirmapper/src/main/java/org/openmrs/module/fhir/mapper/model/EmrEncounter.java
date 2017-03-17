@@ -47,4 +47,8 @@ public class EmrEncounter {
         }
         return topLevelObs;
     }
+
+    public void removeObs(Obs obs) {
+        this.obsList.remove(obs);
+    }
 }

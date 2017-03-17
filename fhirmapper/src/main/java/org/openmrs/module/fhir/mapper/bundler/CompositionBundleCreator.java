@@ -36,17 +36,18 @@ import static org.openmrs.module.fhir.FHIRProperties.*;
 public class CompositionBundleCreator {
 
     public static final String CONFIDENTIALITY_NORMAL = "N";
-    @Autowired
-    private EncounterMapper encounterMapper;
+    private final EncounterMapper encounterMapper;
+    private final List<EmrObsResourceHandler> obsResourceHandlers;
+    private final List<EmrOrderResourceHandler> orderResourceHandlers;
+    private final CodeableConceptService codeableConceptService;
 
     @Autowired
-    private List<EmrObsResourceHandler> obsResourceHandlers;
-
-    @Autowired
-    private List<EmrOrderResourceHandler> orderResourceHandlers;
-
-    @Autowired
-    private CodeableConceptService codeableConceptService;
+    public CompositionBundleCreator(EncounterMapper encounterMapper, List<EmrObsResourceHandler> obsResourceHandlers, List<EmrOrderResourceHandler> orderResourceHandlers, CodeableConceptService codeableConceptService) {
+        this.encounterMapper = encounterMapper;
+        this.obsResourceHandlers = obsResourceHandlers;
+        this.orderResourceHandlers = orderResourceHandlers;
+        this.codeableConceptService = codeableConceptService;
+    }
 
     public Bundle create(org.openmrs.Encounter emrEncounter, String healthId, SystemProperties systemProperties) {
         HibernateLazyLoader hibernateLazyLoader = new HibernateLazyLoader();

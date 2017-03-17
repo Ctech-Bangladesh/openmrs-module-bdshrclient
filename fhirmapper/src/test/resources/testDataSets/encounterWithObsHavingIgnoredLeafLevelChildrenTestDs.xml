@@ -50,10 +50,14 @@
 	<concept concept_id="302" retired="false" datatype_id="4" class_id="11" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-bb88-8122ctrXdef"/>
 	<concept_name concept_id="302" concept_name_id="3012" name="Blood Pressure" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="lkiuy80f-1yz9-4da3-bb88-8122ce88687h"/>
 	<concept_set concept_set_id="1" concept_id="302" concept_set="301" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+	<shr_id_mapping id="1" internal_id="juydg80f-1yz9-4da3-bb88-8122ctrXdef" external_id="101"
+					type="concept" uri="/concepts/101"/>
 
 	<concept concept_id="303" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-bb88-8122ctdiast"/>
 	<concept_name concept_id="303" concept_name_id="3013" name="Diastolic" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="juydg80f-1yz9-4da3-bb88-812rrtdiast"/>
 	<concept_set concept_set_id="2" concept_id="303" concept_set="302" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"/>
+	<shr_id_mapping id="2" internal_id="juydg80f-1yz9-4da3-bb88-8122ctdiast" external_id="102"
+					type="concept" uri="/concepts/102"/>
 
 	<concept concept_id="304" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-f3e4-4da3-bb88-8122ctdiast"/>
 	<concept_name concept_id="304" concept_name_id="3014" name="Systolic" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="juydg80f-j7y6-4da3-bb88-812rrtdiast"/>
@@ -62,6 +66,8 @@
 	<concept concept_id="305" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-j67y-4da3-bb88-8122ctpulse"/>
 	<concept_name concept_id="305" concept_name_id="3015" name="Pulse" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="juydg80f-1yz9-g56r-bb88-8122ctuiopl"/>
 	<concept_set concept_set_id="4" concept_id="305" concept_set="301" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+	<shr_id_mapping id="3" internal_id="juydg80f-j67y-4da3-bb88-8122ctpulse" external_id="103"
+					type="concept" uri="/concepts/103"/>
 
 	<concept concept_id="306" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-j67y-4da3-8u6t-8122ctpulse"/>
 	<concept_name concept_id="306" concept_name_id="3016" name="Temperature" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="juydg80f-1yz9-g56r-h56t-8122ctuiopl"/>
@@ -93,7 +99,7 @@
 		 uuid="eee554cb-jh73-hj67-9cd7-1434552c33732" creator="1" obs_group_id="114" value_numeric="98" concept_id="306" voided="0" />
 	<!--vitals having BP hierarchy ignored-->
 
-	<!--vitals having everything else ignored except BP hierarchy ignored-->
+	<!--vitals having everything else ignored except BP hierarchy-->
 	<obs obs_id="120" encounter_id="36" person_id="3" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
 		 uuid="ef4554cb-hy65-6y7r-lld7-1434552c33711" creator="1" concept_id="301" voided="0" />
 	<obs obs_id="121" encounter_id="36" person_id="3" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
@@ -104,9 +110,6 @@
 		 uuid="eee554cb-jh73-hj67-d3r5-1434552c33732" creator="1" obs_group_id="121" value_numeric="86" concept_id="304" voided="0" />
 	<obs obs_id="124" encounter_id="36" person_id="3" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
 		 uuid="eee554cb-jh73-471a-d5t6-1434552c33732" creator="1" obs_group_id="120" value_numeric="70" concept_id="305" voided="0" />
-	<!--vitals having everything else ignored except BP hierarchy ignored-->
-
-	<global_property property="shr.ignoreConceptList" property_value="305,303" description="Shr System User"
-					 uuid="lkieyg88-efd9-fda3-2b99-z12aalsa677h"/>
+	<!--vitals having everything else ignored except BP hierarchy-->
 
 </dataset>

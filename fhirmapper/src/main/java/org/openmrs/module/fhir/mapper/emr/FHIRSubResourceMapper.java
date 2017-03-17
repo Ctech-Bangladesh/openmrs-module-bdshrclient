@@ -2,6 +2,7 @@ package org.openmrs.module.fhir.mapper.emr;
 
 import ca.uhn.fhir.model.api.IResource;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -37,6 +38,8 @@ public class FHIRSubResourceMapper {
                 }
             }
         }
+
+        removeObsWithoutValues(emrEncounter);
         voidExistingObs(emrEncounter.getEncounter());
         addNewObsAndOrderToOpenMrsEncounter(emrEncounter);
     }
@@ -67,5 +70,39 @@ public class FHIRSubResourceMapper {
                 voidObsAndGroupMembers(groupMembers);
             }
         }
+    }
+
+
+    private void removeObsWithoutValues(EmrEncounter emrEncounter) {
+        Set<Obs> obs = emrEncounter.getTopLevelObs();
+        for (Obs ob : obs) {
+            if (shouldRemoveObsHierarchyWithoutValues(ob, null)){
+                emrEncounter.removeObs(ob);
+            }
+        }
+    }
+
+    private boolean shouldRemoveObsHierarchyWithoutValues(Obs obs, Obs parent) {
+        boolean shouldRemove = true;
+        if (!obs.hasGroupMembers()) {
+            shouldRemove = hasNoValue(obs);
+        }else {
+            for (Obs child : obs.getGroupMembers()) {
+                boolean withoutValuesAndChild = shouldRemoveObsHierarchyWithoutValues(child, obs);
+                if (!withoutValuesAndChild) {
+                    shouldRemove = false;
+                }
+            }
+        }
+        if (shouldRemove && parent != null) {
+            parent.removeGroupMember(obs);
+        }
+        return shouldRemove;
+    }
+
+    private boolean hasNoValue(Obs obs) {
+        return (null == ObjectUtils.firstNonNull(obs.getValueCoded(), obs.getValueDrug(), obs.getValueCodedName()
+                , obs.getValueDatetime(), obs.getValueNumeric(), obs.getValueModifier(), obs.getValueText(),
+                obs.getValueComplex()));
     }
 }

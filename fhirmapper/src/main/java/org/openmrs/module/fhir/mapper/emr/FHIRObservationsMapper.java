@@ -4,7 +4,6 @@ import ca.uhn.fhir.model.api.IDatatype;
 import ca.uhn.fhir.model.api.IResource;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.Observation;
-import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.module.fhir.mapper.model.EmrEncounter;
@@ -24,11 +23,14 @@ import static org.openmrs.module.fhir.utils.FHIRBundleHelper.findResourceByRefer
 
 @Component
 public class FHIRObservationsMapper implements FHIRResourceMapper {
-    @Autowired
-    private OMRSConceptLookup omrsConceptLookup;
+    private final OMRSConceptLookup omrsConceptLookup;
+    private final FHIRObservationValueMapper resourceValueMapper;
 
     @Autowired
-    private FHIRObservationValueMapper resourceValueMapper;
+    public FHIRObservationsMapper(OMRSConceptLookup omrsConceptLookup, FHIRObservationValueMapper resourceValueMapper) {
+        this.omrsConceptLookup = omrsConceptLookup;
+        this.resourceValueMapper = resourceValueMapper;
+    }
 
     @Override
     public boolean canHandle(IResource resource) {
@@ -43,7 +45,6 @@ public class FHIRObservationsMapper implements FHIRResourceMapper {
     }
 
     public Obs mapObs(ShrEncounterBundle shrEncounterBundle, EmrEncounter emrEncounter, Observation observation) {
-        if (observation.getValue() == null && CollectionUtils.isEmpty(observation.getRelated())) return null;
         String facilityId = FHIREncounterUtil.getFacilityId(shrEncounterBundle.getBundle());
         Concept concept = mapConcept(observation, facilityId);
         if (concept == null) return null;

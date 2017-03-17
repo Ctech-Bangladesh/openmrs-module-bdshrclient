@@ -1,10 +1,8 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.IResource;
 import ca.uhn.fhir.model.dstu2.composite.CodingDt;
 import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Composition;
 import ca.uhn.fhir.model.dstu2.resource.Encounter;
 import ca.uhn.fhir.model.dstu2.resource.Observation;
 import ca.uhn.fhir.model.dstu2.valueset.ObservationStatusEnum;
@@ -14,13 +12,11 @@ import org.openmrs.Obs;
 import org.openmrs.api.ObsService;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.mapper.model.FHIRResource;
-import org.openmrs.module.fhir.utils.FHIRBundleHelper;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
@@ -163,7 +159,8 @@ public class ObservationMapperIT extends BaseModuleWebContextSensitiveTest {
 
 	@Test
 	public void shouldNotMapAnyObservationWhenAllTheLeafObsHaveIgnoredConcepts() throws Exception {
-		executeDataSet("testDataSets/encounterWithObsHavingIgnoredLeafLevelChildren.xml");
+		executeDataSet("testDataSets/encounterWithObsHavingIgnoredLeafLevelChildrenTestDs.xml");
+        executeDataSet("testDataSets/globalProperties/ignoreConceptListForDiastolicAndPulse.xml");
 
 		Obs vitalsObs = obsService.getObs(111);
 		Encounter encounter = new Encounter();
@@ -172,9 +169,39 @@ public class ObservationMapperIT extends BaseModuleWebContextSensitiveTest {
 		assertTrue(isEmpty(fhirResources));
 	}
 
-	@Test
+    @Test
+    public void shouldNotMapALeafObservationWhichDoesNotHaveValue() throws Exception {
+        executeDataSet("testDataSets/encounterWithObsHavingIgnoredLeafLevelChildrenTestDs.xml");
+        executeDataSet("testDataSets/globalProperties/ignoreConceptListForDiastolicAndPulse.xml");
+
+        Obs vitalsObs = obsService.getObs(120);
+        Encounter encounter = new Encounter();
+        List<FHIRResource> fhirResources = observationMapper.map(vitalsObs, new FHIREncounter(encounter), getSystemProperties("1"));
+
+        assertEquals(3, fhirResources.size());
+        Observation vitals = (Observation)fhirResources.stream().filter(
+                fhirResource -> fhirResource.getResourceName().equals("Vitals")
+        ).findFirst().get().getResource();
+        assertTrue(isNotEmpty(vitals.getCode().getCoding()));
+        assertEquals(1, vitals.getRelated().size());
+
+        Observation bloodPressure = (Observation)fhirResources.stream().filter(
+                fhirResource -> fhirResource.getResourceName().equals("Blood Pressure")
+        ).findFirst().get().getResource();
+        assertTrue(isNotEmpty(bloodPressure.getCode().getCoding()));
+        assertEquals(1, bloodPressure.getRelated().size());
+
+        Observation systolic = (Observation)fhirResources.stream().filter(
+                fhirResource -> fhirResource.getResourceName().equals("Systolic")
+        ).findFirst().get().getResource();
+        assertTrue(isNotEmpty(systolic.getCode().getCoding()));
+        assertEquals(0, systolic.getRelated().size());
+    }
+
+    @Test
 	public void shouldNotMapAnObsHierarchyWhenLeafObsHaveIgnoredConcepts() throws Exception {
-		executeDataSet("testDataSets/encounterWithObsHavingIgnoredLeafLevelChildren.xml");
+		executeDataSet("testDataSets/encounterWithObsHavingIgnoredLeafLevelChildrenTestDs.xml");
+		executeDataSet("testDataSets/globalProperties/ignoreConceptListForDiastolicAndPulse.xml");
 
 		Obs vitalsObs = obsService.getObs(114);
 		Encounter encounter = new Encounter();
