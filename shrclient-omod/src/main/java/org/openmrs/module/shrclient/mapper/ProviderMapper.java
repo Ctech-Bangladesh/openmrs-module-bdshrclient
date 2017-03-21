@@ -1,9 +1,12 @@
 package org.openmrs.module.shrclient.mapper;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.openmrs.*;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
+import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.IdMapping;
 import org.openmrs.module.shrclient.model.IdMappingType;
@@ -13,9 +16,11 @@ import org.openmrs.module.shrclient.util.SystemProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
 import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.trim;
+import static org.openmrs.module.fhir.utils.DateUtil.*;
 
 @Component
 public class ProviderMapper {
@@ -27,6 +32,8 @@ public class ProviderMapper {
     private ProviderService providerService;
     private IdMappingRepository idMappingRepository;
     private PersonService personService;
+
+    private final Logger logger = Logger.getLogger(ProviderMapper.class);
 
     @Autowired
     public ProviderMapper(ProviderService providerService, IdMappingRepository idMappingRepository, PersonService personService) {
@@ -70,11 +77,31 @@ public class ProviderMapper {
 
         personName.setGivenName(providerEntry.getName());
         if (null != providerEntry.getOrganization()) {
-            personName.setFamilyName(String.format("@ %s", providerEntry.getOrganization().getDisplay()));
-        }else{
+            String familyName = String.format("@ %s", providerEntry.getOrganization().getDisplay());
+            String familyNameFormatted = familyName.replace("\n", " ").replace("\r", "").replace("\t", " ");
+            personName.setFamilyName(StringUtils.substring(familyNameFormatted,0, 50));
+        } else {
             personName.setFamilyName("@");
         }
+        try {
+            person.setBirthdate(parseDate(providerEntry.getBirthDate(), DateUtil.SIMPLE_DATE_FORMAT));
+        } catch (ParseException e) {
+            String message = String.format("Error while saving provider with identifier [%s] ", providerEntry.getId());
+            logger.error(message);
+            throw new RuntimeException(message);
+        }
+        person.setGender(getGender(providerEntry));
         provider.setPerson(person);
+    }
+
+    private String getGender(ProviderEntry providerEntry) {
+        if ("Male".equalsIgnoreCase(providerEntry.getGender())){
+            return "M";
+        }
+        if ("Female".equalsIgnoreCase(providerEntry.getGender())){
+            return "F";
+        }
+        return "O";
     }
 
     private String buildProviderName(ProviderEntry providerEntry) {
@@ -94,8 +121,8 @@ public class ProviderMapper {
         } else if (providerEntry.getActive().equals(ACTIVE)) {
             provider.setRetired(false);
             provider.setRetireReason(null);
-            person.setVoided(false);
-            person.setVoidReason(null);
+            person.setPersonVoided(false);
+            person.setPersonVoidReason(null);
         }
     }
 
@@ -105,6 +132,7 @@ public class ProviderMapper {
             String facilityUrl = providerEntry.getOrganization().getReference();
             String facilityId = new EntityReference().parse(Location.class, facilityUrl);
             providerAttribute.setValue(facilityId);
+            providerAttribute.setValueReferenceInternal(facilityId);
             provider.setAttribute(providerAttribute);
         }
     }

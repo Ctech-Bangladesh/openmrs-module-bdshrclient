@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-    <person person_id="122" birthdate_estimated="0" dead="0" deathdate_estimated="0" voided="0"
+    <person person_id="122" birthdate_estimated="0" dead="0" deathdate_estimated="0" voided="0" gender="M" birthdate="1965-09-30 12:34:56.7"
             date_created="2015-02-17 15:06:06" uuid="331c6bf8-7ut6-11e3-a96a-0900271c1b75"/>
     <person_name person_name_id="122" preferred="1" person_id="122" given_name="test" family_name="provider" creator="1"
                  date_created="2015-02-17 15:06:06" voided="0" uuid="331c6bf8-jh45-11e3-a96a-0900271c1b75"/>
 
-    <person person_id="123" birthdate_estimated="0" dead="0" deathdate_estimated="0" voided="1" void_reason="test"
+    <person person_id="123" birthdate_estimated="0" dead="0" deathdate_estimated="0" voided="1" void_reason="test" gender="M" birthdate="1965-09-30 12:34:56.7"
             date_created="2015-02-17 15:06:06" uuid="331c6bf8-7ut6-78yu-a96a-0900271c1b75"/>
     <person_name person_name_id="123" preferred="1" person_id="123" given_name="test" family_name="provider" creator="1"
                  date_created="2015-02-17 15:06:06" voided="0" uuid="331c6bf8-jh45-jh76-a96a-0900271c1b75"/>

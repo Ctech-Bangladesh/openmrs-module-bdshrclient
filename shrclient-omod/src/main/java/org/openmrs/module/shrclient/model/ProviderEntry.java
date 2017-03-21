@@ -15,6 +15,10 @@ public class ProviderEntry {
     private Organization organization;
     @JsonProperty("active")
     private String active;
+    @JsonProperty("gender")
+    private String gender;
+    @JsonProperty("birthDate")
+    private String birthDate;
 
     public String getId() {
         return id;
@@ -55,6 +59,14 @@ public class ProviderEntry {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getGender() {return gender;}
+
+    public void setGender(String gender) {this.gender = gender;}
+
+    public String getBirthDate() {return birthDate;}
+
+    public void setBirthDate(String birthDate) {this.birthDate = birthDate;}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public class Organization {

@@ -8,6 +8,8 @@ import org.openmrs.Provider;
 import org.openmrs.ProviderAttribute;
 import org.openmrs.ProviderAttributeType;
 import org.openmrs.api.ProviderService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.IdMapping;
 import org.openmrs.module.shrclient.model.IdMappingType;
@@ -19,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.junit.Assert.*;
+import static org.openmrs.module.fhir.utils.DateUtil.SIMPLE_DATE_FORMAT;
+import static org.openmrs.module.fhir.utils.DateUtil.toDateString;
 import static org.openmrs.module.shrclient.mapper.ProviderMapper.PERSON_RETIRE_REASON;
 import static org.openmrs.module.shrclient.mapper.ProviderMapper.PROVIDER_RETIRE_REASON;
 
@@ -72,6 +76,9 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
 
         Person person = provider.getPerson();
         assertEquals(provider.getName(), person.getPersonName().getFullName());
+        assertEquals("M", person.getGender());
+        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
+        assertFalse(person.getPersonVoided());
     }
 
     @Test
@@ -91,6 +98,9 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         Person person = provider.getPerson();
         assertNotNull(person);
         assertEquals(provider.getName(), person.getPersonName().getFullName());
+        assertEquals("O", person.getGender());
+        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
+        assertFalse(person.getPersonVoided());
     }
 
     @Test
@@ -110,6 +120,9 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         assertEquals("Provider Name @ facility-name", provider.getName());
         person = provider.getPerson();
         assertEquals(provider.getName(), person.getPersonName().getFullName());
+        assertEquals("F", person.getGender());
+        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
+        assertFalse(person.getPersonVoided());
     }
 
     @Test
@@ -127,6 +140,9 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         assertEquals("Provider Name @", provider.getName());
         Person person = provider.getPerson();
         assertEquals(provider.getName(), person.getPersonName().getFullName());
+        assertEquals("O", person.getGender());
+        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
+        assertFalse(person.getPersonVoided());
     }
 
     @Test
@@ -144,6 +160,9 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         assertEquals("2222", organization.getValue());
         Person person = provider.getPerson();
         assertEquals(provider.getName(), person.getPersonName().getFullName());
+        assertEquals("O", person.getGender());
+        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
+        assertFalse(person.getPersonVoided());
     }
 
     @Test
@@ -161,8 +180,12 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         assertEquals(identifier, provider.getIdentifier());
         assertTrue(provider.getRetired());
         assertEquals(PROVIDER_RETIRE_REASON, provider.getRetireReason());
+
+        Person person = provider.getPerson();
         assertTrue(provider.getPerson().getVoided());
         assertEquals(PERSON_RETIRE_REASON, provider.getPerson().getVoidReason());
+        assertEquals("M", provider.getPerson().getGender());
+        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
     }
 
     @Test
@@ -178,8 +201,37 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
 
         Provider provider = providerService.getProvider(24);
         assertEquals(identifier, provider.getIdentifier());
-        assertFalse(existingProvider.getRetired());
-        assertFalse(existingProvider.getPerson().getVoided());
+        assertFalse(provider.getRetired());
+        Person person = provider.getPerson();
+        Context.flushSession();
+        Context.clearSession();
+        assertFalse(Context.getPersonService().getPerson(123).getVoided());
+        assertEquals("M", person.getGender());
+        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
+    }
+
+    @Test
+    public void shouldTrimFamilyNameForPersonWhenRequired() throws Exception {
+        String orgName = "International Centre for Diarrhoeal Disease Research, Bangladesh (icddr,b)";
+        String identifier = "1022";
+
+        ProviderEntry providerEntry = getProviderEntry(identifier, "1", true, "Male");
+        ProviderEntry.Organization organization = providerEntry.new Organization();
+        organization.setReference("http://something/2222.json");
+        organization.setDisplay(orgName);
+        providerEntry.setOrganization(organization);
+        assertNull(providerService.getProviderByIdentifier(identifier));
+
+        providerMapper.createOrUpdate(providerEntry, systemProperties);
+
+        Provider provider = providerService.getProviderByIdentifier(identifier);
+        assertEquals("Provider Name @ International Centre for Diarrhoeal Disease Rese", provider.getName());
+        assertFalse(provider.getRetired());
+        Person person = provider.getPerson();
+        assertEquals(provider.getName(), person.getPersonName().getFullName());
+        assertEquals("M", person.getGender());
+        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
+        assertFalse(person.getPersonVoided());
     }
 
     private ProviderEntry getProviderEntry(String identifier, String active, boolean isOrganizationMapped, String gender) {
@@ -187,6 +239,8 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         providerEntry.setId(identifier);
         providerEntry.setName("Provider Name");
         providerEntry.setActive(active);
+        providerEntry.setGender(gender);
+        providerEntry.setBirthDate("1995-12-13");
         if (isOrganizationMapped) {
             ProviderEntry.Organization organization = providerEntry.new Organization();
             organization.setReference("http://something/2222.json");
