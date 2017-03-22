@@ -7,6 +7,7 @@ import com.sun.syndication.feed.atom.Category;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.*;
@@ -156,6 +157,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldDiscontinueATestOrderIfUpdated() throws Exception {
         executeDataSet("testDataSets/shrDiagnosticOrderSyncTestDS.xml");
         String shrEncounterId = "shr-enc-id";
@@ -208,6 +210,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldDiscontinueAProcedureOrderIfUpdated() throws Exception {
         executeDataSet("testDataSets/shrProcedureOrderSyncTestDS.xml");
         String shrEncounterId = "shr-enc-id";
@@ -398,6 +401,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldVoidOlderObservationsAndRecreateWithNewValues() throws Exception {
         executeDataSet("testDataSets/shrClientEncounterWithObservationTestDs.xml");
         Patient patient = patientService.getPatient(1);

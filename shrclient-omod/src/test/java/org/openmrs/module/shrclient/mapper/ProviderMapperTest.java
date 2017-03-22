@@ -77,7 +77,6 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         Person person = provider.getPerson();
         assertEquals(provider.getName(), person.getPersonName().getFullName());
         assertEquals("M", person.getGender());
-        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
         assertFalse(person.getPersonVoided());
     }
 
@@ -99,7 +98,6 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         assertNotNull(person);
         assertEquals(provider.getName(), person.getPersonName().getFullName());
         assertEquals("O", person.getGender());
-        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
         assertFalse(person.getPersonVoided());
     }
 
@@ -121,7 +119,6 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         person = provider.getPerson();
         assertEquals(provider.getName(), person.getPersonName().getFullName());
         assertEquals("F", person.getGender());
-        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
         assertFalse(person.getPersonVoided());
     }
 
@@ -141,7 +138,6 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         Person person = provider.getPerson();
         assertEquals(provider.getName(), person.getPersonName().getFullName());
         assertEquals("O", person.getGender());
-        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
         assertFalse(person.getPersonVoided());
     }
 
@@ -161,7 +157,6 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         Person person = provider.getPerson();
         assertEquals(provider.getName(), person.getPersonName().getFullName());
         assertEquals("O", person.getGender());
-        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
         assertFalse(person.getPersonVoided());
     }
 
@@ -185,7 +180,6 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         assertTrue(provider.getPerson().getVoided());
         assertEquals(PERSON_RETIRE_REASON, provider.getPerson().getVoidReason());
         assertEquals("M", provider.getPerson().getGender());
-        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
     }
 
     @Test
@@ -207,7 +201,6 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         Context.clearSession();
         assertFalse(Context.getPersonService().getPerson(123).getVoided());
         assertEquals("M", person.getGender());
-        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
     }
 
     @Test
@@ -230,7 +223,6 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
         Person person = provider.getPerson();
         assertEquals(provider.getName(), person.getPersonName().getFullName());
         assertEquals("M", person.getGender());
-        assertEquals("1995-12-13", toDateString(person.getBirthdate(), SIMPLE_DATE_FORMAT));
         assertFalse(person.getPersonVoided());
     }
 

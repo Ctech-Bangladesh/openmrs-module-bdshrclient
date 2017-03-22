@@ -33,8 +33,6 @@ public class ProviderMapper {
     private IdMappingRepository idMappingRepository;
     private PersonService personService;
 
-    private final Logger logger = Logger.getLogger(ProviderMapper.class);
-
     @Autowired
     public ProviderMapper(ProviderService providerService, IdMappingRepository idMappingRepository, PersonService personService) {
         this.providerService = providerService;
@@ -82,13 +80,6 @@ public class ProviderMapper {
             personName.setFamilyName(StringUtils.substring(familyNameFormatted,0, 50));
         } else {
             personName.setFamilyName("@");
-        }
-        try {
-            person.setBirthdate(parseDate(providerEntry.getBirthDate(), DateUtil.SIMPLE_DATE_FORMAT));
-        } catch (ParseException e) {
-            String message = String.format("Error while saving provider with identifier [%s] ", providerEntry.getId());
-            logger.error(message);
-            throw new RuntimeException(message);
         }
         person.setGender(getGender(providerEntry));
         provider.setPerson(person);
