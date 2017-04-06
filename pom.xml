@@ -5,7 +5,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>shrclient</artifactId>
-    <version>2.6-SNAPSHOT</version>
+    <version>2.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>BD SHR interface Module</name>
     <description>Interfaces with BD SHR for patients and encounters</description>
