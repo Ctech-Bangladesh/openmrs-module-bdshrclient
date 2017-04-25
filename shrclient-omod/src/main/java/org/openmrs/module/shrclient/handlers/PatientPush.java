@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.openmrs.*;
-import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
@@ -175,7 +174,9 @@ public class PatientPush implements EventWorker {
         }
 
         PatientIdentifier healthIdIdentifier = openMrsPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE);
-        if (healthIdIdentifier != null && healthId.equals(healthIdIdentifier.getIdentifier())) {
+        PersonAttribute healthIdAttribute = openMrsPatient.getAttribute(HEALTH_ID_ATTRIBUTE_TYPE);
+
+        if (!shouldUpdateHealthId(healthIdAttribute,healthIdIdentifier,healthId)) {
             log.debug("OpenMRS patient health id is same as the health id provided. Hence, not updated.");
             saveOrUpdateIdMapping(openMrsPatient, healthId);
             return;
@@ -188,7 +189,6 @@ public class PatientPush implements EventWorker {
             healthIdIdentifier.setIdentifier(healthId);
         }
 
-        PersonAttribute healthIdAttribute = openMrsPatient.getAttribute(HEALTH_ID_ATTRIBUTE_TYPE);
         if (healthIdAttribute == null) {
             healthIdAttribute = new PersonAttribute();
             PersonAttributeType healthAttrType = personService.getPersonAttributeTypeByName(HEALTH_ID_ATTRIBUTE_TYPE);
@@ -204,6 +204,16 @@ public class PatientPush implements EventWorker {
         systemUserService.setOpenmrsShrSystemUserAsCreator(openMrsPatient);
 
         log.debug("OpenMRS patient updated.");
+    }
+
+    private boolean shouldUpdateHealthId(PersonAttribute healthIdAttribute, PatientIdentifier healthIdIdentifier, String healthId) {
+        if( healthIdIdentifier != null &&
+                healthId.equals(healthIdIdentifier.getIdentifier()) &&
+                healthIdAttribute != null &&
+                healthId.equals(healthIdAttribute.getValue()) ) {
+            return false;
+        }
+        return true;
     }
 
     private void saveOrUpdateIdMapping(org.openmrs.Patient emrPatient, String healthId) {

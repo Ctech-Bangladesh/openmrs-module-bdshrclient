@@ -95,11 +95,13 @@ public class PatientPushTest {
     }
 
     @Test
-    public void shouldNotUpdateOpenMrsPatient_WhenHealthIdIdentifierIsSameAsProvidedHealthId() {
+    public void shouldNotUpdateOpenMrsPatient_WhenHealthIdIdentifierAndAttributeIsSameAsProvidedHealthId() {
         final org.openmrs.Patient openMrsPatient = new org.openmrs.Patient();
         openMrsPatient.addIdentifier(createHealthIdIdentifier());
+        openMrsPatient.addAttribute(getHealthIdAttribute());
 
         patientPush.updateOpenMrsPatientHealthId(openMrsPatient, healthId);
+
         verify(patientService, never()).savePatient(any(org.openmrs.Patient.class));
         verify(idMappingsRepository, times(1)).saveOrUpdateIdMapping(any(IdMapping.class));
     }
@@ -212,4 +214,15 @@ public class PatientPushTest {
         healthId.setIdentifierType(identifierType);
         return healthId;
     }
+
+    private PersonAttribute getHealthIdAttribute() {
+        PersonAttributeType healthIdAttributeType = new PersonAttributeType();
+        healthIdAttributeType.setName(HEALTH_ID_ATTRIBUTE_TYPE);
+
+        PersonAttribute healthIdAttribute = new PersonAttribute();
+        healthIdAttribute.setAttributeType(healthIdAttributeType);
+        healthIdAttribute.setValue(healthId);
+        return healthIdAttribute;
+    }
+
 }
