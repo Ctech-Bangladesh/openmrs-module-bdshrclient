@@ -82,6 +82,7 @@ public class PatientPush implements EventWorker {
                 updateOpenMrsPatientHealthId(openMrsPatient, response.getHealthId());
             } else {
                 String healthId = patientIdMapping.getExternalId();
+                patient.setHealthId(healthId);
                 String url = StringUtil.ensureSuffix(propertiesReader.getMciPatientContext(), "/") + healthId;
                 MciPatientUpdateResponse response = updatePatient(patient, url);
                 updateOpenMrsPatientHealthId(openMrsPatient, healthId);

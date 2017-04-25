@@ -184,7 +184,6 @@ public class PatientMapperTest {
 
         patient = new Patient();
         patient.setNationalId(nationalId);
-        patient.setHealthId(healthId);
         patient.setBirthRegNumber(brnId);
         patient.setHouseHoldCode(houseHoldCode);
         patient.setGivenName(givenName);

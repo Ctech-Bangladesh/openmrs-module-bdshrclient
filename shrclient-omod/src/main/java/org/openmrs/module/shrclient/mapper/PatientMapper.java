@@ -53,11 +53,6 @@ public class PatientMapper {
         Date birthDateTime = openMrsPatient.getBirthDateTime() != null ? openMrsPatient.getBirthDateTime() : openMrsPatient.getBirthdate();
         patient.setDateOfBirth(birthDateTime);
 
-        PatientIdentifier hid = openMrsPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE);
-        if (hid != null) {
-            patient.setHealthId(hid.getIdentifier());
-        }
-
         if (StringUtils.isNotBlank(banglaName)) {
             patient.setBanglaName(banglaName);
         }

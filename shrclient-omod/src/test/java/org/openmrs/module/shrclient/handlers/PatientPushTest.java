@@ -8,6 +8,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.*;
+import org.openmrs.Patient;
+import org.openmrs.User;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
@@ -15,9 +17,7 @@ import org.openmrs.api.ProviderService;
 import org.openmrs.module.fhir.utils.PropertyKeyConstants;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.mapper.PatientMapper;
-import org.openmrs.module.shrclient.model.IdMapping;
-import org.openmrs.module.shrclient.model.IdMappingType;
-import org.openmrs.module.shrclient.model.PatientIdMapping;
+import org.openmrs.module.shrclient.model.*;
 import org.openmrs.module.shrclient.model.mci.api.MciPatientUpdateResponse;
 import org.openmrs.module.shrclient.util.PropertiesReader;
 import org.openmrs.module.shrclient.util.RestClient;
@@ -170,6 +170,7 @@ public class PatientPushTest {
         when(idMappingsRepository.findByInternalId(openMrsPatient.getUuid(), IdMappingType.PATIENT)).thenReturn(patientIdMapping);
         when(event.getContent()).thenReturn(content);
         when(event.getDateCreated()).thenReturn(eventCreatedDate);
+        when(patientMapper.map(any(Patient.class))).thenReturn(new org.openmrs.module.shrclient.model.Patient());
 
         patientPush.process(event);
 
