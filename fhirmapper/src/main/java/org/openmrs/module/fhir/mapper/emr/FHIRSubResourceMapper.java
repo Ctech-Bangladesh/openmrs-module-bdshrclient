@@ -1,8 +1,8 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IResource;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -30,8 +30,8 @@ public class FHIRSubResourceMapper {
 
     public void map(Encounter openMrsEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         EmrEncounter emrEncounter = new EmrEncounter(openMrsEncounter);
-        List<IResource> topLevelResources = FHIRBundleHelper.identifyTopLevelResources(shrEncounterBundle.getBundle());
-        for (IResource resource : topLevelResources) {
+        List<Resource> topLevelResources = FHIRBundleHelper.identifyTopLevelResources(shrEncounterBundle.getBundle());
+        for (Resource resource : topLevelResources) {
             for (FHIRResourceMapper fhirResourceMapper : fhirResourceMappers) {
                 if (fhirResourceMapper.canHandle(resource)) {
                     fhirResourceMapper.map(resource, emrEncounter, shrEncounterBundle, systemProperties);

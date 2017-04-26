@@ -1,20 +1,10 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.ExtensionDt;
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu2.composite.*;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
-import ca.uhn.fhir.model.dstu2.valueset.MedicationOrderStatusEnum;
-import ca.uhn.fhir.model.dstu2.valueset.TimingAbbreviationEnum;
-import ca.uhn.fhir.model.dstu2.valueset.UnitsOfTimeEnum;
-import ca.uhn.fhir.model.primitive.BooleanDt;
-import ca.uhn.fhir.model.primitive.DateTimeDt;
-import ca.uhn.fhir.model.primitive.DecimalDt;
-import ca.uhn.fhir.model.primitive.StringDt;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.hl7.fhir.dstu3.model.*;
+import org.joda.time.DateTime;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
@@ -40,13 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.fhir.FHIRProperties.FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY;
-import static org.openmrs.module.fhir.FHIRProperties.FHIR_DRUG_ORDER_EVENING_DOSE_KEY;
-import static org.openmrs.module.fhir.FHIRProperties.FHIR_DRUG_ORDER_MORNING_DOSE_KEY;
-import static org.openmrs.module.fhir.MRSProperties.BAHMNI_DRUG_ORDER_AFTERNOON_DOSE_KEY;
-import static org.openmrs.module.fhir.MRSProperties.BAHMNI_DRUG_ORDER_EVENING_DOSE_KEY;
-import static org.openmrs.module.fhir.MRSProperties.BAHMNI_DRUG_ORDER_MORNING_DOSE_KEY;
-import static org.openmrs.module.fhir.MRSProperties.MRS_DRUG_ORDER_TYPE;
+import static org.codehaus.groovy.runtime.InvokerHelper.asList;
+import static org.openmrs.module.fhir.FHIRProperties.*;
+import static org.openmrs.module.fhir.MRSProperties.*;
 
 @Component
 public class DrugOrderMapper implements EmrOrderResourceHandler {
@@ -81,16 +67,16 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
     public List<FHIRResource> map(Order order, FHIREncounter fhirEncounter, Bundle bundle, SystemProperties systemProperties) {
         List<FHIRResource> fhirResources = new ArrayList<>();
         DrugOrder drugOrder = (DrugOrder) order;
-        MedicationOrder medicationOrder = new MedicationOrder();
-        medicationOrder.setEncounter(new ResourceReferenceDt().setReference(fhirEncounter.getId()));
-        medicationOrder.setPatient(fhirEncounter.getPatient());
-        medicationOrder.setDateWritten(drugOrder.getDateActivated(), TemporalPrecisionEnum.SECOND);
+        MedicationRequest medicationOrder = new MedicationRequest();
+        medicationOrder.setContext(new Reference().setReference(fhirEncounter.getId()));
+        medicationOrder.setSubject(fhirEncounter.getPatient());
+        medicationOrder.setAuthoredOn(drugOrder.getDateActivated());
         medicationOrder.setMedication(getMedication(drugOrder));
-        medicationOrder.setPrescriber(getOrdererReference(drugOrder, fhirEncounter));
+        medicationOrder.setRequester(getOrdererReference(drugOrder, fhirEncounter));
         medicationOrder.addDosageInstruction(getDoseInstructions(drugOrder, systemProperties));
         setStatusAndPriorPrescriptionAndOrderAction(drugOrder, medicationOrder, systemProperties);
         setDispenseRequest(drugOrder, medicationOrder);
-        medicationOrder.setNote(getNotes(drugOrder));
+        medicationOrder.setNote(asList(new Annotation(new StringType(getNotes(drugOrder)))));
 
         String id = new EntityReference().build(Order.class, systemProperties, order.getUuid());
         medicationOrder.addIdentifier().setValue(id);
@@ -99,40 +85,41 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         return fhirResources;
     }
 
-    private void setOrderAction(DrugOrder drugOrder, MedicationOrder medicationOrder) {
-        ExtensionDt orderActionExtension = new ExtensionDt();
+    private void setOrderAction(DrugOrder drugOrder, MedicationRequest medicationOrder) {
+        Extension orderActionExtension = new Extension();
         orderActionExtension.setUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.MEDICATIONORDER_ACTION_EXTENSION_NAME));
         Order.Action action = drugOrder.getAction();
-        orderActionExtension.setValue(new StringDt(action.name()));
-        medicationOrder.addUndeclaredExtension(orderActionExtension);
+        orderActionExtension.setValue(new StringType(action.name()));
+        medicationOrder.addExtension(orderActionExtension);
     }
 
     private String getNotes(DrugOrder drugOrder) {
         return (String) readFromDoseInstructions(drugOrder, MRSProperties.BAHMNI_DRUG_ORDER_ADDITIONAL_INSTRCTIONS_KEY);
     }
 
-    private void setDispenseRequest(DrugOrder drugOrder, MedicationOrder medicationOrder) {
-        MedicationOrder.DispenseRequest dispenseRequest = new MedicationOrder.DispenseRequest();
-        SimpleQuantityDt quantity = new SimpleQuantityDt();
+    private void setDispenseRequest(DrugOrder drugOrder, MedicationRequest medicationOrder) {
+        MedicationRequest.MedicationRequestDispenseRequestComponent dispenseRequest = new MedicationRequest.MedicationRequestDispenseRequestComponent();
+        SimpleQuantity quantity = new SimpleQuantity();
         quantity.setValue(drugOrder.getQuantity());
         quantity.setUnit(drugOrder.getQuantityUnits().getName().getName());
         dispenseRequest.setQuantity(quantity);
         medicationOrder.setDispenseRequest(dispenseRequest);
     }
 
-    private void setStatusAndPriorPrescriptionAndOrderAction(DrugOrder drugOrder, MedicationOrder medicationOrder, SystemProperties systemProperties) {
+    private void setStatusAndPriorPrescriptionAndOrderAction(DrugOrder drugOrder, MedicationRequest medicationOrder, SystemProperties systemProperties) {
         if (drugOrder.getDateStopped() != null || drugOrder.getAction().equals(Order.Action.DISCONTINUE)) {
-            medicationOrder.setStatus(MedicationOrderStatusEnum.STOPPED);
-            if (drugOrder.getDateStopped() != null)
-                medicationOrder.setDateEnded(drugOrder.getDateStopped(), TemporalPrecisionEnum.MILLI);
-            else medicationOrder.setDateEnded(drugOrder.getAutoExpireDate(), TemporalPrecisionEnum.MILLI);
+            medicationOrder.setStatus(MedicationRequest.MedicationRequestStatus.STOPPED);
+//            todo: need to populate provenance
+//            if (drugOrder.getDateStopped() != null)
+//                medicationOrder.setDateEnded(drugOrder.getDateStopped(), TemporalPrecisionEnum.MILLI);
+//            else medicationOrder.setDateEnded(drugOrder.getAutoExpireDate(), TemporalPrecisionEnum.MILLI);
         } else {
-            medicationOrder.setStatus(MedicationOrderStatusEnum.ACTIVE);
+            medicationOrder.setStatus(MedicationRequest.MedicationRequestStatus.ACTIVE);
         }
         setOrderAction(drugOrder, medicationOrder);
         if (drugOrder.getPreviousOrder() != null) {
             String priorPresecription = setPriorPrescriptionReference(drugOrder, systemProperties);
-            medicationOrder.setPriorPrescription(new ResourceReferenceDt(priorPresecription));
+            medicationOrder.setPriorPrescription(new Reference(priorPresecription));
         }
     }
 
@@ -152,28 +139,31 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         return !drugOrder.getEncounter().equals(drugOrder.getPreviousOrder().getEncounter());
     }
 
-    private ResourceReferenceDt getOrdererReference(Order order, FHIREncounter fhirEncounter) {
+    private MedicationRequest.MedicationRequestRequesterComponent getOrdererReference(Order order, FHIREncounter fhirEncounter) {
+        MedicationRequest.MedicationRequestRequesterComponent medicationRequestRequesterComponent = new MedicationRequest.MedicationRequestRequesterComponent();
         if (order.getOrderer() != null) {
             String providerUrl = providerLookupService.getProviderRegistryUrl(order.getOrderer());
             if (providerUrl != null) {
-                return new ResourceReferenceDt().setReference(providerUrl);
+                medicationRequestRequesterComponent.setAgent(new Reference().setReference(providerUrl));
+                return medicationRequestRequesterComponent;
             }
         }
-        return fhirEncounter.getFirstParticipantReference();
+        medicationRequestRequesterComponent.setAgent(fhirEncounter.getFirstParticipantReference());
+        return medicationRequestRequesterComponent;
     }
 
-    private MedicationOrder.DosageInstruction getDoseInstructions(DrugOrder drugOrder, SystemProperties systemProperties) {
-        MedicationOrder.DosageInstruction dosageInstruction = new MedicationOrder.DosageInstruction();
+    private Dosage getDoseInstructions(DrugOrder drugOrder, SystemProperties systemProperties) {
+        Dosage dosageInstruction = new Dosage();
 
         dosageInstruction.setRoute(getRoute(drugOrder, systemProperties));
 
-        dosageInstruction.setAdditionalInstructions(getAdditionalInstructions(drugOrder));
+        dosageInstruction.setAdditionalInstruction(asList(getAdditionalInstructions(drugOrder)));
 
-        dosageInstruction.setAsNeeded(new BooleanDt(drugOrder.getAsNeeded()));
+        dosageInstruction.setAsNeeded(new BooleanType(drugOrder.getAsNeeded()));
 
         addTiming(drugOrder, dosageInstruction);
         if (null != drugOrder.getDoseUnits()) {
-            SimpleQuantityDt doseQuantity = getDoseQuantityWithUnitsOnly(drugOrder, systemProperties);
+            SimpleQuantity doseQuantity = getDoseQuantityWithUnitsOnly(drugOrder, systemProperties);
             dosageInstruction.setDose(doseQuantity);
             if (drugOrder.getDose() != null) {
                 getDosageInstructionsForGenericDose(drugOrder, dosageInstruction);
@@ -182,22 +172,22 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
             }
         }
         dosageInstruction.getTiming().getRepeat().setBounds(getBounds(drugOrder));
-
-        ExtensionDt scheduledDateExtension = getScheduledDateExtension(drugOrder);
-        if (scheduledDateExtension != null)
-            dosageInstruction.getTiming().addUndeclaredExtension(scheduledDateExtension);
+//      TODO: should be a part of provenance
+//        Extension scheduledDateExtension = getScheduledDateExtension(drugOrder);
+//        if (scheduledDateExtension != null)
+//            dosageInstruction.getTiming().addUndeclaredExtension(scheduledDateExtension);
 
         return dosageInstruction;
     }
 
-    private void addTiming(DrugOrder drugOrder, MedicationOrder.DosageInstruction dosageInstruction) {
+    private void addTiming(DrugOrder drugOrder, Dosage dosageInstruction) {
         if (drugOrder.getFrequency() != null) {
-            TimingDt timing = getTimingForOrderFrequencyGiven(drugOrder);
+            Timing timing = getTimingForOrderFrequencyGiven(drugOrder);
             dosageInstruction.setTiming(timing);
         }
     }
 
-    private void getDosageInstructionsWithPredifinedFrequency(DrugOrder drugOrder, MedicationOrder.DosageInstruction dosageInstruction) {
+    private void getDosageInstructionsWithPredifinedFrequency(DrugOrder drugOrder, Dosage dosageInstruction) {
         int count = 0;
         HashMap<String, Double> map = new HashMap<>();
         Double morningDose = getDoseValue(drugOrder, BAHMNI_DRUG_ORDER_MORNING_DOSE_KEY);
@@ -215,26 +205,27 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
             count++;
             map.put(FHIR_DRUG_ORDER_EVENING_DOSE_KEY, eveningDose);
         }
-        TimingAbbreviationEnum timingAbbreviationEnum = null;
-        if (count == 0) return;
+//        todo: Need to verify what is to be done
+//        TimingAbbreviationEnum timingAbbreviationEnum = null;
+//        if (count == 0) return;
+//
+//        else if (count == 1) timingAbbreviationEnum = TimingAbbreviationEnum.QD;
+//        else if (count == 2) timingAbbreviationEnum = TimingAbbreviationEnum.BID;
+//        else if (count == 3) timingAbbreviationEnum = TimingAbbreviationEnum.TID;
+//
+//        if (timingAbbreviationEnum != null) {
+//            TimingDt timing = new TimingDt();
+//            timing.setCode(timingAbbreviationEnum);
+//            dosageInstruction.setTiming(timing);
+//        }
 
-        else if (count == 1) timingAbbreviationEnum = TimingAbbreviationEnum.QD;
-        else if (count == 2) timingAbbreviationEnum = TimingAbbreviationEnum.BID;
-        else if (count == 3) timingAbbreviationEnum = TimingAbbreviationEnum.TID;
-
-        if (timingAbbreviationEnum != null) {
-            TimingDt timing = new TimingDt();
-            timing.setCode(timingAbbreviationEnum);
-            dosageInstruction.setTiming(timing);
-        }
-
-        try {
-            String json = objectMapper.writeValueAsString(map);
-            String fhirExtensionUrl = FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME);
-            dosageInstruction.addUndeclaredExtension(false, fhirExtensionUrl, new StringDt(json));
-        } catch (IOException e) {
-            logger.warn("Not able to set dose.");
-        }
+//        try {
+//            String json = objectMapper.writeValueAsString(map);
+//            String fhirExtensionUrl = FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME);
+//            dosageInstruction.addUndeclaredExtension(false, fhirExtensionUrl, new StringDt(json));
+//        } catch (IOException e) {
+//            logger.warn("Not able to set dose.");
+//        }
     }
 
     private double getDoseValue(DrugOrder drugOrder, String doseKey) {
@@ -242,28 +233,28 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         return dose != null ? Double.parseDouble(dose.toString()) : 0;
     }
 
-    private void getDosageInstructionsForGenericDose(DrugOrder drugOrder, MedicationOrder.DosageInstruction dosageInstruction) {
-        SimpleQuantityDt doseQuantity = (SimpleQuantityDt) dosageInstruction.getDose();
-        doseQuantity.setValue(getDoseQuantityValue(drugOrder.getDose()));
+    private void getDosageInstructionsForGenericDose(DrugOrder drugOrder, Dosage dosageInstruction) {
+        SimpleQuantity doseQuantity = (SimpleQuantity) dosageInstruction.getDose();
+        doseQuantity.setValue(getDoseQuantityValue(drugOrder.getDose()).getValue());
         dosageInstruction.setDose(doseQuantity);
     }
 
-    private ExtensionDt getScheduledDateExtension(DrugOrder drugOrder) {
-        if (drugOrder.getScheduledDate() != null) {
-            DateTimeDt dateTimeDt = new DateTimeDt(drugOrder.getScheduledDate(), TemporalPrecisionEnum.MILLI);
-            return new ExtensionDt(false, FHIRProperties.getFhirExtensionUrl(FHIRProperties.SCHEDULED_DATE_EXTENSION_NAME), dateTimeDt);
-        }
-        return null;
-    }
+//    private Extension getScheduledDateExtension(DrugOrder drugOrder) {
+//        if (drugOrder.getScheduledDate() != null) {
+//            DateTime dateTime = new DateTime(drugOrder.getScheduledDate(), TemporalPrecisionEnum.MILLI);
+//            return new Extension(false, FHIRProperties.getFhirExtensionUrl(FHIRProperties.SCHEDULED_DATE_EXTENSION_NAME), dateTime);
+//        }
+//        return null;
+//    }
 
-    private DecimalDt getDoseQuantityValue(Double drugOrderDose) {
-        DecimalDt dose = new DecimalDt();
+    private DecimalType getDoseQuantityValue(Double drugOrderDose) {
+        DecimalType dose = new DecimalType();
         dose.setValue(new BigDecimal(drugOrderDose));
         return dose;
     }
 
-    private CodeableConceptDt getRoute(DrugOrder drugOrder, SystemProperties systemProperties) {
-        CodeableConceptDt route = null;
+    private CodeableConcept getRoute(DrugOrder drugOrder, SystemProperties systemProperties) {
+        CodeableConcept route = null;
         if (null != drugOrder.getRoute()) {
             route = codeableConceptService.getTRValueSetCodeableConcept(drugOrder.getRoute(),
                     TrValueSetType.ROUTE_OF_ADMINISTRATION.getTrPropertyValueSetUrl(systemProperties));
@@ -271,7 +262,7 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         return route;
     }
 
-    private CodeableConceptDt getAdditionalInstructions(DrugOrder drugOrder) {
+    private CodeableConcept getAdditionalInstructions(DrugOrder drugOrder) {
         String doseInstructionsConceptName = (String) readFromDoseInstructions(drugOrder, MRSProperties.BAHMNI_DRUG_ORDER_INSTRCTIONS_KEY);
         if (doseInstructionsConceptName != null) {
             Concept additionalInstructionsConcept = conceptService.getConceptByName(doseInstructionsConceptName);
@@ -291,36 +282,36 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         return null;
     }
 
-    private TimingDt getTimingForOrderFrequencyGiven(DrugOrder drugOrder) {
-        TimingDt timing = new TimingDt();
-        TimingDt.Repeat repeat = new TimingDt.Repeat();
+    private Timing getTimingForOrderFrequencyGiven(DrugOrder drugOrder) {
+        Timing timing = new Timing();
+        Timing.TimingRepeatComponent repeat = new Timing.TimingRepeatComponent();
 
         setFrequencyAndPeriod(drugOrder, repeat);
         timing.setRepeat(repeat);
         return timing;
     }
 
-    private void setFrequencyAndPeriod(DrugOrder drugOrder, TimingDt.Repeat repeat) {
+    private void setFrequencyAndPeriod(DrugOrder drugOrder, Timing.TimingRepeatComponent repeat) {
         String frequencyConceptName = drugOrder.getFrequency().getConcept().getName().getName();
         FrequencyMapperUtil.FrequencyUnit frequencyUnit = frequencyMapperUtil.getFrequencyUnits(frequencyConceptName);
         repeat.setFrequency(frequencyUnit.getFrequency());
         repeat.setPeriod(frequencyUnit.getFrequencyPeriod());
-        repeat.setPeriodUnits(frequencyUnit.getUnitOfTime());
+//        repeat.setPeriodUnits(frequencyUnit.getUnitOfTime());
     }
 
-    private DurationDt getBounds(DrugOrder drugOrder) {
-        DurationDt duration = new DurationDt();
+    private Duration getBounds(DrugOrder drugOrder) {
+        Duration duration = new Duration();
         duration.setValue(drugOrder.getDuration());
         String durationUnit = drugOrder.getDurationUnits().getName().getName();
-        UnitsOfTimeEnum unitOfTime = durationMapperUtil.getUnitOfTime(durationUnit);
-        duration.setCode(unitOfTime.getCode());
-        duration.setSystem(unitOfTime.getSystem());
+//        UnitsOfTimeEnum unitOfTime = durationMapperUtil.getUnitOfTime(durationUnit);
+//        duration.setCode(unitOfTime.getCode());
+//        duration.setSystem(unitOfTime.getSystem());
         return duration;
     }
 
-    private SimpleQuantityDt getDoseQuantityWithUnitsOnly(DrugOrder drugOrder, SystemProperties systemProperties) {
+    private SimpleQuantity getDoseQuantityWithUnitsOnly(DrugOrder drugOrder, SystemProperties systemProperties) {
         Concept doseUnits = drugOrder.getDoseUnits();
-        SimpleQuantityDt doseQuantity = new SimpleQuantityDt();
+        SimpleQuantity doseQuantity = new SimpleQuantity();
         TrValueSetType trValueSetType = determineTrValueSet(doseUnits);
         if (null != trValueSetType && null != idMappingsRepository.findByInternalId(doseUnits.getUuid(), IdMappingType.CONCEPT)) {
             String code = codeableConceptService.getTRValueSetCode(doseUnits);
@@ -342,8 +333,8 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         return null;
     }
 
-    private CodeableConceptDt getMedication(DrugOrder drugOrder) {
-        CodingDt coding = new CodingDt();
+    private CodeableConcept getMedication(DrugOrder drugOrder) {
+        Coding coding = new Coding();
         if (drugOrder.getDrug() == null) {
             coding.setDisplay(drugOrder.getDrugNonCoded());
         } else {
@@ -358,6 +349,6 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
                 coding.setDisplay(displayName);
             }
         }
-        return new CodeableConceptDt().addCoding(coding);
+        return new CodeableConcept().addCoding(coding);
     }
 }

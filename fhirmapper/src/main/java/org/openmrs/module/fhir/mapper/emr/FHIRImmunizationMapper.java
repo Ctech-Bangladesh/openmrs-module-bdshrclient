@@ -1,11 +1,7 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.AnnotationDt;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
-import ca.uhn.fhir.model.dstu2.resource.Immunization;
 import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.Obs;
@@ -35,12 +31,12 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     @Override
-    public boolean canHandle(IResource resource) {
+    public boolean canHandle(Resource resource) {
         return resource instanceof Immunization;
     }
 
     @Override
-    public void map(IResource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
+    public void map(Resource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         Immunization immunization = (Immunization) resource;
 
         Obs immunizationIncidentTmpl = new Obs();
@@ -70,7 +66,7 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     private void addImmunizationNotes(Immunization immunization, Obs immunizationIncidentGroup) {
-        for (AnnotationDt annotationDt : immunization.getNote()) {
+        for (Annotation annotationDt : immunization.getNote()) {
             if (StringUtils.isNotBlank(annotationDt.getText())) {
                 Obs notesObs = new Obs();
                 notesObs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_IMMUNIZATION_NOTE));
@@ -81,7 +77,7 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     private Obs getImmunizationStatus(Immunization immunization) {
-        Concept statusConcept = omrsConceptLookup.findValuesetConceptFromTrValuesetType(TrValueSetType.IMMUNIZATION_STATUS, immunization.getStatus());
+        Concept statusConcept = omrsConceptLookup.findValuesetConceptFromTrValuesetType(TrValueSetType.IMMUNIZATION_STATUS, immunization.getStatus().toCode());
         if (statusConcept == null) return null;
         Obs statusObs = new Obs();
         statusObs.setConcept(omrsConceptLookup.findTRConceptOfType(TrValueSetType.IMMUNIZATION_STATUS));
@@ -90,12 +86,12 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     private Obs addImmunizationReasons(Immunization immunization, Obs immunizationIncident) {
-        Immunization.Explanation explanation = immunization.getExplanation();
+        Immunization.ImmunizationExplanationComponent explanation = immunization.getExplanation();
         if (explanation != null && !explanation.isEmpty()) {
-            List<CodeableConceptDt> reasons = explanation.getReason();
+            List<CodeableConcept> reasons = explanation.getReason();
             if (reasons != null && !reasons.isEmpty()) {
                 Concept immunizationReasonConcept = omrsConceptLookup.findTRConceptOfType(TrValueSetType.IMMUNIZATION_REASON);
-                for (CodeableConceptDt reason : reasons) {
+                for (CodeableConcept reason : reasons) {
                     Concept valueCoded = omrsConceptLookup.findConceptByCodeOrDisplay(reason.getCoding());
                     if (valueCoded == null) continue;
                     Obs immunizationReasonObs = new Obs();
@@ -109,12 +105,12 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     private Obs addImmunizationRefusalReasons(Immunization immunization, Obs immunizationIncident) {
-        Immunization.Explanation explanation = immunization.getExplanation();
+        Immunization.ImmunizationExplanationComponent explanation = immunization.getExplanation();
         if (explanation != null && !explanation.isEmpty()) {
-            List<CodeableConceptDt> reasons = explanation.getReasonNotGiven();
+            List<CodeableConcept> reasons = explanation.getReasonNotGiven();
             if (reasons != null && !reasons.isEmpty()) {
                 Concept immunizationRefusalReasonConcept = omrsConceptLookup.findTRConceptOfType(TrValueSetType.IMMUNIZATION_REFUSAL_REASON);
-                for (CodeableConceptDt reason : reasons) {
+                for (CodeableConcept reason : reasons) {
                     Concept valueCoded = omrsConceptLookup.findConceptByCodeOrDisplay(reason.getCoding());
                     if (valueCoded == null) continue;
                     Obs immunizationRefusalReasonObs = new Obs();
@@ -154,7 +150,7 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     private Obs getQuantityUnits(Immunization immunization) {
-        QuantityDt doseQuantity = immunization.getDoseQuantity();
+        Quantity doseQuantity = immunization.getDoseQuantity();
         Obs quantityUnitsObs = null;
         if (doseQuantity != null && !doseQuantity.isEmpty()) {
             Concept quantityUnit = omrsConceptLookup.findConceptFromValueSetCode(doseQuantity.getSystem(), doseQuantity.getCode());
@@ -171,7 +167,7 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     private Obs getDosage(Immunization immunization) {
-        QuantityDt doseQuantity = immunization.getDoseQuantity();
+        Quantity doseQuantity = immunization.getDoseQuantity();
         if (doseQuantity != null && !doseQuantity.isEmpty()) {
             Obs obs = new Obs();
             obs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_DOSAGE));
@@ -182,16 +178,16 @@ public class FHIRImmunizationMapper implements FHIRResourceMapper {
     }
 
     private Obs getVaccineReported(Immunization immunization) {
-        Boolean reported = immunization.getReported();
+        Boolean reported = immunization.getPrimarySource();
         if (reported == null) return null;
         Obs obs = new Obs();
         obs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_VACCINATION_REPORTED));
-        obs.setValueBoolean(reported);
+        obs.setValueBoolean(!reported);
         return obs;
     }
 
     private Obs getVaccineRefused(Immunization immunization) {
-        Boolean wasNotGiven = immunization.getWasNotGiven();
+        Boolean wasNotGiven = immunization.getNotGiven();
         if (wasNotGiven == null) return null;
         Obs obs = new Obs();
         obs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_VACCINATION_REFUSED));

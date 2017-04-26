@@ -1,12 +1,6 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IDatatype;
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.AgeDt;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.resource.FamilyMemberHistory;
-import ca.uhn.fhir.model.primitive.DateDt;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
@@ -39,12 +33,12 @@ public class FHIRFamilyMemberHistoryMapper implements FHIRResourceMapper {
     }
 
     @Override
-    public boolean canHandle(IResource resource) {
+    public boolean canHandle(Resource resource) {
         return (resource instanceof FamilyMemberHistory);
     }
 
     @Override
-    public void map(IResource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
+    public void map(Resource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         FamilyMemberHistory familyMemberHistory = (FamilyMemberHistory) resource;
         Obs familyHistoryObs = new Obs();
         familyHistoryObs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_NAME_FAMILY_HISTORY));
@@ -63,7 +57,7 @@ public class FHIRFamilyMemberHistoryMapper implements FHIRResourceMapper {
     private void mapRelation(Obs personObs, FamilyMemberHistory familyMemberHistory) {
         personObs.addGroupMember(setBornOnObs(familyMemberHistory));
         mapRelationship(personObs, familyMemberHistory);
-        for (FamilyMemberHistory.Condition condition : familyMemberHistory.getCondition()) {
+        for (FamilyMemberHistory.FamilyMemberHistoryConditionComponent condition : familyMemberHistory.getCondition()) {
             personObs.addGroupMember(mapRelationCondition(condition));
         }
     }
@@ -75,7 +69,7 @@ public class FHIRFamilyMemberHistoryMapper implements FHIRResourceMapper {
         }
     }
 
-    private Obs mapRelationCondition(FamilyMemberHistory.Condition conditon) {
+    private Obs mapRelationCondition(FamilyMemberHistory.FamilyMemberHistoryConditionComponent conditon) {
         Concept familyMemberConditionAnswerConcept = getAnswer(conditon);
         if (familyMemberConditionAnswerConcept == null) return null;
         Obs result = new Obs();
@@ -93,9 +87,9 @@ public class FHIRFamilyMemberHistoryMapper implements FHIRResourceMapper {
         result.addGroupMember(value);
     }
 
-    private Concept getAnswer(FamilyMemberHistory.Condition condition) {
-        List<CodingDt> coding = condition.getCode().getCoding();
-        for (CodingDt code : coding) {
+    private Concept getAnswer(FamilyMemberHistory.FamilyMemberHistoryConditionComponent condition) {
+        List<Coding> coding = condition.getCode().getCoding();
+        for (Coding code : coding) {
             IdMapping mapping = idMappingsRepository.findByExternalId(code.getCode(), IdMappingType.CONCEPT);
             if (null != mapping) {
                 return conceptService.getConceptByUuid(mapping.getInternalId());
@@ -104,27 +98,29 @@ public class FHIRFamilyMemberHistoryMapper implements FHIRResourceMapper {
         return null;
     }
 
-    private void mapNotes(Obs result, FamilyMemberHistory.Condition condition) {
-        if (condition.getNote() != null && !condition.getNote().isEmpty()) {
+    private void mapNotes(Obs result, FamilyMemberHistory.FamilyMemberHistoryConditionComponent condition) {
+        List<Annotation> note = condition.getNote();
+        if (note != null && !note.isEmpty()) {
             Obs notes = new Obs();
             Concept onsetDateConcept = conceptService.getConceptByName(MRS_CONCEPT_NAME_RELATIONSHIP_NOTES);
             notes.setConcept(onsetDateConcept);
-            notes.setValueText(condition.getNote().getText());
+
+            notes.setValueText(note.get(0).getText());
             result.addGroupMember(notes);
         }
     }
 
-    private void mapOnsetDate(Obs result, IDatatype onset) {
-        if (onset != null && !onset.isEmpty() && onset instanceof AgeDt) {
+    private void mapOnsetDate(Obs result, Type onset) {
+        if (onset != null && !onset.isEmpty() && onset instanceof Age) {
             Obs ageValue = new Obs();
             Concept onsetDateConcept = conceptService.getConceptByName(MRS_CONCEPT_NAME_ONSET_AGE);
             ageValue.setConcept(onsetDateConcept);
-            ageValue.setValueNumeric(((AgeDt) onset).getValue().doubleValue());
+            ageValue.setValueNumeric(((Age) onset).getValue().doubleValue());
             result.addGroupMember(ageValue);
         }
     }
 
-    private Obs mapRelationship(CodeableConceptDt relationshipCode) {
+    private Obs mapRelationship(CodeableConcept relationshipCode) {
         if (relationshipCode != null && !relationshipCode.isEmpty()) {
             Obs result = new Obs();
             result.setConcept(conceptLookup.findTRConceptOfType(TrValueSetType.RELATIONSHIP_TYPE));
@@ -137,10 +133,10 @@ public class FHIRFamilyMemberHistoryMapper implements FHIRResourceMapper {
     }
 
     private Obs setBornOnObs(FamilyMemberHistory familyMemberHistory) {
-        if (familyMemberHistory.getBorn() != null && !familyMemberHistory.getBorn().isEmpty() && familyMemberHistory.getBorn() instanceof DateDt) {
+        if (familyMemberHistory.getBorn() != null && !familyMemberHistory.getBorn().isEmpty() && familyMemberHistory.getBorn() instanceof DateType) {
             Obs bornOnObs = new Obs();
             Concept bornOnConcept = conceptService.getConceptByName(MRS_CONCEPT_NAME_BORN_ON);
-            java.util.Date observationValue = ((DateDt) familyMemberHistory.getBorn()).getValue();
+            java.util.Date observationValue = ((DateType) familyMemberHistory.getBorn()).getValue();
             bornOnObs.setValueDate(observationValue);
             bornOnObs.setConcept(bornOnConcept);
             return bornOnObs;

@@ -1,7 +1,7 @@
 package org.openmrs.module.fhir.utils;
 
 
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
+import org.hl7.fhir.dstu3.model.Coding;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -50,7 +50,7 @@ public class OMRSConceptLookupIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldFindConceptFromCoding_ThatHasConcept() {
-        List<CodingDt> codings = asList(buildCoding(REF_TERM_URI, "1101", "A001", "some concept"),
+        List<Coding> codings = asList(buildCoding(REF_TERM_URI, "1101", "A001", "some concept"),
                 buildCoding(REF_TERM_URI, "1102", "B001", "some ref term 2"),
                 buildCoding(CONCEPT_URI, "101", "101", "Fever"));
         Concept concept = omrsConceptLookup.findConceptByCode(codings);
@@ -60,7 +60,7 @@ public class OMRSConceptLookupIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldFindConceptFromCodingThatHasReferenceTermsWithMatchingConceptPreferredName() {
-        List<CodingDt> codings = asList(buildCoding(REF_TERM_URI, "1101", "A001", "xyz concept"),
+        List<Coding> codings = asList(buildCoding(REF_TERM_URI, "1101", "A001", "xyz concept"),
                 buildCoding(REF_TERM_URI, "1102", "B001", "Fever"));
         Concept concept = omrsConceptLookup.findConceptByCode(codings);
         assertNotNull(concept);
@@ -69,7 +69,7 @@ public class OMRSConceptLookupIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldFindConceptFromCodingThatHasReferenceTermsWithoutAnyMatchingConceptPreferredName() {
-        List<CodingDt> codings = asList(buildCoding(REF_TERM_URI, "1101", "A001", "xyz concept"),
+        List<Coding> codings = asList(buildCoding(REF_TERM_URI, "1101", "A001", "xyz concept"),
                 buildCoding(REF_TERM_URI, "1102", "B001", "pqr concept"));
         Concept concept = omrsConceptLookup.findOrCreateLocalConceptByCodings(codings, "101", MISC_CONCEPT_CLASS_NAME, TEXT_CONCEPT_DATATYPE_NAME);
         assertNotNull(concept);
@@ -144,7 +144,7 @@ public class OMRSConceptLookupIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapDrugOnlyIfTRSystem() throws Exception {
         Drug expectedDrug = conceptService.getDrug(301);
-        CodingDt drugCoding = new CodingDt().setCode("104").setSystem("http:tr.com/ws/rest/v1/tr/drugs/104");
+        Coding drugCoding = new Coding().setCode("104").setSystem("http:tr.com/ws/rest/v1/tr/drugs/104");
         Drug actualDrug = omrsConceptLookup.findDrug(asList(drugCoding));
         assertEquals(expectedDrug, actualDrug);
     }
@@ -154,12 +154,12 @@ public class OMRSConceptLookupIT extends BaseModuleWebContextSensitiveTest {
         expectedEx.expect(RuntimeException.class);
         expectedEx.expectMessage("TR Drug with external id [105] is not yet synced");
 
-        CodingDt drugCoding = new CodingDt().setCode("105").setSystem("http:tr.com/ws/rest/v1/tr/drugs/105");
+        Coding drugCoding = new Coding().setCode("105").setSystem("http:tr.com/ws/rest/v1/tr/drugs/105");
         omrsConceptLookup.findDrug(asList(drugCoding));
     }
 
-    private CodingDt buildCoding(String uri, String externalId, String code, String display) {
-        final CodingDt coding = new CodingDt();
+    private Coding buildCoding(String uri, String externalId, String code, String display) {
+        final Coding coding = new Coding();
         coding.setSystem(uri + externalId);
         coding.setCode(code);
         coding.setDisplay(display);

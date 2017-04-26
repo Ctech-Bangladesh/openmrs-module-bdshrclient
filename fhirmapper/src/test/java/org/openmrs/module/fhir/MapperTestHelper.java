@@ -1,8 +1,8 @@
 package org.openmrs.module.fhir;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
 import org.apache.commons.collections4.Predicate;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.openmrs.module.fhir.utils.PropertyKeyConstants;
 import org.openmrs.module.shrclient.util.SystemProperties;
 import org.springframework.context.ApplicationContext;
@@ -16,10 +16,10 @@ import static org.openmrs.module.fhir.utils.PropertyKeyConstants.FACILITY_ID;
 import static org.openmrs.module.fhir.utils.PropertyKeyConstants.FACILITY_REFERENCE_PATH;
 
 public class MapperTestHelper {
-    public IResource loadSampleFHIREncounter(String filePath, ApplicationContext springContext) throws Exception {
+    public Resource loadSampleFHIREncounter(String filePath, ApplicationContext springContext) throws Exception {
         org.springframework.core.io.Resource resource = springContext.getResource(filePath);
         String bundleXML = org.apache.commons.io.IOUtils.toString(resource.getInputStream());
-        return (IResource) FhirContextHelper.getFhirContext().newXmlParser().parseResource(bundleXML);
+        return (Resource) FhirContextHelper.getFhirContext().newXmlParser().parseResource(bundleXML);
     }
 
     public static SystemProperties getSystemProperties(String facilityId) {
@@ -60,10 +60,10 @@ public class MapperTestHelper {
         return new SystemProperties(facilityRegistry, trProperties, providerRegistry, facilityInstanceProperties, mciProperties, shrProperties);
     }
 
-    public static boolean containsCoding(List<CodingDt> coding, final String code, final String system, final String display) {
-        return exists(coding, new Predicate<CodingDt>() {
+    public static boolean containsCoding(List<Coding> coding, final String code, final String system, final String display) {
+        return exists(coding, new Predicate<Coding>() {
             @Override
-            public boolean evaluate(CodingDt codingDt) {
+            public boolean evaluate(Coding codingDt) {
                 return (nullSafeEquals(code, codingDt.getCode()))
                         && (nullSafeEquals(system, codingDt.getSystem()))
                         && (nullSafeEquals(display, codingDt.getDisplay()));

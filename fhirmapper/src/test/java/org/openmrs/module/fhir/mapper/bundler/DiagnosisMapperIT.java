@@ -1,12 +1,6 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.ExtensionDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Condition;
-import ca.uhn.fhir.model.dstu2.valueset.ConditionCategoryCodesEnum;
-import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
-import ca.uhn.fhir.model.primitive.StringDt;
-import org.hl7.fhir.instance.model.api.IBaseDatatype;
+import org.hl7.fhir.dstu3.model.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +19,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.openmrs.module.fhir.FHIRProperties.FHIR_CONDITION_CATEGORY_DIAGNOSIS_CODE;
 import static org.openmrs.module.fhir.MapperTestHelper.containsCoding;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
 
@@ -71,7 +66,7 @@ public class DiagnosisMapperIT extends BaseModuleWebContextSensitiveTest {
 
         assertDiagnosisCondition(fhirEncounter, diagnosisCondition,
                 "101", "http://tr.com/ws/concepts/101", "Ankylosis of joint",
-                ConditionVerificationStatusEnum.CONFIRMED, "Some Comment");
+                Condition.ConditionVerificationStatus.CONFIRMED, "Some Comment");
     }
 
     @Test
@@ -107,7 +102,7 @@ public class DiagnosisMapperIT extends BaseModuleWebContextSensitiveTest {
 
         assertDiagnosisCondition(fhirEncounter, diagnosisCondition,
                 "101", "http://tr.com/ws/concepts/101", "Ankylosis of joint",
-                ConditionVerificationStatusEnum.PROVISIONAL, "Some Comment");
+                Condition.ConditionVerificationStatus.PROVISIONAL, "Some Comment");
     }
 
     @Test
@@ -124,7 +119,7 @@ public class DiagnosisMapperIT extends BaseModuleWebContextSensitiveTest {
 
         assertDiagnosisCondition(fhirEncounter, initialDiagnosisCondition,
                 "101", "http://tr.com/ws/concepts/101", "Ankylosis of joint",
-                ConditionVerificationStatusEnum.CONFIRMED, "Some Comment");
+                Condition.ConditionVerificationStatus.CONFIRMED, "Some Comment");
 
         fhirResources = diagnosisMapper.map(updatedDiagnosisObs, fhirEncounter, getSystemProperties("1"));
         assertEquals(1, fhirResources.size());
@@ -133,41 +128,43 @@ public class DiagnosisMapperIT extends BaseModuleWebContextSensitiveTest {
 
         assertDiagnosisCondition(fhirEncounter, updatedDiagnosisCondition,
                 "101", "http://tr.com/ws/concepts/101", "Ankylosis of joint",
-                ConditionVerificationStatusEnum.PROVISIONAL, "Some Updated Comment");
-        final List<ExtensionDt> extensions = updatedDiagnosisCondition.getUndeclaredExtensionsByUrl(
+                Condition.ConditionVerificationStatus.PROVISIONAL, "Some Updated Comment");
+
+        final List<Extension> extensions = updatedDiagnosisCondition.getExtensionsByUrl(
                 FHIRProperties.getFhirExtensionUrl(FHIRProperties.PREVIOUS_CONDITION_EXTENSION_NAME));
         assertEquals(1, extensions.size());
-        IBaseDatatype extension = extensions.get(0).getValue();
-        assertTrue(extension instanceof StringDt);
-        String previousDiagnosisUri = ((StringDt) extension).getValue();
+        Type extension = extensions.get(0).getValue();
+        assertTrue(extension instanceof StringType);
+        String previousDiagnosisUri = ((StringType) extension).getValue();
         IdMapping diagnosisIdMapping = idMappingRepository.findByInternalId(visitDiagnosisObs.getUuid(), IdMappingType.DIAGNOSIS);
         assertEquals(diagnosisIdMapping.getUri(), previousDiagnosisUri);
+        assertTrue(previousDiagnosisUri.contains(visitDiagnosisObs.getUuid()));
     }
 
-    private void assertDiagnosisCondition(FHIREncounter fhirEncounter, Condition diagnosisCondition, String code, String system, String display, ConditionVerificationStatusEnum verificationStatus, String comments) {
+    private void assertDiagnosisCondition(FHIREncounter fhirEncounter, Condition diagnosisCondition, String code, String system, String display, Condition.ConditionVerificationStatus verificationStatus, String comments) {
         assertFalse(diagnosisCondition.getId().isEmpty());
         assertFalse(diagnosisCondition.getIdentifier().isEmpty());
         assertFalse(diagnosisCondition.getIdentifierFirstRep().isEmpty());
 
-        assertEquals(fhirEncounter.getPatient().getReference().getValue(), diagnosisCondition.getPatient().getReference().getValue());
-        assertEquals(fhirEncounter.getId(), diagnosisCondition.getEncounter().getReference().getValue());
-        assertEquals(ConditionCategoryCodesEnum.DIAGNOSIS, diagnosisCondition.getCategory().getValueAsEnum().iterator().next());
+        assertEquals(fhirEncounter.getPatient().getReference(), diagnosisCondition.getSubject().getReference());
+        assertEquals(fhirEncounter.getId(), diagnosisCondition.getContext().getReference());
+        assertEquals(FHIR_CONDITION_CATEGORY_DIAGNOSIS_CODE, diagnosisCondition.getCategory().get(0).getCodingFirstRep().getCode());
         assertEquals(fhirEncounter.getFirstParticipantReference(), diagnosisCondition.getAsserter());
 
         assertEquals(1, diagnosisCondition.getCode().getCoding().size());
         assertTrue(containsCoding(diagnosisCondition.getCode().getCoding(), code, system, display));
-        assertEquals(verificationStatus.getCode(), diagnosisCondition.getVerificationStatus());
-        assertEquals(comments, diagnosisCondition.getNotes());
+        assertEquals(verificationStatus.getDisplay(), diagnosisCondition.getVerificationStatus().getDisplay());
+        assertEquals(comments, diagnosisCondition.getNote().get(0).getText());
     }
 
     private FHIREncounter createFhirEncounter() {
-        ca.uhn.fhir.model.dstu2.resource.Encounter encounter = new ca.uhn.fhir.model.dstu2.resource.Encounter();
+        Encounter encounter = new Encounter();
         String fhirEncounterId = "SHR-ENC1";
         String patientUrl = "http://mci.com/patients/HID-123";
         String providerUrl = "http://pr.com/providers/812.json";
-        encounter.setPatient(new ResourceReferenceDt(patientUrl));
+        encounter.setSubject(new Reference(patientUrl));
         encounter.setId(fhirEncounterId);
-        encounter.addParticipant().setIndividual(new ResourceReferenceDt(providerUrl));
+        encounter.addParticipant().setIndividual(new Reference(providerUrl));
         return new FHIREncounter(encounter);
     }
 }

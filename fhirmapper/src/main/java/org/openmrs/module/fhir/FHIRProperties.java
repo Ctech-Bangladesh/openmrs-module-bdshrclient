@@ -45,6 +45,11 @@ public class FHIRProperties {
     public static final String PREVIOUS_CONDITION_EXTENSION_NAME = "PreviousCondition";
     public static final String DIAGNOSTIC_ORDER_CATEGORY_EXTENSION_NAME = "DiagnosticOrderCategory";
 
+    public static final String FHIR_CONDITION_CATEGORY_URL = "http://hl7.org/fhir/condition-category";
+    public static final String FHIR_CONDITION_CATEGORY_COMPLAINT_CODE = "complaint";
+    public static final String FHIR_CONDITION_CATEGORY_DIAGNOSIS_CODE = "diagnosis";
+
+
     public static String getFhirExtensionUrl(String extensionName) {
         return FHIR_EXTENSION_URL + "#" + extensionName;
     }

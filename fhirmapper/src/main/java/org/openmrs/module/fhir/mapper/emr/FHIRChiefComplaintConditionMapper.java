@@ -1,11 +1,11 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
-import ca.uhn.fhir.model.dstu2.resource.Condition;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.Condition;
+import org.hl7.fhir.dstu3.model.Period;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
@@ -35,9 +35,9 @@ public class FHIRChiefComplaintConditionMapper implements FHIRResourceMapper {
     }
 
     @Override
-    public boolean canHandle(IResource resource) {
+    public boolean canHandle(Resource resource) {
         if (resource instanceof Condition) {
-            final List<CodingDt> resourceCoding = ((Condition) resource).getCategory().getCoding();
+            final List<Coding> resourceCoding = ((Condition) resource).getCategory().get(0).getCoding();
             if (resourceCoding == null || resourceCoding.isEmpty()) {
                 return false;
             }
@@ -47,7 +47,7 @@ public class FHIRChiefComplaintConditionMapper implements FHIRResourceMapper {
     }
 
     @Override
-    public void map(IResource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
+    public void map(Resource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         Condition condition = (Condition) resource;
 
         Concept historyAndExaminationConcept = conceptService.getConceptByName(MRSProperties.MRS_CONCEPT_NAME_COMPLAINT_CONDITION_TEMPLATE);
@@ -55,7 +55,7 @@ public class FHIRChiefComplaintConditionMapper implements FHIRResourceMapper {
         Concept chiefComplaintDurationConcept = conceptService.getConceptByName(MRSProperties.MRS_CONCEPT_NAME_CHIEF_COMPLAINT_DURATION);
 
         Obs chiefComplaintObs = new Obs();
-        List<CodingDt> conditionCoding = condition.getCode().getCoding();
+        List<Coding> conditionCoding = condition.getCode().getCoding();
         Concept conceptAnswer = omrsConceptLookup.findConceptByCode(conditionCoding);
         if (conceptAnswer == null) {
             if (CollectionUtils.isNotEmpty(conditionCoding)) {
@@ -112,7 +112,7 @@ public class FHIRChiefComplaintConditionMapper implements FHIRResourceMapper {
     }
 
     private Double getComplaintDuration(Condition condition) {
-        PeriodDt onsetPeriod = (PeriodDt) condition.getOnset();
+        Period onsetPeriod = (Period) condition.getOnset();
         long differenceInMinutes = (onsetPeriod.getEnd().getTime() - onsetPeriod.getStart().getTime()) / CONVERTION_PARAMETER_FOR_MINUTES;
         return Double.valueOf(differenceInMinutes);
     }

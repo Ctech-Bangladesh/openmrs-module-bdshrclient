@@ -1,9 +1,8 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.dstu2.composite.*;
-import ca.uhn.fhir.model.primitive.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.module.fhir.utils.DateUtil;
 
 import java.math.BigDecimal;
@@ -35,62 +34,62 @@ public class ObservationValueConverter {
             if (typeValue.getClass().equals(Date.class))
                 return fromJavaUtilDate((Date) typeValue);
 
-            if (typeValue.getClass().equals(QuantityDt.class))
-                return fromQuantityDt((QuantityDt) typeValue);
+            if (typeValue.getClass().equals(Quantity.class))
+                return fromQuantity((Quantity) typeValue);
 
-            if (typeValue.getClass().equals(SimpleQuantityDt.class))
-                return fromQuantityDt((QuantityDt) typeValue);
+            if (typeValue.getClass().equals(SimpleQuantity.class))
+                return fromQuantity((Quantity) typeValue);
 
-            if (typeValue.getClass().equals(CodeableConceptDt.class))
-                return fromCodeableConceptDt((CodeableConceptDt) typeValue);
+            if (typeValue.getClass().equals(CodeableConcept.class))
+                return fromCodeableConcept((CodeableConcept) typeValue);
 
-            if (typeValue.getClass().equals(BoundCodeableConceptDt.class))
-                return fromCodeableConceptDt((CodeableConceptDt) typeValue);
+//            if (typeValue.getClass().equals(BoundCodeableConcept.class))
+//                return fromCodeableConcept((CodeableConcept) typeValue);
 
-            if (typeValue.getClass().equals(RatioDt.class))
-                return fromRatioDt((RatioDt) typeValue);
+            if (typeValue.getClass().equals(Ratio.class))
+                return fromRatio((Ratio) typeValue);
 
-            if (typeValue.getClass().equals(PeriodDt.class))
-                return fromPeriodDt((PeriodDt) typeValue);
+            if (typeValue.getClass().equals(Period.class))
+                return fromPeriod((Period) typeValue);
 
-            if (typeValue.getClass().equals(SampledDataDt.class))
-                return fromSampleDataDt((SampledDataDt) typeValue);
+            if (typeValue.getClass().equals(SampledData.class))
+                return fromSampleData((SampledData) typeValue);
 
-            if (typeValue.getClass().equals(StringDt.class))
-                return fromStringDt((StringDt) typeValue);
+            if (typeValue.getClass().equals(StringType.class))
+                return fromString((StringType) typeValue);
 
-            if (typeValue.getClass().equals(AttachmentDt.class))
-                return fromAttachmentDt((AttachmentDt) typeValue);
+            if (typeValue.getClass().equals(Attachment.class))
+                return fromAttachment((Attachment) typeValue);
 
-            if (typeValue.getClass().equals(DateDt.class))
-                return fromDateDt((DateDt) typeValue);
+            if (typeValue.getClass().equals(DateType.class))
+                return fromDate((DateType) typeValue);
 
-            if (typeValue.getClass().equals(AgeDt.class))
-                return fromAgeDt((AgeDt) typeValue);
+            if (typeValue.getClass().equals(Age.class))
+                return fromAge((Age) typeValue);
 
-            if (typeValue.getClass().equals(DateTimeDt.class))
-                return fromDateTimeDt((DateTimeDt) typeValue);
+            if (typeValue.getClass().equals(DateTimeType.class))
+                return fromDateTime((DateTimeType) typeValue);
 
             if (typeValue.getClass().equals(Boolean.class))
                 return fromBoolean((Boolean) typeValue);
 
-            if (typeValue.getClass().equals(BooleanDt.class))
-                return fromBooleanDt((BooleanDt) typeValue);
+            if (typeValue.getClass().equals(BooleanType.class))
+                return fromBooleanType((BooleanType) typeValue);
 
-            if (typeValue.getClass().equals(RangeDt.class))
-                return fromRangeDt((RangeDt) typeValue);
+            if (typeValue.getClass().equals(Range.class))
+                return fromRange((Range) typeValue);
 
-            if (typeValue.getClass().equals(DecimalDt.class))
-                return fromDecimalDt((DecimalDt) typeValue);
+            if (typeValue.getClass().equals(DecimalType.class))
+                return fromDecimal((DecimalType) typeValue);
 
-            if (typeValue.getClass().equals(ResourceReferenceDt.class))
-                return fromResourceReferenceDt((ResourceReferenceDt) typeValue);
+            if (typeValue.getClass().equals(Reference.class))
+                return fromResourceReference((Reference) typeValue);
 
-            if (typeValue.getClass().equals(AnnotationDt.class))
-                return fromAnnotationDt((AnnotationDt) typeValue);
+            if (typeValue.getClass().equals(Annotation.class))
+                return fromAnnotation((Annotation) typeValue);
 
-            if (typeValue.getClass().equals(TimingDt.class))
-                return fromTimingDt((TimingDt) typeValue);
+            if (typeValue.getClass().equals(Timing.class))
+                return fromTiming((Timing) typeValue);
 
 
         } catch (Exception ex) {
@@ -118,28 +117,28 @@ public class ObservationValueConverter {
         return dateString;
     }
 
-    private static String fromDateDt(DateDt typeValue) {
+    private static String fromDate(DateType typeValue) {
         Date value = typeValue.getValue();
         return fromJavaUtilDate(value);
     }
 
-    private static String fromDecimalDt(DecimalDt typeValue) {
+    private static String fromDecimal(DecimalType typeValue) {
         return typeValue.getValueAsString();
     }
 
-    private static String fromAttachmentDt(AttachmentDt typeValue) {
+    private static String fromAttachment(Attachment typeValue) {
         return typeValue.getUrl();
     }
 
-    private static String fromStringDt(StringDt typeValue) {
+    private static String fromString(StringType typeValue) {
         return typeValue.getValue();
     }
 
-    private static String fromSampleDataDt(SampledDataDt typeValue) {
+    private static String fromSampleData(SampledData typeValue) {
         return typeValue.getData();
     }
 
-    private static String fromPeriodDt(PeriodDt typeValue) {
+    private static String fromPeriod(Period typeValue) {
         if (typeValue.getStart() == null && typeValue.getEnd() == null) return INVALID_PERIOD;
         String start = (typeValue.getStart() != null) ? fromJavaUtilDate(typeValue.getStart()) : PERIOD_START_UNKNOWN;
         String end;
@@ -151,21 +150,21 @@ public class ObservationValueConverter {
         return start + " - " + end;
     }
 
-    private static String fromRatioDt(RatioDt typeValue) {
-        QuantityDt numerator = typeValue.getNumerator();
-        QuantityDt denominator = typeValue.getDenominator();
+    private static String fromRatio(Ratio typeValue) {
+        Quantity numerator = typeValue.getNumerator();
+        Quantity denominator = typeValue.getDenominator();
         if (numerator == null || numerator.getValue() == null) return "0";
         if (denominator == null || denominator.getValue() == null) return "0";
         return numerator.getValue() + "/" + denominator.getValue();
     }
 
-    private static String fromCodeableConceptDt(CodeableConceptDt typeValue) {
+    private static String fromCodeableConcept(CodeableConcept typeValue) {
         if (!typeValue.getCoding().isEmpty())
             return typeValue.getCoding().get(0).getDisplay();
         return typeValue.getText() != null ? typeValue.getText() : "";
     }
 
-    private static String fromQuantityDt(QuantityDt typeValue) {
+    private static String fromQuantity(Quantity typeValue) {
         BigDecimal value = typeValue.getValue();
         String units = typeValue.getUnit();
         String code = typeValue.getCode();
@@ -176,57 +175,57 @@ public class ObservationValueConverter {
         return String.valueOf(value);
     }
 
-    private static String fromDateTimeDt(DateTimeDt typeValue) {
+    private static String fromDateTime(DateTimeType typeValue) {
         Date value = typeValue.getValue();
         return fromJavaUtilDate(value);
     }
 
-    private static String fromAgeDt(AgeDt typeValue) {
+    private static String fromAge(Age typeValue) {
         return typeValue.getValue() + " yrs";
     }
 
-    private static String fromBooleanDt(BooleanDt typeValue) {
+    private static String fromBooleanType(BooleanType typeValue) {
         return Boolean.TRUE.equals(typeValue.getValue()) ? "YES" : "NO";
     }
 
-    private static String fromRangeDt(RangeDt typeValue) {
-        SimpleQuantityDt low = typeValue.getLow();
-        SimpleQuantityDt high = typeValue.getHigh();
-        String lowerRange = (low != null) ? fromQuantityDt(low) : "";
-        String higherRange = (high != null) ? fromQuantityDt(high) : "";
+    private static String fromRange(Range typeValue) {
+        SimpleQuantity low = typeValue.getLow();
+        SimpleQuantity high = typeValue.getHigh();
+        String lowerRange = (low != null) ? fromQuantity(low) : "";
+        String higherRange = (high != null) ? fromQuantity(high) : "";
         return lowerRange + " - " + higherRange;
     }
 
-    private static String fromResourceReferenceDt(ResourceReferenceDt typeValue) {
-        IdDt reference = typeValue.getReference();
-        return reference == null ? INVALID_REFERENCE : reference.getValue();
+    private static String fromResourceReference(Reference typeValue) {
+        return typeValue == null ? INVALID_REFERENCE : typeValue.getReference();
     }
 
-    private static String fromAnnotationDt(AnnotationDt typeValue) {
+    private static String fromAnnotation(Annotation typeValue) {
         return typeValue.getText();
     }
 
-    private static String fromTimingDt(TimingDt typeValue) {
+    private static String fromTiming(Timing typeValue) {
         String result = "";
-        TimingDt.Repeat repeat = typeValue.getRepeat();
-        if (repeat == null) return "timing not specified";
-        Integer frequency = repeat.getFrequency();
-        String when = repeat.getWhen();
-        BigDecimal period = repeat.getPeriod();
-        String periodUnits = repeat.getPeriodUnits();
-        if (period != null && periodUnits != null) {
-            result = period + " " + getPeriodUnitFullName(repeat.getPeriodUnits());
-        }
-        if (frequency != null) {
-            result = frequency + " time(s) in " + result;
-        } else if (when != null) {
-            result += " " + getEventTimingFullName(when);
-        }
-
-        String bound = convertToText(repeat.getBounds());
-        if (bound != null) {
-            result += ". Duration:- " + bound;
-        }
+        Timing.TimingRepeatComponent repeat = typeValue.getRepeat();
+//        todo: need to verify what to do
+//        if (repeat == null) return "timing not specified";
+//        Integer frequency = repeat.getFrequency();
+//        String when = repeat.getWhen();
+//        BigDecimal period = repeat.getPeriod();
+//        String periodUnits = repeat.getPeriodUnits();
+//        if (period != null && periodUnits != null) {
+//            result = period + " " + getPeriodUnitFullName(repeat.getPeriodUnits());
+//        }
+//        if (frequency != null) {
+//            result = frequency + " time(s) in " + result;
+//        } else if (when != null) {
+//            result += " " + getEventTimingFullName(when);
+//        }
+//
+//        String bound = convertToText(repeat.getBounds());
+//        if (bound != null) {
+//            result += ". Duration:- " + bound;
+//        }
         return result;
     }
 

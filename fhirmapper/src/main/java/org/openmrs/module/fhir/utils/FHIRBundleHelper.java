@@ -1,11 +1,7 @@
 package org.openmrs.module.fhir.utils;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Composition;
-import ca.uhn.fhir.model.dstu2.resource.Encounter;
-import ca.uhn.fhir.model.primitive.IdDt;
+import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.instance.model.api.IIdType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,37 +12,37 @@ import static java.util.Arrays.asList;
 public class FHIRBundleHelper {
 
     public static Composition getComposition(Bundle bundle) {
-        IResource resource = identifyFirstResourceWithName(bundle, "Composition");
+        Resource resource = identifyFirstResourceWithName(bundle, "Composition");
         return resource != null ? (Composition) resource : null;
     }
 
-    public static IResource identifyFirstResourceWithName(Bundle bundle, String resourceName) {
-        for (Bundle.Entry bundleEntry : bundle.getEntry()) {
-            if (bundleEntry.getResource().getResourceName().equals(resourceName)) {
+    public static Resource identifyFirstResourceWithName(Bundle bundle, String resourceName) {
+        for (Bundle.BundleEntryComponent bundleEntry : bundle.getEntry()) {
+            if (bundleEntry.getResource().getResourceType().name().equals(resourceName)) {
                 return bundleEntry.getResource();
             }
         }
         return null;
     }
 
-    public static List<IResource> identifyTopLevelResources(Bundle bundle) {
-        List<IResource> compositionRefResources = getCompositionRefResources(bundle);
-        HashSet<ResourceReferenceDt> childRef = getChildReferences(compositionRefResources);
+    public static List<Resource> identifyTopLevelResources(Bundle bundle) {
+        List<Resource> compositionRefResources = getCompositionRefResources(bundle);
+        HashSet<Reference> childRef = getChildReferences(compositionRefResources);
 
-        List<IResource> topLevelResources = new ArrayList<>();
+        List<Resource> topLevelResources = new ArrayList<>();
 
-        for (IResource compositionRefResource : compositionRefResources) {
-            if (!isChildReference(childRef, compositionRefResource.getId().getValue())) {
+        for (Resource compositionRefResource : compositionRefResources) {
+            if (!isChildReference(childRef, compositionRefResource.getId())) {
                 topLevelResources.add(compositionRefResource);
             }
         }
         return topLevelResources;
     }
 
-    public static List<IResource> identifyResourcesByName(Bundle bundle, String resourceName) {
-        List<IResource> resources = new ArrayList<>();
-        for (Bundle.Entry bundleEntry : bundle.getEntry()) {
-            if (bundleEntry.getResource().getResourceName().equals(resourceName)) {
+    public static List<Resource> identifyResourcesByName(Bundle bundle, String resourceName) {
+        List<Resource> resources = new ArrayList<>();
+        for (Bundle.BundleEntryComponent bundleEntry : bundle.getEntry()) {
+            if (bundleEntry.getResource().getResourceType().name().equals(resourceName)) {
                 resources.add(bundleEntry.getResource());
             }
         }
@@ -54,29 +50,31 @@ public class FHIRBundleHelper {
     }
 
     public static Encounter getEncounter(Bundle bundle) {
-        IResource resource = findResourceByReference(bundle, getComposition(bundle).getEncounter());
+        Resource resource = findResourceByReference(bundle, getComposition(bundle).getEncounter());
         return resource != null ? (Encounter) resource : null;
     }
 
-    public static IResource findResourceByReference(Bundle bundle, ResourceReferenceDt reference) {
-        List<IResource> matchedResources = findResourcesByReference(bundle, asList(reference));
+    public static Resource findResourceByReference(Bundle bundle, Reference reference) {
+        List<Resource> matchedResources = findResourcesByReference(bundle, asList(reference));
         return matchedResources != null && !matchedResources.isEmpty() ? matchedResources.get(0) : null;
     }
 
 
-    public static IResource findResourceByFirstReference(Bundle bundle, List<ResourceReferenceDt> references) {
-        List<IResource> matchedResources = findResourcesByReference(bundle, references);
+    public static Resource findResourceByFirstReference(Bundle bundle, List<Reference> references) {
+        List<Resource> matchedResources = findResourcesByReference(bundle, references);
         return matchedResources != null && !matchedResources.isEmpty() ? matchedResources.get(0) : null;
     }
 
-    public static List<IResource> findResourcesByReference(Bundle bundle, List<ResourceReferenceDt> references) {
-        ArrayList<IResource> matchedResources = new ArrayList<>();
-        for (Bundle.Entry entry : bundle.getEntry()) {
-            for (ResourceReferenceDt reference : references) {
-                IdDt resourceReference = reference.getReference();
-                IResource entryResource = entry.getResource();
-                IdDt entryResourceId = entryResource.getId();
+    public static List<Resource> findResourcesByReference(Bundle bundle, List<Reference> references) {
+        ArrayList<Resource> matchedResources = new ArrayList<>();
+
+        for (Reference resourceRef : references) {
+            IIdType resourceReference = resourceRef.getReferenceElement();
+            for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                Resource entryResource = entry.getResource();
+                IdType entryResourceId = entryResource.getIdElement();
                 boolean hasFullUrlDefined = !org.apache.commons.lang3.StringUtils.isBlank(entry.getFullUrl());
+
                 if (resourceReference.hasResourceType() && entryResourceId.hasResourceType()
                         && entryResourceId.getValue().equals(resourceReference.getValue())) {
                     matchedResources.add(entryResource);
@@ -89,23 +87,24 @@ public class FHIRBundleHelper {
                 }
             }
         }
+
         return matchedResources.isEmpty() ? null : matchedResources;
     }
 
-    private static boolean isChildReference(HashSet<ResourceReferenceDt> childReferenceDts, String resourceRef) {
-        for (ResourceReferenceDt childRef : childReferenceDts) {
-            if (!childRef.getReference().isEmpty() && childRef.getReference().getValue().equals(resourceRef)) {
+    private static boolean isChildReference(HashSet<Reference> childReferenceDts, String resourceRef) {
+        for (Reference childRef : childReferenceDts) {
+            if (!childRef.getReference().isEmpty() && childRef.getReference().equals(resourceRef)) {
                 return true;
             }
         }
         return false;
     }
 
-    private static List<IResource> getCompositionRefResources(Bundle bundle) {
-        List<IResource> resources = new ArrayList<>();
+    private static List<Resource> getCompositionRefResources(Bundle bundle) {
+        List<Resource> resources = new ArrayList<>();
         Composition composition = getComposition(bundle);
-        for (Composition.Section section : composition.getSection()) {
-            IResource resourceForReference = findResourceByFirstReference(bundle, section.getEntry());
+        for (Composition.SectionComponent section : composition.getSection()) {
+            Resource resourceForReference = findResourceByFirstReference(bundle, section.getEntry());
             if (!(resourceForReference instanceof Encounter)) {
                 resources.add(resourceForReference);
             }
@@ -113,12 +112,13 @@ public class FHIRBundleHelper {
         return resources;
     }
 
-    private static HashSet<ResourceReferenceDt> getChildReferences(List<IResource> compositionRefResources) {
-        List<ResourceReferenceDt> childResourceReferences = new ArrayList<>();
-        for (IResource compositionRefResource : compositionRefResources) {
-            childResourceReferences.addAll(compositionRefResource.getAllPopulatedChildElementsOfType(ResourceReferenceDt.class));
+    private static HashSet<Reference> getChildReferences(List<Resource> compositionRefResources) {
+        List<Reference> childResourceReferences = new ArrayList<>();
+        for (Resource compositionRefResource : compositionRefResources) {
+            // todo: get all children for compositionRefResource
+//            childResourceReferences.addAll(compositionRefResource.getAllPopulatedChildElementsOfType(Reference.class));
         }
-        HashSet<ResourceReferenceDt> childRef = new HashSet<>();
+        HashSet<Reference> childRef = new HashSet<>();
         childRef.addAll(childResourceReferences);
         return childRef;
     }

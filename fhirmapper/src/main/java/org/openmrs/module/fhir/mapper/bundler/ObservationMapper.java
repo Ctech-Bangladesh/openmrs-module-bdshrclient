@@ -1,12 +1,11 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.IDatatype;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Observation;
-import ca.uhn.fhir.model.dstu2.valueset.ObservationStatusEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Observation;
+import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Type;
 import org.openmrs.Obs;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.CompoundObservation;
@@ -98,27 +97,27 @@ public class ObservationMapper implements EmrObsResourceHandler {
         if (hasIgnoredConcept(openmrsObs)) return null;
         FHIRResource fhirObservationResource = observationBuilder.buildObservationResource(fhirEncounter, openmrsObs.getUuid(), openmrsObs.getConcept().getName().getName(), systemProperties);
         Observation fhirObservation = (Observation) fhirObservationResource.getResource();
-        fhirObservation.setStatus(ObservationStatusEnum.PRELIMINARY);
+        fhirObservation.setStatus(Observation.ObservationStatus.PRELIMINARY);
         mapCode(openmrsObs, fhirObservation);
         mapValue(openmrsObs, fhirObservation);
         return fhirObservationResource;
     }
 
     private void mapValue(Obs openmrsObs, Observation fhirObservation) {
-        IDatatype value = observationValueMapper.map(openmrsObs);
+        Type value = observationValueMapper.map(openmrsObs);
         if (null != value) {
             fhirObservation.setValue(value);
         }
     }
 
     private void mapCode(Obs openmrsObs, Observation fhirObservation) {
-        CodeableConceptDt name = buildCode(openmrsObs);
+        CodeableConcept name = buildCode(openmrsObs);
         if (null != name) {
             fhirObservation.setCode(name);
         }
     }
 
-    private CodeableConceptDt buildCode(Obs observation) {
+    private CodeableConcept buildCode(Obs observation) {
         if (null == observation.getConcept()) {
             return null;
         }
@@ -131,14 +130,14 @@ public class ObservationMapper implements EmrObsResourceHandler {
 
     private boolean removeObservationsHierarchyWithoutValues(List<FHIRResource> result, FHIRResource observationResource) {
         boolean shouldRemove = true;
-        ArrayList<Observation.Related> childrenToRemove = new ArrayList<>();
+        ArrayList<Observation.ObservationRelatedComponent> childrenToRemove = new ArrayList<>();
         Observation observation = (Observation) observationResource.getResource();
         if (CollectionUtils.isEmpty(observation.getRelated())) {
             shouldRemove = (observation.getValue() == null);
         }
 
-        for (Observation.Related related : observation.getRelated()) {
-            ResourceReferenceDt target = related.getTarget();
+        for (Observation.ObservationRelatedComponent related : observation.getRelated()) {
+            Reference target = related.getTarget();
             FHIRResource targetObservation = findObservationById(target, result);
             boolean withoutValuesAndChild = removeObservationsHierarchyWithoutValues(result, targetObservation);
             if (!withoutValuesAndChild) {
@@ -148,7 +147,7 @@ public class ObservationMapper implements EmrObsResourceHandler {
             }
         }
 
-        List<Observation.Related> relatedList = observation.getRelated();
+        List<Observation.ObservationRelatedComponent> relatedList = observation.getRelated();
         relatedList.removeAll(childrenToRemove);
         observation.setRelated(new ArrayList<>(relatedList));
         if (shouldRemove) {
@@ -157,9 +156,9 @@ public class ObservationMapper implements EmrObsResourceHandler {
         return shouldRemove;
     }
 
-    private FHIRResource findObservationById(ResourceReferenceDt target, List<FHIRResource> result) {
+    private FHIRResource findObservationById(Reference target, List<FHIRResource> result) {
         for (FHIRResource fhirResource : result) {
-            if (fhirResource.getResource().getId().getValue().equals(target.getReference().getValue())) {
+            if (fhirResource.getResource().getId().equals(target.getReference())) {
                 return fhirResource;
             }
         }

@@ -1,11 +1,7 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticReport;
-import ca.uhn.fhir.model.dstu2.resource.Observation;
 import org.apache.commons.collections4.CollectionUtils;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.fhir.FHIRProperties;
@@ -43,7 +39,7 @@ public class FHIRDiagnosticReportMapper implements FHIRResourceMapper {
     }
 
     @Override
-    public boolean canHandle(IResource resource) {
+    public boolean canHandle(Resource resource) {
         if (resource instanceof DiagnosticReport) {
             DiagnosticReport report = (DiagnosticReport) resource;
             if (!hasLabCategory(report))
@@ -53,7 +49,7 @@ public class FHIRDiagnosticReportMapper implements FHIRResourceMapper {
     }
 
     @Override
-    public void map(IResource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
+    public void map(Resource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         Obs fulfillmentObs = new Obs();
         DiagnosticReport report = (DiagnosticReport) resource;
         Concept topLevelObsConcept = conceptService.getConceptByName(getFulfillmentFormConceptName(report));
@@ -74,11 +70,11 @@ public class FHIRDiagnosticReportMapper implements FHIRResourceMapper {
     }
 
     private String getFulfillmentFormConceptName(DiagnosticReport report) {
-        for (CodingDt codingDt : report.getCategory().getCoding()) {
+        for (Coding coding : report.getCategory().getCoding()) {
             List<OpenMRSOrderTypeMap> configuredOrderTypes = globalPropertyLookUpService.getConfiguredOrderTypes();
             for (OpenMRSOrderTypeMap configuredOrderType : configuredOrderTypes) {
-                if (FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL.equals(codingDt.getSystem()) &&
-                        configuredOrderType.getCode().equals(codingDt.getCode()))
+                if (FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL.equals(coding.getSystem()) &&
+                        configuredOrderType.getCode().equals(coding.getCode()))
                     return configuredOrderType.getType() + MRSProperties.MRS_ORDER_FULFILLMENT_FORM_SUFFIX;
             }
         }
@@ -86,8 +82,8 @@ public class FHIRDiagnosticReportMapper implements FHIRResourceMapper {
     }
 
     private void addGroupMembers(DiagnosticReport report, Obs fulfillmentObs, ShrEncounterBundle shrEncounterBundle, EmrEncounter emrEncounter) {
-        List<ResourceReferenceDt> result = report.getResult();
-        for (ResourceReferenceDt resultReference : result) {
+        List<Reference> result = report.getResult();
+        for (Reference resultReference : result) {
             Observation observationByReference = (Observation) FHIRBundleHelper.findResourceByReference(shrEncounterBundle.getBundle(), resultReference);
             Obs resultObs = fhirObservationsMapper.mapObs(shrEncounterBundle, emrEncounter, observationByReference);
             fulfillmentObs.addGroupMember(resultObs);
@@ -106,9 +102,9 @@ public class FHIRDiagnosticReportMapper implements FHIRResourceMapper {
 
     private boolean hasLabCategory(DiagnosticReport report) {
         if (report.getCategory().isEmpty()) return true;
-        for (CodingDt codingDt : report.getCategory().getCoding()) {
-            if (FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL.equals(codingDt.getSystem()) &&
-                    FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_LAB_CODE.equals(codingDt.getCode()))
+        for (Coding coding : report.getCategory().getCoding()) {
+            if (FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL.equals(coding.getSystem()) &&
+                    FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_LAB_CODE.equals(coding.getCode()))
                 return true;
         }
         return false;

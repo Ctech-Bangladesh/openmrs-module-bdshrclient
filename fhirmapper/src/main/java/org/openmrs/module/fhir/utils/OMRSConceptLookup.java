@@ -1,10 +1,10 @@
 package org.openmrs.module.fhir.utils;
 
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hl7.fhir.dstu3.model.Coding;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
@@ -39,16 +39,16 @@ public class OMRSConceptLookup {
         this.globalPropertyLookUpService = globalPropertyLookUpService;
     }
 
-    public Concept findConceptByCodeOrDisplay(List<CodingDt> codings) {
+    public Concept findConceptByCodeOrDisplay(List<Coding> codings) {
         if (CollectionUtils.isEmpty(codings)) return null;
         Concept conceptByCode = findConceptByCode(codings);
         return conceptByCode != null ? conceptByCode : conceptService.getConceptByName(codings.get(0).getDisplay());
     }
 
-    public Concept findConceptByCode(List<CodingDt> codings) {
+    public Concept findConceptByCode(List<Coding> codings) {
         Map<ConceptReferenceTerm, String> referenceTermMap = new HashMap<>();
         Concept identifiedConcept = null;
-        for (CodingDt coding : codings) {
+        for (Coding coding : codings) {
             if (isValueSetUrl(coding.getSystem())) {
                 identifiedConcept = findConceptFromValueSetCode(coding.getSystem(), coding.getCode());
             } else {
@@ -73,8 +73,8 @@ public class OMRSConceptLookup {
         return findConceptByReferenceTermMapping(referenceTermMap);
     }
 
-    public Drug findDrug(List<CodingDt> codings) {
-        for (CodingDt coding : codings) {
+    public Drug findDrug(List<Coding> codings) {
+        for (Coding coding : codings) {
             if (isTRDrugSystem(coding.getSystem())) {
                 Drug drug = findDrug(coding.getCode());
                 if (drug != null) {
@@ -232,7 +232,7 @@ public class OMRSConceptLookup {
         return null;
     }
 
-    public Concept createLocalConceptFromCodings(List<CodingDt> codings, String facilityId, ConceptClass conceptClass, ConceptDatatype conceptDatatype) {
+    public Concept createLocalConceptFromCodings(List<Coding> codings, String facilityId, ConceptClass conceptClass, ConceptDatatype conceptDatatype) {
         String conceptName = getConceptNameFromDisplay(codings);
         if (hasTRConceptReference(codings)) {
             String message = String.format("Can not create observation, concept %s not yet synced", conceptName);
@@ -251,7 +251,7 @@ public class OMRSConceptLookup {
         }
     }
 
-    public Concept findOrCreateLocalConceptByCodings(List<CodingDt> codings, String facilityId, String conceptClassName, String conceptDatatypeName) {
+    public Concept findOrCreateLocalConceptByCodings(List<Coding> codings, String facilityId, String conceptClassName, String conceptDatatypeName) {
         Concept conceptByCoding = findConceptByCode(codings);
         if (conceptByCoding != null) return conceptByCoding;
         ConceptClass conceptClass = conceptService.getConceptClassByName(conceptClassName);
@@ -263,16 +263,16 @@ public class OMRSConceptLookup {
         return StringUtils.substringAfterLast(content, "/");
     }
 
-    private String getConceptNameFromDisplay(List<CodingDt> codings) {
-        for (CodingDt coding : codings) {
+    private String getConceptNameFromDisplay(List<Coding> codings) {
+        for (Coding coding : codings) {
             if (StringUtils.isNotBlank(coding.getDisplay()))
                 return coding.getDisplay();
         }
         return null;
     }
 
-    private void addReferenceTermMappings(Concept concept, List<CodingDt> codings) {
-        for (CodingDt coding : codings) {
+    private void addReferenceTermMappings(Concept concept, List<Coding> codings) {
+        for (Coding coding : codings) {
             if (isValueSetUrl(coding.getSystem())) continue;
             String uuid = getUuid(coding.getSystem());
             if (StringUtils.isNotBlank(uuid)) {
@@ -293,8 +293,8 @@ public class OMRSConceptLookup {
         return conceptMapTypeByName;
     }
 
-    private boolean hasTRConceptReference(List<CodingDt> codings) {
-        for (CodingDt coding : codings) {
+    private boolean hasTRConceptReference(List<Coding> codings) {
+        for (Coding coding : codings) {
             if (org.apache.commons.lang3.StringUtils.isNotBlank(coding.getSystem()) && coding.getSystem().contains(WS_REST_V1_TR_CONCEPTS)) {
                 return true;
             }

@@ -1,12 +1,6 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticReport;
-import ca.uhn.fhir.model.dstu2.resource.Observation;
-import ca.uhn.fhir.model.primitive.DateTimeDt;
-import ca.uhn.fhir.model.primitive.StringDt;
+import org.hl7.fhir.dstu3.model.*;
 import org.junit.After;
 import org.junit.Test;
 import org.openmrs.Obs;
@@ -71,12 +65,12 @@ public class GenericOrderFulfillmentMapperIT extends BaseModuleWebContextSensiti
         assertNotNull(resources);
         assertEquals(3, resources.size());
 
-        FHIRResource resource = TestFhirFeedHelper.getFirstResourceByType(new DiagnosticReport().getResourceName(), resources);
+        FHIRResource resource = TestFhirFeedHelper.getFirstResourceByType(new DiagnosticReport().getResourceType().name(), resources);
         DiagnosticReport report = (DiagnosticReport) resource.getResource();
-        assertEquals(1, report.getRequest().size());
+        assertEquals(1, report.getBasedOn().size());
         String requestUrl = "http://localhost:9997/patients/hid/encounters/shr-enc-1#DiagnosticOrder/6d0ae396-efab-4629-1930-f15206e63ab0";
-        assertEquals(requestUrl, report.getRequest().get(0).getReference().getValue());
-        CodingDt categoryCoding = report.getCategory().getCodingFirstRep();
+        assertEquals(requestUrl, report.getBasedOn().get(0).getReference());
+        Coding categoryCoding = report.getCategory().getCodingFirstRep();
         assertEquals(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_RADIOLOGY_DISPLAY, categoryCoding.getDisplay());
         assertEquals(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_RADIOLOGY_CODE, categoryCoding.getCode());
         assertEquals(FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL, categoryCoding.getSystem());
@@ -84,18 +78,18 @@ public class GenericOrderFulfillmentMapperIT extends BaseModuleWebContextSensiti
         assertTrue(MapperTestHelper.containsCoding(report.getCode().getCoding(), "501qb827-a67c-4q1f-a705-e5efe0q6a972",
                 "http://localhost:9997/openmrs/ws/rest/v1/tr/concept/501qb827-a67c-4q1f-a705-e5efe0q6a972", "X-Ray Right Chest"));
 
-        assertEquals(2, TestFhirFeedHelper.getResourceByType(new Observation().getResourceName(), resources).size());
+        assertEquals(2, TestFhirFeedHelper.getResourceByType(new Observation().getResourceType().name(), resources).size());
 
         Observation typeOfRadiologyObs = getObsAsResult(report, resources, "Type of Radiology Order");
         assertNotNull(typeOfRadiologyObs);
-        CodingDt codingDt = ((CodeableConceptDt) typeOfRadiologyObs.getValue()).getCodingFirstRep();
+        Coding codingDt = ((CodeableConcept) typeOfRadiologyObs.getValue()).getCodingFirstRep();
         assertEquals("501qb827-a67c-4q1f-a705-e5efe0q6a972", codingDt.getCode());
         assertEquals("http://localhost:9997/openmrs/ws/rest/v1/tr/concept/501qb827-a67c-4q1f-a705-e5efe0q6a972", codingDt.getSystem());
         assertEquals("X-Ray Right Chest", codingDt.getDisplay());
 
         Observation dateOfRadiologyObs = getObsAsResult(report, resources, "Date of Radiology Order");
         assertNotNull(dateOfRadiologyObs);
-        assertEquals(DateUtil.parseDate("2008-08-18"), ((DateTimeDt) dateOfRadiologyObs.getValue()).getValue());
+        assertEquals(DateUtil.parseDate("2008-08-18"), ((DateTimeType) dateOfRadiologyObs.getValue()).getValue());
     }
 
     @Test
@@ -106,22 +100,22 @@ public class GenericOrderFulfillmentMapperIT extends BaseModuleWebContextSensiti
         assertNotNull(resources);
         assertEquals(4, resources.size());
 
-        FHIRResource resource = TestFhirFeedHelper.getFirstResourceByType(new DiagnosticReport().getResourceName(), resources);
+        FHIRResource resource = TestFhirFeedHelper.getFirstResourceByType(new DiagnosticReport().getResourceType().name(), resources);
         DiagnosticReport report = (DiagnosticReport) resource.getResource();
         String requestUrl = "http://localhost:9997/patients/hid/encounters/shr-enc-1#DiagnosticOrder/6d0ae396-efab-4629-1930-f16206e63ab0";
-        assertEquals(requestUrl, report.getRequest().get(0).getReference().getValue());
-        CodingDt categoryCoding = report.getCategory().getCodingFirstRep();
+        assertEquals(requestUrl, report.getBasedOn().get(0).getReference());
+        Coding categoryCoding = report.getCategory().getCodingFirstRep();
         assertEquals(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_RADIOLOGY_DISPLAY, categoryCoding.getDisplay());
         assertEquals(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_RADIOLOGY_CODE, categoryCoding.getCode());
         assertEquals(FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL, categoryCoding.getSystem());
         assertEquals(1, report.getCode().getCoding().size());
         assertTrue(MapperTestHelper.containsCoding(report.getCode().getCoding(), null, null, "X-ray left hand"));
 
-        assertEquals(3, TestFhirFeedHelper.getResourceByType(new Observation().getResourceName(), resources).size());
+        assertEquals(3, TestFhirFeedHelper.getResourceByType(new Observation().getResourceType().name(), resources).size());
 
         Observation dateOfRadiologyObs = getObsAsResult(report, resources, "Date of Radiology Order");
         assertNotNull(dateOfRadiologyObs);
-        assertEquals(DateUtil.parseDate("2008-08-18"), ((DateTimeDt) dateOfRadiologyObs.getValue()).getValue());
+        assertEquals(DateUtil.parseDate("2008-08-18"), ((DateTimeType) dateOfRadiologyObs.getValue()).getValue());
 
         Observation radiologyFindings = getObsAsResult(report, resources, "Radiology Order Findings");
         assertNotNull(radiologyFindings);
@@ -129,11 +123,11 @@ public class GenericOrderFulfillmentMapperIT extends BaseModuleWebContextSensiti
 
         Observation probemDescriptionObs = ((Observation) TestFhirFeedHelper.getResourceByReference(radiologyFindings.getRelatedFirstRep().getTarget(), resources).getResource());
         assertNotNull(probemDescriptionObs);
-        assertEquals("Findings", ((StringDt) probemDescriptionObs.getValue()).getValue());
+        assertEquals("Findings", ((StringType) probemDescriptionObs.getValue()).getValue());
     }
 
     private Observation getObsAsResult(DiagnosticReport report, List<FHIRResource> resources, String display) {
-        for (ResourceReferenceDt resourceReferenceDt : report.getResult()) {
+        for (Reference resourceReferenceDt : report.getResult()) {
             Observation observation = (Observation) TestFhirFeedHelper.getResourceByReference(resourceReferenceDt, resources).getResource();
             if (MapperTestHelper.containsCoding(observation.getCode().getCoding(), null, null, display))
                 return observation;
@@ -142,8 +136,8 @@ public class GenericOrderFulfillmentMapperIT extends BaseModuleWebContextSensiti
     }
 
     private FHIREncounter createFhirEncounter() {
-        ca.uhn.fhir.model.dstu2.resource.Encounter encounter = new ca.uhn.fhir.model.dstu2.resource.Encounter();
-        encounter.setPatient(new ResourceReferenceDt(patientRef));
+        Encounter encounter = new Encounter();
+        encounter.setSubject(new Reference(patientRef));
         encounter.setId(fhirEncounterId);
         return new FHIREncounter(encounter);
     }

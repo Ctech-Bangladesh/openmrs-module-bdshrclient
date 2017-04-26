@@ -1,19 +1,8 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu2.composite.AnnotationDt;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticReport;
-import ca.uhn.fhir.model.dstu2.resource.Encounter;
-import ca.uhn.fhir.model.dstu2.resource.Observation;
-import ca.uhn.fhir.model.dstu2.resource.Procedure;
-import ca.uhn.fhir.model.dstu2.valueset.ObservationStatusEnum;
-import ca.uhn.fhir.model.dstu2.valueset.ProcedureStatusEnum;
-import ca.uhn.fhir.model.primitive.BoundCodeDt;
+import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.exceptions.FHIRException;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.module.fhir.FHIRProperties;
@@ -62,15 +51,15 @@ public class ProcedureMapper implements EmrObsResourceHandler {
         Procedure procedure = new Procedure();
 
         procedure.setSubject(fhirEncounter.getPatient());
-        procedure.setEncounter(new ResourceReferenceDt().setReference(fhirEncounter.getId()));
-        CodeableConceptDt procedureType = getProcedure(compoundObservationProcedure);
+        procedure.setContext(new Reference().setReference(fhirEncounter.getId()));
+        CodeableConcept procedureType = getProcedure(compoundObservationProcedure);
         if (procedureType != null) {
             procedure.setCode(procedureType);
             setIdentifier(obs, systemProperties, procedure);
             procedure.setOutcome(getProcedureOutcome(compoundObservationProcedure, systemProperties));
             procedure.setFollowUp(getProcedureFollowUp(compoundObservationProcedure));
             procedure.setStatus(getProcedureStatus(compoundObservationProcedure));
-            procedure.setNotes(getProcedureNotes(compoundObservationProcedure));
+            procedure.setNote(getProcedureNotes(compoundObservationProcedure));
             procedure.setPerformed(getProcedurePeriod(compoundObservationProcedure));
             setPerformers(fhirEncounter, procedure);
             addReportToProcedure(compoundObservationProcedure, fhirEncounter, systemProperties, procedure, resources);
@@ -81,30 +70,32 @@ public class ProcedureMapper implements EmrObsResourceHandler {
     }
 
     private void setPerformers(FHIREncounter fhirEncounter, Procedure procedure) {
-        List<Encounter.Participant> participants = fhirEncounter.getEncounter().getParticipant();
-        for (Encounter.Participant participant : participants) {
-            Procedure.Performer performer = new Procedure.Performer();
+        List<Encounter.EncounterParticipantComponent> participants = fhirEncounter.getEncounter().getParticipant();
+        for (Encounter.EncounterParticipantComponent participant : participants) {
+            Procedure.ProcedurePerformerComponent performer = new Procedure.ProcedurePerformerComponent();
             performer.setActor(participant.getIndividual());
             procedure.addPerformer(performer);
         }
     }
 
-    private BoundCodeDt<ProcedureStatusEnum> getProcedureStatus(CompoundObservation procedure) {
+    private Procedure.ProcedureStatus getProcedureStatus(CompoundObservation procedure) {
         Obs procdureStatusObs = procedure.getMemberObsForConcept(omrsConceptLookup.findTRConceptOfType(TrValueSetType.PROCEDURE_STATUS));
         if (procdureStatusObs != null) {
             String statusCode = codeableConceptService.getTRValueSetCode(procdureStatusObs.getValueCoded());
-            BoundCodeDt<ProcedureStatusEnum> code = new BoundCodeDt<>(ProcedureStatusEnum.VALUESET_BINDER);
-            code.setValueAsString(statusCode);
-            return code;
+            try {
+                return Procedure.ProcedureStatus.fromCode(statusCode);
+            } catch (FHIRException e) {
+                return Procedure.ProcedureStatus.COMPLETED;
+            }
         }
-        return new BoundCodeDt<>(ProcedureStatusEnum.VALUESET_BINDER, ProcedureStatusEnum.COMPLETED);
+        return Procedure.ProcedureStatus.COMPLETED;
     }
 
-    private List<AnnotationDt> getProcedureNotes(CompoundObservation procedure) {
+    private List<Annotation> getProcedureNotes(CompoundObservation procedure) {
         List<Obs> notesObses = procedure.getAllMemberObsForConceptName(MRS_CONCEPT_PROCEDURE_NOTES);
-        ArrayList<AnnotationDt> annotationDts = new ArrayList<>();
+        ArrayList<Annotation> annotationDts = new ArrayList<>();
         for (Obs notesObs : notesObses) {
-            annotationDts.add(new AnnotationDt().setText(notesObs.getValueText()));
+            annotationDts.add(new Annotation().setText(notesObs.getValueText()));
         }
         return annotationDts.isEmpty() ? null : annotationDts;
     }
@@ -115,7 +106,7 @@ public class ProcedureMapper implements EmrObsResourceHandler {
             DiagnosticReport diagnosticReport = buildDiagnosticReport(new CompoundObservation(diagnosticStudyObs), fhirEncounter, systemProperties, allResources);
             if (diagnosticReport != null) {
                 FHIRResource diagnosticReportResource = new FHIRResource("Diagnostic Report", diagnosticReport.getIdentifier(), diagnosticReport);
-                ResourceReferenceDt diagnosticResourceRef = procedure.addReport();
+                Reference diagnosticResourceRef = procedure.addReport();
                 diagnosticResourceRef.setReference(diagnosticReportResource.getIdentifier().getValue());
                 diagnosticResourceRef.setDisplay(diagnosticReportResource.getResourceName());
                 allResources.add(diagnosticReportResource);
@@ -123,8 +114,8 @@ public class ProcedureMapper implements EmrObsResourceHandler {
         }
     }
 
-    private CodeableConceptDt getProcedure(CompoundObservation compoundObservationProcedure) {
-        CodeableConceptDt procedureType = null;
+    private CodeableConcept getProcedure(CompoundObservation compoundObservationProcedure) {
+        CodeableConcept procedureType = null;
         Obs procedureTypeObs = compoundObservationProcedure.getMemberObsForConceptName(MRS_CONCEPT_PROCEDURE_TYPE);
         if (procedureTypeObs != null) {
             Concept valueCoded = procedureTypeObs.getValueCoded();
@@ -139,7 +130,7 @@ public class ProcedureMapper implements EmrObsResourceHandler {
         procedure.setId(id);
     }
 
-    private CodeableConceptDt getProcedureOutcome(CompoundObservation compoundObservationProcedure, SystemProperties systemProperties) {
+    private CodeableConcept getProcedureOutcome(CompoundObservation compoundObservationProcedure, SystemProperties systemProperties) {
         Concept outcomeConcept = omrsConceptLookup.findTRConceptOfType(TrValueSetType.PROCEDURE_OUTCOME);
         Obs outcomeObs = compoundObservationProcedure.getMemberObsForConcept(outcomeConcept);
         if (outcomeObs != null) {
@@ -148,23 +139,23 @@ public class ProcedureMapper implements EmrObsResourceHandler {
         return null;
     }
 
-    private List<CodeableConceptDt> getProcedureFollowUp(CompoundObservation compoundObservationProcedure) {
+    private List<CodeableConcept> getProcedureFollowUp(CompoundObservation compoundObservationProcedure) {
         List<Obs> followupObses = compoundObservationProcedure.getAllMemberObsForConceptName(MRS_CONCEPT_PROCEDURE_FOLLOWUP);
-        List<CodeableConceptDt> followUpCodeableConcepts = new ArrayList<>();
+        List<CodeableConcept> followUpCodeableConcepts = new ArrayList<>();
         for (Obs followupObs : followupObses) {
             followUpCodeableConcepts.add(codeableConceptService.addTRCodingOrDisplay(followupObs.getValueCoded()));
         }
         return followUpCodeableConcepts.isEmpty() ? null : followUpCodeableConcepts;
     }
 
-    private PeriodDt getProcedurePeriod(CompoundObservation compoundObservationProcedure) {
+    private Period getProcedurePeriod(CompoundObservation compoundObservationProcedure) {
         Obs startDateObs = compoundObservationProcedure.getMemberObsForConceptName(MRS_CONCEPT_PROCEDURE_START_DATE);
         Obs endDateObs = compoundObservationProcedure.getMemberObsForConceptName(MRS_CONCEPT_PROCEDURE_END_DATE);
         return getPeriod(startDateObs, endDateObs);
     }
 
-    private PeriodDt getPeriod(Obs startDateObs, Obs endDateObs) {
-        PeriodDt period = new PeriodDt();
+    private Period getPeriod(Obs startDateObs, Obs endDateObs) {
+        Period period = new Period();
         if (startDateObs != null) period.setStart(startDateObs.getValueDate(), TemporalPrecisionEnum.MILLI);
         if (startDateObs != null && endDateObs != null)
             period.setEnd(endDateObs.getValueDate(), TemporalPrecisionEnum.MILLI);
@@ -172,7 +163,7 @@ public class ProcedureMapper implements EmrObsResourceHandler {
     }
 
     private DiagnosticReport buildDiagnosticReport(CompoundObservation diagnosticStudyObs, FHIREncounter fhirEncounter, SystemProperties systemProperties, List<FHIRResource> allResources) {
-        CodeableConceptDt diagnosisTestName = getNameToDiagnosticReport(diagnosticStudyObs);
+        CodeableConcept diagnosisTestName = getNameToDiagnosticReport(diagnosticStudyObs);
         if (diagnosisTestName != null) {
             DiagnosticReport diagnosticReport = diagnosticReportBuilder.build(diagnosticStudyObs.getRawObservation(), fhirEncounter, systemProperties);
             diagnosticReport.setCode(diagnosisTestName);
@@ -185,7 +176,7 @@ public class ProcedureMapper implements EmrObsResourceHandler {
     }
 
     private void addCategoryToReport(DiagnosticReport diagnosticReport) {
-        CodeableConceptDt category = new CodeableConceptDt();
+        CodeableConcept category = new CodeableConcept();
         category.addCoding()
                 .setSystem(FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL)
                 .setCode(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_OTHER_CODE)
@@ -208,9 +199,9 @@ public class ProcedureMapper implements EmrObsResourceHandler {
     private void addDiagnosisToDiagnosticReport(DiagnosticReport diagnosticReport, CompoundObservation compoundDiagnosticStudyObs) {
         List<Obs> diagnosisObses = compoundDiagnosticStudyObs.getAllMemberObsForConceptName(MRS_CONCEPT_PROCEDURE_DIAGNOSIS);
         for (Obs diagnosisObs : diagnosisObses) {
-            CodeableConceptDt codeableType = codeableConceptService.addTRCodingOrDisplay(diagnosisObs.getValueCoded());
+            CodeableConcept codeableType = codeableConceptService.addTRCodingOrDisplay(diagnosisObs.getValueCoded());
             if (codeableType != null && !codeableType.isEmpty()) {
-                CodeableConceptDt codedDiagnosis = diagnosticReport.addCodedDiagnosis();
+                CodeableConcept codedDiagnosis = diagnosticReport.addCodedDiagnosis();
                 codedDiagnosis.getCoding().addAll(codeableType.getCoding());
             }
         }
@@ -224,19 +215,19 @@ public class ProcedureMapper implements EmrObsResourceHandler {
 
     private Observation buildResultObservation(Obs diagnosticResultObs, DiagnosticReport diagnosticReport, SystemProperties systemProperties) {
         Observation observation = new Observation();
-        String id = new EntityReference().build(IResource.class, systemProperties, diagnosticResultObs.getUuid());
+        String id = new EntityReference().build(Resource.class, systemProperties, diagnosticResultObs.getUuid());
         observation.addIdentifier().setValue(id);
         observation.setId(id);
         observation.setSubject(diagnosticReport.getSubject());
-        observation.setEncounter(diagnosticReport.getEncounter());
-        observation.setStatus(ObservationStatusEnum.FINAL);
+        observation.setContext(diagnosticReport.getContext());
+        observation.setStatus(Observation.ObservationStatus.FINAL);
         observation.setCode(diagnosticReport.getCode());
         observation.setValue(observationValueMapper.map(diagnosticResultObs));
         return observation;
     }
 
-    private CodeableConceptDt getNameToDiagnosticReport(CompoundObservation compoundDiagnosticStudyObs) {
-        CodeableConceptDt name = null;
+    private CodeableConcept getNameToDiagnosticReport(CompoundObservation compoundDiagnosticStudyObs) {
+        CodeableConcept name = null;
         if (compoundDiagnosticStudyObs.getRawObservation() != null) {
             Obs diagnosticTestObs = compoundDiagnosticStudyObs.getMemberObsForConceptName(MRS_CONCEPT_PROCEDURE_DIAGNOSTIC_TEST);
             name = diagnosticTestObs != null ? codeableConceptService.addTRCodingOrDisplay(diagnosticTestObs.getValueCoded()) : null;

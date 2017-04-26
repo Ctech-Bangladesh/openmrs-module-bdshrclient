@@ -1,13 +1,6 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.IDatatype;
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticReport;
-import ca.uhn.fhir.model.dstu2.resource.Observation;
-import ca.uhn.fhir.model.dstu2.valueset.ObservationStatusEnum;
-import ca.uhn.fhir.model.primitive.DateTimeDt;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.module.fhir.FHIRProperties;
@@ -26,9 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.openmrs.module.fhir.MRSProperties.MRS_CONCEPT_CLASS_LAB_SET;
-import static org.openmrs.module.fhir.MRSProperties.MRS_CONCEPT_NAME_LAB_NOTES;
-import static org.openmrs.module.fhir.MRSProperties.MRS_ENC_TYPE_LAB_RESULT;
+import static org.openmrs.module.fhir.MRSProperties.*;
 
 @Component("testResultMapper")
 public class TestResultMapper implements EmrObsResourceHandler {
@@ -78,7 +69,7 @@ public class TestResultMapper implements EmrObsResourceHandler {
             for (Obs resultObsGroup : topLevelTestObs.getGroupMembers()) {
                 FHIRResource resultResource = getResultResource(resultObsGroup, fhirEncounter, systemProperties);
                 if (resultResource == null) return;
-                ResourceReferenceDt resourceReference = diagnosticReport.addResult();
+                Reference resourceReference = diagnosticReport.addResult();
                 resourceReference.setReference(resultResource.getIdentifier().getValue());
                 fhirResourceList.add(resultResource);
 
@@ -102,11 +93,11 @@ public class TestResultMapper implements EmrObsResourceHandler {
     private void setObservationNotes(CompoundObservation resultGroupObservation, Observation fhirObservation) {
         Obs labNotesObs = resultGroupObservation.getMemberObsForConceptName(MRS_CONCEPT_NAME_LAB_NOTES);
         if (null != labNotesObs && null != labNotesObs.getValueText())
-            fhirObservation.setComments(labNotesObs.getValueText());
+            fhirObservation.setCommentElement(new StringType(labNotesObs.getValueText()));
     }
 
     private void setObservationStatusForResult(Observation resultObservation) {
-        resultObservation.setStatus(ObservationStatusEnum.FINAL);
+        resultObservation.setStatus(Observation.ObservationStatus.FINAL);
     }
 
     private FHIRResource getResultObservation(Obs resultObsGroup, FHIREncounter fhirEncounter, SystemProperties systemProperties, CompoundObservation resultGroupObservation) {
@@ -122,7 +113,7 @@ public class TestResultMapper implements EmrObsResourceHandler {
     }
 
     private void mapResultValue(Obs resultObs, Observation fhirObservation) {
-        IDatatype value = observationValueMapper.map(resultObs);
+        Type value = observationValueMapper.map(resultObs);
         if (null != value) {
             fhirObservation.setValue(value);
         }
@@ -130,14 +121,14 @@ public class TestResultMapper implements EmrObsResourceHandler {
 
     private DiagnosticReport buildDiagnosticReport(Obs obs, FHIREncounter fhirEncounter, SystemProperties systemProperties) {
         DiagnosticReport report = diagnosticReportBuilder.build(obs, fhirEncounter, systemProperties);
-        CodeableConceptDt name = codeableConceptService.addTRCodingOrDisplay(obs.getConcept());
+        CodeableConcept name = codeableConceptService.addTRCodingOrDisplay(obs.getConcept());
         report.setCode(name);
         org.openmrs.Order obsOrder = obs.getOrder();
         report.setEffective(getOrderTime(obsOrder));
 
         String uri = getRequestUrl(obsOrder);
-        report.addRequest().setReference(uri);
-        CodeableConceptDt category = new CodeableConceptDt();
+        report.addBasedOn().setReference(uri);
+        CodeableConcept category = new CodeableConcept();
         category.addCoding()
                 .setSystem(FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL)
                 .setCode(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_LAB_CODE)
@@ -157,9 +148,9 @@ public class TestResultMapper implements EmrObsResourceHandler {
         throw new RuntimeException("Encounter id [" + order.getEncounter().getUuid() + "] is not synced to SHR yet.");
     }
 
-    private DateTimeDt getOrderTime(org.openmrs.Order obsOrder) {
-        DateTimeDt diagnostic = new DateTimeDt();
-        diagnostic.setValue(obsOrder.getDateActivated(), TemporalPrecisionEnum.MILLI);
+    private DateTimeType getOrderTime(org.openmrs.Order obsOrder) {
+        DateTimeType diagnostic = new DateTimeType();
+        diagnostic.setValue(obsOrder.getDateActivated());
         return diagnostic;
     }
 }

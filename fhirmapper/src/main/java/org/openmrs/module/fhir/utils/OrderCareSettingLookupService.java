@@ -1,8 +1,5 @@
 package org.openmrs.module.fhir.utils;
 
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Encounter;
-import ca.uhn.fhir.model.dstu2.valueset.EncounterClassEnum;
 import org.openmrs.CareSetting;
 import org.openmrs.api.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;

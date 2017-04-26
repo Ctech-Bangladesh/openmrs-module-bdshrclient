@@ -1,16 +1,7 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.base.resource.ResourceMetadataMap;
-import ca.uhn.fhir.model.dstu2.composite.IdentifierDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Composition;
-import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
-import ca.uhn.fhir.model.dstu2.valueset.CompositionStatusEnum;
-import ca.uhn.fhir.model.primitive.InstantDt;
 import org.apache.commons.collections.CollectionUtils;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -35,7 +26,7 @@ import static org.openmrs.module.fhir.FHIRProperties.*;
 @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
 public class CompositionBundleCreator {
 
-    public static final String CONFIDENTIALITY_NORMAL = "N";
+    public static final Composition.DocumentConfidentiality CONFIDENTIALITY_NORMAL = Composition.DocumentConfidentiality.N;
     private final EncounterMapper encounterMapper;
     private final List<EmrObsResourceHandler> obsResourceHandlers;
     private final List<EmrOrderResourceHandler> orderResourceHandlers;
@@ -92,12 +83,13 @@ public class CompositionBundleCreator {
 
     public Bundle createBundle(Composition composition) {
         Bundle bundle = new Bundle();
-        bundle.setType(BundleTypeEnum.COLLECTION);
+        bundle.setType(Bundle.BundleType.COLLECTION);
         //TODO: bundle.setBase("urn:uuid:");
         bundle.setId(UUID.randomUUID().toString());
-        ResourceMetadataMap metadataMap = new ResourceMetadataMap();
-        metadataMap.put(ResourceMetadataKeyEnum.UPDATED, new InstantDt(composition.getDate(), TemporalPrecisionEnum.MILLI));
-        bundle.setResourceMetadata(metadataMap);
+
+        Meta metadata = new Meta();
+        metadata.setLastUpdated(composition.getDate());
+        bundle.setMeta(metadata);
         return bundle;
     }
 
@@ -109,28 +101,28 @@ public class CompositionBundleCreator {
     }
 
     private void addResourceSectionToComposition(Composition composition, FHIRResource resource) {
-        ResourceReferenceDt resourceReference = composition.addSection().addEntry();
+        Reference resourceReference = composition.addSection().addEntry();
         resourceReference.setReference(resource.getIdentifier().getValue());
         resourceReference.setDisplay(resource.getResourceName());
     }
 
     @SuppressWarnings("unchecked")
     private void addBundleEntry(Bundle bundle, FHIRResource resource) {
-        Bundle.Entry resourceEntry = new Bundle.Entry();
+        Bundle.BundleEntryComponent resourceEntry = new Bundle.BundleEntryComponent();
         resourceEntry.setResource(resource.getResource());
         resourceEntry.setFullUrl(resource.getIdentifier().getValue());
         bundle.addEntry(resourceEntry);
     }
 
     private Composition createComposition(Date encounterDateTime, FHIREncounter fhirEncounter, SystemProperties systemProperties) {
-        Composition composition = new Composition().setDate(encounterDateTime, TemporalPrecisionEnum.MILLI);
-        composition.setEncounter(new ResourceReferenceDt().setReference(fhirEncounter.getId()));
-        composition.setStatus(CompositionStatusEnum.FINAL);
+        Composition composition = new Composition().setDate(encounterDateTime);
+        composition.setEncounter(new Reference().setReference(fhirEncounter.getId()));
+        composition.setStatus(Composition.CompositionStatus.FINAL);
         composition.setTitle("Patient Clinical Encounter");
         // TODO : remove creating the identifier if necessary. We can use resource Id to identify resources now.
         String id = new EntityReference().build(Composition.class, systemProperties, UUID.randomUUID().toString());
         composition.setId(id);
-        composition.setIdentifier(new IdentifierDt().setValue(id));
+        composition.setIdentifier(new Identifier().setValue(id));
         composition.setSubject(fhirEncounter.getPatient());
         composition.setAuthor(asList(fhirEncounter.getServiceProvider()));
         composition.setConfidentiality(CONFIDENTIALITY_NORMAL);

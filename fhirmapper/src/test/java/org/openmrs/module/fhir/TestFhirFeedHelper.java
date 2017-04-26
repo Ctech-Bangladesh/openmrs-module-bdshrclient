@@ -1,8 +1,8 @@
 package org.openmrs.module.fhir;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.openmrs.module.fhir.mapper.model.FHIRResource;
 
 import java.util.ArrayList;
@@ -10,21 +10,21 @@ import java.util.List;
 
 public class TestFhirFeedHelper {
 
-    public static List<IResource> getResourceByType(Bundle bundle, String resourceType) {
-        List<IResource> resources = new ArrayList<>();
-        List<Bundle.Entry> entryList = bundle.getEntry();
-        for (Bundle.Entry bundleEntry : entryList) {
-            IResource resource = bundleEntry.getResource();
-            if (resource.getResourceName().equals(resourceType)) {
+    public static List<Resource> getResourceByType(Bundle bundle, String resourceType) {
+        List<Resource> resources = new ArrayList<>();
+        List<Bundle.BundleEntryComponent> entryList = bundle.getEntry();
+        for (Bundle.BundleEntryComponent bundleEntry : entryList) {
+            Resource resource = bundleEntry.getResource();
+            if (resource.getResourceType().name().equals(resourceType)) {
                 resources.add(resource);
             }
         }
         return resources;
     }
 
-    public static FHIRResource getResourceByReference(ResourceReferenceDt reference, List<FHIRResource> fhirResources) {
+    public static FHIRResource getResourceByReference(Reference reference, List<FHIRResource> fhirResources) {
         for (FHIRResource fhirResource : fhirResources) {
-            if(fhirResource.getIdentifier().getValue().equals(reference.getReference().getValue())) {
+            if(fhirResource.getIdentifier().getValue().equals(reference.getReference())) {
                 return fhirResource;
             }
         }
@@ -33,7 +33,7 @@ public class TestFhirFeedHelper {
 
     public static FHIRResource getFirstResourceByType(String fhirResourceName, List<FHIRResource> fhirResources) {
         for (FHIRResource fhirResource : fhirResources) {
-            if(fhirResourceName.equals(fhirResource.getResource().getResourceName())) {
+            if(fhirResourceName.equals(fhirResource.getResource().getResourceType().name())) {
                 return fhirResource;
             }
         }
@@ -43,7 +43,7 @@ public class TestFhirFeedHelper {
     public static ArrayList<FHIRResource> getResourceByType(String resourceName, List<FHIRResource> fhirResources) {
         ArrayList<FHIRResource> mappedFhirResources = new ArrayList<>();
         for (FHIRResource fhirResource : fhirResources) {
-            if(resourceName.equals(fhirResource.getResource().getResourceName())) {
+            if(resourceName.equals(fhirResource.getResource().getResourceType().name())) {
                 mappedFhirResources.add(fhirResource);
             }
         }

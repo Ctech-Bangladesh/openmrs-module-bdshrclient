@@ -1,13 +1,7 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
 import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.IdentifierDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Condition;
-import ca.uhn.fhir.model.dstu2.valueset.ConditionCategoryCodesEnum;
-import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
-import ca.uhn.fhir.model.primitive.StringDt;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.module.fhir.FHIRProperties;
@@ -29,7 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.fhir.FHIRProperties.PREVIOUS_CONDITION_EXTENSION_NAME;
+import static org.codehaus.groovy.runtime.InvokerHelper.asList;
+import static org.openmrs.module.fhir.FHIRProperties.*;
 import static org.openmrs.module.fhir.MRSProperties.MRS_CONCEPT_NAME_INITIAL_DIAGNOSIS;
 import static org.openmrs.module.fhir.mapper.model.ObservationType.VISIT_DIAGNOSES;
 
@@ -40,12 +35,12 @@ public class DiagnosisMapper implements EmrObsResourceHandler {
     private CodeableConceptService codeableConceptService;
     @Autowired
     private IdMappingRepository idMappingRepository;
-    
-    private final Map<String, ConditionVerificationStatusEnum> diaConditionStatus = new HashMap<>();
+
+    private final Map<String, Condition.ConditionVerificationStatus> diaConditionStatus = new HashMap<>();
 
     public DiagnosisMapper() {
-        diaConditionStatus.put(MRSProperties.MRS_DIAGNOSIS_STATUS_PRESUMED, ConditionVerificationStatusEnum.PROVISIONAL);
-        diaConditionStatus.put(MRSProperties.MRS_DIAGNOSIS_STATUS_CONFIRMED, ConditionVerificationStatusEnum.CONFIRMED);
+        diaConditionStatus.put(MRSProperties.MRS_DIAGNOSIS_STATUS_PRESUMED, Condition.ConditionVerificationStatus.PROVISIONAL);
+        diaConditionStatus.put(MRSProperties.MRS_DIAGNOSIS_STATUS_CONFIRMED, Condition.ConditionVerificationStatus.CONFIRMED);
     }
 
     @Override
@@ -67,22 +62,29 @@ public class DiagnosisMapper implements EmrObsResourceHandler {
 
     private FHIRResource createFHIRCondition(Obs visitDiagnosisObs, FHIREncounter fhirEncounter, SystemProperties systemProperties) {
         Condition condition = new Condition();
-        condition.setEncounter(new ResourceReferenceDt().setReference(fhirEncounter.getId()));
-        condition.setPatient(fhirEncounter.getPatient());
+        condition.setContext(new Reference().setReference(fhirEncounter.getId()));
+        condition.setSubject(fhirEncounter.getPatient());
         setAsserter(fhirEncounter, condition);
-        condition.setCategory(ConditionCategoryCodesEnum.DIAGNOSIS);
+        condition.setCategory(setDiagnosisCategory());
 
         final CompoundObservation visitDiagnosisObservation = new CompoundObservation(visitDiagnosisObs);
         Obs codedDiagnosisObs = visitDiagnosisObservation.getMemberObsForConceptName(MRSProperties.MRS_CONCEPT_NAME_CODED_DIAGNOSIS);
-        if(codedDiagnosisObs == null) return null;
+        if (codedDiagnosisObs == null) return null;
         setConditionCode(condition, codedDiagnosisObs);
         if (condition.getCode().isEmpty()) return null;
         setConditionVerificationStatus(condition, visitDiagnosisObservation);
         setPreviousDiagnosisExtension(condition, visitDiagnosisObservation);
 
         setId(visitDiagnosisObs, systemProperties, condition);
-        condition.setNotes(visitDiagnosisObs.getComment());
+        condition.setNote(asList(new Annotation(new StringType(visitDiagnosisObs.getComment()))));
         return new FHIRResource(FHIRProperties.FHIR_CONDITION_CODE_DIAGNOSIS_DISPLAY, condition.getIdentifier(), condition);
+    }
+
+    private List<CodeableConcept> setDiagnosisCategory() {
+
+        CodeableConcept codeableConcept = new CodeableConcept();
+        codeableConcept.addCoding().setSystem(FHIR_CONDITION_CATEGORY_URL).setCode(FHIR_CONDITION_CATEGORY_DIAGNOSIS_CODE);
+        return asList(codeableConcept);
     }
 
     private void setPreviousDiagnosisExtension(Condition condition, CompoundObservation visitDiagnosisObservation) {
@@ -91,8 +93,9 @@ public class DiagnosisMapper implements EmrObsResourceHandler {
         if (visitDiagnosisObservation.getRawObservation().getUuid().equals(initialDiagnosisUuid)) return;
         final String previousDiagnosisUri = getPreviousDiagnosisUri(initialDiagnosisUuid);
         String fhirExtensionUrl = FHIRProperties.getFhirExtensionUrl(PREVIOUS_CONDITION_EXTENSION_NAME);
-        condition.addUndeclaredExtension(false, fhirExtensionUrl, new StringDt(previousDiagnosisUri));
+        condition.addExtension().setUrl(fhirExtensionUrl).setValue(new StringType(previousDiagnosisUri));
     }
+
 
     private String getPreviousDiagnosisUri(String initialDiagnosisUuid) {
         IdMapping diagnosisIdMapping = idMappingRepository.findByInternalId(initialDiagnosisUuid, IdMappingType.DIAGNOSIS);
@@ -108,28 +111,28 @@ public class DiagnosisMapper implements EmrObsResourceHandler {
     }
 
     private void setConditionCode(Condition condition, Obs codedDiagnosisObs) {
-        CodeableConceptDt diagnosisCode = codeableConceptService.addTRCoding(codedDiagnosisObs.getValueCoded());
+        CodeableConcept diagnosisCode = codeableConceptService.addTRCoding(codedDiagnosisObs.getValueCoded());
         condition.setCode(diagnosisCode);
     }
 
     private void setAsserter(FHIREncounter fhirEncounter, Condition condition) {
-        ResourceReferenceDt participant = fhirEncounter.getFirstParticipantReference();
+        Reference participant = fhirEncounter.getFirstParticipantReference();
         if (null != participant) {
             condition.setAsserter(participant);
         }
     }
 
     private void setId(Obs visitDiagnosisObs, SystemProperties systemProperties, Condition condition) {
-        IdentifierDt identifier = condition.addIdentifier();
+        Identifier identifier = condition.addIdentifier();
         String diagnosisResourceId = new EntityReference().build(IResource.class, systemProperties, visitDiagnosisObs.getUuid());
         identifier.setValue(diagnosisResourceId);
         condition.setId(diagnosisResourceId);
     }
 
 
-    private ConditionVerificationStatusEnum getConditionStatus(Obs member) {
+    private Condition.ConditionVerificationStatus getConditionStatus(Obs member) {
         Concept diagnosisStatus = member.getValueCoded();
-        ConditionVerificationStatusEnum status = diaConditionStatus.get(diagnosisStatus.getName().getName());
-        return status != null ? status : ConditionVerificationStatusEnum.CONFIRMED;
+        Condition.ConditionVerificationStatus status = diaConditionStatus.get(diagnosisStatus.getName().getName());
+        return status != null ? status : Condition.ConditionVerificationStatus.CONFIRMED;
     }
 }

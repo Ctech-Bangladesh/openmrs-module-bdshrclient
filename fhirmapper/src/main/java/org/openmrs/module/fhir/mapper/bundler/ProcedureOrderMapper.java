@@ -1,12 +1,9 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu2.composite.AnnotationDt;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.ProcedureRequest;
 import ca.uhn.fhir.model.primitive.StringDt;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.ProcedureRequest;
 import org.openmrs.Order;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
@@ -21,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static ca.uhn.fhir.model.dstu2.valueset.ProcedureRequestStatusEnum.REQUESTED;
-import static ca.uhn.fhir.model.dstu2.valueset.ProcedureRequestStatusEnum.SUSPENDED;
 import static org.openmrs.Order.Action.DISCONTINUE;
 import static org.openmrs.module.fhir.FHIRProperties.PROCEDURE_REQUEST_PREVIOUS_REQUEST_EXTENSION_NAME;
 import static org.openmrs.module.fhir.FHIRProperties.getFhirExtensionUrl;

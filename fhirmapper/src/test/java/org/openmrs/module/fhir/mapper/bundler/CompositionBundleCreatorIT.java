@@ -1,8 +1,8 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Composition;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.Composition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,9 +16,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.openmrs.module.fhir.FHIRProperties.*;
+import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -59,7 +61,7 @@ public class CompositionBundleCreatorIT extends BaseModuleWebContextSensitiveTes
         Bundle bundle = compositionBundleCreator.create(Context.getEncounterService().getEncounter(36), HEALTH_ID, getSystemProperties("12345"));
         assertNotNull(bundle);
         Composition composition = FHIRBundleHelper.getComposition(bundle);
-        CodingDt type = composition.getType().getCoding().get(0);
+        Coding type = composition.getType().getCoding().get(0);
         assertEquals(LOINC_CODE_DETAILS_NOTE, type.getCode());
         assertEquals(FHIR_DOC_TYPECODES_URL, type.getSystem());
         assertEquals(LOINC_DETAILS_NOTE_DISPLAY, type.getDisplay());

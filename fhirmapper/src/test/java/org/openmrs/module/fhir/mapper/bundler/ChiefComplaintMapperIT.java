@@ -1,7 +1,6 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Encounter;
+import org.hl7.fhir.dstu3.model.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +14,11 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.openmrs.module.fhir.FHIRProperties.FHIR_CONDITION_CATEGORY_COMPLAINT_CODE;
+import static org.openmrs.module.fhir.FHIRProperties.FHIR_CONDITION_CATEGORY_DIAGNOSIS_CODE;
+import static org.openmrs.module.fhir.FHIRProperties.FHIR_CONDITION_CATEGORY_URL;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -37,13 +40,17 @@ public class ChiefComplaintMapperIT extends BaseModuleWebContextSensitiveTest {
     public void shouldCreateFHIRConditionFromChiefComplaint() throws Exception {
         executeDataSet("testDataSets/shrClientChiefComplaintTestDS.xml");
         Encounter encounter = new Encounter();
-        encounter.setPatient(new ResourceReferenceDt());
-        encounter.addParticipant().setIndividual(new ResourceReferenceDt());
+        encounter.setSubject(new Reference());
+        encounter.addParticipant().setIndividual(new Reference());
         org.openmrs.Encounter openMrsEncounter = encounterService.getEncounter(36);
 
         List<FHIRResource> complaintResources = chiefComplaintMapper.map(openMrsEncounter.getObsAtTopLevel(false).iterator().next(), new FHIREncounter(encounter), getSystemProperties("1"));
         Assert.assertFalse(complaintResources.isEmpty());
         Assert.assertEquals(1, complaintResources.size());
+        Condition resource = (Condition)complaintResources.get(0).getResource();
+        Coding codingFirstRep = resource.getCategoryFirstRep().getCodingFirstRep();
+        assertEquals(FHIR_CONDITION_CATEGORY_URL, codingFirstRep.getSystem());
+        assertEquals(FHIR_CONDITION_CATEGORY_COMPLAINT_CODE, codingFirstRep.getCode());
     }
 
     @Test

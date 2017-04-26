@@ -1,7 +1,7 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
+import org.hl7.fhir.dstu3.model.Period;
+import org.hl7.fhir.dstu3.model.TemporalPrecisionEnum;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class EncounterMapperIT extends BaseModuleWebContextSensitiveTest {
         Encounter savedEncounter = encounterService.getEncounter(36);
 
         FHIREncounter fhirEncounter = encounterMapper.map(savedEncounter, "1234", getSystemProperties("1"));
-        assertEquals("http://localhost:9997/api/1.0/facilities/1300012.json", fhirEncounter.getServiceProvider().getReference().getValue());
+        assertEquals("http://localhost:9997/api/1.0/facilities/1300012.json", fhirEncounter.getServiceProvider().getReference());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class EncounterMapperIT extends BaseModuleWebContextSensitiveTest {
         Encounter savedEncounter = encounterService.getEncounter(37);
 
         FHIREncounter fhirEncounter = encounterMapper.map(savedEncounter, "1234", getSystemProperties("1"));
-        assertEquals("http://localhost:9997/api/1.0/facilities/1.json", fhirEncounter.getServiceProvider().getReference().getValue());
+        assertEquals("http://localhost:9997/api/1.0/facilities/1.json", fhirEncounter.getServiceProvider().getReference());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class EncounterMapperIT extends BaseModuleWebContextSensitiveTest {
         Encounter savedEncounter = encounterService.getEncounter(38);
         FHIREncounter fhirEncounter = encounterMapper.map(savedEncounter, "1234", getSystemProperties("1"));
         assertEquals(1, fhirEncounter.getParticipantReferences().size());
-        assertEquals("http://localhost:9997/api/1.0/providers/23.json", fhirEncounter.getFirstParticipantReference().getReference().getValue());
+        assertEquals("http://localhost:9997/api/1.0/providers/23.json", fhirEncounter.getFirstParticipantReference().getReference());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class EncounterMapperIT extends BaseModuleWebContextSensitiveTest {
 
         FHIREncounter fhirEncounter = encounterMapper.map(savedEncounter, "1234", getSystemProperties("1"));
 
-        PeriodDt expectedPeriod = new PeriodDt();
+        Period expectedPeriod = new Period();
         expectedPeriod.setStart(encounterVisit.getStartDatetime(), TemporalPrecisionEnum.SECOND);
         expectedPeriod.setEnd(encounterVisit.getStopDatetime(), TemporalPrecisionEnum.SECOND);
 

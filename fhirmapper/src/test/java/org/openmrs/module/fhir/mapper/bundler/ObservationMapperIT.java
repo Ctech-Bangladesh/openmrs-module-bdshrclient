@@ -1,11 +1,6 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Encounter;
-import ca.uhn.fhir.model.dstu2.resource.Observation;
-import ca.uhn.fhir.model.dstu2.valueset.ObservationStatusEnum;
+import org.hl7.fhir.dstu3.model.*;
 import org.junit.After;
 import org.junit.Test;
 import org.openmrs.Obs;
@@ -70,7 +65,7 @@ public class ObservationMapperIT extends BaseModuleWebContextSensitiveTest {
 		Obs vitalsObs = obsService.getObs(11);
 
 		Encounter fhirEncounter = new Encounter();
-		fhirEncounter.addParticipant().setIndividual(new ResourceReferenceDt().setReference(prUrl).setDisplay(prDisplay));
+		fhirEncounter.addParticipant().setIndividual(new Reference().setReference(prUrl).setDisplay(prDisplay));
 		List<FHIRResource> FHIRResources = observationMapper
 				.map(vitalsObs, new FHIREncounter(fhirEncounter), getSystemProperties("1"));
 		assertEquals(5, FHIRResources.size());
@@ -98,7 +93,7 @@ public class ObservationMapperIT extends BaseModuleWebContextSensitiveTest {
 		Obs vitalsObs = obsService.getObs(11);
 
 		Encounter fhirEncounter = new Encounter();
-		fhirEncounter.addParticipant().setIndividual(new ResourceReferenceDt().setReference(prUrl).setDisplay(prDisplay));
+		fhirEncounter.addParticipant().setIndividual(new Reference().setReference(prUrl).setDisplay(prDisplay));
 		List<FHIRResource> FHIRResources = observationMapper
 				.map(vitalsObs, new FHIREncounter(fhirEncounter), getSystemProperties("1"));
 		assertEquals(3, FHIRResources.size());
@@ -125,7 +120,7 @@ public class ObservationMapperIT extends BaseModuleWebContextSensitiveTest {
 		Obs vitalsObs = obsService.getObs(11);
 
 		Encounter fhirEncounter = new Encounter();
-		fhirEncounter.addParticipant().setIndividual(new ResourceReferenceDt().setReference(prUrl).setDisplay(prDisplay));
+		fhirEncounter.addParticipant().setIndividual(new Reference().setReference(prUrl).setDisplay(prDisplay));
 		List<FHIRResource> FHIRResources = observationMapper
 				.map(vitalsObs, new FHIREncounter(fhirEncounter), getSystemProperties("1"));
 		assertEquals(2, FHIRResources.size());
@@ -151,7 +146,7 @@ public class ObservationMapperIT extends BaseModuleWebContextSensitiveTest {
 		Obs vitalsObs = obsService.getObs(11);
 
 		Encounter fhirEncounter = new Encounter();
-		fhirEncounter.addParticipant().setIndividual(new ResourceReferenceDt().setReference(prUrl).setDisplay(prDisplay));
+		fhirEncounter.addParticipant().setIndividual(new Reference().setReference(prUrl).setDisplay(prDisplay));
 		List<FHIRResource> FHIRResources = observationMapper
 				.map(vitalsObs, new FHIREncounter(fhirEncounter), getSystemProperties("1"));
 		assertTrue(isEmpty(FHIRResources));
@@ -223,37 +218,37 @@ public class ObservationMapperIT extends BaseModuleWebContextSensitiveTest {
 
 	private void assertObservation(Observation observation) {
 		assertEquals(1, observation.getPerformer().size());
-		assertEquals(prUrl, observation.getPerformer().get(0).getReference().getValue());
-		assertEquals(prDisplay, observation.getPerformer().get(0).getDisplay().getValue());
+		assertEquals(prUrl, observation.getPerformer().get(0).getReference());
+		assertEquals(prDisplay, observation.getPerformer().get(0).getDisplay());
 
-		assertEquals(ObservationStatusEnum.PRELIMINARY, observation.getStatusElement().getValueAsEnum());
+		assertEquals(Observation.ObservationStatus.PRELIMINARY, observation.getStatusElement().getValue());
 	}
 
 	private void assertPulseObservation(Observation observation) {
-		List<CodingDt> coding = observation.getCode().getCoding();
+		List<Coding> coding = observation.getCode().getCoding();
 		assertEquals(2, coding.size());
 		int flag = 0;
-		for (CodingDt code : coding) {
+		for (Coding code : coding) {
 			if (assertCoding(code, "103", "/concepts/103"))
 				flag++;
 			if (assertCoding(code, "M54.418965", "referenceterms/201"))
 				flag++;
 		}
 		assertEquals(2, flag);
-		assertTrue(133 == ((QuantityDt) observation.getValue()).getValue().doubleValue());
+		assertTrue(133 == ((Quantity) observation.getValue()).getValue().doubleValue());
 		assertTrue(isEmpty(observation.getRelated()));
 	}
 
 	private void assertDiastolicObservation(Observation observation) {
-		List<CodingDt> coding = observation.getCode().getCoding();
+		List<Coding> coding = observation.getCode().getCoding();
 		assertEquals(1, coding.size());
 		assertTrue(assertCoding(coding.get(0), "105", "/concepts/105"));
-		assertTrue(120 == ((QuantityDt) observation.getValue()).getValue().doubleValue());
+		assertTrue(120 == ((Quantity) observation.getValue()).getValue().doubleValue());
 		assertTrue(isEmpty(observation.getRelated()));
 	}
 
 	private void assertBloodPressureObservation(Observation observation, int expectedRelatedSize) {
-		List<CodingDt> coding = observation.getCode().getCoding();
+		List<Coding> coding = observation.getCode().getCoding();
 		assertEquals(1, coding.size());
 		assertTrue(null == coding.get(0).getCode());
 		assertTrue(null == coding.get(0).getSystem());
@@ -262,13 +257,13 @@ public class ObservationMapperIT extends BaseModuleWebContextSensitiveTest {
 	}
 
 	private void assertVitalsObservation(Observation observation, int expectedRelatedSize) {
-		List<CodingDt> coding = observation.getCode().getCoding();
+		List<Coding> coding = observation.getCode().getCoding();
 		assertEquals(1, coding.size());
 		assertTrue(assertCoding(coding.get(0), "101", "/concepts/101"));
 		assertEquals(expectedRelatedSize, observation.getRelated().size());
 	}
 
-	private boolean assertCoding(CodingDt code, String expectedCode, String expectedSystem) {
+	private boolean assertCoding(Coding code, String expectedCode, String expectedSystem) {
 		return ((expectedCode.equals(code.getCode())) && (expectedSystem.equals(code.getSystem())));
 	}
 }

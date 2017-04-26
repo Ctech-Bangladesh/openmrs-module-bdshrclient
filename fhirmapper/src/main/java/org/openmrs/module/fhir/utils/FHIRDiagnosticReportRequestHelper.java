@@ -1,10 +1,9 @@
 package org.openmrs.module.fhir.utils;
 
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.BaseResource;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticOrder;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticReport;
 import org.apache.commons.collections.CollectionUtils;
+import org.hl7.fhir.dstu3.model.BaseResource;
+import org.hl7.fhir.dstu3.model.DiagnosticReport;
+import org.hl7.fhir.dstu3.model.Reference;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Order;
@@ -34,7 +33,7 @@ public class FHIRDiagnosticReportRequestHelper {
     private OrderService orderService;
 
     public Order getOrder(DiagnosticReport diagnosticReport, Concept concept) {
-        List<ResourceReferenceDt> requestDetail = diagnosticReport.getRequest();
+        List<Reference> requestDetail = diagnosticReport.getBasedOn();
         Order order = findOrderFromOrderRequestDetail(concept, requestDetail);
         if (order != null) return order;
         order = findOrderFromEncounterRequestDetail(concept, requestDetail);
@@ -45,23 +44,23 @@ public class FHIRDiagnosticReportRequestHelper {
         return Order.Action.NEW.equals(order.getAction()) && order.getDateStopped() == null;
     }
 
-    private Order findOrderFromOrderRequestDetail(Concept concept, List<ResourceReferenceDt> requestDetail) {
-        for (ResourceReferenceDt reference : requestDetail) {
-            String requestDetailReference = reference.getReference().getValue();
-            if (requestDetailReference.contains("#" + new DiagnosticOrder().getResourceName())) {
-                String orderId = new EntityReference().parse(BaseResource.class, requestDetailReference);
-                String encounterId = new EntityReference().parse(Encounter.class, requestDetailReference);
-                String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, encounterId, orderId);
-                List<IdMapping> idMappingList = idMappingRepository.findMappingsByExternalId(externalId, IdMappingType.DIAGNOSTIC_ORDER);
-                if (CollectionUtils.isNotEmpty(idMappingList)) {
-                    for (IdMapping idMapping : idMappingList) {
-                        Order order = orderService.getOrderByUuid(idMapping.getInternalId());
-                        if (order.getConcept().equals(concept))
-                            return order;
-                    }
-                }
-            }
-        }
+    private Order findOrderFromOrderRequestDetail(Concept concept, List<Reference> requestDetail) {
+//        for (Reference reference : requestDetail) {
+//            String requestDetailReference = reference.getReference();
+//            if (requestDetailReference.contains("#" + new DiagnosticReq.getResourceName())) {
+//                String orderId = new EntityReference().parse(BaseResource.class, requestDetailReference);
+//                String encounterId = new EntityReference().parse(Encounter.class, requestDetailReference);
+//                String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, encounterId, orderId);
+//                List<IdMapping> idMappingList = idMappingRepository.findMappingsByExternalId(externalId, IdMappingType.DIAGNOSTIC_ORDER);
+//                if (CollectionUtils.isNotEmpty(idMappingList)) {
+//                    for (IdMapping idMapping : idMappingList) {
+//                        Order order = orderService.getOrderByUuid(idMapping.getInternalId());
+//                        if (order.getConcept().equals(concept))
+//                            return order;
+//                    }
+//                }
+//            }
+//        }
         return null;
     }
 
@@ -83,9 +82,9 @@ public class FHIRDiagnosticReportRequestHelper {
         return null;
     }
 
-    private Order findOrderFromEncounterRequestDetail(Concept concept, List<ResourceReferenceDt> requestDetail) {
-        for (ResourceReferenceDt reference : requestDetail) {
-            String requestDetailReference = reference.getReference().getValue();
+    private Order findOrderFromEncounterRequestDetail(Concept concept, List<Reference> requestDetail) {
+        for (Reference reference : requestDetail) {
+            String requestDetailReference = reference.getReference();
             String encounterId = new EntityReference().parse(Encounter.class, requestDetailReference);
             if (encounterId != null) {
                 EncounterIdMapping encounterIdMapping = (EncounterIdMapping) idMappingRepository.findByExternalId(encounterId, IdMappingType.ENCOUNTER);

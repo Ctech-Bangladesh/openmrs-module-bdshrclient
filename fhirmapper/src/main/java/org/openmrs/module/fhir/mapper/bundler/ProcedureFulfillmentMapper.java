@@ -1,9 +1,8 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.IdentifierDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Procedure;
+import org.hl7.fhir.dstu3.model.Identifier;
+import org.hl7.fhir.dstu3.model.Procedure;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.module.fhir.mapper.model.*;
@@ -50,7 +49,7 @@ public class ProcedureFulfillmentMapper implements EmrObsResourceHandler {
 
     private Procedure getProcedureForObs(List<FHIRResource> resources) {
         for (FHIRResource iResource : resources) {
-            IResource resource = iResource.getResource();
+            Resource resource = iResource.getResource();
             if (resource instanceof Procedure) return (Procedure) resource;
         }
         return null;
@@ -60,13 +59,13 @@ public class ProcedureFulfillmentMapper implements EmrObsResourceHandler {
         Order order = obs.getOrder();
         IdMapping idMapping = idMappingRepository.findByInternalId(order.getUuid(), IdMappingType.PROCEDURE_ORDER);
         if (idMapping != null) {
-            procedure.setRequest(new ResourceReferenceDt(idMapping.getUri()));
+            procedure.addBasedOn().setReference(idMapping.getUri());
         }
     }
 
     public void setIdentifier(Obs obs, SystemProperties systemProperties, Procedure procedure) {
         String id = new EntityReference().build(Obs.class, systemProperties, obs.getUuid());
-        IdentifierDt identifierDt = procedure.addIdentifier();
+        Identifier identifierDt = procedure.addIdentifier();
         identifierDt.setValue(id);
         procedure.setId(id);
         procedure.setIdentifier(asList(identifierDt));

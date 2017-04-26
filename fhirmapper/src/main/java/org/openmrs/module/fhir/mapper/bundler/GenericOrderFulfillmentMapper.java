@@ -1,11 +1,6 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticReport;
-import ca.uhn.fhir.model.primitive.DateTimeDt;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.module.fhir.FHIRProperties;
@@ -71,7 +66,7 @@ public class GenericOrderFulfillmentMapper implements EmrObsResourceHandler {
             for (Obs resultObs : orderFullfillmentObs.getGroupMembers()) {
                 FHIRResource resultResource = getResultResource(resultObs, fhirEncounter, fhirResourceList, systemProperties);
                 if (resultResource == null) continue;
-                ResourceReferenceDt resourceReference = diagnosticReport.addResult();
+                Reference resourceReference = diagnosticReport.addResult();
                 resourceReference.setReference(resultResource.getIdentifier().getValue());
             }
             FHIRResource fhirResource = new FHIRResource("Diagnostic Report", diagnosticReport.getIdentifier(), diagnosticReport);
@@ -88,15 +83,14 @@ public class GenericOrderFulfillmentMapper implements EmrObsResourceHandler {
         report.setCode(codeableConceptService.addTRCodingOrDisplay(obs.getOrder().getConcept()));
         org.openmrs.Order obsOrder = obs.getOrder();
         report.setEffective(getOrderTime(obsOrder));
-
-        report.addRequest().setReference(getRequestUrl(obsOrder));
+        report.addBasedOn().setReference(getRequestUrl(obsOrder));
         report.setCategory(getCategory(obs));
         return report;
     }
 
-    private CodeableConceptDt getCategory(Obs observation) {
-        CodeableConceptDt category = new CodeableConceptDt();
-        CodingDt codingDt = category.addCoding().setSystem(FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL);
+    private CodeableConcept getCategory(Obs observation) {
+        CodeableConcept category = new CodeableConcept();
+        Coding codingDt = category.addCoding().setSystem(FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL);
         String obsName = observation.getConcept().getName().getName();
         List<OpenMRSOrderTypeMap> configuredOrderTypes = globalPropertyLookUpService.getConfiguredOrderTypes();
         for (OpenMRSOrderTypeMap openMRSOrderTypeMap : configuredOrderTypes) {
@@ -119,8 +113,8 @@ public class GenericOrderFulfillmentMapper implements EmrObsResourceHandler {
         throw new RuntimeException("Encounter id [" + order.getEncounter().getUuid() + "] is not synced to SHR yet.");
     }
 
-    private DateTimeDt getOrderTime(org.openmrs.Order obsOrder) {
-        DateTimeDt diagnostic = new DateTimeDt();
+    private DateTimeType getOrderTime(org.openmrs.Order obsOrder) {
+        DateTimeType diagnostic = new DateTimeType();
         diagnostic.setValue(obsOrder.getDateActivated(), TemporalPrecisionEnum.MILLI);
         return diagnostic;
     }

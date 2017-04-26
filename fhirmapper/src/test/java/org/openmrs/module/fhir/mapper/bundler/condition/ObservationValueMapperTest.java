@@ -1,11 +1,6 @@
 package org.openmrs.module.fhir.mapper.bundler.condition;
 
-import ca.uhn.fhir.model.api.IDatatype;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
-import ca.uhn.fhir.model.primitive.DateTimeDt;
-import ca.uhn.fhir.model.primitive.StringDt;
+import org.hl7.fhir.dstu3.model.*;
 import org.junit.After;
 import org.junit.Test;
 import org.openmrs.*;
@@ -48,9 +43,9 @@ public class ObservationValueMapperTest extends BaseModuleWebContextSensitiveTes
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date obsDate = dateFormat.parse("2014-03-12");
         obs.setValueDate(obsDate);
-        IDatatype value = observationValueMapper.map(obs);
-        assertTrue(value instanceof DateTimeDt);
-        java.util.Date actualDate = ((DateTimeDt) value).getValue();
+        Type value = observationValueMapper.map(obs);
+        assertTrue(value instanceof DateType);
+        java.util.Date actualDate = ((DateType) value).getValue();
         assertEquals(obsDate, actualDate);
     }
 
@@ -69,9 +64,9 @@ public class ObservationValueMapperTest extends BaseModuleWebContextSensitiveTes
         obs.setConcept(conceptNumeric);
         double valueNumeric = 10.0;
         obs.setValueNumeric(valueNumeric);
-        IDatatype value = observationValueMapper.map(obs);
-        assertTrue(value instanceof QuantityDt);
-        QuantityDt quantity = (QuantityDt) value;
+        Type value = observationValueMapper.map(obs);
+        assertTrue(value instanceof Quantity);
+        Quantity quantity = (Quantity) value;
         assertTrue(quantity.getValue().doubleValue() == valueNumeric);
         assertEquals(units, quantity.getUnit());
     }
@@ -84,9 +79,9 @@ public class ObservationValueMapperTest extends BaseModuleWebContextSensitiveTes
         obs.setConcept(concept);
         String valueText = "Hello";
         obs.setValueText(valueText);
-        IDatatype value = observationValueMapper.map(obs);
-        assertTrue(value instanceof StringDt);
-        assertEquals(valueText, ((StringDt) value).getValue());
+        Type value = observationValueMapper.map(obs);
+        assertTrue(value instanceof StringType);
+        assertEquals(valueText, ((StringType) value).getValue());
     }
 
     @Test
@@ -99,9 +94,9 @@ public class ObservationValueMapperTest extends BaseModuleWebContextSensitiveTes
         String conceptName = "Concept";
         codedConcept.addName(new ConceptName(conceptName, conceptService.getLocalesOfConceptNames().iterator().next()));
         obs.setValueCoded(codedConcept);
-        IDatatype value = observationValueMapper.map(obs);
-        assertTrue(value instanceof CodeableConceptDt);
-        assertEquals(conceptName, ((CodeableConceptDt) value).getCoding().get(0).getDisplay());
+        Type value = observationValueMapper.map(obs);
+        assertTrue(value instanceof CodeableConcept);
+        assertEquals(conceptName, ((CodeableConcept) value).getCoding().get(0).getDisplay());
     }
 
     @Test
@@ -111,9 +106,9 @@ public class ObservationValueMapperTest extends BaseModuleWebContextSensitiveTes
         concept.setDatatype(conceptService.getConceptDatatypeByName("Boolean"));
         obs.setConcept(concept);
         obs.setValueBoolean(FALSE);
-        IDatatype value = observationValueMapper.map(obs);
-        assertTrue(value instanceof CodeableConceptDt);
-        CodingDt codingDt = ((CodeableConceptDt) value).getCoding().get(0);
+        Type value = observationValueMapper.map(obs);
+        assertTrue(value instanceof CodeableConcept);
+        Coding codingDt = ((CodeableConcept) value).getCoding().get(0);
         assertEquals(FHIRProperties.FHIR_YES_NO_INDICATOR_URL, codingDt.getSystem());
         assertEquals(FHIRProperties.FHIR_NO_INDICATOR_CODE, codingDt.getCode());
         assertEquals(FHIRProperties.FHIR_NO_INDICATOR_DISPLAY, codingDt.getDisplay());
@@ -134,8 +129,8 @@ public class ObservationValueMapperTest extends BaseModuleWebContextSensitiveTes
         codedDrug.setName(drugName);
         obs.setValueCoded(codedConcept);
         obs.setValueDrug(codedDrug);
-        IDatatype value = observationValueMapper.map(obs);
-        assertTrue(value instanceof CodeableConceptDt);
-        assertTrue(containsCoding(((CodeableConceptDt) value).getCoding(), null, null, drugName));
+        Type value = observationValueMapper.map(obs);
+        assertTrue(value instanceof CodeableConcept);
+        assertTrue(containsCoding(((CodeableConcept) value).getCoding(), null, null, drugName));
     }
 }

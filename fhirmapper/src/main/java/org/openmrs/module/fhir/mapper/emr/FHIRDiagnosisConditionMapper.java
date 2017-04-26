@@ -1,14 +1,13 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.resource.Condition;
-import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
+import org.hl7.fhir.dstu3.model.Annotation;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.Condition;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
-import org.openmrs.api.ObsService;
 import org.openmrs.module.fhir.FHIRProperties;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.EmrEncounter;
@@ -32,24 +31,24 @@ import static org.openmrs.module.fhir.utils.FHIREncounterUtil.getSHREncounterUrl
 
 @Component
 public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
-    private final Map<ConditionVerificationStatusEnum, String> diaConditionStatus = new HashMap<>();
+    private final Map<Condition.ConditionVerificationStatus, String> diaConditionStatus = new HashMap<>();
     private final ConceptService conceptService;
     private final OMRSConceptLookup omrsConceptLookup;
     private final IdMappingRepository idMappingsRepository;
 
     @Autowired
     public FHIRDiagnosisConditionMapper(ConceptService conceptService, OMRSConceptLookup omrsConceptLookup, IdMappingRepository idMappingsRepository) {
-        diaConditionStatus.put(ConditionVerificationStatusEnum.PROVISIONAL, MRSProperties.MRS_DIAGNOSIS_STATUS_PRESUMED);
-        diaConditionStatus.put(ConditionVerificationStatusEnum.CONFIRMED, MRSProperties.MRS_DIAGNOSIS_STATUS_CONFIRMED);
+        diaConditionStatus.put(Condition.ConditionVerificationStatus.PROVISIONAL, MRSProperties.MRS_DIAGNOSIS_STATUS_PRESUMED);
+        diaConditionStatus.put(Condition.ConditionVerificationStatus.CONFIRMED, MRSProperties.MRS_DIAGNOSIS_STATUS_CONFIRMED);
         this.conceptService = conceptService;
         this.omrsConceptLookup = omrsConceptLookup;
         this.idMappingsRepository = idMappingsRepository;
     }
 
     @Override
-    public boolean canHandle(IResource resource) {
+    public boolean canHandle(Resource resource) {
         if (resource instanceof Condition) {
-            final List<CodingDt> resourceCoding = ((Condition) resource).getCategory().getCoding();
+            final List<Coding> resourceCoding = ((Condition) resource).getCategory().get(0).getCoding();
             if (resourceCoding == null || resourceCoding.isEmpty()) {
                 return false;
             }
@@ -59,7 +58,7 @@ public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
     }
 
     @Override
-    public void map(IResource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
+    public void map(Resource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         Condition condition = (Condition) resource;
 
         Concept diagnosisOrder = conceptService.getConceptByName(MRSProperties.MRS_CONCEPT_NAME_DIAGNOSIS_ORDER);
@@ -82,12 +81,12 @@ public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
         Obs visitDiagnosisObs = new Obs();
         visitDiagnosisObs.setConcept(visitDiagnosis);
 
-        if (diagnosisSeverityAnswer != null){
+        if (diagnosisSeverityAnswer != null) {
             Obs orderObs = addToObsGroup(visitDiagnosisObs, diagnosisOrder);
             orderObs.setValueCoded(diagnosisSeverityAnswer);
         }
 
-        if (diagnosisCertaintyAnswer != null){
+        if (diagnosisCertaintyAnswer != null) {
             Obs certaintyObs = addToObsGroup(visitDiagnosisObs, diagnosisCertainty);
             certaintyObs.setValueCoded(diagnosisCertaintyAnswer);
         }
@@ -103,17 +102,19 @@ public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
 
         saveIdMappingForDiagnosis(condition, visitDiagnosisObs, shrEncounterBundle, systemProperties);
 
-        visitDiagnosisObs.setComment(condition.getNotes());
+        List<Annotation> note = condition.getNote();
+        if (!note.isEmpty())
+            visitDiagnosisObs.setComment(note.get(0).getText());
         emrEncounter.addObs(visitDiagnosisObs);
 
     }
 
     public void saveIdMappingForDiagnosis(Condition condition, Obs visitDiagnosisObs, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         String encounterUrl = getSHREncounterUrl(shrEncounterBundle.getShrEncounterId(), shrEncounterBundle.getHealthId(), systemProperties);
-        String diagnosisId = condition.getId().getIdPart();
+        String diagnosisId = condition.getId();
         String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterBundle.getShrEncounterId(), diagnosisId);
         String diagnosisUrl = String.format(RESOURCE_MAPPING_URL_FORMAT, encounterUrl,
-                new Condition().getResourceName(), diagnosisId);
+                new Condition().getResourceType().name(), diagnosisId);
         IdMapping diagnosisIdMapping = new DiagnosisIdMapping(visitDiagnosisObs.getUuid(), externalId, diagnosisUrl);
         idMappingsRepository.saveOrUpdateIdMapping(diagnosisIdMapping);
     }
@@ -126,7 +127,7 @@ public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
     }
 
     private Concept identifyDiagnosisCertainty(Condition condition, Concept diagnosisCertainty) {
-        ConditionVerificationStatusEnum conditionStatus = condition.getVerificationStatusElement().getValueAsEnum();
+        Condition.ConditionVerificationStatus conditionStatus = condition.getVerificationStatus();
         String status = diaConditionStatus.get(conditionStatus);
 
         Concept certaintyAnswerConcept = null;

@@ -1,10 +1,8 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticOrder;
 import ca.uhn.fhir.model.primitive.StringDt;
 import org.apache.commons.collections.CollectionUtils;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.openmrs.Concept;
 import org.openmrs.Order;
 import org.openmrs.module.fhir.MRSProperties;

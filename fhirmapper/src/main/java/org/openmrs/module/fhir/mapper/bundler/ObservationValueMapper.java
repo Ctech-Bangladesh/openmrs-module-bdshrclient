@@ -1,13 +1,6 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.IDatatype;
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
-import ca.uhn.fhir.model.primitive.DateTimeDt;
-import ca.uhn.fhir.model.primitive.StringDt;
-import org.apache.commons.collections.CollectionUtils;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.Drug;
@@ -31,9 +24,9 @@ public class ObservationValueMapper {
 
         Numeric {
             @Override
-            public IDatatype readValue(Obs obs, CodeableConceptService codeableConceptService) {
+            public Type readValue(Obs obs, CodeableConceptService codeableConceptService) {
                 if (obs.getConcept().getDatatype().isNumeric() && obs.getValueNumeric() != null) {
-                    QuantityDt quantity = new QuantityDt();
+                    Quantity quantity = new Quantity();
                     quantity.setValue(obs.getValueNumeric());
                     if (obs.getConcept().isNumeric()) {
                         Integer conceptId = obs.getConcept().getConceptId();
@@ -51,9 +44,9 @@ public class ObservationValueMapper {
 
         Text {
             @Override
-            public IDatatype readValue(Obs obs, CodeableConceptService codeableConceptService) {
+            public Type readValue(Obs obs, CodeableConceptService codeableConceptService) {
                 if (obs.getConcept().getDatatype().isText() && obs.getValueText() != null) {
-                    return new StringDt(obs.getValueText());
+                    return new StringType(obs.getValueText());
                 }
                 return null;
             }
@@ -61,10 +54,10 @@ public class ObservationValueMapper {
 
         Boolean {
             @Override
-            public IDatatype readValue(Obs obs, CodeableConceptService codeableConceptService) {
+            public Type readValue(Obs obs, CodeableConceptService codeableConceptService) {
                 if (obs.getConcept().getDatatype().isBoolean() && obs.getValueAsBoolean() != null) {
-                    CodeableConceptDt codeableConcept = new CodeableConceptDt();
-                    CodingDt coding = codeableConcept.addCoding();
+                    CodeableConcept codeableConcept = new CodeableConcept();
+                    Coding coding = codeableConcept.addCoding();
                     coding.setSystem(FHIR_YES_NO_INDICATOR_URL);
                     coding.setCode(obs.getValueBoolean() ? FHIR_YES_INDICATOR_CODE : FHIR_NO_INDICATOR_CODE);
                     coding.setDisplay(obs.getValueBoolean() ? FHIR_YES_INDICATOR_DISPLAY : FHIR_NO_INDICATOR_DISPLAY);
@@ -76,9 +69,9 @@ public class ObservationValueMapper {
 
         Date {
             @Override
-            public IDatatype readValue(Obs obs, CodeableConceptService codeableConceptService) {
+            public Type readValue(Obs obs, CodeableConceptService codeableConceptService) {
                 if (obs.getConcept().getDatatype().isDate() && obs.getValueDate() != null) {
-                    return new DateTimeDt(obs.getValueDate(), TemporalPrecisionEnum.DAY);
+                    return new DateType(obs.getValueDate());
                 }
                 return null;
             }
@@ -86,9 +79,9 @@ public class ObservationValueMapper {
 
         DateTime {
             @Override
-            public IDatatype readValue(Obs obs, CodeableConceptService codeableConceptService) {
+            public Type readValue(Obs obs, CodeableConceptService codeableConceptService) {
                 if (obs.getConcept().getDatatype().isDateTime() && obs.getValueDatetime() != null) {
-                    return new DateTimeDt(obs.getValueDate(), TemporalPrecisionEnum.MILLI);
+                    return new DateTimeType(obs.getValueDate());
                 }
                 return null;
             }
@@ -96,9 +89,9 @@ public class ObservationValueMapper {
 
         Coded {
             @Override
-            public IDatatype readValue(Obs obs, CodeableConceptService codeableConceptService) {
+            public Type readValue(Obs obs, CodeableConceptService codeableConceptService) {
                 if (obs.getConcept().getDatatype().isCoded() && obs.getValueCoded() != null) {
-                    CodeableConceptDt codeableConcept = null;
+                    CodeableConcept codeableConcept = null;
                     if (obs.getValueDrug() != null) {
                         Drug valueDrug = obs.getValueDrug();
                         codeableConcept = codeableConceptService.addTRCodingOrDisplay(valueDrug);
@@ -113,7 +106,7 @@ public class ObservationValueMapper {
         };
 
 
-        public abstract IDatatype readValue(Obs obs, CodeableConceptService codeableConceptService);
+        public abstract Type readValue(Obs obs, CodeableConceptService codeableConceptService);
     }
 
     @Autowired
@@ -134,9 +127,9 @@ public class ObservationValueMapper {
         return conceptService;
     }
 
-    public IDatatype map(Obs observation) {
+    public Type map(Obs observation) {
         for (ValueReader valueReader : ValueReader.values()) {
-            IDatatype readValue = valueReader.readValue(observation, codeableConceptService);
+            Type readValue = valueReader.readValue(observation, codeableConceptService);
             if (null != readValue) {
                 return readValue;
             }

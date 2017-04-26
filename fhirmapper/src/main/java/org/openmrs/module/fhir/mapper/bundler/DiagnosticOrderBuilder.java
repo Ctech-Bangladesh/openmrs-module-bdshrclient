@@ -1,10 +1,6 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticOrder;
-import ca.uhn.fhir.model.dstu2.valueset.DiagnosticOrderStatusEnum;
 import org.openmrs.Order;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;

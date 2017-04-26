@@ -1,12 +1,8 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.ExtensionDt;
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.BaseResource;
-import ca.uhn.fhir.model.dstu2.resource.ProcedureRequest;
-import ca.uhn.fhir.model.primitive.StringDt;
 import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.dstu3.model.ProcedureRequest;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.openmrs.Concept;
 import org.openmrs.Order;
 import org.openmrs.api.OrderService;
@@ -30,7 +26,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static ca.uhn.fhir.model.dstu2.valueset.ProcedureRequestStatusEnum.SUSPENDED;
 import static org.openmrs.Order.Action.DISCONTINUE;
 import static org.openmrs.Order.Action.NEW;
 import static org.openmrs.module.fhir.FHIRProperties.PROCEDURE_REQUEST_PREVIOUS_REQUEST_EXTENSION_NAME;
@@ -56,12 +51,12 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
     }
 
     @Override
-    public boolean canHandle(IResource resource) {
+    public boolean canHandle(Resource resource) {
         return resource instanceof ProcedureRequest;
     }
 
     @Override
-    public void map(IResource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
+    public void map(Resource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         ProcedureRequest procedureRequest = (ProcedureRequest) resource;
         if (isProcedureRequestDownloaded(shrEncounterBundle, procedureRequest)) return;
         Order order = createProcedureOrder(procedureRequest, emrEncounter, shrEncounterBundle, systemProperties);

@@ -1,8 +1,8 @@
 package org.openmrs.module.fhir.mapper.model;
 
-import ca.uhn.fhir.model.dstu2.resource.BaseResource;
 import org.apache.commons.collections4.map.DefaultedMap;
 import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.dstu3.model.BaseResource;
 import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -32,12 +32,12 @@ public class EntityReference {
         referenceMap.put(BaseResource.class, new FHIResourceReference());
     }
 
-    public String build(Type type, SystemProperties systemProperties, String id) {
-        return referenceMap.get(type).create(id, systemProperties);
+    public String build(Type openmrsType, SystemProperties systemProperties, String id) {
+        return referenceMap.get(openmrsType).create(id, systemProperties);
     }
 
-    public String build(Type type, SystemProperties systemProperties, HashMap<String, String> ids) {
-        return referenceMap.get(type).create(ids, systemProperties);
+    public String build(Type openmrsType, SystemProperties systemProperties, HashMap<String, String> ids) {
+        return referenceMap.get(openmrsType).create(ids, systemProperties);
     }
 
     public String parse(Type type, String url) {

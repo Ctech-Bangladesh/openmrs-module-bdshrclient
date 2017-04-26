@@ -1,8 +1,8 @@
 package org.openmrs.module.fhir.utils;
 
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
 import org.apache.commons.collections.CollectionUtils;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Coding;
 import org.openmrs.*;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.IdMapping;
@@ -18,39 +18,39 @@ public class CodeableConceptService {
     @Autowired
     private IdMappingRepository idMappingsRepository;
 
-    public CodeableConceptDt getFHIRCodeableConcept(String code, String system, String display) {
-        CodeableConceptDt codeableConcept = new CodeableConceptDt();
+    public CodeableConcept getFHIRCodeableConcept(String code, String system, String display) {
+        CodeableConcept codeableConcept = new CodeableConcept();
         addFHIRCoding(codeableConcept, code, system, display);
         return codeableConcept;
     }
 
-    public void addFHIRCoding(CodeableConceptDt codeableConcept, String code, String system, String display) {
-        CodingDt coding = codeableConcept.addCoding();
+    public void addFHIRCoding(CodeableConcept codeableConcept, String code, String system, String display) {
+        Coding coding = codeableConcept.addCoding();
         coding.setCode(code);
         coding.setSystem(system);
         coding.setDisplay(display);
     }
 
-    public CodeableConceptDt addTRCodingOrDisplay(Concept concept) {
-        CodeableConceptDt codeableConceptDt = addTRCoding(concept);
+    public CodeableConcept addTRCodingOrDisplay(Concept concept) {
+        CodeableConcept codeableConceptDt = addTRCoding(concept);
         if (CollectionUtils.isEmpty(codeableConceptDt.getCoding())) {
-            CodingDt coding = codeableConceptDt.addCoding();
+            Coding coding = codeableConceptDt.addCoding();
             coding.setDisplay(concept.getName().getName());
         }
         return codeableConceptDt;
     }
 
-    public CodeableConceptDt addTRCodingOrDisplay(Drug drug) {
-        CodeableConceptDt codeableConceptDt = addTRCoding(drug);
+    public CodeableConcept addTRCodingOrDisplay(Drug drug) {
+        CodeableConcept codeableConceptDt = addTRCoding(drug);
         if (CollectionUtils.isEmpty(codeableConceptDt.getCoding())) {
-            CodingDt coding = codeableConceptDt.addCoding();
+            Coding coding = codeableConceptDt.addCoding();
             coding.setDisplay(drug.getName());
         }
         return codeableConceptDt;
     }
 
-    public CodeableConceptDt addTRCoding(Concept concept) {
-        CodeableConceptDt codeableConcept = new CodeableConceptDt();
+    public CodeableConcept addTRCoding(Concept concept) {
+        CodeableConcept codeableConcept = new CodeableConcept();
         Collection<ConceptMap> conceptMappings = concept.getConceptMappings();
         for (ConceptMap mapping : conceptMappings) {
             if (mapping.getConceptMapType().getUuid().equals(ConceptMapType.SAME_AS_MAP_TYPE_UUID)) {
@@ -61,8 +61,8 @@ public class CodeableConceptService {
         return codeableConcept;
     }
 
-    public CodeableConceptDt addTRCoding(Drug drug) {
-        CodeableConceptDt codeableConcept = new CodeableConceptDt();
+    public CodeableConcept addTRCoding(Drug drug) {
+        CodeableConcept codeableConcept = new CodeableConcept();
         IdMapping idMapping = idMappingsRepository.findByInternalId(drug.getUuid(), IdMappingType.MEDICATION);
         if (idMapping != null) {
             addFHIRCoding(codeableConcept, idMapping.getExternalId(), idMapping.getUri(), drug.getName());
@@ -70,14 +70,14 @@ public class CodeableConceptService {
         return codeableConcept;
     }
 
-    private void addTRCodingForConcept(Concept concept, IdMappingRepository idMappingsRepository, CodeableConceptDt codeableConcept) {
+    private void addTRCodingForConcept(Concept concept, IdMappingRepository idMappingsRepository, CodeableConcept codeableConcept) {
         IdMapping idMapping = idMappingsRepository.findByInternalId(concept.getUuid(), IdMappingType.CONCEPT);
         if (idMapping != null) {
             addFHIRCoding(codeableConcept, idMapping.getExternalId(), idMapping.getUri(), concept.getName().getName());
         }
     }
 
-    private void addTRCodingsForReferenceTerms(Concept concept, IdMappingRepository idMappingsRepository, CodeableConceptDt codeableConcept, ConceptMap mapping) {
+    private void addTRCodingsForReferenceTerms(Concept concept, IdMappingRepository idMappingsRepository, CodeableConcept codeableConcept, ConceptMap mapping) {
         ConceptReferenceTerm conceptReferenceTerm = mapping.getConceptReferenceTerm();
         IdMapping idMapping = idMappingsRepository.findByInternalId(conceptReferenceTerm.getUuid(), IdMappingType.CONCEPT_REFERENCE_TERM);
         if (idMapping != null) {
@@ -97,12 +97,12 @@ public class CodeableConceptService {
         return concept.getName().getName();
     }
 
-    public CodeableConceptDt getTRValueSetCodeableConcept(Concept concept, String valueSetURL) {
-        return getTRValueSetCodeableConcept(concept, valueSetURL, new CodeableConceptDt());
+    public CodeableConcept getTRValueSetCodeableConcept(Concept concept, String valueSetURL) {
+        return getTRValueSetCodeableConcept(concept, valueSetURL, new CodeableConcept());
     }
 
-    public CodeableConceptDt getTRValueSetCodeableConcept(Concept concept, String valueSetURL, CodeableConceptDt codeableConcept) {
-        CodingDt coding = codeableConcept.addCoding();
+    public CodeableConcept getTRValueSetCodeableConcept(Concept concept, String valueSetURL, CodeableConcept codeableConcept) {
+        Coding coding = codeableConcept.addCoding();
         if (null != idMappingsRepository.findByInternalId(concept.getUuid(), IdMappingType.CONCEPT)) {
             coding.setCode(getTRValueSetCode(concept));
             coding.setSystem(valueSetURL);

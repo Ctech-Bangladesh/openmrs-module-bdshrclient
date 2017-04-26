@@ -1,10 +1,8 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticOrder;
 import ca.uhn.fhir.model.primitive.StringDt;
 import org.apache.commons.collections.CollectionUtils;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.openmrs.Concept;
 import org.openmrs.Order;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
@@ -46,7 +44,7 @@ public class GenericOrderMapper implements EmrOrderResourceHandler {
     @Override
     public List<FHIRResource> map(Order order, FHIREncounter fhirEncounter, Bundle bundle, SystemProperties systemProperties) {
         if (order.getDateStopped() != null) return Collections.EMPTY_LIST;
-        DiagnosticOrder diagnosticOrder = orderBuilder.createDiagnosticOrder(order, fhirEncounter, systemProperties);
+        DiagnosticRequest diagnosticOrder = orderBuilder.createDiagnosticOrder(order, fhirEncounter, systemProperties);
         addExtension(diagnosticOrder, order);
         createOrderItemForTest(order, diagnosticOrder, order.getConcept());
         if (CollectionUtils.isEmpty(diagnosticOrder.getItem())) {

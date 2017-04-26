@@ -1,9 +1,9 @@
 package org.openmrs.module.fhir.mapper.model;
 
-import ca.uhn.fhir.model.dstu2.composite.IdentifierDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Encounter;
 import org.apache.commons.collections4.CollectionUtils;
+import org.hl7.fhir.dstu3.model.Encounter;
+import org.hl7.fhir.dstu3.model.Identifier;
+import org.hl7.fhir.dstu3.model.Reference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,33 +19,33 @@ public class FHIREncounter {
         return encounter;
     }
     
-    public List<ResourceReferenceDt> getParticipantReferences() {
-        List<ResourceReferenceDt> participants = new ArrayList<>();
+    public List<Reference> getParticipantReferences() {
+        List<Reference> participants = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(encounter.getParticipant())) {
-            for (Encounter.Participant participant : encounter.getParticipant()) {
+            for (Encounter.EncounterParticipantComponent participant : encounter.getParticipant()) {
                 participants.add(participant.getIndividual());
             }
         }
         return participants;
     }
 
-    public ResourceReferenceDt getFirstParticipantReference() {
+    public Reference getFirstParticipantReference() {
         return CollectionUtils.isNotEmpty(encounter.getParticipant()) ? encounter.getParticipantFirstRep().getIndividual() : null;
     }
 
     public String getId() {
-        return encounter.getId().getValue();
+        return encounter.getId();
     }
 
-    public ResourceReferenceDt getPatient() {
-        return encounter.getPatient();
+    public Reference getPatient() {
+        return encounter.getSubject();
     }
 
-    public ResourceReferenceDt getServiceProvider() {
+    public Reference getServiceProvider() {
         return encounter.getServiceProvider();
     }
 
-    public List<IdentifierDt> getIdentifier() {
+    public List<Identifier> getIdentifier() {
         return encounter.getIdentifier();
     }
 }

@@ -1,6 +1,6 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.openmrs.Order;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.mapper.model.FHIRResource;

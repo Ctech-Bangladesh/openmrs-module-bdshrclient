@@ -1,17 +1,8 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IDatatype;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
-import ca.uhn.fhir.model.primitive.BooleanDt;
-import ca.uhn.fhir.model.primitive.DateDt;
-import ca.uhn.fhir.model.primitive.DateTimeDt;
-import ca.uhn.fhir.model.primitive.StringDt;
-import org.openmrs.Concept;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.Drug;
 import org.openmrs.Obs;
-import org.openmrs.api.ConceptService;
 import org.openmrs.module.fhir.FHIRProperties;
 import org.openmrs.module.fhir.utils.OMRSConceptLookup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,20 +20,20 @@ public class FHIRObservationValueMapper {
         this.omrsConceptLookup = omrsConceptLookup;
     }
 
-    public Obs map(IDatatype value, Obs obs) {
+    public Obs map(Type value, Obs obs) {
         if (value != null && !value.isEmpty()) {
-            if (value instanceof StringDt) {
-                obs.setValueText(((StringDt) value).getValue());
-            } else if (value instanceof QuantityDt) {
-                obs.setValueNumeric(((QuantityDt) value).getValue().doubleValue());
-            } else if (value instanceof DateTimeDt) {
-                obs.setValueDatetime(((DateTimeDt) value).getValue());
-            } else if (value instanceof DateDt) {
-                obs.setValueDate(((DateDt) value).getValue());
-            } else if (value instanceof BooleanDt) {
-                obs.setValueBoolean(((BooleanDt) value).getValue());
-            } else if (value instanceof CodeableConceptDt) {
-                List<CodingDt> codings = ((CodeableConceptDt) value).getCoding();
+            if (value instanceof StringType) {
+                obs.setValueText(((StringType) value).getValue());
+            } else if (value instanceof Quantity) {
+                obs.setValueNumeric(((Quantity) value).getValue().doubleValue());
+            } else if (value instanceof DateTimeType) {
+                obs.setValueDatetime(((DateTimeType) value).getValue());
+            } else if (value instanceof DateType) {
+                obs.setValueDate(((DateType) value).getValue());
+            } else if (value instanceof BooleanType) {
+                obs.setValueBoolean(((BooleanType) value).getValue());
+            } else if (value instanceof CodeableConcept) {
+                List<Coding> codings = ((CodeableConcept) value).getCoding();
                 Boolean booleanValue = checkIfBooleanCoding(codings);
                 if (booleanValue != null) {
                     obs.setValueBoolean(booleanValue);
@@ -62,8 +53,8 @@ public class FHIRObservationValueMapper {
         return null;
     }
 
-    private Boolean checkIfBooleanCoding(List<CodingDt> codings) {
-        for (CodingDt coding : codings) {
+    private Boolean checkIfBooleanCoding(List<Coding> codings) {
+        for (Coding coding : codings) {
             if (coding.getSystem() != null && coding.getSystem().equals(FHIRProperties.FHIR_YES_NO_INDICATOR_URL)) {
                 if (coding.getCode() != null && coding.getCode().equals(FHIRProperties.FHIR_NO_INDICATOR_CODE)) {
                     return false;

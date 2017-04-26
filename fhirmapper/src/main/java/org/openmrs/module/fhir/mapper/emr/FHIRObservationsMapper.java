@@ -1,9 +1,9 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IDatatype;
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.resource.Observation;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Observation;
+import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.dstu3.model.Type;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.module.fhir.mapper.model.EmrEncounter;
@@ -33,12 +33,12 @@ public class FHIRObservationsMapper implements FHIRResourceMapper {
     }
 
     @Override
-    public boolean canHandle(IResource resource) {
+    public boolean canHandle(Resource resource) {
         return (resource instanceof Observation);
     }
 
     @Override
-    public void map(IResource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
+    public void map(Resource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         Observation observation = (Observation) resource;
         Obs obs = mapObs(shrEncounterBundle, emrEncounter, observation);
         emrEncounter.addObs(obs);
@@ -63,13 +63,13 @@ public class FHIRObservationsMapper implements FHIRResourceMapper {
         if (isLocallyCreatedConcept(concept)) {
             mapValueAsString(observation, result);
         } else {
-            IDatatype value = observation.getValue();
+            Type value = observation.getValue();
             resourceValueMapper.map(value, result);
         }
     }
 
     private void mapRelatedObservations(ShrEncounterBundle encounterComposition, Observation observation, Obs obs, EmrEncounter emrEncounter) throws ParseException {
-        for (Observation.Related component : observation.getRelated()) {
+        for (Observation.ObservationRelatedComponent component : observation.getRelated()) {
             Obs member;
             Observation relatedObs = (Observation) findResourceByReference(encounterComposition.getBundle(), component.getTarget());
             member = mapObs(encounterComposition, emrEncounter, relatedObs);
@@ -84,13 +84,13 @@ public class FHIRObservationsMapper implements FHIRResourceMapper {
     }
 
     private void mapValueAsString(Observation relatedObs, Obs result) throws ParseException {
-        IDatatype value = relatedObs.getValue();
+        Type value = relatedObs.getValue();
         if (value != null)
             result.setValueAsString(ObservationValueConverter.convertToText(value));
     }
 
     private Concept mapConcept(Observation observation, String facilityId) {
-        CodeableConceptDt observationName = observation.getCode();
+        CodeableConcept observationName = observation.getCode();
         if (observationName.getCoding() != null && observationName.getCoding().isEmpty()) {
             return null;
         }

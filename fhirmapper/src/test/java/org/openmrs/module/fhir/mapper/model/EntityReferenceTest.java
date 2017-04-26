@@ -1,7 +1,6 @@
 package org.openmrs.module.fhir.mapper.model;
 
-import ca.uhn.fhir.model.dstu2.resource.BaseResource;
-import ca.uhn.fhir.model.dstu2.resource.MedicationOrder;
+import org.hl7.fhir.dstu3.model.BaseResource;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Location;

@@ -1,17 +1,11 @@
 package org.openmrs.module.fhir.mapper.emr;
 
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.AnnotationDt;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticReport;
-import ca.uhn.fhir.model.dstu2.resource.Observation;
-import ca.uhn.fhir.model.dstu2.resource.Procedure;
 import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.Location;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.OrderService;
 import org.openmrs.module.fhir.mapper.model.EmrEncounter;
@@ -52,24 +46,24 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     }
 
     @Override
-    public boolean canHandle(IResource resource) {
+    public boolean canHandle(Resource resource) {
         return resource instanceof Procedure;
     }
 
     @Override
-    public void map(IResource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
+    public void map(Resource resource, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         Procedure procedure = (Procedure) resource;
 
         Obs proceduresObs = new Obs();
         proceduresObs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_PROCEDURES_TEMPLATE));
 
         Order procedureOrder = getProcedureOrder(procedure);
-        final ca.uhn.fhir.model.dstu2.resource.Encounter shrEncounter = FHIRBundleHelper.getEncounter(shrEncounterBundle.getBundle());
-        String facilityId = new EntityReference().parse(Location.class, shrEncounter.getServiceProvider().getReference().getValue());
+        final org.hl7.fhir.dstu3.model.Encounter shrEncounter = FHIRBundleHelper.getEncounter(shrEncounterBundle.getBundle());
+        String facilityId = new EntityReference().parse(Location.class, shrEncounter.getServiceProvider().getReference());
         Obs procedureType = getProcedureType(procedure, procedureOrder, facilityId);
         if (procedureType == null) return;
         if (shouldFailDownload(procedure, procedureOrder, procedureType)) {
-            String requestReference = procedure.getRequest().getReference().getValue();
+            String requestReference = procedure.getBasedOn().get(0).getReference();
             throw new RuntimeException(String.format("The procedure order with SHR reference [%s] is not yet synced", requestReference));
         }
         proceduresObs.setOrder(procedureOrder);
@@ -81,8 +75,8 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
         getProcedureNotesObs(procedure, proceduresObs, procedureOrder);
         proceduresObs.addGroupMember(getProcedureStatusObs(procedure, procedureOrder));
 
-        for (ResourceReferenceDt reportReference : procedure.getReport()) {
-            IResource diagnosticReportResource = FHIRBundleHelper.findResourceByReference(shrEncounterBundle.getBundle(), reportReference);
+        for (Reference reportReference : procedure.getReport()) {
+            Resource diagnosticReportResource = FHIRBundleHelper.findResourceByReference(shrEncounterBundle.getBundle(), reportReference);
             if (diagnosticReportResource != null && diagnosticReportResource instanceof DiagnosticReport) {
                 proceduresObs.addGroupMember(getDiagnosisStudyObs((DiagnosticReport) diagnosticReportResource, shrEncounterBundle.getBundle(), procedureOrder));
             }
@@ -99,7 +93,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     }
 
     private boolean shouldFailDownload(Procedure procedure, Order procedureOrder, Obs procedureType) {
-        if (procedure.getRequest().isEmpty()) return false;
+        if (procedure.getBasedOn().isEmpty()) return false;
         if (isLocallyCreatedConcept(procedureType.getValueCoded())) return false;
         return procedureOrder == null;
     }
@@ -109,8 +103,8 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     }
 
     private Order getProcedureOrder(Procedure procedure) {
-        if (procedure.getRequest().isEmpty()) return null;
-        String procedureRequestUrl = procedure.getRequest().getReference().getValue();
+        if (procedure.getBasedOn().isEmpty()) return null;
+        String procedureRequestUrl = procedure.getBasedOn().get(0).getReference();
         String requestEncounterId = new EntityReference().parse(Encounter.class, procedureRequestUrl);
         String procedureRequestReference = StringUtils.substringAfterLast(procedureRequestUrl, "/");
         String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, requestEncounterId, procedureRequestReference);
@@ -124,18 +118,18 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     private Obs getProcedureStatusObs(Procedure procedure, Order procedureOrder) {
         Obs statusObs = new Obs();
         statusObs.setConcept(omrsConceptLookup.findTRConceptOfType(TrValueSetType.PROCEDURE_STATUS));
-        Concept statusConcept = omrsConceptLookup.findValuesetConceptFromTrValuesetType(TrValueSetType.PROCEDURE_STATUS, procedure.getStatus());
+        Concept statusConcept = omrsConceptLookup.findValuesetConceptFromTrValuesetType(TrValueSetType.PROCEDURE_STATUS, procedure.getStatus().toCode());
         statusObs.setValueCoded(statusConcept);
         statusObs.setOrder(procedureOrder);
         return statusObs;
     }
 
     private void getProcedureNotesObs(Procedure procedure, Obs proceduresObs, Order procedureOrder) {
-        for (AnnotationDt annotationDt : procedure.getNotes()) {
-            if (annotationDt.getText() == null) continue;
+        for (Annotation annotation : procedure.getNote()) {
+            if (annotation.getText() == null) continue;
             Obs procedureNotesObs = new Obs();
             procedureNotesObs.setConcept(conceptService.getConceptByName(MRS_CONCEPT_PROCEDURE_NOTES));
-            procedureNotesObs.setValueText(annotationDt.getText());
+            procedureNotesObs.setValueText(annotation.getText());
             procedureNotesObs.setOrder(procedureOrder);
             proceduresObs.addGroupMember(procedureNotesObs);
         }
@@ -158,7 +152,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     }
 
     private void addCodedDiagnoses(DiagnosticReport diagnosticReport, Obs diagnosisStudyObs, Order procedureOrder) {
-        for (CodeableConceptDt diagnosis : diagnosticReport.getCodedDiagnosis()) {
+        for (CodeableConcept diagnosis : diagnosticReport.getCodedDiagnosis()) {
             Obs diagnosisObs = mapObservationForConcept(diagnosis, MRS_CONCEPT_PROCEDURE_DIAGNOSIS);
             if (diagnosisObs != null) {
                 diagnosisObs.setOrder(procedureOrder);
@@ -169,7 +163,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
 
     private void addDiagnosticResults(DiagnosticReport diagnosticReport, Bundle bundle, Obs diagnosisStudyObs, Order procedureOrder) {
         Concept diagnosticResultConcept = conceptService.getConceptByName(MRS_CONCEPT_PROCEDURE_DIAGNOSTIC_RESULT);
-        for (ResourceReferenceDt resultReference : diagnosticReport.getResult()) {
+        for (Reference resultReference : diagnosticReport.getResult()) {
             Observation resultObservation = (Observation) FHIRBundleHelper.findResourceByReference(bundle, resultReference);
             if (resultObservation == null || resultObservation.getValue() == null) continue;
             Obs result = new Obs();
@@ -181,7 +175,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     }
 
     private Obs getProcedureType(Procedure procedure, Order procedureOrder, String facilityId) {
-        CodeableConceptDt procedureType = procedure.getCode();
+        CodeableConcept procedureType = procedure.getCode();
         Concept concept = conceptService.getConceptByName(MRS_CONCEPT_PROCEDURE_TYPE);
         Concept answerConcept = omrsConceptLookup.findOrCreateLocalConceptByCodings(procedureType.getCoding(), facilityId, PROCEDURE_CONCEPT_CLASS_NAME, NA_CONCEPT_DATATYPE_NAME);
         if (concept != null && answerConcept != null) {
@@ -195,7 +189,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     }
 
     private Obs getStartDate(Procedure procedure, Order procedureOrder) {
-        PeriodDt period = (PeriodDt) procedure.getPerformed();
+        Period period = (Period) procedure.getPerformed();
         Obs startDate = null;
         if (period != null && period.getStart() != null) {
             startDate = new Obs();
@@ -207,7 +201,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     }
 
     private Obs getEndDate(Procedure procedure, Order procedureOrder) {
-        PeriodDt period = (PeriodDt) procedure.getPerformed();
+        Period period = (Period) procedure.getPerformed();
         Obs endDate = null;
         if (period != null && period.getEnd() != null) {
             endDate = new Obs();
@@ -230,7 +224,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
     }
 
     private void setFollowUpObses(Procedure procedure, Obs procedureObs, Order procedureOrder) {
-        for (CodeableConceptDt followUp : procedure.getFollowUp()) {
+        for (CodeableConcept followUp : procedure.getFollowUp()) {
             Obs followUpObs = mapObservationForConcept(followUp, MRS_CONCEPT_PROCEDURE_FOLLOWUP);
             if (followUpObs != null) {
                 followUpObs.setOrder(procedureOrder);
@@ -239,7 +233,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
         }
     }
 
-    private Obs mapObservationForConcept(CodeableConceptDt codeableConcept, String conceptName) {
+    private Obs mapObservationForConcept(CodeableConcept codeableConcept, String conceptName) {
         Concept concept = conceptService.getConceptByName(conceptName);
         Concept answerConcept = omrsConceptLookup.findConceptByCodeOrDisplay(codeableConcept.getCoding());
         if (concept != null && answerConcept != null) {

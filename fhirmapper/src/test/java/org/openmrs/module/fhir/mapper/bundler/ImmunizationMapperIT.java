@@ -1,11 +1,7 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Encounter;
-import ca.uhn.fhir.model.dstu2.resource.Immunization;
 import org.apache.commons.collections.CollectionUtils;
+import org.hl7.fhir.dstu3.model.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,9 +49,9 @@ public class ImmunizationMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapSubjectToImmunizationAndSetIdentifier() throws Exception {
         Encounter fhirEncounter = new Encounter();
-        ResourceReferenceDt patient = new ResourceReferenceDt();
+        Reference patient = new Reference();
         patient.setReference("Hid");
-        fhirEncounter.setPatient(patient);
+        fhirEncounter.setSubject(patient);
 
         Immunization immunization = mapImmunization(11, fhirEncounter);
 
@@ -73,26 +69,26 @@ public class ImmunizationMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapRefusedIndicator() throws Exception {
         Immunization immunization = mapImmunization(11, new Encounter());
-        assertTrue(immunization.getWasNotGiven());
+        assertTrue(immunization.getNotGiven());
     }
 
     @Test
     public void shouldSetRefusedIndicatorAsFalseIfNotPresent() throws Exception {
         Immunization immunization = mapImmunization(31, new Encounter());
-        assertFalse(immunization.getWasNotGiven());
+        assertFalse(immunization.getNotGiven());
     }
 
     @Test
     public void shouldMapImmunizationStatus() throws Exception {
         Immunization immunization = mapImmunization(11, new Encounter());
-        assertEquals("in-progress", immunization.getStatus());
+        assertEquals("in-progress", immunization.getStatus().getDisplay());
     }
 
     @Test
     public void shouldMapVaccine() throws Exception {
         Immunization immunization = mapImmunization(11, new Encounter());
 
-        CodingDt vaccineTypeCoding = immunization.getVaccineCode().getCoding().get(0);
+        Coding vaccineTypeCoding = immunization.getVaccineCode().getCoding().get(0);
         assertEquals("Paracetamol 500", vaccineTypeCoding.getDisplay());
         assertEquals("ABC", vaccineTypeCoding.getCode());
         assertEquals("http://tr.com/ABC", vaccineTypeCoding.getSystem());
@@ -108,25 +104,25 @@ public class ImmunizationMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapReported() throws Exception {
         Immunization immunization = mapImmunization(11, new Encounter());
-        assertTrue(immunization.getReported());
+        assertFalse(immunization.getPrimarySource());
     }
 
     @Test
     public void shouldDefaultReportedToFalseIfNotEntered() throws Exception {
         Immunization immunization = mapImmunization(31, new Encounter());
-        assertFalse(immunization.getReported());
+        assertTrue(immunization.getPrimarySource());
     }
 
     @Test
     public void shouldSetTheRequesterOfTheImmunization() throws Exception {
         Encounter fhirEncounter = new Encounter();
-        Encounter.Participant requester = fhirEncounter.addParticipant();
-        ResourceReferenceDt doctor = new ResourceReferenceDt().setReference("Life Saver");
+        Encounter.EncounterParticipantComponent requester = fhirEncounter.addParticipant();
+        Reference doctor = new Reference().setReference("Life Saver");
         requester.setIndividual(doctor);
 
         Immunization immunization = mapImmunization(11, fhirEncounter);
 
-        assertEquals(doctor, immunization.getRequester());
+        assertEquals(doctor, immunization.getPractitionerFirstRep().getActor());
     }
 
     @Test
@@ -140,7 +136,7 @@ public class ImmunizationMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapImmunizationReason() throws Exception {
         Immunization immunization = mapImmunization(11, new Encounter());
-        CodeableConceptDt immunizationReason = immunization.getExplanation().getReason().get(0);
+        CodeableConcept immunizationReason = immunization.getExplanation().getReason().get(0);
 
         assertEquals("http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Immunization-Reason", immunizationReason.getCoding().get(0).getSystem());
         assertEquals("Travel vaccinations", immunizationReason.getCoding().get(0).getCode());
@@ -150,7 +146,7 @@ public class ImmunizationMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapImmunizationRefusalReason() throws Exception {
         Immunization immunization = mapImmunization(11, new Encounter());
-        CodeableConceptDt immunizationRefusalReason = immunization.getExplanation().getReasonNotGiven().get(0);
+        CodeableConcept immunizationRefusalReason = immunization.getExplanation().getReasonNotGiven().get(0);
 
         assertEquals("http://localhost:9080/openmrs/ws/rest/v1/tr/vs/No-Immunization-Reason", immunizationRefusalReason.getCoding().get(0).getSystem());
         assertEquals("patient objection", immunizationRefusalReason.getCoding().get(0).getCode());
@@ -160,7 +156,7 @@ public class ImmunizationMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapRouteOfAdministration() throws Exception {
         Immunization immunization = mapImmunization(11, new Encounter());
-        CodeableConceptDt route = immunization.getRoute();
+        CodeableConcept route = immunization.getRoute();
 
         assertEquals("http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Route-of-Administration", route.getCoding().get(0).getSystem());
         assertEquals("Oral", route.getCoding().get(0).getCode());
