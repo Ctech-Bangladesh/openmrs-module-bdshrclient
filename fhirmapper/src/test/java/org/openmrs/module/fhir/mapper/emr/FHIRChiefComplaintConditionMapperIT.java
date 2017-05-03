@@ -1,8 +1,8 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Condition;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Condition;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,14 +57,14 @@ public class FHIRChiefComplaintConditionMapperIT extends BaseModuleWebContextSen
 
     @Test
     public void shouldMapFHIRComplaint() throws Exception {
-        final Bundle bundle = loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithChiefComplaints.xml");
-        final List<IResource> conditions = TestFhirFeedHelper.getResourceByType(bundle, new Condition().getResourceName());
+        final Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithChiefComplaints.xml");
+        final List<Resource> conditions = TestFhirFeedHelper.getResourceByType(bundle, new Condition().getResourceType().name());
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(bundle, "98101039678", "shr-enc-id-1");
         Patient emrPatient = new Patient();
         Encounter encounter = new Encounter();
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
         encounter.setPatient(emrPatient);
-        for (IResource condition : conditions) {
+        for (Resource condition : conditions) {
             if (fhirChiefComplaintConditionMapper.canHandle(condition)) {
                 fhirChiefComplaintConditionMapper.map(condition, emrEncounter, encounterComposition, getSystemProperties("1"));
             }
@@ -95,14 +95,14 @@ public class FHIRChiefComplaintConditionMapperIT extends BaseModuleWebContextSen
 
     @Test
     public void shouldNotCreateDurationObsIfDurationNotGiven() throws Exception {
-        final Bundle bundle = loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithChiefComplaintWithoutDuration.xml");
-        final List<IResource> conditions = TestFhirFeedHelper.getResourceByType(bundle, new Condition().getResourceName());
+        final Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithChiefComplaintWithoutDuration.xml");
+        final List<Resource> conditions = TestFhirFeedHelper.getResourceByType(bundle, new Condition().getResourceType().name());
         Patient emrPatient = new Patient();
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(bundle, "98101039678", "shr-enc-id-1");
         Encounter encounter = new Encounter();
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
         encounter.setPatient(emrPatient);
-        for (IResource condition : conditions) {
+        for (Resource condition : conditions) {
             if (fhirChiefComplaintConditionMapper.canHandle(condition)) {
                 fhirChiefComplaintConditionMapper.map(condition, emrEncounter, encounterComposition, getSystemProperties("1"));
             }
@@ -114,14 +114,14 @@ public class FHIRChiefComplaintConditionMapperIT extends BaseModuleWebContextSen
 
     @Test
     public void shouldCreateOneHistoryAndExaminationObsForAllComplaints() throws Exception {
-        final Bundle bundle = loadSampleFHIREncounter("classpath:encounterBundles/dstu2/encounterWithMultipleChiefComplaints.xml");
-        final List<IResource> conditions = TestFhirFeedHelper.getResourceByType(bundle, new Condition().getResourceName());
+        final Bundle bundle = loadSampleFHIREncounter("classpath:encounterBundles/stu3/encounterWithMultipleChiefComplaints.xml");
+        final List<Resource> conditions = TestFhirFeedHelper.getResourceByType(bundle, new Condition().getResourceType().name());
         Patient emrPatient = new Patient();
         Encounter encounter = new Encounter();
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(bundle, "98101039678", "shr-enc-id-1");
         encounter.setPatient(emrPatient);
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
-        for (IResource condition : conditions) {
+        for (Resource condition : conditions) {
             if (fhirChiefComplaintConditionMapper.canHandle(condition)) {
                 fhirChiefComplaintConditionMapper.map(condition, emrEncounter, encounterComposition, getSystemProperties("1"));
             }

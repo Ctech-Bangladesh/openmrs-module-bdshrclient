@@ -1,7 +1,7 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import org.hamcrest.core.Is;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.junit.After;
 import org.junit.Test;
 import org.openmrs.*;
@@ -53,7 +53,7 @@ public class FHIRMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapObservations() throws Exception {
         executeDataSet("testDataSets/shrClientObservationsTestDs.xml");
-        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithObservations.xml", springContext);
+        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithObservations.xml", springContext);
 
         Patient patient = patientService.getPatient(1);
 
@@ -81,7 +81,7 @@ public class FHIRMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldCreateConceptsWhenNeeded() throws Exception {
         executeDataSet("testDataSets/shrClientObservationsTestDs.xml");
-        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithLocalConceptsVitals.xml", springContext);
+        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithLocalConceptsVitals.xml", springContext);
 
         Patient patient = patientService.getPatient(1);
 
@@ -124,7 +124,7 @@ public class FHIRMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test(expected = RuntimeException.class)
     public void shouldFailToMapWhenATrConceptIsNotSynced() throws Exception {
         executeDataSet("testDataSets/shrClientObservationsTestDs.xml");
-        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithNotSyncedTRConcepts.xml", springContext);
+        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithNotSyncedTRConcepts.xml", springContext);
 
         Patient patient = patientService.getPatient(1);
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(encounterBundle, "98101039678", "shr-enc-id");
@@ -134,7 +134,7 @@ public class FHIRMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldCreateRootConceptsAndItsChildrenWhenNeeded() throws Exception {
         executeDataSet("testDataSets/shrClientObservationsTestDs.xml");
-        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithLocalConceptsInObservation.xml", springContext);
+        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithLocalConceptsInObservation.xml", springContext);
 
         String conceptNameHeight = "Height";
         String conceptNameWeight = "Weight";
@@ -174,7 +174,7 @@ public class FHIRMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldCreateAConceptForReferenceTermWhenNeeded() throws Exception {
         executeDataSet("testDataSets/shrObservationsWithReferenceTerms.xml");
-        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithLocalConceptAndReferenceTerms.xml", springContext);
+        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithLocalConceptAndReferenceTerms.xml", springContext);
 
         Patient patient = patientService.getPatient(1);
 
@@ -212,7 +212,7 @@ public class FHIRMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldUpdateEncounterWithNewObservations() throws Exception {
         executeDataSet("testDataSets/shrClientObservationsTestDs.xml");
-        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithUpdatedObservations.xml", springContext);
+        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithUpdatedObservations.xml", springContext);
         Patient patient = patientService.getPatient(3);
 
         List<Encounter> encountersByPatient = encounterService.getEncountersByPatient(patient);
@@ -254,7 +254,7 @@ public class FHIRMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldSetShrClientSystemAsProviderIfNoParticipantsArePresent() throws Exception {
         executeDataSet("testDataSets/shrClientEncounterReverseSyncTestDS.xml");
-        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithoutParticipants.xml", springContext);
+        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithoutParticipants.xml", springContext);
         org.openmrs.Patient emrPatient = patientService.getPatient(1);
         int shrClientSystemProviderId = 22;
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(encounterBundle, "HIDA764177", "shr-enc-id-1");
@@ -268,7 +268,7 @@ public class FHIRMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldSetLocationFromParticipantIfServiceProviderIsNotPresent() throws Exception {
         executeDataSet("testDataSets/shrClientEncounterReverseSyncTestDS.xml");
-        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithoutServiceProvider.xml", springContext);
+        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithoutServiceProvider.xml", springContext);
         org.openmrs.Patient emrPatient = patientService.getPatient(1);
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(encounterBundle, "HIDA764177", "shr-enc-id-1");
         org.openmrs.Encounter emrEncounter = fhirMapper.map(emrPatient, encounterComposition, getSystemProperties("1"));

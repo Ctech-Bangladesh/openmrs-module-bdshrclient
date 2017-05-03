@@ -10,7 +10,7 @@ public class FhirBundleContextHolder {
 
     public static FhirContext getFhirContext() {
         if(fhirContext == null) {
-            fhirContext = FhirContext.forDstu2();
+            fhirContext = FhirContext.forDstu3();
         }
         return fhirContext;
     }

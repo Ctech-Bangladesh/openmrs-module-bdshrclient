@@ -1,11 +1,11 @@
 package org.openmrs.module.shrclient.web.controller.dto;
 
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Composition;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sun.syndication.feed.atom.Category;
 import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Composition;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 
 import java.util.List;
@@ -110,6 +110,6 @@ public class EncounterEvent {
 
     private String identifyPatientHealthId(Bundle bundle) {
         final Composition composition = getComposition(bundle);
-        return new EntityReference().parse(org.openmrs.Patient.class, composition.getSubject().getReference().getValue());
+        return new EntityReference().parse(org.openmrs.Patient.class, composition.getSubject().getReference());
     }
 }

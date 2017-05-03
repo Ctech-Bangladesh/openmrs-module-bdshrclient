@@ -1,7 +1,7 @@
 package org.openmrs.module.shrclient.feeds.shr;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.openmrs.module.shrclient.util.FhirBundleContextHolder;

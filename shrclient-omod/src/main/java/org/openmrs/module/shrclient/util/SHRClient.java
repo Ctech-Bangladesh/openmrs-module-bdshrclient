@@ -1,6 +1,5 @@
 package org.openmrs.module.shrclient.util;
 
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.parser.IParser;
 import com.sun.syndication.feed.atom.Content;
 import com.sun.syndication.feed.atom.Entry;
@@ -9,7 +8,7 @@ import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.WireFeedInput;
 import org.apache.http.entity.StringEntity;
 import org.apache.log4j.Logger;
-import org.openmrs.module.fhir.utils.DateUtil;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.openmrs.module.shrclient.identity.IdentityUnauthorizedException;
 import org.openmrs.module.shrclient.web.controller.dto.EncounterEvent;
 

@@ -1,10 +1,10 @@
 package org.openmrs.module.shrclient.service;
 
-import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Composition;
 import com.sun.syndication.feed.atom.Category;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Composition;
+import org.hl7.fhir.dstu3.model.Period;
+import org.hl7.fhir.dstu3.model.Reference;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
@@ -90,7 +90,7 @@ public class EMREncounterServiceImplTest {
         String healthId = "health_id";
         Composition composition = getComposition(healthId);
         composition.setConfidentiality("R");
-        Bundle.Entry atomEntry = new Bundle.Entry();
+        Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         atomEntry.setResource(composition);
         bundle.addEntry(atomEntry);
         String encounterUpdatedDate = DateUtil.toISOString(DateTime.now().toDate());
@@ -113,7 +113,7 @@ public class EMREncounterServiceImplTest {
         String healthId = "health_id";
         Composition composition = getComposition(healthId);
         composition.setConfidentiality("N");
-        Bundle.Entry atomEntry = new Bundle.Entry();
+        Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         atomEntry.setResource(composition);
         bundle.addEntry(atomEntry);
         encounterEvent.addContent(bundle);
@@ -133,7 +133,7 @@ public class EMREncounterServiceImplTest {
         shrProperties.put(SHR_REFERENCE_PATH, "http://shr.com/");
         shrProperties.put(SHR_PATIENT_ENC_PATH_PATTERN, "/patients/%s/encounters");
         when(mockPropertiesReader.getShrProperties()).thenReturn(shrProperties);
-        when(mockFhirmapper.getVisitPeriod(any(ShrEncounterBundle.class))).thenReturn(new PeriodDt());
+        when(mockFhirmapper.getVisitPeriod(any(ShrEncounterBundle.class))).thenReturn(new Period());
         when(mockVisitLookupService.findOrInitializeVisit(eq(emrPatient), any(Date.class), any(VisitType.class), any(Location.class), any(Date.class), any(Date.class))).thenReturn(new Visit());
         emrEncounterService.createOrUpdateEncounter(emrPatient, encounterEvent);
 
@@ -147,7 +147,7 @@ public class EMREncounterServiceImplTest {
         String healthId = "health_id";
         Composition composition = getComposition(healthId);
         composition.setConfidentiality("N");
-        Bundle.Entry atomEntry = new Bundle.Entry();
+        Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         atomEntry.setResource(composition);
         bundle.addEntry(atomEntry);
         encounterEvent.addContent(bundle);
@@ -164,7 +164,7 @@ public class EMREncounterServiceImplTest {
 
     @Test
     public void shouldNotSyncAnEncounterIfAlreadySynced() throws Exception {
-        Bundle.Entry atomEntry = new Bundle.Entry();
+        Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         atomEntry.setResource(getComposition("health_id"));
         Bundle bundle = new Bundle();
         bundle.addEntry(atomEntry);
@@ -199,7 +199,7 @@ public class EMREncounterServiceImplTest {
 
     @Test
     public void shouldSyncAnEncounterIfUpdatedLater() throws Exception {
-        Bundle.Entry atomEntry = new Bundle.Entry();
+        Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         String healthId = "health_id";
         atomEntry.setResource(getComposition(healthId));
         Bundle bundle = new Bundle();
@@ -237,7 +237,7 @@ public class EMREncounterServiceImplTest {
 
     @Test
     public void shouldNotSaveOrderIfAlreadySaved() throws Exception {
-        Bundle.Entry atomEntry = new Bundle.Entry();
+        Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         String healthId = "health_id";
         atomEntry.setResource(getComposition(healthId));
         Bundle bundle = new Bundle();
@@ -278,7 +278,7 @@ public class EMREncounterServiceImplTest {
 
     private Composition getComposition(String healthId) {
         Composition composition = new Composition();
-        composition.setSubject(new ResourceReferenceDt("http://mci.com/api/default/patients/" + healthId));
+        composition.setSubject(new Reference("http://mci.com/api/default/patients/" + healthId));
         return composition;
     }
 

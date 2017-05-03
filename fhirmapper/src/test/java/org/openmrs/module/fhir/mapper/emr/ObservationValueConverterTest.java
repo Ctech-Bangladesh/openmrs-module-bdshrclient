@@ -1,17 +1,13 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu2.composite.*;
-import ca.uhn.fhir.model.dstu2.valueset.EventTimingEnum;
-import ca.uhn.fhir.model.dstu2.valueset.UnitsOfTimeEnum;
-import ca.uhn.fhir.model.primitive.DecimalDt;
-import ca.uhn.fhir.model.primitive.StringDt;
+import org.hl7.fhir.dstu3.model.*;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.codehaus.groovy.runtime.InvokerHelper.asList;
 import static org.junit.Assert.*;
 import static org.openmrs.module.fhir.mapper.emr.ObservationValueConverter.*;
 import static org.openmrs.module.fhir.mapper.emr.ObservationValueConverter.convertToText;
@@ -32,28 +28,28 @@ public class ObservationValueConverterTest {
 
     @Test
     public void shouldConvertAQuantityDtType() throws Exception {
-        QuantityDt quantity = new QuantityDt();
+        Quantity quantity = new Quantity();
         assertEquals("", convertToText(quantity));
 
-        DecimalDt decimalValue = new DecimalDt();
+        DecimalType decimalValue = new DecimalType();
         decimalValue.setValue(new BigDecimal(12));
-        quantity.setValue(decimalValue);
+        quantity.setValue(decimalValue.getValue());
 
         assertEquals("12", convertToText(quantity));
 
-        StringDt units = new StringDt();
+        StringType units = new StringType();
         units.setValue("mg");
-        quantity.setUnit(units);
+        quantity.setUnit(units.getValue());
 
         assertEquals("12 mg", convertToText(quantity));
     }
 
     @Test
     public void shouldConvertACodeableConceptDtWhenItHasCoding() throws Exception {
-        CodeableConceptDt codeableConcept = new CodeableConceptDt();
+        CodeableConcept codeableConcept = new CodeableConcept();
         assertTrue(convertToText(codeableConcept).isEmpty());
 
-        CodingDt coding = codeableConcept.addCoding();
+        Coding coding = codeableConcept.addCoding();
         String fever = "Fever";
         coding.setDisplay(fever);
 
@@ -62,7 +58,7 @@ public class ObservationValueConverterTest {
 
     @Test
     public void shouldGiveTextValueForACodeableConceptDtWithoutCoding() throws Exception {
-        CodeableConceptDt codeableConcept = new CodeableConceptDt();
+        CodeableConcept codeableConcept = new CodeableConcept();
         assertTrue(convertToText(codeableConcept).isEmpty());
 
         String fever = "Fever";
@@ -73,18 +69,18 @@ public class ObservationValueConverterTest {
 
     @Test
     public void shouldConvertARatioDt() throws Exception {
-        RatioDt ratio = new RatioDt();
+        Ratio ratio = new Ratio();
         assertEquals("0", convertToText(ratio));
 
-        ratio.setNumerator(new QuantityDt(12));
-        ratio.setDenominator(new QuantityDt(24));
+        ratio.setNumerator(new Quantity(12));
+        ratio.setDenominator(new Quantity(24));
 
         assertEquals("12/24", convertToText(ratio));
     }
 
     @Test
     public void shouldConvertAPeriod() throws Exception {
-        PeriodDt period1 = new PeriodDt();
+        Period period1 = new Period();
         assertEquals(INVALID_PERIOD, convertToText(period1));
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -92,7 +88,7 @@ public class ObservationValueConverterTest {
         period1.setStart(startDate, TemporalPrecisionEnum.DAY);
         assertEquals("17 Jun 2015", convertToText(period1));
 
-        PeriodDt period2 = new PeriodDt();
+        Period period2 = new Period();
         Date endDate = simpleDateFormat.parse("17-06-2016T00:00:00+05:30");
         period2.setEnd(endDate, TemporalPrecisionEnum.DAY);
         assertEquals(PERIOD_START_UNKNOWN + " - 17 Jun 2016", convertToText(period2));
@@ -103,7 +99,7 @@ public class ObservationValueConverterTest {
 
     @Test
     public void shouldConvertASampledData() throws Exception {
-        SampledDataDt sampledData = new SampledDataDt();
+        SampledData sampledData = new SampledData();
         String hello = "Hello";
         sampledData.setData(hello);
 
@@ -112,12 +108,14 @@ public class ObservationValueConverterTest {
 
     @Test
     public void shouldConvertARange() throws Exception {
-        RangeDt range1 = new RangeDt();
-        SimpleQuantityDt upperLimit = new SimpleQuantityDt(12);
+        Range range1 = new Range();
+        SimpleQuantity upperLimit = new SimpleQuantity();
+        upperLimit.setValue(12);
         range1.setHigh(upperLimit);
         assertEquals(" - 12", convertToText(range1));
 
-        SimpleQuantityDt lowerLimit = new SimpleQuantityDt(6);
+        SimpleQuantity lowerLimit = new SimpleQuantity();
+        lowerLimit.setValue(6);
         range1.setLow(lowerLimit);
 
         assertEquals("6 - 12", convertToText(range1));
@@ -130,18 +128,18 @@ public class ObservationValueConverterTest {
         Date startDate = simpleDateFormat.parse("17-06-2015T00:00:00+05:30");
         Date endDate = simpleDateFormat.parse("17-06-2016T00:00:00+05:30");
 
-        PeriodDt period = new PeriodDt();
+        Period period = new Period();
         period.setStart(startDate, TemporalPrecisionEnum.DAY);
         period.setEnd(endDate, TemporalPrecisionEnum.DAY);
 
 
-        TimingDt.Repeat repeat = new TimingDt.Repeat();
+        Timing.TimingRepeatComponent repeat = new Timing.TimingRepeatComponent();
         repeat.setBounds(period);
         repeat.setFrequency(2);
         repeat.setPeriod(1);
-        repeat.setPeriodUnits(UnitsOfTimeEnum.D);
+        repeat.setPeriodUnit(Timing.UnitsOfTime.D);
 
-        TimingDt timing = new TimingDt();
+        Timing timing = new Timing();
         timing.setRepeat(repeat);
 
         assertEquals("2 time(s) in 1 Day. Duration:- 17 Jun 2015 - 17 Jun 2016", convertToText(timing));
@@ -153,18 +151,18 @@ public class ObservationValueConverterTest {
         Date startDate = simpleDateFormat.parse("17-06-2015T00:00:00+05:30");
         Date endDate = simpleDateFormat.parse("17-06-2016T00:00:00+05:30");
 
-        PeriodDt period = new PeriodDt();
+        Period period = new Period();
         period.setStart(startDate, TemporalPrecisionEnum.DAY);
         period.setEnd(endDate, TemporalPrecisionEnum.DAY);
 
 
-        TimingDt.Repeat repeat = new TimingDt.Repeat();
+        Timing.TimingRepeatComponent repeat = new Timing.TimingRepeatComponent();
         repeat.setBounds(period);
-        repeat.setWhen(EventTimingEnum.ACM);
+        repeat.setWhen(asList(Timing.EventTiming.ACM));
         repeat.setPeriod(1);
-        repeat.setPeriodUnits(UnitsOfTimeEnum.H);
+        repeat.setPeriodUnit(Timing.UnitsOfTime.H);
 
-        TimingDt timing = new TimingDt();
+        Timing timing = new Timing();
         timing.setRepeat(repeat);
 
         assertEquals("1 Hour before breakfast. Duration:- 17 Jun 2015 - 17 Jun 2016", convertToText(timing));

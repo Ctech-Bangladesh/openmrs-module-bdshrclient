@@ -1,9 +1,9 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticReport;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.DiagnosticReport;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,11 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
 
 @ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -74,7 +70,7 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldHandleReportWithLabCategory() throws Exception {
         DiagnosticReport report = new DiagnosticReport();
-        CodeableConceptDt category = new CodeableConceptDt();
+        CodeableConcept category = new CodeableConcept();
         category.addCoding()
                 .setSystem(FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL)
                 .setCode(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_LAB_CODE)
@@ -82,11 +78,11 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
         report.setCategory(category);
         assertTrue(diagnosticReportMapper.canHandle(report));
     }
-    
+
     @Test
     public void shouldNotHandleReportWithOtherCategory() throws Exception {
         DiagnosticReport report = new DiagnosticReport();
-        CodeableConceptDt category = new CodeableConceptDt();
+        CodeableConcept category = new CodeableConcept();
         category.addCoding()
                 .setSystem(FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL)
                 .setCode("RAD")
@@ -98,8 +94,8 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapDiagnosticReportForTestResultWithEncounterRequestDetail() throws Exception {
         Bundle bundle = (Bundle) new MapperTestHelper()
-                .loadSampleFHIREncounter("encounterBundles/dstu2/diagnosticReport.xml", springContext);
-        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceName());
+                .loadSampleFHIREncounter("encounterBundles/stu3/diagnosticReport.xml", springContext);
+        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceType().name());
         Encounter encounter = new Encounter();
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
         encounter.setPatient(patientService.getPatient(1));
@@ -119,12 +115,12 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldProcessPanelResults() throws Exception {
-        Bundle bundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithPanelReport.xml", springContext);
-        List<IResource> resources = FHIRBundleHelper.identifyResourcesByName(bundle, new DiagnosticReport().getResourceName());
+        Bundle bundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithPanelReport.xml", springContext);
+        List<Resource> resources = FHIRBundleHelper.identifyResourcesByName(bundle, new DiagnosticReport().getResourceType().name());
         Encounter encounter = new Encounter();
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
         encounter.setPatient(patientService.getPatient(1));
-        for (IResource resource : resources) {
+        for (Resource resource : resources) {
             DiagnosticReport report = (DiagnosticReport) resource;
             ShrEncounterBundle encounterComposition = new ShrEncounterBundle(bundle, "98101039678", "shr-enc-id-1");
             diagnosticReportMapper.map(report, emrEncounter, encounterComposition, getSystemProperties("1"));
@@ -152,8 +148,8 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldUpdateTestResultsIfUpdatedAndAssociateWithActiveOrder() throws Exception {
         Encounter existingEncounter = encounterService.getEncounter(18);
-        Bundle bundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithUpdatedTestResult.xml", springContext);
-        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceName());
+        Bundle bundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithUpdatedTestResult.xml", springContext);
+        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceType().name());
 
         EmrEncounter emrEncounter = new EmrEncounter(existingEncounter);
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(bundle, "98101039678", "shrEncounterId5");
@@ -176,8 +172,8 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldNotAssociateWithOrderIfOrderNotFound() throws Exception {
         Bundle bundle = (Bundle) new MapperTestHelper()
-                .loadSampleFHIREncounter("encounterBundles/dstu2/diagnosticReportWithoutRequestDetail.xml", springContext);
-        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceName());
+                .loadSampleFHIREncounter("encounterBundles/stu3/diagnosticReportWithoutRequestDetail.xml", springContext);
+        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceType().name());
         Encounter encounter = new Encounter();
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
         encounter.setPatient(patientService.getPatient(1));
@@ -197,8 +193,8 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapDiagnosticReportForTestResultWithOrderRequestDetail() throws Exception {
         Bundle bundle = (Bundle) new MapperTestHelper()
-                .loadSampleFHIREncounter("encounterBundles/dstu2/diagnosticReportWithOrderRequestDetail.xml", springContext);
-        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceName());
+                .loadSampleFHIREncounter("encounterBundles/stu3/diagnosticReportWithOrderRequestDetail.xml", springContext);
+        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceType().name());
         Encounter encounter = new Encounter();
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
         encounter.setPatient(patientService.getPatient(1));
@@ -219,8 +215,8 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapDiagnosticReportForLocalPanelOrder() throws Exception {
         Bundle bundle = (Bundle) new MapperTestHelper()
-                .loadSampleFHIREncounter("encounterBundles/dstu2/diagnosticReportForLocalPanelOrder.xml", springContext);
-        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceName());
+                .loadSampleFHIREncounter("encounterBundles/stu3/diagnosticReportForLocalPanelOrder.xml", springContext);
+        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceType().name());
         Encounter encounter = new Encounter();
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
         encounter.setPatient(patientService.getPatient(1));
@@ -243,8 +239,8 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapDiagnosticReportForLocalTestConcept() throws Exception {
         Bundle bundle = (Bundle) new MapperTestHelper()
-                .loadSampleFHIREncounter("encounterBundles/dstu2/diagnosticReportWithLocalTest.xml", springContext);
-        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceName());
+                .loadSampleFHIREncounter("encounterBundles/stu3/diagnosticReportWithLocalTest.xml", springContext);
+        DiagnosticReport report = (DiagnosticReport) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new DiagnosticReport().getResourceType().name());
         Encounter encounter = new Encounter();
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
         encounter.setPatient(patientService.getPatient(1));
@@ -260,18 +256,18 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
 
         assertTestObsWithTextResult(topLevelObs, localTestConcept, "20.0", "changed", null);
     }
-    
+
     @Test
     public void shouldMapDiagnosticReportForLocalTestAndTRPanel() throws Exception {
         Bundle bundle = (Bundle) new MapperTestHelper()
-                .loadSampleFHIREncounter("encounterBundles/dstu2/diagnosticReportWithLocalTestAndTRPanelResult.xml", springContext);
-        List<IResource> resources = FHIRBundleHelper.identifyResourcesByName(bundle, new DiagnosticReport().getResourceName());
+                .loadSampleFHIREncounter("encounterBundles/stu3/diagnosticReportWithLocalTestAndTRPanelResult.xml", springContext);
+        List<Resource> resources = FHIRBundleHelper.identifyResourcesByName(bundle, new DiagnosticReport().getResourceType().name());
         Encounter encounter = new Encounter();
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
         encounter.setPatient(patientService.getPatient(1));
 
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(bundle, "98101039678", "shr-enc-id-1");
-        for (IResource resource : resources) {
+        for (Resource resource : resources) {
             diagnosticReportMapper.map(resource, emrEncounter, encounterComposition, getSystemProperties("1"));
         }
         Set<Obs> obsSet = emrEncounter.getTopLevelObs();
@@ -295,7 +291,7 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
 
     private void assertTestObsWithNumericResult(Obs topLevelObs, Concept resultObsConcept, Double resultValueNumeric, String notesValue, Order testOrder) {
         Obs resultObsGroupObs = assertTestObs(topLevelObs, notesValue, testOrder);
-        
+
         if (resultValueNumeric != null) {
             Obs resultObs = findObsByConcept(resultObsGroupObs.getGroupMembers(), resultObsConcept);
             assertNotNull(resultObs);

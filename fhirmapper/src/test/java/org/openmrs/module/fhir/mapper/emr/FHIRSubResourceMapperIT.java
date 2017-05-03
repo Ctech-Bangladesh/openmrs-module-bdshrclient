@@ -1,9 +1,9 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import org.apache.commons.collections4.CollectionUtils;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +11,6 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.EncounterService;
 import org.openmrs.module.fhir.MapperTestHelper;
-import org.openmrs.module.fhir.mapper.model.EmrEncounter;
 import org.openmrs.module.fhir.mapper.model.ShrEncounterBundle;
 import org.openmrs.module.fhir.utils.FHIRBundleHelper;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -50,7 +49,7 @@ public class FHIRSubResourceMapperIT extends BaseModuleWebContextSensitiveTest {
         executeDataSet("testDataSets/labOrderDS.xml");
         Encounter existingEncounter = encounterService.getEncounter(42);
         assertEquals(1, existingEncounter.getOrders().size());
-        Bundle bundle = loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithUpdatedDiagnosticOrder.xml");
+        Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithUpdatedDiagnosticOrder.xml");
         fhirSubResourceMapper.map(existingEncounter, new ShrEncounterBundle(bundle, "HIDA764177", "SHR-ENC-1"), getSystemProperties("1"));
         assertEquals(2, existingEncounter.getOrders().size());
     }
@@ -58,7 +57,7 @@ public class FHIRSubResourceMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldNotMapTopLevelObsIfNoneOfTheFHIRObservationHaveValue() throws Exception {
         executeDataSet("testDataSets/encounterWithObsHavingIgnoredLeafLevelChildrenTestDs.xml");
-        Bundle observationBundle = (Bundle) mapperTestHelper.loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithObservationWithoutValues.xml", springContext);
+        Bundle observationBundle = (Bundle) mapperTestHelper.loadSampleFHIREncounter("encounterBundles/stu3/encounterWithObservationWithoutValues.xml", springContext);
 
         Encounter openmrsEncounter = new Encounter();
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(observationBundle, "98104750156", "shr-enc-id-1");
@@ -68,11 +67,12 @@ public class FHIRSubResourceMapperIT extends BaseModuleWebContextSensitiveTest {
         assertTrue(CollectionUtils.isEmpty(openmrsEncounter.getObsAtTopLevel(false)));
     }
 
+
     @Test
     public void shouldNotMapAnObservationWhichDoesNotChildOrValue() throws Exception {
         executeDataSet("testDataSets/encounterWithObsHavingIgnoredLeafLevelChildrenTestDs.xml");
-        Bundle observationBundle = (Bundle) mapperTestHelper.loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithPulseObservationHavingNoValue.xml", springContext);
-        IResource observationResource = FHIRBundleHelper.findResourceByReference(observationBundle, new ResourceReferenceDt("urn:uuid:56b0a203-9215-40ea-a6a0-b1d625d100c0"));
+        Bundle observationBundle = (Bundle) mapperTestHelper.loadSampleFHIREncounter("encounterBundles/stu3/encounterWithPulseObservationHavingNoValue.xml", springContext);
+        Resource observationResource = FHIRBundleHelper.findResourceByReference(observationBundle, new Reference("urn:uuid:56b0a203-9215-40ea-a6a0-b1d625d100c0"));
 
         Encounter openmrsEncounter = new Encounter();
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(observationBundle, "98104750156", "shr-enc-id-1");
@@ -98,7 +98,7 @@ public class FHIRSubResourceMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldNotMapAnHierarchyWhenNoneOfTheChildrenHaveValue() throws Exception {
         executeDataSet("testDataSets/encounterWithObsHavingIgnoredLeafLevelChildrenTestDs.xml");
-        Bundle observationBundle = (Bundle) mapperTestHelper.loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithBPObservationHierarchyHavingNoValue.xml", springContext);
+        Bundle observationBundle = (Bundle) mapperTestHelper.loadSampleFHIREncounter("encounterBundles/stu3/encounterWithBPObservationHierarchyHavingNoValue.xml", springContext);
 
         Encounter openmrsEncounter = new Encounter();
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(observationBundle, "98104750156", "shr-enc-id-1");

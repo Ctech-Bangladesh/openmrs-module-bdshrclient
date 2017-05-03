@@ -1,8 +1,8 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Condition;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Condition;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,21 +57,21 @@ public class FHIRDiagnosisConditionMapperIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldHandleDiagnosisCondition() throws Exception {
-        Bundle bundle = loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithDiagnosisCondition.xml");
+        Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithDiagnosisCondition.xml");
         Condition diagnosisCondition = getCondition(bundle);
         assertTrue(diagnosisConditionMapper.canHandle(diagnosisCondition));
     }
 
     @Test
     public void shouldNotHandleChiefComplaintCondition() throws Exception {
-        Bundle bundle = loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithChiefComplaints.xml");
+        Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithChiefComplaints.xml");
         Condition chiefComplaintCondition = getCondition(bundle);
         assertFalse(diagnosisConditionMapper.canHandle(chiefComplaintCondition));
     }
 
     @Test
     public void shouldMapADiagnosisCondition() throws Exception {
-        EmrEncounter emrEncounter = mapDiagnosis("encounterBundles/dstu2/encounterWithDiagnosisCondition.xml");
+        EmrEncounter emrEncounter = mapDiagnosis("encounterBundles/stu3/encounterWithDiagnosisCondition.xml");
         String conditionUuid = "35b57256-f229-476e-b5a1-c73af110485d";
 
         Set<Obs> topLevelObs = emrEncounter.getTopLevelObs();
@@ -89,7 +89,7 @@ public class FHIRDiagnosisConditionMapperIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldNotMapWhenTheAnswerConceptIsNotPresent() throws Exception {
-        EmrEncounter emrEncounter = mapDiagnosis("encounterBundles/dstu2/encounterWithDiagnosisConditionHavingNotSyncedConcept.xml");
+        EmrEncounter emrEncounter = mapDiagnosis("encounterBundles/stu3/encounterWithDiagnosisConditionHavingNotSyncedConcept.xml");
         Set<Obs> topLevelObs = emrEncounter.getTopLevelObs();
         assertTrue(topLevelObs.isEmpty());
     }
@@ -112,7 +112,7 @@ public class FHIRDiagnosisConditionMapperIT extends BaseModuleWebContextSensitiv
         assertInitialDiagnosis(visitDiagnosisObs.getUuid(), visitDiagnosisMembers);
         assertDiagnosisRevised(8, visitDiagnosisMembers);
 
-        EmrEncounter emrEncounter = mapDiagnosis("encounterBundles/dstu2/encounterWithDiagnosisCondition.xml", encounter, healthId, shrEncounterId);
+        EmrEncounter emrEncounter = mapDiagnosis("encounterBundles/stu3/encounterWithDiagnosisCondition.xml", encounter, healthId, shrEncounterId);
 
         Set<Obs> topLevelObs = emrEncounter.getTopLevelObs();
         assertEquals(1, topLevelObs.size());
@@ -190,7 +190,7 @@ public class FHIRDiagnosisConditionMapperIT extends BaseModuleWebContextSensitiv
     }
 
     private Condition getCondition(Bundle bundle) throws Exception {
-        IResource resource = FHIRBundleHelper.identifyFirstResourceWithName(bundle, new Condition().getResourceName());
+        Resource resource = FHIRBundleHelper.identifyFirstResourceWithName(bundle, new Condition().getResourceType().name());
         return (Condition) resource;
     }
 

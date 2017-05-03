@@ -1,11 +1,11 @@
 package org.openmrs.module.shrclient.service.impl;
 
-import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Composition;
 import com.sun.syndication.feed.atom.Category;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Composition;
+import org.hl7.fhir.dstu3.model.Period;
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
@@ -112,7 +112,7 @@ public class EMREncounterServiceImpl implements EMREncounterService {
         org.openmrs.Encounter newEmrEncounter = fhirMapper.map(emrPatient, shrEncounterBundle, systemProperties);
 
         VisitType visitType = fhirMapper.getVisitType(shrEncounterBundle);
-        PeriodDt visitPeriod = fhirMapper.getVisitPeriod(shrEncounterBundle);
+        Period visitPeriod = fhirMapper.getVisitPeriod(shrEncounterBundle);
         Visit visit = visitLookupService.findOrInitializeVisit(emrPatient, newEmrEncounter.getEncounterDatetime(), visitType, newEmrEncounter.getLocation(), visitPeriod.getStart(), visitPeriod.getEnd());
 
         visit.addEncounter(newEmrEncounter);

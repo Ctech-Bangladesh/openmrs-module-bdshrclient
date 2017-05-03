@@ -1,10 +1,6 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.QuantityDt;
-import ca.uhn.fhir.model.primitive.DateDt;
-import ca.uhn.fhir.model.primitive.DateTimeDt;
-import ca.uhn.fhir.model.primitive.StringDt;
+import org.hl7.fhir.dstu3.model.*;
 import org.junit.After;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -37,7 +33,7 @@ public class FHIRObservationValueMapperIT extends BaseModuleWebContextSensitiveT
     @Test
     public void shouldMapStringDt() throws Exception {
         String value = "No problems";
-        StringDt stringDt = new StringDt(value);
+        StringType stringDt = new StringType(value);
         Obs obs = valueMapper.map(stringDt, new Obs());
 
         assertEquals(value, obs.getValueText());
@@ -45,7 +41,7 @@ public class FHIRObservationValueMapperIT extends BaseModuleWebContextSensitiveT
 
     @Test
     public void shouldMapQuantityDt() throws Exception {
-        QuantityDt quantityDt = new QuantityDt(200.0);
+        Quantity quantityDt = new Quantity(200.0);
         Obs obs = valueMapper.map(quantityDt, new Obs());
 
         assertThat(obs.getValueNumeric(), is(200.0));
@@ -54,7 +50,7 @@ public class FHIRObservationValueMapperIT extends BaseModuleWebContextSensitiveT
     @Test
     public void shouldMapDateTimeDt() throws Exception {
         Date date = new Date();
-        DateTimeDt dateTimeDt = new DateTimeDt(date);
+        DateTimeType dateTimeDt = new DateTimeType(date);
         Obs obs = valueMapper.map(dateTimeDt, new Obs());
 
         assertEquals(date, obs.getValueDatetime());
@@ -63,7 +59,7 @@ public class FHIRObservationValueMapperIT extends BaseModuleWebContextSensitiveT
     @Test
     public void shouldMapDateDt() throws Exception {
         Date date = new Date();
-        DateDt dateDt = new DateDt(date);
+        DateType dateDt = new DateType(date);
         Obs obs = valueMapper.map(dateDt, new Obs());
 
         assertEquals(date, obs.getValueDate());
@@ -73,7 +69,8 @@ public class FHIRObservationValueMapperIT extends BaseModuleWebContextSensitiveT
     public void shouldMapBooleanCodings() throws Exception {
         Concept concept = new Concept(10);
         concept.setDatatype(conceptService.getConceptDatatypeByName("Boolean"));
-        CodeableConceptDt noBooleanCoding = new CodeableConceptDt("http://hl7.org/fhir/v2/0136", "N");
+        CodeableConcept noBooleanCoding = new CodeableConcept();
+        noBooleanCoding.addCoding().setSystem("http://hl7.org/fhir/v2/0136").setCode("N");
 
         Obs noObs = new Obs();
         noObs.setConcept(concept);
@@ -81,7 +78,8 @@ public class FHIRObservationValueMapperIT extends BaseModuleWebContextSensitiveT
 
         assertFalse(noObs.getValueBoolean());
 
-        CodeableConceptDt yesBooleanCoding = new CodeableConceptDt("http://hl7.org/fhir/v2/0136", "Y");
+        CodeableConcept yesBooleanCoding = new CodeableConcept();
+        yesBooleanCoding.addCoding().setSystem("http://hl7.org/fhir/v2/0136").setCode("Y");
         Obs yesObs = new Obs();
         yesObs.setConcept(concept);
         yesObs = valueMapper.map(yesBooleanCoding, yesObs);
@@ -93,8 +91,8 @@ public class FHIRObservationValueMapperIT extends BaseModuleWebContextSensitiveT
     public void shouldMapDrugCodings() throws Exception {
         executeDataSet("testDataSets/fhirObservationValueMapperTestDs.xml");
 
-        CodeableConceptDt codeableConceptDt = new CodeableConceptDt(
-                "http://tr.com/ws/rest/v1/tr/drugs/drugs/104", "104");
+        CodeableConcept codeableConceptDt = new CodeableConcept();
+        codeableConceptDt.addCoding().setSystem("http://tr.com/ws/rest/v1/tr/drugs/drugs/104").setCode("104");
 
         Obs obs = valueMapper.map(codeableConceptDt, new Obs());
 
@@ -106,8 +104,8 @@ public class FHIRObservationValueMapperIT extends BaseModuleWebContextSensitiveT
     public void shouldMapConceptCodings() throws Exception {
         executeDataSet("testDataSets/fhirObservationValueMapperTestDs.xml");
 
-        CodeableConceptDt codeableConceptDt = new CodeableConceptDt(
-                "http://tr.com/ws/rest/v1/tr/concepts/102", "102");
+        CodeableConcept codeableConceptDt = new CodeableConcept();
+        codeableConceptDt.addCoding().setSystem("http://tr.com/ws/rest/v1/tr/concepts/102").setCode("102");
 
         Obs obs = valueMapper.map(codeableConceptDt, new Obs());
 

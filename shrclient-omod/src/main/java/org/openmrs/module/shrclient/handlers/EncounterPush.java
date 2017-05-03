@@ -1,9 +1,12 @@
 package org.openmrs.module.shrclient.handlers;
 
-import ca.uhn.fhir.model.dstu2.resource.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
+import org.hl7.fhir.dstu3.model.BaseResource;
+import org.hl7.fhir.dstu3.model.Condition;
+import org.hl7.fhir.dstu3.model.MedicationRequest;
+import org.hl7.fhir.dstu3.model.ProcedureRequest;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.service.EventWorker;
@@ -99,16 +102,16 @@ public class EncounterPush implements EventWorker {
         orderUrlReferenceIds.put(EntityReference.ENCOUNTER_ID_REFERENCE, shrEncounterId);
         for (Order order : orders) {
             if (order.getOrderType().getUuid().equals(OrderType.DRUG_ORDER_TYPE_UUID)) {
-                orderUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new MedicationOrder().getResourceName());
+                orderUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new MedicationRequest().getResourceType().name());
                 saveOrderIdMapping(shrEncounterId, order.getUuid(), IdMappingType.MEDICATION_ORDER, orderUrlReferenceIds, systemProperties);
             } else if (order.getOrderType().getName().equals(MRSProperties.MRS_PROCEDURE_ORDER_TYPE)) {
-                orderUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new ProcedureRequest().getResourceName());
+                orderUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new ProcedureRequest().getResourceType().name());
                 saveOrderIdMapping(shrEncounterId, order.getUuid(), IdMappingType.PROCEDURE_ORDER, orderUrlReferenceIds, systemProperties);
             } else if (order.getOrderType().getName().equals(MRSProperties.MRS_LAB_ORDER_TYPE)) {
-                orderUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new DiagnosticOrder().getResourceName());
+                orderUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new ProcedureRequest().getResourceType().name());
                 saveOrderIdMapping(shrEncounterId, order.getUuid(), IdMappingType.DIAGNOSTIC_ORDER, orderUrlReferenceIds, systemProperties);
             } else if (order.getOrderType().getName().equals(MRSProperties.MRS_RADIOLOGY_ORDER_TYPE)) {
-                orderUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new DiagnosticOrder().getResourceName());
+                orderUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new ProcedureRequest().getResourceType().name());
                 saveOrderIdMapping(shrEncounterId, order.getUuid(), IdMappingType.DIAGNOSTIC_ORDER, orderUrlReferenceIds, systemProperties);
             }
         }
@@ -125,7 +128,7 @@ public class EncounterPush implements EventWorker {
         HashMap<String, String> conditionUrlReferenceIds = new HashMap<>();
         conditionUrlReferenceIds.put(EntityReference.HEALTH_ID_REFERENCE, healthId);
         conditionUrlReferenceIds.put(EntityReference.ENCOUNTER_ID_REFERENCE, shrEncounterId);
-        conditionUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new Condition().getResourceName());
+        conditionUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new Condition().getResourceType().name());
         EntityReference entityReference = new EntityReference();
         for (Obs obs : openMrsEncounter.getObsAtTopLevel(false)) {
             CompoundObservation compoundObservation = new CompoundObservation(obs);

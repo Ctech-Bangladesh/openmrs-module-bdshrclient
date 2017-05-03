@@ -1,9 +1,9 @@
 package org.openmrs.module.shrclient.feeds.shr;
 
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Composition;
 import com.sun.syndication.feed.atom.Category;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Composition;
+import org.hl7.fhir.dstu3.model.Reference;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,11 +51,11 @@ public class DefaultEncounterFeedWorkerTest {
         String healthId = "health_id";
         String mciUrl = "http://mci.com/api/patients/";
         String patientUrl = mciUrl + healthId;
-        ResourceReferenceDt patientReference = new ResourceReferenceDt(patientUrl);
+        Reference patientReference = new Reference(patientUrl);
         Composition composition = new Composition();
         composition.setSubject(patientReference);
         composition.setConfidentiality("R");
-        Bundle.Entry atomEntry = new Bundle.Entry();
+        Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         atomEntry.setResource(composition);
         bundle.addEntry(atomEntry);
         String encounterUpdatedDate = DateUtil.toISOString(DateTime.now().toDate());
@@ -86,10 +86,10 @@ public class DefaultEncounterFeedWorkerTest {
         String retiredPatientId1 = "retired_patient_id_1";
         String retiredPatientId2 = "retired_patient_id_2";
         String activePatientId = "active_patient_id";
-        ResourceReferenceDt patientReference = new ResourceReferenceDt(String.format("http://mci.com/api/patients/%s", retiredPatientId1));
+        Reference patientReference = new Reference(String.format("http://mci.com/api/patients/%s", retiredPatientId1));
         Composition composition = new Composition();
         composition.setSubject(patientReference);
-        Bundle.Entry atomEntry = new Bundle.Entry();
+        Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         atomEntry.setResource(composition);
         bundle.addEntry(atomEntry);
 

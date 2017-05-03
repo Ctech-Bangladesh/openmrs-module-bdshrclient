@@ -1,11 +1,11 @@
 package org.openmrs.module.shrclient.web.controller.dto;
 
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Composition;
-import ca.uhn.fhir.model.dstu2.resource.Encounter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Composition;
+import org.hl7.fhir.dstu3.model.Encounter;
 import org.junit.Test;
 
 import java.io.File;
@@ -32,11 +32,11 @@ public class EncounterEventTest {
         assertNotNull(encounterEvent.getHealthId());
 
         final Bundle bundle = encounterEvent.getBundle();
-        assertEquals("Bundle/4fe6f9e2-d10a-4956-aae5-091e810090e1", bundle.getId().getValue());
+        assertEquals("Bundle/4fe6f9e2-d10a-4956-aae5-091e810090e1", bundle.getId());
         assertNotNull(bundle);
         assertNotNull(bundle.getEntry());
         assertEquals(2, bundle.getEntry().size());
-        assertEquals(new Composition().getResourceName(), bundle.getEntry().get(0).getResource().getResourceName());
-        assertEquals(new Encounter().getResourceName(), bundle.getEntry().get(1).getResource().getResourceName());
+        assertEquals(new Composition().getResourceType().name(), bundle.getEntry().get(0).getResource().getResourceType());
+        assertEquals(new Encounter().getResourceType().name(), bundle.getEntry().get(1).getResource().getResourceType());
     }
 }

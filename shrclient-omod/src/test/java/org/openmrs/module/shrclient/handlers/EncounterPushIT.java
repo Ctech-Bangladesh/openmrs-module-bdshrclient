@@ -1,10 +1,10 @@
 package org.openmrs.module.shrclient.handlers;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.After;
 import org.junit.Before;
@@ -142,7 +142,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(1, loggedRequests.size());
         String bundleXML = loggedRequests.get(0).getBodyAsString();
         Bundle bundle = (Bundle) FhirBundleContextHolder.getFhirContext().newXmlParser().parseResource(bundleXML);
-        final IResource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new ResourceReferenceDt("urn:uuid:" + orderUuid));
+        final Resource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new Reference("urn:uuid:" + orderUuid));
         assertNotNull(resourceByReference);
 
         IdMapping encounterIdMapping = idMappingRepository.findByExternalId(shrEncounterId, IdMappingType.ENCOUNTER);
@@ -153,7 +153,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         IdMapping orderMapping = idMappingRepository.findByInternalId(orderUuid, IdMappingType.MEDICATION_ORDER);
         assertNotNull(orderMapping);
         assertEquals(orderUuid, orderMapping.getInternalId());
-        String expectedExternalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, resourceByReference.getId().getIdPart());
+        String expectedExternalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, resourceByReference.getId());
         assertEquals(expectedExternalId, orderMapping.getExternalId());
         String orderUrl = encounterIdMapping.getUri() + "#MedicationOrder/" + orderUuid;
         assertEquals(orderUrl, orderMapping.getUri());
@@ -183,7 +183,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(1, loggedRequests.size());
         String bundleXML = loggedRequests.get(0).getBodyAsString();
         Bundle bundle = (Bundle) FhirBundleContextHolder.getFhirContext().newXmlParser().parseResource(bundleXML);
-        final IResource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new ResourceReferenceDt("urn:uuid:" + visitDiagnosisObsUuid));
+        final Resource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new Reference("urn:uuid:" + visitDiagnosisObsUuid));
         assertNotNull(resourceByReference);
 
         IdMapping encounterIdMapping = idMappingRepository.findByExternalId(shrEncounterId, IdMappingType.ENCOUNTER);
@@ -194,7 +194,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         IdMapping diagnosisMapping = idMappingRepository.findByInternalId(visitDiagnosisObsUuid, IdMappingType.DIAGNOSIS);
         assertNotNull(diagnosisMapping);
         assertEquals(visitDiagnosisObsUuid, diagnosisMapping.getInternalId());
-        String expectedExternalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, resourceByReference.getId().getIdPart());
+        String expectedExternalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, resourceByReference.getId());
         assertEquals(expectedExternalId, diagnosisMapping.getExternalId());
         String diagnosisUrl = encounterIdMapping.getUri() + "#Condition/" + visitDiagnosisObsUuid;
         assertEquals(diagnosisUrl, diagnosisMapping.getUri());
@@ -224,7 +224,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(1, loggedRequests.size());
         String bundleXML = loggedRequests.get(0).getBodyAsString();
         Bundle bundle = (Bundle) FhirBundleContextHolder.getFhirContext().newXmlParser().parseResource(bundleXML);
-        final IResource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new ResourceReferenceDt("urn:uuid:" + procedureOrderUuid));
+        final Resource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new Reference("urn:uuid:" + procedureOrderUuid));
         assertNotNull(resourceByReference);
 
         IdMapping encounterIdMapping = idMappingRepository.findByExternalId(shrEncounterId, IdMappingType.ENCOUNTER);
@@ -235,7 +235,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         IdMapping procedureOrderMapping = idMappingRepository.findByInternalId(procedureOrderUuid, IdMappingType.PROCEDURE_ORDER);
         assertNotNull(procedureOrderMapping);
         assertEquals(procedureOrderUuid, procedureOrderMapping.getInternalId());
-        String expectedExternalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, resourceByReference.getId().getIdPart());
+        String expectedExternalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, resourceByReference.getId());
         assertEquals(expectedExternalId, procedureOrderMapping.getExternalId());
         String procedureUrl = encounterIdMapping.getUri() + "#ProcedureRequest/" + procedureOrderUuid;
         assertEquals(procedureUrl, procedureOrderMapping.getUri());
@@ -265,7 +265,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(1, loggedRequests.size());
         String bundleXML = loggedRequests.get(0).getBodyAsString();
         Bundle bundle = (Bundle) FhirBundleContextHolder.getFhirContext().newXmlParser().parseResource(bundleXML);
-        final IResource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new ResourceReferenceDt("urn:uuid:" + diagnosticOrderId));
+        final Resource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new Reference("urn:uuid:" + diagnosticOrderId));
         assertNotNull(resourceByReference);
 
         IdMapping encounterIdMapping = idMappingRepository.findByExternalId(shrEncounterId, IdMappingType.ENCOUNTER);
@@ -276,7 +276,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         IdMapping diagnosticOrderMapping = idMappingRepository.findByInternalId(diagnosticOrderId, IdMappingType.PROCEDURE_ORDER);
         assertNotNull(diagnosticOrderMapping);
         assertEquals(diagnosticOrderId, diagnosticOrderMapping.getInternalId());
-        String expectedExternalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, resourceByReference.getId().getIdPart());
+        String expectedExternalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, resourceByReference.getId());
         assertEquals(expectedExternalId, diagnosticOrderMapping.getExternalId());
         String diagnosticOrderUrl = encounterIdMapping.getUri() + "#DiagnosticOrder/" + diagnosticOrderId;
         assertEquals(diagnosticOrderUrl, diagnosticOrderMapping.getUri());
@@ -306,7 +306,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(1, loggedRequests.size());
         String bundleXML = loggedRequests.get(0).getBodyAsString();
         Bundle bundle = (Bundle) FhirBundleContextHolder.getFhirContext().newXmlParser().parseResource(bundleXML);
-        final IResource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new ResourceReferenceDt("urn:uuid:" + diagnosticOrderId));
+        final Resource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new Reference("urn:uuid:" + diagnosticOrderId));
         assertNotNull(resourceByReference);
 
         IdMapping encounterIdMapping = idMappingRepository.findByExternalId(shrEncounterId, IdMappingType.ENCOUNTER);
@@ -317,7 +317,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         IdMapping diagnosticOrderMapping = idMappingRepository.findByInternalId(diagnosticOrderId, IdMappingType.DIAGNOSTIC_ORDER);
         assertNotNull(diagnosticOrderMapping);
         assertEquals(diagnosticOrderId, diagnosticOrderMapping.getInternalId());
-        String expectedExternalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, resourceByReference.getId().getIdPart());
+        String expectedExternalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, resourceByReference.getId());
         assertEquals(expectedExternalId, diagnosticOrderMapping.getExternalId());
         String diagnosticOrderUrl = encounterIdMapping.getUri() + "#DiagnosticOrder/" + diagnosticOrderId;
         assertEquals(diagnosticOrderUrl, diagnosticOrderMapping.getUri());

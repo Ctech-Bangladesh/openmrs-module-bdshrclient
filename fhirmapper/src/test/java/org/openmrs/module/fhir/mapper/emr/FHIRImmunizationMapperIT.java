@@ -1,8 +1,8 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Immunization;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Immunization;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.After;
@@ -42,15 +42,15 @@ public class FHIRImmunizationMapperIT extends BaseModuleWebContextSensitiveTest 
     @Autowired
     private ConceptService conceptService;
 
-    private IResource resource;
+    private Resource resource;
     private Bundle bundle;
     private ObsHelper obsHelper;
 
     @Before
     public void setUp() throws Exception {
         executeDataSet("testDataSets/immunizationDS.xml");
-        bundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithImmunization.xml", springContext);
-        resource = FHIRBundleHelper.identifyFirstResourceWithName(bundle, new Immunization().getResourceName());
+        bundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithImmunization.xml", springContext);
+        resource = FHIRBundleHelper.identifyFirstResourceWithName(bundle, new Immunization().getResourceType().name());
         obsHelper = new ObsHelper();
     }
 

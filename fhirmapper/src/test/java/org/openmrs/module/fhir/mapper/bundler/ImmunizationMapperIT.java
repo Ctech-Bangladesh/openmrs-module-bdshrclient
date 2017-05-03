@@ -81,7 +81,7 @@ public class ImmunizationMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapImmunizationStatus() throws Exception {
         Immunization immunization = mapImmunization(11, new Encounter());
-        assertEquals("in-progress", immunization.getStatus().getDisplay());
+        assertEquals("completed", immunization.getStatus().getDisplay());
     }
 
     @Test

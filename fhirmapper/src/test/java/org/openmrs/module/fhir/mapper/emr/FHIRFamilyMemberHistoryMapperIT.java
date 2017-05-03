@@ -1,7 +1,7 @@
 package org.openmrs.module.fhir.mapper.emr;
 
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.FamilyMemberHistory;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.FamilyMemberHistory;
 import org.junit.After;
 import org.junit.Test;
 import org.openmrs.Encounter;
@@ -44,8 +44,8 @@ public class FHIRFamilyMemberHistoryMapperIT extends BaseModuleWebContextSensiti
     @Test
     public void shouldMapFamilyHistoryResource() throws Exception {
         executeDataSet("testDataSets/shrClientFamilyHistoryTestDS.xml");
-        Bundle bundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/dstu2/encounterWithFamilyHistory.xml", springContext);
-        FamilyMemberHistory familyHistory = (FamilyMemberHistory) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new FamilyMemberHistory().getResourceName());
+        Bundle bundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithFamilyHistory.xml", springContext);
+        FamilyMemberHistory familyHistory = (FamilyMemberHistory) FHIRBundleHelper.identifyFirstResourceWithName(bundle, new FamilyMemberHistory().getResourceType().name());
         Encounter encounter = new Encounter();
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
 
