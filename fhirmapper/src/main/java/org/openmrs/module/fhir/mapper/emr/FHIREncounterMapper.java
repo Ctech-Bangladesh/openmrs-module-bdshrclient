@@ -3,9 +3,9 @@ package org.openmrs.module.fhir.mapper.emr;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.hl7.fhir.dstu3.model.Composition;
+import org.hl7.fhir.dstu3.model.Encounter;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.openmrs.*;
-import org.hl7.fhir.dstu3.model.Encounter;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.LocationService;
 import org.openmrs.module.fhir.mapper.model.EntityReference;

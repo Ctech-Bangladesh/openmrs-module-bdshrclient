@@ -24,7 +24,7 @@ public class TestFhirFeedHelper {
 
     public static FHIRResource getResourceByReference(Reference reference, List<FHIRResource> fhirResources) {
         for (FHIRResource fhirResource : fhirResources) {
-            if(fhirResource.getIdentifier().getValue().equals(reference.getReference())) {
+            if (fhirResource.getIdentifier().getValue().equals(reference.getReference())) {
                 return fhirResource;
             }
         }
@@ -33,7 +33,7 @@ public class TestFhirFeedHelper {
 
     public static FHIRResource getFirstResourceByType(String fhirResourceName, List<FHIRResource> fhirResources) {
         for (FHIRResource fhirResource : fhirResources) {
-            if(fhirResourceName.equals(fhirResource.getResource().getResourceType().name())) {
+            if (fhirResourceName.equals(fhirResource.getResource().getResourceType().name())) {
                 return fhirResource;
             }
         }
@@ -43,7 +43,7 @@ public class TestFhirFeedHelper {
     public static ArrayList<FHIRResource> getResourceByType(String resourceName, List<FHIRResource> fhirResources) {
         ArrayList<FHIRResource> mappedFhirResources = new ArrayList<>();
         for (FHIRResource fhirResource : fhirResources) {
-            if(resourceName.equals(fhirResource.getResource().getResourceType().name())) {
+            if (resourceName.equals(fhirResource.getResource().getResourceType().name())) {
                 mappedFhirResources.add(fhirResource);
             }
         }

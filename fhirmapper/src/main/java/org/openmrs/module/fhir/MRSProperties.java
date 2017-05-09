@@ -124,7 +124,7 @@ public class MRSProperties {
     public static final String ENCOUNTER_UPDATE_VOID_REASON = "DLN:Encounter updated";
 
     public static final String RESOURCE_MAPPING_EXTERNAL_ID_FORMAT = "%s:%s";
-    
+
     public static final String MRS_LOGIN_LOCATION_TAG_NAME = "Login Location";
 
     public static final String ORDER_DISCONTINUE_REASON = "Cancelled in SHR";

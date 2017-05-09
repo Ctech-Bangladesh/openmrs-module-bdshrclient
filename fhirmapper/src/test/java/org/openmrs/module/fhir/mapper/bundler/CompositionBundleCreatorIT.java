@@ -16,9 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.openmrs.module.fhir.FHIRProperties.*;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
 

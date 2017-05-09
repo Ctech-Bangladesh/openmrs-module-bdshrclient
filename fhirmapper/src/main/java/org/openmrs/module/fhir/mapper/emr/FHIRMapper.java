@@ -88,15 +88,15 @@ public class FHIRMapper {
     }
 
 
-    private VisitType identifyVisitTypeByName (List < VisitType > allVisitTypes, String visitTypeName){
-            VisitType encVisitType = null;
-            for (VisitType visitType : allVisitTypes) {
-                if (visitType.getName().equalsIgnoreCase(visitTypeName)) {
-                    encVisitType = visitType;
-                    break;
-                }
+    private VisitType identifyVisitTypeByName(List<VisitType> allVisitTypes, String visitTypeName) {
+        VisitType encVisitType = null;
+        for (VisitType visitType : allVisitTypes) {
+            if (visitType.getName().equalsIgnoreCase(visitTypeName)) {
+                encVisitType = visitType;
+                break;
             }
-            return encVisitType;
+        }
+        return encVisitType;
     }
 
     public Period getVisitPeriod(ShrEncounterBundle shrEncounterBundle) {

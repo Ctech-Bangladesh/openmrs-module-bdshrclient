@@ -27,6 +27,7 @@ import java.util.Map;
 
 import static org.openmrs.module.fhir.FHIRProperties.RESOURCE_MAPPING_URL_FORMAT;
 import static org.openmrs.module.fhir.MRSProperties.RESOURCE_MAPPING_EXTERNAL_ID_FORMAT;
+import static org.openmrs.module.fhir.utils.FHIREncounterUtil.getIdPart;
 import static org.openmrs.module.fhir.utils.FHIREncounterUtil.getSHREncounterUrl;
 
 @Component
@@ -111,7 +112,7 @@ public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
 
     public void saveIdMappingForDiagnosis(Condition condition, Obs visitDiagnosisObs, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         String encounterUrl = getSHREncounterUrl(shrEncounterBundle.getShrEncounterId(), shrEncounterBundle.getHealthId(), systemProperties);
-        String diagnosisId = condition.getId();
+        String diagnosisId = getIdPart(condition.getIdBase());
         String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterBundle.getShrEncounterId(), diagnosisId);
         String diagnosisUrl = String.format(RESOURCE_MAPPING_URL_FORMAT, encounterUrl,
                 new Condition().getResourceType().name(), diagnosisId);

@@ -116,7 +116,13 @@ public class FHIRBundleHelper {
         List<Reference> childResourceReferences = new ArrayList<>();
         for (Resource compositionRefResource : compositionRefResources) {
             // todo: get all children for compositionRefResource
+            if (compositionRefResource instanceof Observation) {
+                List<Observation.ObservationRelatedComponent> related = ((Observation) compositionRefResource).getRelated();
+                for (Observation.ObservationRelatedComponent observationRelatedComponent : related) {
+                    childResourceReferences.add(observationRelatedComponent.getTarget());
+                }
 //            childResourceReferences.addAll(compositionRefResource.getAllPopulatedChildElementsOfType(Reference.class));
+            }
         }
         HashSet<Reference> childRef = new HashSet<>();
         childRef.addAll(childResourceReferences);

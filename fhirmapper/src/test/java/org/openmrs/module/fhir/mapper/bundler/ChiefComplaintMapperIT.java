@@ -1,6 +1,9 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.Condition;
+import org.hl7.fhir.dstu3.model.Encounter;
+import org.hl7.fhir.dstu3.model.Reference;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,7 +20,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openmrs.module.fhir.FHIRProperties.FHIR_CONDITION_CATEGORY_COMPLAINT_CODE;
-import static org.openmrs.module.fhir.FHIRProperties.FHIR_CONDITION_CATEGORY_DIAGNOSIS_CODE;
 import static org.openmrs.module.fhir.FHIRProperties.FHIR_CONDITION_CATEGORY_URL;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
 
@@ -47,7 +49,7 @@ public class ChiefComplaintMapperIT extends BaseModuleWebContextSensitiveTest {
         List<FHIRResource> complaintResources = chiefComplaintMapper.map(openMrsEncounter.getObsAtTopLevel(false).iterator().next(), new FHIREncounter(encounter), getSystemProperties("1"));
         Assert.assertFalse(complaintResources.isEmpty());
         Assert.assertEquals(1, complaintResources.size());
-        Condition resource = (Condition)complaintResources.get(0).getResource();
+        Condition resource = (Condition) complaintResources.get(0).getResource();
         Coding codingFirstRep = resource.getCategoryFirstRep().getCodingFirstRep();
         assertEquals(FHIR_CONDITION_CATEGORY_URL, codingFirstRep.getSystem());
         assertEquals(FHIR_CONDITION_CATEGORY_COMPLAINT_CODE, codingFirstRep.getCode());

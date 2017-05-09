@@ -1,9 +1,6 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.primitive.StringDt;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.ProcedureRequest;
+import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.Order;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
@@ -19,8 +16,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.openmrs.Order.Action.DISCONTINUE;
-import static org.openmrs.module.fhir.FHIRProperties.PROCEDURE_REQUEST_PREVIOUS_REQUEST_EXTENSION_NAME;
-import static org.openmrs.module.fhir.FHIRProperties.getFhirExtensionUrl;
 import static org.openmrs.module.fhir.MRSProperties.MRS_PROCEDURE_ORDER_TYPE;
 
 @Component
@@ -30,6 +25,8 @@ public class ProcedureOrderMapper implements EmrOrderResourceHandler {
     private ProviderLookupService providerLookupService;
     @Autowired
     private CodeableConceptService codeableConceptService;
+    @Autowired
+    private ProvenanceMapper provenanceMapper;
 
     @Override
     public boolean canHandle(Order order) {
@@ -43,6 +40,7 @@ public class ProcedureOrderMapper implements EmrOrderResourceHandler {
         FHIRResource procedureRequest = createProcedureRequest(order, fhirEncounter, systemProperties);
         if (null != procedureRequest) {
             resources.add(procedureRequest);
+            resources.add(provenanceMapper.map(order, fhirEncounter, procedureRequest));
         }
         return resources;
     }
@@ -50,16 +48,17 @@ public class ProcedureOrderMapper implements EmrOrderResourceHandler {
     public FHIRResource createProcedureRequest(Order order, FHIREncounter fhirEncounter, SystemProperties systemProperties) {
         ProcedureRequest procedureRequest = new ProcedureRequest();
         procedureRequest.setSubject(fhirEncounter.getPatient());
-        procedureRequest.setOrderer(getOrdererReference(order, fhirEncounter));
-        procedureRequest.setOrderedOn(order.getDateActivated(), TemporalPrecisionEnum.SECOND);
+//        procedureRequest.setOrderer(getOrdererReference(order, fhirEncounter));
+        procedureRequest.setAuthoredOn(order.getDateActivated());
         String id = new EntityReference().build(Order.class, systemProperties, order.getUuid());
         procedureRequest.addIdentifier().setValue(id);
         procedureRequest.setId(id);
-        procedureRequest.setEncounter(new ResourceReferenceDt().setReference(fhirEncounter.getId()));
+        procedureRequest.setContext(new Reference().setReference(fhirEncounter.getId()));
         setOrderStatus(order, procedureRequest);
-        setPreviousOrder(order, procedureRequest, systemProperties);
+        Reference reference = procedureRequest.addRelevantHistory();
+//        setPreviousOrder(order, procedureRequest, systemProperties);
         addNotes(order, procedureRequest);
-        CodeableConceptDt code = findCodeForOrder(order);
+        CodeableConcept code = findCodeForOrder(order);
         if (code == null) {
             return null;
         }
@@ -69,40 +68,40 @@ public class ProcedureOrderMapper implements EmrOrderResourceHandler {
 
     private void setOrderStatus(Order order, ProcedureRequest procedureRequest) {
         if (order.getAction().equals(DISCONTINUE))
-            procedureRequest.setStatus(SUSPENDED);
+            procedureRequest.setStatus(ProcedureRequest.ProcedureRequestStatus.SUSPENDED);
         else
-            procedureRequest.setStatus(REQUESTED);
+            procedureRequest.setStatus(ProcedureRequest.ProcedureRequestStatus.ACTIVE);
     }
 
     private void addNotes(Order order, ProcedureRequest procedureRequest) {
-        AnnotationDt notes = new AnnotationDt();
+        Annotation notes = new Annotation();
         notes.setText(order.getCommentToFulfiller());
-        procedureRequest.addNotes(notes);
+        procedureRequest.addNote(notes);
     }
 
-    private ResourceReferenceDt getOrdererReference(Order order, FHIREncounter fhirEncounter) {
-        if (order.getOrderer() != null) {
-            String providerUrl = providerLookupService.getProviderRegistryUrl(order.getOrderer());
-            if (providerUrl != null) {
-                return new ResourceReferenceDt().setReference(providerUrl);
-            }
-        }
-        return fhirEncounter.getFirstParticipantReference();
-    }
+//    private ResourceReferenceDt getOrdererReference(Order order, FHIREncounter fhirEncounter) {
+//        if (order.getOrderer() != null) {
+//            String providerUrl = providerLookupService.getProviderRegistryUrl(order.getOrderer());
+//            if (providerUrl != null) {
+//                return new ResourceReferenceDt().setReference(providerUrl);
+//            }
+//        }
+//        return fhirEncounter.getFirstParticipantReference();
+//    }
 
-    private CodeableConceptDt findCodeForOrder(Order order) {
+    private CodeableConcept findCodeForOrder(Order order) {
         if (null == order.getConcept()) {
             return null;
         }
         return codeableConceptService.addTRCodingOrDisplay(order.getConcept());
     }
 
-    private void setPreviousOrder(Order order, ProcedureRequest procedureRequest, SystemProperties systemProperties) {
-        if (DISCONTINUE.equals(order.getAction())) {
-            String fhirExtensionUrl = getFhirExtensionUrl(PROCEDURE_REQUEST_PREVIOUS_REQUEST_EXTENSION_NAME);
-            String previousOrderUuid = order.getPreviousOrder().getUuid();
-            String previousOrderUrl = new EntityReference().build(Order.class, systemProperties, previousOrderUuid);
-            procedureRequest.addUndeclaredExtension(false, fhirExtensionUrl, new StringDt(previousOrderUrl));
-        }
-    }
+//    private void setPreviousOrder(Order order, ProcedureRequest procedureRequest, SystemProperties systemProperties) {
+//        if (DISCONTINUE.equals(order.getAction())) {
+//            String fhirExtensionUrl = getFhirExtensionUrl(PROCEDURE_REQUEST_PREVIOUS_REQUEST_EXTENSION_NAME);
+//            String previousOrderUuid = order.getPreviousOrder().getUuid();
+//            String previousOrderUrl = new EntityReference().build(Order.class, systemProperties, previousOrderUuid);
+//            procedureRequest.addUndeclaredExtension(false, fhirExtensionUrl, new StringDt(previousOrderUrl));
+//        }
+//    }
 }

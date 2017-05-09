@@ -1,13 +1,7 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.ExtensionDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.ProcedureRequest;
-import ca.uhn.fhir.model.dstu2.valueset.ProcedureRequestStatusEnum;
-import ca.uhn.fhir.model.primitive.StringDt;
 import org.apache.commons.collections4.CollectionUtils;
-import org.hl7.fhir.instance.model.api.IBaseDatatype;
+import org.hl7.fhir.dstu3.model.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,20 +61,23 @@ public class ProcedureOrderMapperIT extends BaseModuleWebContextSensitiveTest {
     public void shouldMapAProcedureOrder() throws Exception {
         Order order = orderService.getOrder(17);
         List<FHIRResource> mappedResources = procedureOrderMapper.map(order, createFhirEncounter(), new Bundle(), getSystemProperties("1"));
-        assertEquals(1, mappedResources.size());
+        assertEquals(2, mappedResources.size());
         ProcedureRequest procedureRequest = (ProcedureRequest) mappedResources.get(0).getResource();
         assertProcedureRequest(procedureRequest, "101", "http://tr.com/ws/concepts/101", "Colposcopy",
-                "2008-08-08 00:00:00", ProcedureRequestStatusEnum.REQUESTED);
+                "2008-08-08 00:00:00", ProcedureRequest.ProcedureRequestStatus.ACTIVE);
+
+        assertProvenance(mappedResources, procedureRequest);
     }
 
     @Test
     public void shouldMapAProcedureOrderWithLocalConcept() throws Exception {
         Order order = orderService.getOrder(18);
         List<FHIRResource> mappedResources = procedureOrderMapper.map(order, createFhirEncounter(), new Bundle(), getSystemProperties("1"));
-        assertEquals(1, mappedResources.size());
+        assertEquals(2, mappedResources.size());
         ProcedureRequest procedureRequest = (ProcedureRequest) mappedResources.get(0).getResource();
         assertProcedureRequest(procedureRequest, null, null, "Division of Brain",
-                "2008-08-08 00:00:00", ProcedureRequestStatusEnum.REQUESTED);
+                "2008-08-08 00:00:00", ProcedureRequest.ProcedureRequestStatus.ACTIVE);
+        assertProvenance(mappedResources, procedureRequest);
     }
 
     @Test
@@ -95,38 +92,46 @@ public class ProcedureOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Order order = orderService.getOrder(20);
 
         List<FHIRResource> mappedResources = procedureOrderMapper.map(order, createFhirEncounter(), new Bundle(), getSystemProperties("1"));
-        assertEquals(1, mappedResources.size());
+        assertEquals(2, mappedResources.size());
         ProcedureRequest procedureRequest = (ProcedureRequest) mappedResources.get(0).getResource();
         assertProcedureRequest(procedureRequest, "101", "http://tr.com/ws/concepts/101",
-                "Colposcopy", "2008-08-19 12:22:22", ProcedureRequestStatusEnum.SUSPENDED);
-        final List<ExtensionDt> extensions = procedureRequest.getUndeclaredExtensionsByUrl(
+                "Colposcopy", "2008-08-19 12:22:22", ProcedureRequest.ProcedureRequestStatus.SUSPENDED);
+        assertProvenance(mappedResources, procedureRequest);
+
+        final List<Extension> extensions = procedureRequest.getExtensionsByUrl(
                 FHIRProperties.getFhirExtensionUrl(FHIRProperties.PROCEDURE_REQUEST_PREVIOUS_REQUEST_EXTENSION_NAME));
         assertEquals(1, extensions.size());
-        IBaseDatatype extension = extensions.get(0).getValue();
-        assertTrue(extension instanceof StringDt);
-        String actualPreviousOrderUri = ((StringDt) extension).getValue();
+        Type extension = extensions.get(0).getValue();
+        assertTrue(extension instanceof StringType);
+        String actualPreviousOrderUri = ((StringType) extension).getValue();
         String expectedPreviousOrderUri = "urn:uuid:" + order.getPreviousOrder().getUuid();
         assertEquals(expectedPreviousOrderUri, actualPreviousOrderUri);
     }
 
     private FHIREncounter createFhirEncounter() {
-        ca.uhn.fhir.model.dstu2.resource.Encounter encounter = new ca.uhn.fhir.model.dstu2.resource.Encounter();
-        encounter.setPatient(new ResourceReferenceDt(patientRef));
+        Encounter encounter = new Encounter();
+        encounter.setSubject(new Reference(patientRef));
         encounter.setId(fhirEncounterId);
         return new FHIREncounter(encounter);
     }
 
-    public void assertProcedureRequest(ProcedureRequest procedureRequest, String code, String system, String display, String orderedOn, ProcedureRequestStatusEnum procedureStatus) throws Exception {
-        assertEquals(patientRef, procedureRequest.getSubject().getReference().getValue());
+    public void assertProcedureRequest(ProcedureRequest procedureRequest, String code, String system, String display, String orderedOn, ProcedureRequest.ProcedureRequestStatus procedureStatus) throws Exception {
+        assertEquals(patientRef, procedureRequest.getSubject().getReference());
         assertFalse(procedureRequest.getId().isEmpty());
         assertTrue(CollectionUtils.isNotEmpty(procedureRequest.getIdentifier()));
         assertFalse(procedureRequest.getIdentifier().get(0).isEmpty());
-        assertEquals(fhirEncounterId, procedureRequest.getEncounter().getReference().getValue());
-        assertEquals(procedureStatus.getCode(), procedureRequest.getStatus());
+        assertEquals(fhirEncounterId, procedureRequest.getContext().getReference());
+        assertEquals(procedureStatus, procedureRequest.getStatus());
         assertTrue(containsCoding(procedureRequest.getCode().getCoding(), code, system, display));
         Date expectedDate = DateUtil.parseDate(orderedOn);
-        assertEquals(expectedDate, procedureRequest.getOrderedOn());
-        assertTrue(procedureRequest.getOrderer().getReference().getValue().endsWith("812.json"));
-        assertEquals("Some Notes", procedureRequest.getNotesFirstRep().getText());
+        assertEquals(expectedDate, procedureRequest.getAuthoredOn());
+//        assertTrue(procedureRequest.getOrderer().getReference().getValue().endsWith("812.json"));
+        assertEquals("Some Notes", procedureRequest.getNoteFirstRep().getText());
+    }
+
+    private void assertProvenance(List<FHIRResource> mappedResources, ProcedureRequest procedureRequest) {
+        Provenance provenance = (Provenance) mappedResources.get(1).getResource();
+        assertTrue(((Reference) provenance.getAgent().get(0).getWho()).getReference().endsWith("812.json"));
+        assertEquals(provenance.getTargetFirstRep().getReference(), procedureRequest.getId());
     }
 }

@@ -206,26 +206,29 @@ public class ObservationValueConverter {
 
     private static String fromTiming(Timing typeValue) {
         String result = "";
-//        Timing.TimingRepeatComponent repeat = typeValue.getRepeat();
+        Timing.TimingRepeatComponent repeat = typeValue.getRepeat();
 //        todo: need to verify what to do
-//        if (repeat == null) return "timing not specified";
-//        Integer frequency = repeat.getFrequency();
-//        String when = repeat.getWhen();
-//        BigDecimal period = repeat.getPeriod();
-//        String periodUnits = repeat.getPeriodUnit().getDisplay();
-//        if (period != null && periodUnits != null) {
-//            result = period + " " + getPeriodUnitFullName(repeat.getPeriodUnit());
-//        }
-//        if (frequency != null) {
-//            result = frequency + " time(s) in " + result;
-//        } else if (when != null) {
-//            result += " " + getEventTimingFullName(when);
-//        }
-//
-//        String bound = convertToText(repeat.getBounds());
-//        if (bound != null) {
-//            result += ". Duration:- " + bound;
-//        }
+        if (repeat == null) return "timing not specified";
+        Integer frequency = repeat.getFrequency();
+        List<Enumeration<Timing.EventTiming>> when = repeat.getWhen();
+
+
+        BigDecimal period = repeat.getPeriod();
+        Timing.UnitsOfTime periodUnits = repeat.getPeriodUnit();
+
+        if (period != null && periodUnits != null) {
+            result = period + " " + getPeriodUnitFullName(periodUnits.toCode());
+        }
+        if (frequency > 0) {
+            result = frequency + " time(s) in " + result;
+        } else if (!when.isEmpty()) {
+            result += " " + getEventTimingFullName(when.get(0).getValueAsString());
+        }
+
+        String bound = convertToText(repeat.getBounds());
+        if (bound != null) {
+            result += ". Duration:- " + bound;
+        }
         return result;
     }
 

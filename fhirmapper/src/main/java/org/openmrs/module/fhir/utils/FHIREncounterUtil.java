@@ -17,4 +17,8 @@ public class FHIREncounterUtil {
         Encounter shrEncounter = FHIRBundleHelper.getEncounter(bundle);
         return new EntityReference().parse(Location.class, shrEncounter.getServiceProvider().getReference());
     }
+
+    public static String getIdPart(String id) {
+        return StringUtil.removePrefix(id, "urn:uuid:");
+    }
 }

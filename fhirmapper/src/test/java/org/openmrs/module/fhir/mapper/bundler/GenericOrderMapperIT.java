@@ -1,12 +1,7 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
-import ca.uhn.fhir.model.api.ExtensionDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.DiagnosticOrder;
-import ca.uhn.fhir.model.dstu2.valueset.DiagnosticOrderStatusEnum;
-import ca.uhn.fhir.model.primitive.StringDt;
 import org.apache.commons.collections4.CollectionUtils;
+import org.hl7.fhir.dstu3.model.*;
 import org.junit.After;
 import org.junit.Test;
 import org.openmrs.Encounter;
@@ -14,7 +9,6 @@ import org.openmrs.Order;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.module.fhir.FHIRProperties;
-import org.openmrs.module.fhir.MapperTestHelper;
 import org.openmrs.module.fhir.TestFhirFeedHelper;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.mapper.model.FHIRResource;
@@ -22,13 +16,9 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.openmrs.module.fhir.FHIRProperties.DIAGNOSTIC_ORDER_CATEGORY_EXTENSION_NAME;
 import static org.openmrs.module.fhir.FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_RADIOLOGY_CODE;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
@@ -81,13 +71,13 @@ public class GenericOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Order order = orderService.getOrder(16);
         List<FHIRResource> mappedResources = genericOrderMapper.map(order, createFhirEncounter(), new Bundle(), getSystemProperties("1"));
         assertTrue(CollectionUtils.isNotEmpty(mappedResources));
-        DiagnosticOrder diagnosticOrder = (DiagnosticOrder) mappedResources.get(0).getResource();
-        assertDiagnosticOrder(diagnosticOrder, order.getUuid());
-        assertEquals(1, diagnosticOrder.getItem().size());
-        DiagnosticOrder.Item item = diagnosticOrder.getItemFirstRep();
-        assertTrue(MapperTestHelper.containsCoding(item.getCode().getCoding(), null, null, "X-ray left hand"));
-        assertEquals(1, item.getEvent().size());
-        assertTrue(hasEventWithDateTime(item, DiagnosticOrderStatusEnum.REQUESTED, order.getDateActivated()));
+        ProcedureRequest diagnosticOrder = (ProcedureRequest) mappedResources.get(0).getResource();
+        assertProcedureRequest(diagnosticOrder, order.getUuid());
+//        assertEquals(1, diagnosticOrder.getItem().size());
+//        ProcedureRequest.Item item = diagnosticOrder.getItemFirstRep();
+//        assertTrue(MapperTestHelper.containsCoding(item.getCode().getCoding(), null, null, "X-ray left hand"));
+//        assertEquals(1, item.getEvent().size());
+//        assertTrue(hasEventWithDateTime(item, ProcedureRequestStatusEnum.REQUESTED, order.getDateActivated()));
     }
 
     @Test
@@ -101,12 +91,12 @@ public class GenericOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         List<FHIRResource> mappedResources = genericOrderMapper.map(order, fhirEncounter, bundle, getSystemProperties("1"));
         assertNotNull(mappedResources);
         assertEquals(1, mappedResources.size());
-        DiagnosticOrder diagnosticOrder = (DiagnosticOrder) TestFhirFeedHelper.getFirstResourceByType(new DiagnosticOrder().getResourceName(), mappedResources).getResource();
+        ProcedureRequest diagnosticOrder = (ProcedureRequest) TestFhirFeedHelper.getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
         assertNotNull(diagnosticOrder);
-        assertTrue(diagnosticOrder.getOrderer().getReference().getValue().endsWith("812.json"));
-        assertEquals(1, diagnosticOrder.getItem().size());
-        assertTrue(MapperTestHelper.containsCoding(diagnosticOrder.getItemFirstRep().getCode().getCoding(), "501qb827-a67c-4q1f-a705-e5efe0q6a972",
-                "http://localhost:9997/openmrs/ws/rest/v1/tr/concept/501qb827-a67c-4q1f-a705-e5efe0q6a972", "X-Ray Right Chest"));
+//        assertTrue(diagnosticOrder.getOrderer().getReference().getValue().endsWith("812.json"));
+//        assertEquals(1, diagnosticOrder.getItem().size());
+//        assertTrue(MapperTestHelper.containsCoding(diagnosticOrder.getItemFirstRep().getCode().getCoding(), "501qb827-a67c-4q1f-a705-e5efe0q6a972",
+//                "http://localhost:9997/openmrs/ws/rest/v1/tr/concept/501qb827-a67c-4q1f-a705-e5efe0q6a972", "X-Ray Right Chest"));
     }
 
     @Test
@@ -125,43 +115,52 @@ public class GenericOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Order order = orderService.getOrder(19);
         List<FHIRResource> fhirResources = genericOrderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
         assertEquals(1, fhirResources.size());
-        DiagnosticOrder diagnosticOrder = (DiagnosticOrder) fhirResources.get(0).getResource();
-        assertDiagnosticOrder(diagnosticOrder, order.getPreviousOrder().getUuid());
-        List<DiagnosticOrder.Item> items = diagnosticOrder.getItem();
-        assertEquals(1, items.size());
-        DiagnosticOrder.Item item = items.get(0);
-        assertEquals(DiagnosticOrderStatusEnum.CANCELLED.getCode(), item.getStatus());
-        assertEquals(2, item.getEvent().size());
-        assertTrue(hasEventWithDateTime(item, DiagnosticOrderStatusEnum.CANCELLED, order.getDateActivated()));
-        assertTrue(hasEventWithDateTime(item, DiagnosticOrderStatusEnum.REQUESTED, order.getPreviousOrder().getDateActivated()));
+        ProcedureRequest diagnosticOrder = (ProcedureRequest) fhirResources.get(0).getResource();
+        assertProcedureRequest(diagnosticOrder, order.getPreviousOrder().getUuid());
+        assertProvenance(fhirResources, diagnosticOrder);
+//        List<ProcedureRequest.Item> items = diagnosticOrder.getItem();
+//        assertEquals(1, items.size());
+//        ProcedureRequest.Item item = items.get(0);
+//        assertEquals(ProcedureRequestStatusEnum.CANCELLED.getCode(), item.getStatus());
+//        assertEquals(2, item.getEvent().size());
+//        assertTrue(hasEventWithDateTime(item, ProcedureRequestStatusEnum.CANCELLED, order.getDateActivated()));
+//        assertTrue(hasEventWithDateTime(item, ProcedureRequestStatusEnum.REQUESTED, order.getPreviousOrder().getDateActivated()));
     }
 
-    private boolean hasEventWithDateTime(DiagnosticOrder.Item item, DiagnosticOrderStatusEnum status, Date datetime) {
-        for (DiagnosticOrder.Event event : item.getEvent()) {
-            if (event.getStatus().equals(status.getCode()) && event.getDateTime().equals(datetime)) return true;
-        }
-        return false;
-    }
+//    private boolean hasEventWithDateTime(ProcedureRequest.Item item, ProcedureRequestStatusEnum status, Date datetime) {
+//        for (ProcedureRequest.Event event : item.getEvent()) {
+//            if (event.getStatus().equals(status.getCode()) && event.getDateTime().equals(datetime)) return true;
+//        }
+//        return false;
+//    }
 
-    private void assertDiagnosticOrder(DiagnosticOrder diagnosticOrder, String orderId) {
-        assertEquals(patientRef, diagnosticOrder.getSubject().getReference().getValue());
-        assertTrue(diagnosticOrder.getOrderer().getReference().getValue().endsWith("812.json"));
+    private void assertProcedureRequest(ProcedureRequest diagnosticOrder, String orderId) {
+        assertEquals(patientRef, diagnosticOrder.getSubject().getReference());
+//        assertTrue(diagnosticOrder.getOrderer().getReference().getValue().endsWith("812.json"));
         orderId = "urn:uuid:" + orderId;
-        assertEquals(orderId, diagnosticOrder.getId().getValue());
+        assertEquals(orderId, diagnosticOrder.getId());
         assertEquals(1, diagnosticOrder.getIdentifier().size());
         assertEquals(orderId, diagnosticOrder.getIdentifierFirstRep().getValue());
         assertFalse(diagnosticOrder.getIdentifier().get(0).isEmpty());
-        assertEquals(fhirEncounterId, diagnosticOrder.getEncounter().getReference().getValue());
-        assertEquals(1, diagnosticOrder.getUndeclaredExtensions().size());
-        ExtensionDt extensionDt = diagnosticOrder.getUndeclaredExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(DIAGNOSTIC_ORDER_CATEGORY_EXTENSION_NAME)).get(0);
-        assertTrue(extensionDt.getValue() instanceof StringDt);
-        assertEquals(FHIR_DIAGNOSTIC_REPORT_CATEGORY_RADIOLOGY_CODE, ((StringDt)extensionDt.getValue()).getValue());
+        assertEquals(fhirEncounterId, diagnosticOrder.getContext().getReference());
+        assertEquals(1, diagnosticOrder.getExtension().size());
+        Extension extensionDt = diagnosticOrder.getExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(DIAGNOSTIC_ORDER_CATEGORY_EXTENSION_NAME)).get(0);
+        assertTrue(extensionDt.getValue() instanceof StringType);
+        assertEquals(FHIR_DIAGNOSTIC_REPORT_CATEGORY_RADIOLOGY_CODE, ((StringType) extensionDt.getValue()).getValue());
+
     }
 
     private FHIREncounter createFhirEncounter() {
-        ca.uhn.fhir.model.dstu2.resource.Encounter encounter = new ca.uhn.fhir.model.dstu2.resource.Encounter();
-        encounter.setPatient(new ResourceReferenceDt(patientRef));
+
+        org.hl7.fhir.dstu3.model.Encounter encounter = new org.hl7.fhir.dstu3.model.Encounter();
+        encounter.setSubject(new Reference(patientRef));
         encounter.setId(fhirEncounterId);
         return new FHIREncounter(encounter);
+    }
+
+    private void assertProvenance(List<FHIRResource> mappedResources, ProcedureRequest procedureRequest) {
+        Provenance provenance = (Provenance) mappedResources.get(1).getResource();
+        assertTrue(((Reference) provenance.getAgent().get(0).getWho()).getReference().endsWith("812.json"));
+        assertEquals(provenance.getTargetFirstRep().getReference(), procedureRequest.getId());
     }
 }

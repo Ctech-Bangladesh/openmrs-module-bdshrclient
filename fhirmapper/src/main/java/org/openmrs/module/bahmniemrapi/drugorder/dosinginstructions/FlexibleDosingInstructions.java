@@ -1,18 +1,12 @@
 package org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions;
 
-import org.openmrs.Concept;
-import org.openmrs.DosingInstructions;
-import org.openmrs.DrugOrder;
-import org.openmrs.Duration;
-import org.openmrs.OrderFrequency;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
-import org.openmrs.module.fhir.utils.DateUtil;
 import org.springframework.validation.Errors;
 
 import java.util.Date;
 import java.util.Locale;
 
-import static org.apache.commons.lang3.time.DateUtils.addSeconds;
 import static org.openmrs.module.fhir.utils.DateUtil.aSecondBefore;
 
 public class FlexibleDosingInstructions implements DosingInstructions {

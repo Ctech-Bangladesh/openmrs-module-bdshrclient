@@ -180,7 +180,7 @@ public class ProcedureMapper implements EmrObsResourceHandler {
         category.addCoding()
                 .setSystem(FHIRProperties.FHIR_V2_VALUESET_DIAGNOSTIC_REPORT_CATEGORY_URL)
                 .setCode(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_OTHER_CODE)
-                .setDisplay(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_OTHER_DISPLAY    );
+                .setDisplay(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_OTHER_DISPLAY);
         diagnosticReport.setCategory(category);
     }
 

@@ -18,7 +18,7 @@ public class FHIREncounter {
     public Encounter getEncounter() {
         return encounter;
     }
-    
+
     public List<Reference> getParticipantReferences() {
         List<Reference> participants = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(encounter.getParticipant())) {

@@ -76,7 +76,7 @@ public class FHIRSubResourceMapper {
     private void removeObsWithoutValues(EmrEncounter emrEncounter) {
         Set<Obs> obs = emrEncounter.getTopLevelObs();
         for (Obs ob : obs) {
-            if (shouldRemoveObsHierarchyWithoutValues(ob, null)){
+            if (shouldRemoveObsHierarchyWithoutValues(ob, null)) {
                 emrEncounter.removeObs(ob);
             }
         }
@@ -86,7 +86,7 @@ public class FHIRSubResourceMapper {
         boolean shouldRemove = true;
         if (!obs.hasGroupMembers()) {
             shouldRemove = hasNoValue(obs);
-        }else {
+        } else {
             for (Obs child : obs.getGroupMembers()) {
                 boolean withoutValuesAndChild = shouldRemoveObsHierarchyWithoutValues(child, obs);
                 if (!withoutValuesAndChild) {

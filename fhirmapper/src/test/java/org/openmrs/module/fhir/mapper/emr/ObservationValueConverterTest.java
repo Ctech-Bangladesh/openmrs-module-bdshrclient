@@ -158,7 +158,7 @@ public class ObservationValueConverterTest {
 
         Timing.TimingRepeatComponent repeat = new Timing.TimingRepeatComponent();
         repeat.setBounds(period);
-        repeat.setWhen(asList(Timing.EventTiming.ACM));
+        repeat.addWhen(Timing.EventTiming.ACM);
         repeat.setPeriod(1);
         repeat.setPeriodUnit(Timing.UnitsOfTime.H);
 

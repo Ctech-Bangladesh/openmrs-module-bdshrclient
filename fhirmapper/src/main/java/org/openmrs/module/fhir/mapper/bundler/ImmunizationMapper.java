@@ -151,7 +151,7 @@ public class ImmunizationMapper implements EmrObsResourceHandler {
         }
     }
 
-    private void setReason(TrValueSetType trValueSetType, Immunization.ImmunizationExplanationComponent  explanationComponent, CodeableConcept reason) {
+    private void setReason(TrValueSetType trValueSetType, Immunization.ImmunizationExplanationComponent explanationComponent, CodeableConcept reason) {
         if (TrValueSetType.IMMUNIZATION_REFUSAL_REASON.equals(trValueSetType)) {
             explanationComponent.addReasonNotGiven(reason);
         } else {
