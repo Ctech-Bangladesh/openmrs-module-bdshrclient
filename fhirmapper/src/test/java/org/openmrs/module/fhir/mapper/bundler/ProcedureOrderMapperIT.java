@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.openmrs.Order;
 import org.openmrs.api.OrderService;
 import org.openmrs.module.fhir.FHIRProperties;
+import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.mapper.model.FHIRResource;
 import org.openmrs.module.fhir.utils.DateUtil;
@@ -18,6 +19,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.Date;
 import java.util.List;
 
+import static org.hl7.fhir.dstu3.model.ProcedureRequest.ProcedureRequestIntent.ORDER;
 import static org.junit.Assert.*;
 import static org.openmrs.module.fhir.MapperTestHelper.containsCoding;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
@@ -90,6 +92,7 @@ public class ProcedureOrderMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapADiscontinuedProcedureOrder() throws Exception {
         Order order = orderService.getOrder(20);
+        String expectedPreviousOrderUri = "urn:uuid:" + order.getPreviousOrder().getUuid();
 
         List<FHIRResource> mappedResources = procedureOrderMapper.map(order, createFhirEncounter(), new Bundle(), getSystemProperties("1"));
         assertEquals(2, mappedResources.size());
@@ -98,14 +101,13 @@ public class ProcedureOrderMapperIT extends BaseModuleWebContextSensitiveTest {
                 "Colposcopy", "2008-08-19 12:22:22", ProcedureRequest.ProcedureRequestStatus.SUSPENDED);
         assertProvenance(mappedResources, procedureRequest);
 
+        Reference historyReference = procedureRequest.getRelevantHistory().get(0);
+        assertEquals(expectedPreviousOrderUri + "-provenance", historyReference.getReference());
+
+
         final List<Extension> extensions = procedureRequest.getExtensionsByUrl(
                 FHIRProperties.getFhirExtensionUrl(FHIRProperties.PROCEDURE_REQUEST_PREVIOUS_REQUEST_EXTENSION_NAME));
-        assertEquals(1, extensions.size());
-        Type extension = extensions.get(0).getValue();
-        assertTrue(extension instanceof StringType);
-        String actualPreviousOrderUri = ((StringType) extension).getValue();
-        String expectedPreviousOrderUri = "urn:uuid:" + order.getPreviousOrder().getUuid();
-        assertEquals(expectedPreviousOrderUri, actualPreviousOrderUri);
+        assertTrue(extensions.isEmpty());
     }
 
     private FHIREncounter createFhirEncounter() {
@@ -121,11 +123,17 @@ public class ProcedureOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertTrue(CollectionUtils.isNotEmpty(procedureRequest.getIdentifier()));
         assertFalse(procedureRequest.getIdentifier().get(0).isEmpty());
         assertEquals(fhirEncounterId, procedureRequest.getContext().getReference());
+
+        assertEquals(ORDER, procedureRequest.getIntent());
+        Coding category = procedureRequest.getCategoryFirstRep().getCodingFirstRep();
+        assertEquals("http://localhost:9080/openmrs/ws/rest/v1/tr/vs/order-type", category.getSystem());
+        assertEquals(MRSProperties.TR_ORDER_TYPE_PROCEDURE_CODE, category.getCode());
+
         assertEquals(procedureStatus, procedureRequest.getStatus());
         assertTrue(containsCoding(procedureRequest.getCode().getCoding(), code, system, display));
         Date expectedDate = DateUtil.parseDate(orderedOn);
         assertEquals(expectedDate, procedureRequest.getAuthoredOn());
-//        assertTrue(procedureRequest.getOrderer().getReference().getValue().endsWith("812.json"));
+        assertTrue(procedureRequest.getRequester().getAgent().getReference().endsWith("812.json"));
         assertEquals("Some Notes", procedureRequest.getNoteFirstRep().getText());
     }
 
@@ -133,5 +141,6 @@ public class ProcedureOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Provenance provenance = (Provenance) mappedResources.get(1).getResource();
         assertTrue(((Reference) provenance.getAgent().get(0).getWho()).getReference().endsWith("812.json"));
         assertEquals(provenance.getTargetFirstRep().getReference(), procedureRequest.getId());
+        assertEquals(procedureRequest.getAuthoredOn(), provenance.getRecorded());
     }
 }

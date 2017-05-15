@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Arrays.asList;
-
 @Component("fhirRadiologyOrderMapper")
 public class GenericOrderMapper implements EmrOrderResourceHandler {
 

@@ -37,6 +37,10 @@ public class SystemProperties {
             throw new RuntimeException("Could not identify valueset. Make sure tr properties has key:" + valueSetKeyName);
         }
 
+        return createValueSetUrlFor(valuesetName);
+    }
+
+    public String createValueSetUrlFor(String valuesetName) {
         String trBaseUrl = StringUtil.ensureSuffix(trProperties.getProperty(PropertyKeyConstants.TR_REFERENCE_PATH), "/");
         String trValueSetPathInfo = StringUtil.removePrefix(trProperties.getProperty(TR_VALUESET_PATH_INFO), "/");
 

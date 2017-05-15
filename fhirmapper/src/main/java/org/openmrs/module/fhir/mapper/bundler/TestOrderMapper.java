@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.openmrs.module.fhir.FHIRProperties.*;
 import static org.openmrs.module.fhir.MRSProperties.MRS_LAB_ORDER_TYPE;
+import static org.openmrs.module.fhir.utils.FHIRBundleHelper.createProvenance;
 
 @Component("fhirTestOrderMapper")
 public class TestOrderMapper implements EmrOrderResourceHandler {
@@ -24,8 +25,6 @@ public class TestOrderMapper implements EmrOrderResourceHandler {
     private CodeableConceptService codeableConceptService;
     @Autowired
     private DiagnosticOrderBuilder orderBuilder;
-    @Autowired
-    private ProvenanceMapper provenanceMapper;
 
     @Override
     public boolean canHandle(Order order) {
@@ -45,7 +44,7 @@ public class TestOrderMapper implements EmrOrderResourceHandler {
         List<FHIRResource> fhirResources = new ArrayList<>();
         FHIRResource fhirDiagnosticOrder = new FHIRResource("Diagnostic Order", diagnosticOrder.getIdentifier(), diagnosticOrder);
         fhirResources.add(fhirDiagnosticOrder);
-        FHIRResource provenance = provenanceMapper.map(order, fhirEncounter, fhirDiagnosticOrder);
+        FHIRResource provenance = createProvenance(order.getDateActivated(), new Reference(), fhirDiagnosticOrder.getResource().getId());
         fhirResources.add(provenance);
         return fhirResources;
     }

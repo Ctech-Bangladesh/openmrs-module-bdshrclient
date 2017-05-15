@@ -58,7 +58,7 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         ProcedureRequest diagnosticOrder = (ProcedureRequest) mappedResources.get(0).getResource();
         assertDiagnosticOrder(diagnosticOrder, order.getUuid());
         assertProvenance(mappedResources, diagnosticOrder);
-//        assertEquals(1, diagnosticOrder.getItem().size());
+        assertEquals(2, mappedResources.size());
 //        ProcedureRequest.Item item = diagnosticOrder.getItemFirstRep();
 //        assertTrue(MapperTestHelper.containsCoding(item.getCode().getCoding(), null, null, "Urea Nitorgen"));
 //        assertEquals(1, item.getEvent().size());

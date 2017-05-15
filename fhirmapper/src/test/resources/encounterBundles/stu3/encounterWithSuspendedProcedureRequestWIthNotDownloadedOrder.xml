@@ -40,18 +40,6 @@
                 </section>
                 <section>
                     <entry>
-                        <reference value="urn:uuid:f3703dad-7e1e-47b6-9952-4ca5774fb365"/>
-                        <display value="Procedure Request"/>
-                    </entry>
-                </section>
-                <section>
-                    <entry>
-                        <reference value="urn:uuid:f3703dad-7e1e-47b6-9952-4ca5774fb365-provenance"/>
-                        <display value="Provenance Procedure Request"/>
-                    </entry>
-                </section>
-                <section>
-                    <entry>
                         <reference value="urn:uuid:27265c7e-9116-4c0e-b6b7-ae67b0ad7efd"/>
                         <display value="Procedure Request"/>
                     </entry>
@@ -96,60 +84,6 @@
         </resource>
     </entry>
     <entry>
-        <fullUrl value="urn:uuid:f3703dad-7e1e-47b6-9952-4ca5774fb365"/>
-        <resource>
-            <ProcedureRequest xmlns="http://hl7.org/fhir">
-                <identifier>
-                    <value value="urn:uuid:f3703dad-7e1e-47b6-9952-4ca5774fb365"/>
-                </identifier>
-                <status value="active"/>
-                <intent value="order"/>
-                <category>
-                    <coding>
-                        <system value="http://tr.com/valuesets/order-type"/>
-                        <code value="PROCEDURE"/>
-                    </coding>
-                </category>
-                <code>
-                    <coding>
-                        <system value="http://tr.com/ws/concepts/101"/>
-                        <code value="101"/>
-                        <display value="Colposcopy"/>
-                    </coding>
-                </code>
-                <subject>
-                    <reference value="http://172.18.46.199:8081/api/v1/patients/98001175044"/>
-                    <display value="98001175044"/>
-                </subject>
-                <context>
-                    <reference value="urn:uuid:763dee64-44d5-4820-b9c0-6c51bf1d3fa9"/>
-                </context>
-                <authoredOn value="2016-02-03T15:30:20+05:30"/>
-                <requester>
-                    <agent>
-                        <reference value="http://172.18.46.199:8084/api/1.0/providers/24.json"/>
-                    </agent>
-                </requester>
-            </ProcedureRequest>
-        </resource>
-    </entry>
-    <entry>
-        <fullUrl value="urn:uuid:f3703dad-7e1e-47b6-9952-4ca5774fb365-provenance"/>
-        <resource>
-            <Provenance xmlns="http://hl7.org/fhir">
-                <target>
-                    <reference value="urn:uuid:f3703dad-7e1e-47b6-9952-4ca5774fb365"/>
-                </target>
-                <recorded value="2016-02-03T15:30:20.000+05:30"/>
-                <agent>
-                    <whoReference>
-                        <reference value="http://172.18.46.199:8084/api/1.0/providers/24.json"/>
-                    </whoReference>
-                </agent>
-            </Provenance>
-        </resource>
-    </entry>
-    <entry>
         <fullUrl value="urn:uuid:27265c7e-9116-4c0e-b6b7-ae67b0ad7efd"/>
         <resource>
             <ProcedureRequest xmlns="http://hl7.org/fhir">
@@ -185,7 +119,7 @@
                     </agent>
                 </requester>
                 <relevantHistory>
-                    <reference value="urn:uuid:f3703dad-7e1e-47b6-9952-4ca5774fb365-provenance"/>
+                    <reference value="urn:uuid:f3703dad-7e1e-mjy6-9952-4ca5774fb365-provenance"/>
                 </relevantHistory>
             </ProcedureRequest>
         </resource>

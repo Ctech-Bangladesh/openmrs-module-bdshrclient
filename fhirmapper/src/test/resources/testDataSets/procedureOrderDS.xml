@@ -144,7 +144,7 @@
             care_setting="1" date_created="2008-08-08 00:00:00.0" voided="false" patient_id="1" orderer="23"
             comment_to_fulfiller="Some Notes" uuid="6d0ae386-kj34-f123-16ws-f15206e63ab0"/>
     
-    <order_id_mapping id="1" internal_id="6d0ae386-kj34-f123-16ws-f15206e63ab0" external_id = "shr-enc-id-1:f3703dad-7e1e-kj6t-9952-4ca5774fb365"
+    <order_id_mapping id="1" internal_id="6d0ae386-kj34-f123-16ws-f15206e63ab0" external_id = "shr-enc-id-1:f3703dad-7e1e-47b6-9952-4ca5774fb365"
                       type="ProcedureOrder" uri="http://shr.com/patients/HIDA764177/encounters/shr-enc-id-1#ProcedureRequest/f3703dad-7e1e-kj6t-9952-4ca5774fb365"/>
     <!--procedure order download to be suspended-->
 

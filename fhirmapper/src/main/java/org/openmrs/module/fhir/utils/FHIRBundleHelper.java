@@ -2,8 +2,10 @@ package org.openmrs.module.fhir.utils;
 
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.instance.model.api.IIdType;
+import org.openmrs.module.fhir.mapper.model.FHIRResource;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -127,5 +129,15 @@ public class FHIRBundleHelper {
         HashSet<Reference> childRef = new HashSet<>();
         childRef.addAll(childResourceReferences);
         return childRef;
+    }
+
+    public static FHIRResource createProvenance(Date recorded, Reference agentReference, String targetReference) {
+        Provenance provenance = new Provenance();
+        provenance.setId(targetReference + "-provenance");
+        provenance.addAgent().setWho(agentReference);
+        provenance.setRecorded(recorded);
+        Reference reference = new Reference().setReference(targetReference);
+        provenance.addTarget(reference);
+        return new FHIRResource("Porvenance", asList(new Identifier().setValue(provenance.getId())), provenance);
     }
 }
