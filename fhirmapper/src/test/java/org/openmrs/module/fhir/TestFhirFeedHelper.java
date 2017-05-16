@@ -32,12 +32,9 @@ public class TestFhirFeedHelper {
     }
 
     public static FHIRResource getFirstResourceByType(String fhirResourceName, List<FHIRResource> fhirResources) {
-        for (FHIRResource fhirResource : fhirResources) {
-            if (fhirResourceName.equals(fhirResource.getResource().getResourceType().name())) {
-                return fhirResource;
-            }
-        }
-        return null;
+        return fhirResources.stream().filter(
+                fhirResource -> fhirResourceName.equals(fhirResource.getResource().getResourceType().name())
+        ).findFirst().orElse(null);
     }
 
     public static ArrayList<FHIRResource> getResourceByType(String resourceName, List<FHIRResource> fhirResources) {

@@ -82,13 +82,9 @@ public class MRSProperties {
 
     public static final String TR_ORDER_TYPE_VALUESET_NAME = "order-type";
     public static final String TR_ORDER_TYPE_LAB_CODE = "LAB";
-    public static final String TR_ORDER_TYPE_LAB_DISPLAY = "Laboratory Order";
     public static final String TR_ORDER_TYPE_PROCEDURE_CODE = "PROCEDURE";
-    public static final String TR_ORDER_TYPE_PROCEDURE_DISPLAY = "Procedure Order";
     public static final String TR_ORDER_TYPE_RADIOLOGY_CODE = "RAD";
-    public static final String TR_ORDER_TYPE_RADIOLOGY_DISPLAY = "Radiology Order";
     public static final String TR_ORDER_TYPE_OTHER_CODE = "OTH";
-    public static final String TR_ORDER_TYPE_OTHER_DISPLAY = "Other";
 
     public static final String TR_CONCEPT_CAUSE_OF_DEATH = "Cause of Death";
     public static final String TR_CONCEPT_UNSPECIFIED_CAUSE_OF_DEATH = "Unspecified cause of death";

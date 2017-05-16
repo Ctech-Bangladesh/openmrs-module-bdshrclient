@@ -52,6 +52,7 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
     }
 
     private boolean hasProcedureCategory(List<CodeableConcept> category) {
+        //todo: check for system as well
         Coding codeableConcept = category.get(0).getCodingFirstRep();
         return codeableConcept.getCode().equals(TR_ORDER_TYPE_PROCEDURE_CODE);
     }
@@ -75,10 +76,9 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
     }
 
     private Order createProcedureOrder(ProcedureRequest procedureRequest, EmrEncounter emrEncounter, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
-        Provenance provenance = getProvenanceForProcedureRequest(procedureRequest.getId(), shrEncounterBundle.getBundle().getEntry());
         Order order = new Order();
         if (ProcedureRequest.ProcedureRequestStatus.CANCELLED.equals(procedureRequest.getStatus())) {
-            Order previousOrder = getPreviousOrder(procedureRequest, shrEncounterBundle, provenance);
+            Order previousOrder = getPreviousOrder(procedureRequest, shrEncounterBundle);
             if (null == previousOrder) return null;
             order.setPreviousOrder(previousOrder);
         }
@@ -89,6 +89,7 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
         setStatus(order, procedureRequest);
         order.setCareSetting(orderCareSettingLookupService.getCareSetting());
 
+        Provenance provenance = getProvenanceForProcedureRequest(procedureRequest.getId(), shrEncounterBundle.getBundle().getEntry());
         setOrderer(order, provenance);
         Date dateActivate = getDateActivate(procedureRequest, emrEncounter);
         order.setDateActivated(dateActivate);
@@ -99,7 +100,6 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
     }
 
     private Provenance getProvenanceForProcedureRequest(String procedureRequestId, List<Bundle.BundleEntryComponent> entry) {
-
         for (Bundle.BundleEntryComponent bundleEntryComponent : entry) {
             Resource resource = bundleEntryComponent.getResource();
             if (resource instanceof Provenance) {
@@ -111,7 +111,7 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
         return null;
     }
 
-    private Order getPreviousOrder(ProcedureRequest procedureRequest, ShrEncounterBundle shrEncounterBundle, Provenance provenance) {
+    private Order getPreviousOrder(ProcedureRequest procedureRequest, ShrEncounterBundle shrEncounterBundle) {
         Reference reference = procedureRequest.getRelevantHistoryFirstRep();
         List<Bundle.BundleEntryComponent> entry = shrEncounterBundle.getBundle().getEntry();
         for (Bundle.BundleEntryComponent bundleEntryComponent : entry) {
@@ -129,16 +129,6 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
                 }
             }
         }
-//        List<Extension> extensions = procedureRequest.getUndeclaredExtensionsByUrl(getFhirExtensionUrl(PROCEDURE_REQUEST_PREVIOUS_REQUEST_EXTENSION_NAME));
-//        if (extensions.isEmpty()) return null;
-//        String value = ((StringDt) extensions.get(0).getValue()).getValue();
-//        if (StringUtils.isBlank(value)) return null;
-//        String previousRequestResourceId = StringUtils.substringAfter(value, "urn:uuid:");
-//        String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterBundle.getShrEncounterId(), previousRequestResourceId);
-//        IdMapping idMapping = idMappingRepository.findByExternalId(externalId, IdMappingType.PROCEDURE_ORDER);
-//        if (null != idMapping) {
-//            return orderService.getOrderByUuid(idMapping.getInternalId());
-////        }
         return null;
     }
 
@@ -181,11 +171,7 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
     }
 
     private void setOrderer(Order order, Provenance provenance) {
-//        Reference orderer = procedureRequest.getOrderer();
-        String practitionerReferenceUrl = null;
-//        if (orderer != null && !orderer.isEmpty()) {
-        practitionerReferenceUrl = ((Reference) provenance.getAgentFirstRep().getWho()).getReference();
-//        }
+        String practitionerReferenceUrl = ((Reference) provenance.getAgentFirstRep().getWho()).getReference();
         order.setOrderer(providerLookupService.getProviderByReferenceUrlOrDefault(practitionerReferenceUrl));
     }
 

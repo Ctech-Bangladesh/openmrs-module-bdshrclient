@@ -63,6 +63,13 @@ public class FHIRProcedureRequestMapperIT extends BaseModuleWebContextSensitiveT
     }
 
     @Test
+    public void shouldNotHandleAProcedureRequestIfCategoryIsUnknown() throws Exception {
+        Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithProcedureRequest.xml");
+        Resource resource = identifyFirstResourceWithName(bundle, new ProcedureRequest().getResourceType().name());
+        assertFalse(procedureRequestMapper.canHandle(resource));
+    }
+
+    @Test
     public void shouldMapAProcedureRequest() throws Exception {
         EmrEncounter emrEncounter = mapOrder("encounterBundles/stu3/encounterWithProcedureRequest.xml", ProcedureRequest.ProcedureRequestStatus.ACTIVE);
 

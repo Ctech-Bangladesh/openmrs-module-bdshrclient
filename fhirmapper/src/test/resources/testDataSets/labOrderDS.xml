@@ -70,6 +70,8 @@
     <concept_reference_map concept_map_id="9" concept_id="303" concept_reference_term_id="9" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0"/>
     <shr_id_mapping id="1" internal_id="baef67ac-b24e-ab04-7028-c3b994132b85" external_id="501qb827-a67c-4q1f-a705-e5efe0q6a972" 
                     type="concept_reference_term" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972"/>
+    <shr_id_mapping id="11" internal_id="7f7379ba-3ca8-11e3-bf2b-0800271c1b75" external_id="123"
+                    type="concept" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/123"/>
     <!--TR test - Haemoglobin-->
 
     <!--TR test - ESR-->
@@ -83,6 +85,8 @@
     <concept_reference_map concept_map_id="10" concept_id="304" concept_reference_term_id="10" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0"/>
     <shr_id_mapping id="2" internal_id="baef67ac-b24e-ab04-7028-c3b9941hji94" external_id="501qb827-a67c-4q1f-a714-e5efe0qjki2w" 
                     type="concept_reference_term" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a714-e5efe0qjki2w"/>
+    <shr_id_mapping id="21" internal_id="a04c36be-3f90-11e3-968c-0800271c1b75" external_id="124"
+                    type="concept" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/124"/>
     <!--TR test - ESR-->
 
     <!--Local Test - Hb Electrophoresis-->
@@ -93,6 +97,14 @@
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
     <!--Local Test - Hb Electrophoresis-->
 
+    <!--Local Test - WBC-->
+    <concept concept_id="306" retired="false" datatype_id="2" class_id="30" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="da4bf386-3fcc-7g4e-968c-0800271c1b75"/>
+    <concept_name concept_name_id="306" concept_id="306" name="WBC" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="e019e8c2-l84r-11e3-968c-0800271c1b75"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <!--Local Test - WBC-->
+
     <!--Local - Blood Panel with TR tests Haemoglobin, ESR and local test Hb Electrophoresis-->
     <concept concept_id="302" retired="false" datatype_id="1" class_id="8" is_set="true" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="cfc5056c-3f8e-11e3-968c-0800271c1b75"/>
@@ -100,13 +112,16 @@
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="d81ce11c-3f8e-11e3-968c-0800271c1b75"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
-    <concept_set concept_set_id="301" concept_id="303" concept_set="302" creator="1" sort_weight="100"
+
+    <concept_set concept_set_id="301" concept_id="306" concept_set="302" creator="1" sort_weight="100"
                  date_created="2005-01-01 00:00:00.0"/>
-    <concept_set concept_set_id="302" concept_id="304" concept_set="302" creator="1" sort_weight="100"
+    <concept_set concept_set_id="302" concept_id="303" concept_set="302" creator="1" sort_weight="100"
                  date_created="2005-01-01 00:00:00.0"/>
-    <concept_set concept_set_id="303" concept_id="305" concept_set="302" creator="1" sort_weight="100"
+    <concept_set concept_set_id="303" concept_id="304" concept_set="302" creator="1" sort_weight="100"
                  date_created="2005-01-01 00:00:00.0"/>
-    <!--Local - Blood Panel with TR tests Haemoglobin, ESR and local test Hb Electrophoresis-->
+    <concept_set concept_set_id="304" concept_id="305" concept_set="302" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+    <!--Local - Blood Panel with TR tests Haemoglobin, ESR and local test Hb Electrophoresis, WBC-->
 
     <!--TR Panel - Complete Blood Count with TR tests Haemoglobin, ESR-->
     <concept concept_id="402" retired="false" datatype_id="1" class_id="8" is_set="true" creator="1"

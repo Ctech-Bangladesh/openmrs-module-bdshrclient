@@ -1,8 +1,10 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
+import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.ProcedureRequest;
 import org.hl7.fhir.dstu3.model.Reference;
 import org.openmrs.Order;
+import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.utils.ProviderLookupService;
@@ -15,16 +17,16 @@ public class DiagnosticOrderBuilder {
     @Autowired
     private ProviderLookupService providerLookupService;
 
-    public ProcedureRequest createDiagnosticOrder(Order order, FHIREncounter fhirEncounter, SystemProperties systemProperties) {
-        ProcedureRequest diagnosticOrder = new ProcedureRequest();
-        diagnosticOrder.setSubject(fhirEncounter.getPatient());
-        diagnosticOrder.setRequester(new ProcedureRequest.ProcedureRequestRequesterComponent().setAgent(getOrdererReference(order, fhirEncounter)));
-        String orderUuid = order.getUuid();
-        if (isDiscontinuedOrder(order))
-            orderUuid = order.getPreviousOrder().getUuid();
-        setDiagnosticOrderId(systemProperties, diagnosticOrder, orderUuid);
-        diagnosticOrder.setContext(new Reference().setReference(fhirEncounter.getId()));
-        return diagnosticOrder;
+    public ProcedureRequest createProcedureRequest(Order order, FHIREncounter fhirEncounter,
+                                                   SystemProperties systemProperties, String orderTypeCode, String orderUuid) {
+        ProcedureRequest procedureRequest = new ProcedureRequest();
+        procedureRequest.setIntent(ProcedureRequest.ProcedureRequestIntent.ORDER);
+        procedureRequest.setSubject(fhirEncounter.getPatient());
+        procedureRequest.setRequester(new ProcedureRequest.ProcedureRequestRequesterComponent().setAgent(getOrdererReference(order, fhirEncounter)));
+        setProcedureRequesetId(systemProperties, procedureRequest, orderUuid);
+        procedureRequest.setContext(new Reference().setReference(fhirEncounter.getId()));
+        addCategory(procedureRequest, systemProperties, orderTypeCode);
+        return procedureRequest;
     }
 
 //    public DiagnosticOrder.Item createOrderItem(Order order, CodeableConceptDt orderCode) {
@@ -41,7 +43,14 @@ public class DiagnosticOrderBuilder {
 //        return orderItem;
 //    }
 
-    private void setDiagnosticOrderId(SystemProperties systemProperties, ProcedureRequest diagnosticOrder, String orderUuid) {
+    private void addCategory(ProcedureRequest procedureRequest, SystemProperties systemProperties, String trOrderTypeCode) {
+        Coding coding = procedureRequest.addCategory().addCoding();
+        coding.setCode(trOrderTypeCode);
+        String trValuesetUrl = systemProperties.createValueSetUrlFor(MRSProperties.TR_ORDER_TYPE_VALUESET_NAME);
+        coding.setSystem(trValuesetUrl);
+    }
+
+    private void setProcedureRequesetId(SystemProperties systemProperties, ProcedureRequest diagnosticOrder, String orderUuid) {
         String id = new EntityReference().build(Order.class, systemProperties, orderUuid);
         diagnosticOrder.addIdentifier().setValue(id);
         diagnosticOrder.setId(id);

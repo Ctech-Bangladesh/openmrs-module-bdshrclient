@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.openmrs.module.fhir.MRSProperties.TR_ORDER_TYPE_LAB_CODE;
+
 @Component("fhirRadiologyOrderMapper")
 public class GenericOrderMapper implements EmrOrderResourceHandler {
 
@@ -39,7 +41,7 @@ public class GenericOrderMapper implements EmrOrderResourceHandler {
     @Override
     public List<FHIRResource> map(Order order, FHIREncounter fhirEncounter, Bundle bundle, SystemProperties systemProperties) {
         if (order.getDateStopped() != null) return Collections.EMPTY_LIST;
-        ProcedureRequest diagnosticOrder = orderBuilder.createDiagnosticOrder(order, fhirEncounter, systemProperties);
+        ProcedureRequest diagnosticOrder = orderBuilder.createProcedureRequest(order, fhirEncounter, systemProperties, TR_ORDER_TYPE_LAB_CODE, "34");
 //        addExtension(diagnosticOrder, order);
 //        createOrderItemForTest(order, diagnosticOrder, order.getConcept());
 //        if (CollectionUtils.isEmpty(diagnosticOrder.getItem())) {

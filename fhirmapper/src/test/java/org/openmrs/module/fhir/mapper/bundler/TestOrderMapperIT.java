@@ -9,8 +9,7 @@ import org.openmrs.Encounter;
 import org.openmrs.Order;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
-import org.openmrs.module.fhir.FHIRProperties;
-import org.openmrs.module.fhir.TestFhirFeedHelper;
+import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.mapper.model.FHIRResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -18,11 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static org.junit.Assert.*;
 import static org.openmrs.module.fhir.FHIRProperties.DIAGNOSTIC_ORDER_CATEGORY_EXTENSION_NAME;
 import static org.openmrs.module.fhir.FHIRProperties.getFhirExtensionUrl;
+import static org.openmrs.module.fhir.MapperTestHelper.containsCoding;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
+import static org.openmrs.module.fhir.TestFhirFeedHelper.getFirstResourceByType;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -53,16 +55,19 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldMapALocalTestOrder() throws Exception {
         Order order = orderService.getOrder(17);
+
         List<FHIRResource> mappedResources = testOrderMapper.map(order, createFhirEncounter(), new Bundle(), getSystemProperties("1"));
+
         assertTrue(CollectionUtils.isNotEmpty(mappedResources));
-        ProcedureRequest diagnosticOrder = (ProcedureRequest) mappedResources.get(0).getResource();
-        assertDiagnosticOrder(diagnosticOrder, order.getUuid());
-        assertProvenance(mappedResources, diagnosticOrder);
         assertEquals(2, mappedResources.size());
-//        ProcedureRequest.Item item = diagnosticOrder.getItemFirstRep();
-//        assertTrue(MapperTestHelper.containsCoding(item.getCode().getCoding(), null, null, "Urea Nitorgen"));
-//        assertEquals(1, item.getEvent().size());
-//        assertTrue(hasEventWithDateTime(item, DiagnosticOrderStatusEnum.REQUESTED, order.getDateActivated()));
+        ProcedureRequest procedureRequest = (ProcedureRequest) mappedResources.get(0).getResource();
+
+        assertLabOrder(procedureRequest, order.getUuid());
+        assertProvenance(mappedResources, procedureRequest);
+
+        assertTrue(containsCoding(procedureRequest.getCode().getCoding(), null, null, "Urea Nitorgen"));
+        assertEquals(ProcedureRequest.ProcedureRequestStatus.ACTIVE, procedureRequest.getStatus());
+        assertEquals(order.getDateActivated(), procedureRequest.getAuthoredOn());
     }
 
     @Test
@@ -72,17 +77,21 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(1, encounter.getOrders().size());
         Bundle bundle = new Bundle();
         Order order = encounter.getOrders().iterator().next();
+
         List<FHIRResource> mappedResources = testOrderMapper.map(order, fhirEncounter, bundle, getSystemProperties("1"));
+
         assertNotNull(mappedResources);
         assertEquals(2, mappedResources.size());
-        ProcedureRequest diagnosticOrder = (ProcedureRequest) TestFhirFeedHelper.getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
+        ProcedureRequest procedureRequest = (ProcedureRequest) getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
+        assertNotNull(procedureRequest);
 
-        assertNotNull(diagnosticOrder);
-        assertProvenance(mappedResources, diagnosticOrder);
-//        assertTrue(diagnosticOrder.getp().getReference().getValue().endsWith("812.json"));
-//        assertEquals(1, diagnosticOrder.getItem().size());
-//        assertTrue(MapperTestHelper.containsCoding(diagnosticOrder.getItemFirstRep().getCode().getCoding(), "20563-3",
-//                "http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972", "Haemoglobin"));
+        assertLabOrder(procedureRequest, order.getUuid());
+        assertProvenance(mappedResources, procedureRequest);
+
+        assertTrue(containsCoding(procedureRequest.getCode().getCoding(), "20563-3",
+                "http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972", "Haemoglobin"));
+        assertEquals(ProcedureRequest.ProcedureRequestStatus.ACTIVE, procedureRequest.getStatus());
+        assertEquals(order.getDateActivated(), procedureRequest.getAuthoredOn());
     }
 
     @Test
@@ -92,34 +101,69 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(1, encounter.getOrders().size());
         Bundle bundle = new Bundle();
         Order order = encounter.getOrders().iterator().next();
+
         List<FHIRResource> mappedResources = testOrderMapper.map(order, fhirEncounter, bundle, getSystemProperties("1"));
+
         assertEquals(2, mappedResources.size());
-        ProcedureRequest diagnosticOrder = (ProcedureRequest) TestFhirFeedHelper.getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
-        assertDiagnosticOrder(diagnosticOrder, order.getUuid());
-        assertProvenance(mappedResources, diagnosticOrder);
-//        assertEquals(1, diagnosticOrder.getItem().size());
-//        assertTrue(MapperTestHelper.containsCoding(diagnosticOrder.getItemFirstRep().getCode().getCoding(), "30xlb827-s02l-4q1f-a705-e5efe0qjki2w",
-//                "http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/30xlb827-s02l-4q1f-a705-e5efe0qjki2w", "Complete Blood Count"));
+        ProcedureRequest procedureRequest = (ProcedureRequest) getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
+
+        assertLabOrder(procedureRequest, order.getUuid());
+        assertProvenance(mappedResources, procedureRequest);
+
+        assertTrue(containsCoding(procedureRequest.getCode().getCoding(), "30xlb827-s02l-4q1f-a705-e5efe0qjki2w",
+                "http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/30xlb827-s02l-4q1f-a705-e5efe0qjki2w", "Complete Blood Count"));
+        assertEquals(ProcedureRequest.ProcedureRequestStatus.ACTIVE, procedureRequest.getStatus());
+        assertEquals(order.getDateActivated(), procedureRequest.getAuthoredOn());
     }
 
     @Test
     public void shouldMapLocalPanelOrder() throws Exception {
+        String orderIdHemoglobine = "6glco326-eaab-4629-jsla-f1520ghkp0a0#123";
+        String orderIdESR = "6glco326-eaab-4629-jsla-f1520ghkp0a0#124";
+        String orderIdWBC = "6glco326-eaab-4629-jsla-f1520ghkp0a0#1";
+        String orderIdHb = "6glco326-eaab-4629-jsla-f1520ghkp0a0#2";
+
         Encounter encounter = encounterService.getEncounter(40);
         FHIREncounter fhirEncounter = createFhirEncounter();
         assertEquals(1, encounter.getOrders().size());
         Bundle bundle = new Bundle();
         Order order = encounter.getOrders().iterator().next();
+
         List<FHIRResource> mappedResources = testOrderMapper.map(order, fhirEncounter, bundle, getSystemProperties("1"));
-        assertEquals(2, mappedResources.size());
-        ProcedureRequest diagnosticOrder = (ProcedureRequest) TestFhirFeedHelper.getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
-        assertDiagnosticOrder(diagnosticOrder, order.getUuid());
-        assertProvenance(mappedResources, diagnosticOrder);
-//        assertEquals(3, diagnosticOrder.getItem().size());
-//        assertTrue(containsItem(diagnosticOrder.getItem(), DiagnosticOrderStatusEnum.REQUESTED, order.getDateActivated(), "Haemoglobin", "20563-3",
-//                "http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972"));
-//        assertTrue(containsItem(diagnosticOrder.getItem(), DiagnosticOrderStatusEnum.REQUESTED, order.getDateActivated(), "ESR", "20563-4",
-//                "http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a714-e5efe0qjki2w"));
-//        assertTrue(containsItem(diagnosticOrder.getItem(), DiagnosticOrderStatusEnum.REQUESTED, order.getDateActivated(), "Hb Electrophoresis", null, null));
+        assertEquals(8, mappedResources.size());
+
+        ProcedureRequest hemoglobineRequest = (ProcedureRequest) getFhirResourceById(orderIdHemoglobine, mappedResources).getResource();
+        assertLabOrder(hemoglobineRequest, orderIdHemoglobine);
+        assertProvenance(mappedResources, hemoglobineRequest);
+        assertTrue(containsCoding(hemoglobineRequest.getCode().getCoding(), "20563-3",
+                "http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972", "Haemoglobin"));
+        assertEquals(ProcedureRequest.ProcedureRequestStatus.ACTIVE, hemoglobineRequest.getStatus());
+        assertEquals(order.getDateActivated(), hemoglobineRequest.getAuthoredOn());
+
+        ProcedureRequest esrRequest = (ProcedureRequest) getFhirResourceById(orderIdESR, mappedResources).getResource();
+        assertLabOrder(esrRequest, orderIdESR);
+        assertProvenance(mappedResources, esrRequest);
+        assertTrue(containsCoding(esrRequest.getCode().getCoding(), "20563-4",
+                "http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a714-e5efe0qjki2w", "ESR"));
+        assertEquals(ProcedureRequest.ProcedureRequestStatus.ACTIVE, esrRequest.getStatus());
+        assertEquals(order.getDateActivated(), esrRequest.getAuthoredOn());
+
+        ProcedureRequest wbcRequest = (ProcedureRequest) getFhirResourceById(orderIdWBC, mappedResources).getResource();
+        assertLabOrder(wbcRequest, orderIdWBC);
+        assertProvenance(mappedResources, wbcRequest);
+        assertTrue(containsCoding(wbcRequest.getCode().getCoding(), null,
+                null, "WBC"));
+        assertEquals(ProcedureRequest.ProcedureRequestStatus.ACTIVE, wbcRequest.getStatus());
+        assertEquals(order.getDateActivated(), wbcRequest.getAuthoredOn());
+
+        ProcedureRequest hbRequest = (ProcedureRequest) getFhirResourceById(orderIdHb, mappedResources).getResource();
+        assertLabOrder(hbRequest, orderIdHb);
+        assertProvenance(mappedResources, hbRequest);
+        assertTrue(containsCoding(hbRequest.getCode().getCoding(), null,
+                null, "Hb Electrophoresis"));
+        assertEquals(ProcedureRequest.ProcedureRequestStatus.ACTIVE, hbRequest.getStatus());
+        assertEquals(order.getDateActivated(), hbRequest.getAuthoredOn());
+
     }
 
     @Test
@@ -131,21 +175,22 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    public void shouldMapADiscountinuedOrder() throws Exception {
+    public void shouldMapADiscontinuedOrder() throws Exception {
         FHIREncounter fhirEncounter = createFhirEncounter();
         Order order = orderService.getOrder(25);
+
         List<FHIRResource> fhirResources = testOrderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
         assertEquals(2, fhirResources.size());
-        ProcedureRequest diagnosticOrder = (ProcedureRequest) fhirResources.get(0).getResource();
-        assertDiagnosticOrder(diagnosticOrder, order.getPreviousOrder().getUuid());
-        assertProvenance(fhirResources, diagnosticOrder);
-//        List<ProcedureRequest.Item> items = diagnosticOrder.getItem();
-//        assertEquals(1, items.size());
-//        ProcedureRequest.Item item = items.get(0);
-//        assertEquals(DiagnosticOrderStatusEnum.CANCELLED.getCode(), item.getStatus());
-//        assertEquals(2, item.getEvent().size());
-//        assertTrue(hasEventWithDateTime(item, DiagnosticOrderStatusEnum.CANCELLED, order.getDateActivated()));
-//        assertTrue(hasEventWithDateTime(item, DiagnosticOrderStatusEnum.REQUESTED, order.getPreviousOrder().getDateActivated()));
+
+        ProcedureRequest procedureRequest = (ProcedureRequest) fhirResources.get(0).getResource();
+        assertLabOrder(procedureRequest, order.getPreviousOrder().getUuid());
+        assertProvenance(fhirResources, procedureRequest);
+        assertTrue(containsCoding(procedureRequest.getCode().getCoding(), null, null, "Hb Electrophoresis"));
+        assertEquals(ProcedureRequest.ProcedureRequestStatus.CANCELLED, procedureRequest.getStatus());
+        assertEquals(order.getPreviousOrder().getDateActivated(), procedureRequest.getAuthoredOn());
+
+        Reference historyReference = procedureRequest.getRelevantHistory().get(0);
+        assertEquals("urn:uuid:" + order.getPreviousOrder().getUuid() + "-provenance", historyReference.getReference());
     }
 
 //    private boolean hasEventWithDateTime(ProcedureRequest.Item item, DiagnosticOrderStatusEnum status, Date datetime) {
@@ -163,19 +208,25 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 //        return false;
 //    }
 
-    private void assertDiagnosticOrder(ProcedureRequest diagnosticOrder, String orderId) {
-        assertEquals(patientRef, diagnosticOrder.getSubject().getReference());
-//        assertTrue(diagnosticOrder.getOrderer().getReference().getValue().endsWith("812.json"));
+    private void assertLabOrder(ProcedureRequest procedureRequest, String orderId) {
+        assertEquals(patientRef, procedureRequest.getSubject().getReference());
+        assertTrue(procedureRequest.getRequester().getAgent().getReference().endsWith("812.json"));
         orderId = "urn:uuid:" + orderId;
-        assertEquals(orderId, diagnosticOrder.getId());
-        assertEquals(1, diagnosticOrder.getIdentifier().size());
-        assertEquals(orderId, diagnosticOrder.getIdentifierFirstRep().getValue());
-        assertFalse(diagnosticOrder.getIdentifier().get(0).isEmpty());
-        assertEquals(fhirEncounterId, diagnosticOrder.getContext().getReference());
+        assertEquals(orderId, procedureRequest.getId());
+        assertEquals(ProcedureRequest.ProcedureRequestIntent.ORDER, procedureRequest.getIntent());
+
+        assertEquals(1, procedureRequest.getIdentifier().size());
+        assertFalse(procedureRequest.getIdentifier().get(0).isEmpty());
+        assertEquals(orderId, procedureRequest.getIdentifierFirstRep().getValue());
+
+        Coding category = procedureRequest.getCategoryFirstRep().getCodingFirstRep();
+        assertEquals("http://localhost:9080/openmrs/ws/rest/v1/tr/vs/order-type", category.getSystem());
+        assertEquals(MRSProperties.TR_ORDER_TYPE_LAB_CODE, category.getCode());
+
+        assertEquals(fhirEncounterId, procedureRequest.getContext().getReference());
         String fhirExtensionUrl = getFhirExtensionUrl(DIAGNOSTIC_ORDER_CATEGORY_EXTENSION_NAME);
-        List<Extension> extensions = diagnosticOrder.getExtensionsByUrl(fhirExtensionUrl);
-        assertEquals(1, extensions.size());
-        assertEquals(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_LAB_CODE, ((StringType) extensions.get(0).getValue()).getValue());
+        List<Extension> extensions = procedureRequest.getExtensionsByUrl(fhirExtensionUrl);
+        assertEquals(0, extensions.size());
     }
 
     private FHIREncounter createFhirEncounter() {
@@ -186,8 +237,20 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
     }
 
     private void assertProvenance(List<FHIRResource> mappedResources, ProcedureRequest procedureRequest) {
-        Provenance provenance = (Provenance) mappedResources.get(1).getResource();
+        String id = procedureRequest.getId();
+        Provenance provenance = (Provenance) getFhirResourceById(id + "-provenance", mappedResources).getResource();
         assertTrue(((Reference) provenance.getAgent().get(0).getWho()).getReference().endsWith("812.json"));
-        assertEquals(provenance.getTargetFirstRep().getReference(), procedureRequest.getId());
+        assertEquals(provenance.getTargetFirstRep().getReference(), id);
     }
+
+    private FHIRResource getFhirResourceById(String id, List<FHIRResource> mappedResources) {
+        return mappedResources.stream().filter(new Predicate<FHIRResource>() {
+            @Override
+            public boolean test(FHIRResource fhirResource) {
+                return fhirResource.getResource().getId().endsWith(id);
+            }
+        }).findFirst().orElse(null);
+    }
+
+
 }

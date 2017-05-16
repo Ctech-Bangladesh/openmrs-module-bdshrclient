@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.openmrs.Order.Action.DISCONTINUE;
@@ -34,6 +35,7 @@ public class ProcedureOrderMapper implements EmrOrderResourceHandler {
 
     @Override
     public List<FHIRResource> map(Order order, FHIREncounter fhirEncounter, Bundle bundle, SystemProperties systemProperties) {
+        if (order.getDateStopped() != null) return Collections.EMPTY_LIST;
         List<FHIRResource> resources = new ArrayList<>();
         FHIRResource fhirResource = createProcedureRequestResource(order, fhirEncounter, systemProperties);
         if (null != fhirResource) {
@@ -44,6 +46,7 @@ public class ProcedureOrderMapper implements EmrOrderResourceHandler {
     }
 
     public FHIRResource createProcedureRequestResource(Order order, FHIREncounter fhirEncounter, SystemProperties systemProperties) {
+        //todo: delegate basic create
         ProcedureRequest procedureRequest = new ProcedureRequest();
         procedureRequest.setSubject(fhirEncounter.getPatient());
 
@@ -60,7 +63,7 @@ public class ProcedureOrderMapper implements EmrOrderResourceHandler {
 
         setOrderStatus(order, procedureRequest);
         setHistory(order, procedureRequest, systemProperties);
-        addCAtegory(procedureRequest, systemProperties);
+        addCategory(procedureRequest, systemProperties);
         addNotes(order, procedureRequest);
         CodeableConcept code = findCodeForOrder(order);
         if (code == null) {
@@ -70,10 +73,10 @@ public class ProcedureOrderMapper implements EmrOrderResourceHandler {
         return new FHIRResource(PROCEDURE_REQUEST_RESOURCE_DISPLAY, procedureRequest.getIdentifier(), procedureRequest);
     }
 
-    private void addCAtegory(ProcedureRequest procedureRequest, SystemProperties systemProperties) {
+    private void addCategory(ProcedureRequest procedureRequest, SystemProperties systemProperties) {
         Coding coding = procedureRequest.addCategory().addCoding();
         coding.setCode(MRSProperties.TR_ORDER_TYPE_PROCEDURE_CODE);
-        String trValuesetUrl = systemProperties.createValueSetUrlFor("order-type");
+        String trValuesetUrl = systemProperties.createValueSetUrlFor(MRSProperties.TR_ORDER_TYPE_VALUESET_NAME);
         coding.setSystem(trValuesetUrl);
     }
 
@@ -83,7 +86,11 @@ public class ProcedureOrderMapper implements EmrOrderResourceHandler {
         String previousOrderUuid = previousOrder.getUuid();
         String previousOrderUri = new EntityReference().build(Order.class, systemProperties, previousOrderUuid);
         Reference reference = procedureRequest.addRelevantHistory();
-        reference.setReference(previousOrderUri + "-provenance4");
+        reference.setReference(buildProvenanceReference(previousOrderUri));
+    }
+
+    private String buildProvenanceReference(String resourceEntryUri) {
+        return resourceEntryUri + "-provenance";
     }
 
     private void setOrderStatus(Order order, ProcedureRequest procedureRequest) {
