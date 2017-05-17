@@ -53,6 +53,12 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    public void shouldBeAbleToHandleLabTestOrders() throws Exception {
+        Order order = orderService.getOrder(17);
+        assertTrue(testOrderMapper.canHandle(order));
+    }
+
+    @Test
     public void shouldMapALocalTestOrder() throws Exception {
         Order order = orderService.getOrder(17);
 
@@ -62,7 +68,7 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(2, mappedResources.size());
         ProcedureRequest procedureRequest = (ProcedureRequest) mappedResources.get(0).getResource();
 
-        assertLabOrder(procedureRequest, order.getUuid());
+        assertLabOrder(procedureRequest, order.getUuid() + "#1");
         assertProvenance(mappedResources, procedureRequest);
 
         assertTrue(containsCoding(procedureRequest.getCode().getCoding(), null, null, "Urea Nitorgen"));
@@ -85,17 +91,20 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         ProcedureRequest procedureRequest = (ProcedureRequest) getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
         assertNotNull(procedureRequest);
 
-        assertLabOrder(procedureRequest, order.getUuid());
+        assertLabOrder(procedureRequest, order.getUuid() + "#123");
         assertProvenance(mappedResources, procedureRequest);
 
         assertTrue(containsCoding(procedureRequest.getCode().getCoding(), "20563-3",
                 "http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972", "Haemoglobin"));
+        assertTrue(containsCoding(procedureRequest.getCode().getCoding(), "123",
+                "http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/123", "Haemoglobin"));
         assertEquals(ProcedureRequest.ProcedureRequestStatus.ACTIVE, procedureRequest.getStatus());
         assertEquals(order.getDateActivated(), procedureRequest.getAuthoredOn());
     }
 
     @Test
     public void shouldMapPanelOrderWithTRConcept() throws Exception {
+        String trConceptUuid = "30xlb827-s02l-4q1f-a705-e5efe0qjki2w";
         Encounter encounter = encounterService.getEncounter(39);
         FHIREncounter fhirEncounter = createFhirEncounter();
         assertEquals(1, encounter.getOrders().size());
@@ -107,10 +116,10 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(2, mappedResources.size());
         ProcedureRequest procedureRequest = (ProcedureRequest) getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
 
-        assertLabOrder(procedureRequest, order.getUuid());
+        assertLabOrder(procedureRequest, order.getUuid() + "#" + trConceptUuid);
         assertProvenance(mappedResources, procedureRequest);
 
-        assertTrue(containsCoding(procedureRequest.getCode().getCoding(), "30xlb827-s02l-4q1f-a705-e5efe0qjki2w",
+        assertTrue(containsCoding(procedureRequest.getCode().getCoding(), trConceptUuid,
                 "http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/30xlb827-s02l-4q1f-a705-e5efe0qjki2w", "Complete Blood Count"));
         assertEquals(ProcedureRequest.ProcedureRequestStatus.ACTIVE, procedureRequest.getStatus());
         assertEquals(order.getDateActivated(), procedureRequest.getAuthoredOn());
@@ -137,6 +146,8 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertProvenance(mappedResources, hemoglobineRequest);
         assertTrue(containsCoding(hemoglobineRequest.getCode().getCoding(), "20563-3",
                 "http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972", "Haemoglobin"));
+        assertTrue(containsCoding(hemoglobineRequest.getCode().getCoding(), "123",
+                "http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/123", "Haemoglobin"));
         assertEquals(ProcedureRequest.ProcedureRequestStatus.ACTIVE, hemoglobineRequest.getStatus());
         assertEquals(order.getDateActivated(), hemoglobineRequest.getAuthoredOn());
 
@@ -145,6 +156,8 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertProvenance(mappedResources, esrRequest);
         assertTrue(containsCoding(esrRequest.getCode().getCoding(), "20563-4",
                 "http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a714-e5efe0qjki2w", "ESR"));
+        assertTrue(containsCoding(esrRequest.getCode().getCoding(), "124",
+                "http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/124", "ESR"));
         assertEquals(ProcedureRequest.ProcedureRequestStatus.ACTIVE, esrRequest.getStatus());
         assertEquals(order.getDateActivated(), esrRequest.getAuthoredOn());
 
@@ -183,7 +196,7 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(2, fhirResources.size());
 
         ProcedureRequest procedureRequest = (ProcedureRequest) fhirResources.get(0).getResource();
-        assertLabOrder(procedureRequest, order.getPreviousOrder().getUuid());
+        assertLabOrder(procedureRequest, order.getPreviousOrder().getUuid()+ "#1");
         assertProvenance(fhirResources, procedureRequest);
         assertTrue(containsCoding(procedureRequest.getCode().getCoding(), null, null, "Hb Electrophoresis"));
         assertEquals(ProcedureRequest.ProcedureRequestStatus.CANCELLED, procedureRequest.getStatus());
@@ -192,21 +205,6 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Reference historyReference = procedureRequest.getRelevantHistory().get(0);
         assertEquals("urn:uuid:" + order.getPreviousOrder().getUuid() + "-provenance", historyReference.getReference());
     }
-
-//    private boolean hasEventWithDateTime(ProcedureRequest.Item item, DiagnosticOrderStatusEnum status, Date datetime) {
-//        for (ProcedureRequest.Event event : item.getEvent()) {
-//            if(event.getStatus().equals(status.getCode()) && event.getDateTime().equals(datetime)) return true;
-//        }
-//        return false;
-//    }
-//
-//    private boolean containsItem(List<ProcedureRequest.Item> items, DiagnosticOrderStatusEnum orderStatus, Date dateTime, String display, String code, String system) {
-//        for (ProcedureRequest.Item item : items) {
-//            if (item.getStatus().equals(orderStatus.getCode()) && hasEventWithDateTime(item, orderStatus, dateTime)
-//                    && MapperTestHelper.containsCoding(item.getCode().getCoding(), code, system, display)) return true;
-//        }
-//        return false;
-//    }
 
     private void assertLabOrder(ProcedureRequest procedureRequest, String orderId) {
         assertEquals(patientRef, procedureRequest.getSubject().getReference());

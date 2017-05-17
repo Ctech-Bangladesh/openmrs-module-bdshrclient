@@ -43,57 +43,38 @@ public class TestOrderMapper implements EmrOrderResourceHandler {
         List<FHIRResource> fhirResources = new ArrayList<>();
 
         CodeableConcept trCodingForOrder = codeableConceptService.addTRCoding(order.getConcept());
-        if (order.getConcept().getConceptClass().getName().equals(MRSProperties.MRS_CONCEPT_CLASS_LAB_SET)) {
-            if (trCodingForOrder != null && !trCodingForOrder.isEmpty()) {
-                String orderUuid = order.getUuid();
-                if (Order.Action.DISCONTINUE.equals(order.getAction())) {
-                    orderUuid = order.getPreviousOrder().getUuid();
-                }
-                createProcedureRequest(order, fhirEncounter, systemProperties, fhirResources, trCodingForOrder, orderUuid);
-            } else {
-                int count = 1;
-                for (Concept testConcept : order.getConcept().getSetMembers()) {
-                    CodeableConcept trCoding = codeableConceptService.addTRCoding(testConcept);
-                    if (trCoding != null && !trCoding.isEmpty()) {
-                        String orderUuid = order.getUuid();
-                        if (Order.Action.DISCONTINUE.equals(order.getAction())) {
-                            orderUuid = order.getPreviousOrder().getUuid();
-                        }
-                        orderUuid = String.format("%s#%s", orderUuid, getConceptCoding(trCoding.getCoding()).getCode());
-                        createProcedureRequest(order, fhirEncounter, systemProperties, fhirResources, trCoding, orderUuid);
-                    } else {
-                        trCoding = codeableConceptService.addTRCodingOrDisplay(testConcept);
-                        String orderUuid = order.getUuid();
-                        if (Order.Action.DISCONTINUE.equals(order.getAction())) {
-                            orderUuid = order.getPreviousOrder().getUuid();
-                        }
-                        orderUuid = String.format("%s#%s", orderUuid, count++);
-                        createProcedureRequest(order, fhirEncounter, systemProperties, fhirResources, trCoding, orderUuid);
-                    }
-                }
-            }
-        } else {
-            createProcedureRequestForOrder(order, fhirEncounter, systemProperties, fhirResources, trCodingForOrder);
+        if (!isPanelOrder(order)) {
+            createProcedureRequestForLabOrder(order, fhirEncounter, systemProperties, fhirResources, trCodingForOrder);
+            return fhirResources;
         }
-
-//        if (CollectionUtils.isEmpty(procedureRequest.getItem())) {
-//            return null;
-//        }
-//        procedureRequest.setCode();
-        //        procedureRequest.setSpecimen();
-//        procedureRequest.setStatus();
-
-
+        if (isTrConcept(trCodingForOrder)) {
+            String orderUuid = formatProcedureRequestId(getOrderUUid(order), getConceptCoding(trCodingForOrder.getCoding()).getCode());
+            createProcedureRequest(order, fhirEncounter, systemProperties, fhirResources, trCodingForOrder, orderUuid);
+            return fhirResources;
+        }
+        createProcedureRequestsForLocalPanel(order, fhirEncounter, systemProperties, fhirResources);
         return fhirResources;
     }
 
-    private void createProcedureRequestForOrder(Order order, FHIREncounter fhirEncounter, SystemProperties systemProperties, List<FHIRResource> fhirResources, CodeableConcept codingForOrder) {
-        if (codingForOrder == null || codingForOrder.isEmpty()) {
+    private boolean isTrConcept(CodeableConcept trCodingForOrder) {
+        return trCodingForOrder != null && !trCodingForOrder.isEmpty();
+    }
+
+    private boolean isPanelOrder(Order order) {
+        return order.getConcept().getConceptClass().getName().equals(MRSProperties.MRS_CONCEPT_CLASS_LAB_SET);
+    }
+
+    private boolean isDiscontinuedOrder(Order order) {
+        return Order.Action.DISCONTINUE.equals(order.getAction());
+    }
+
+    private void createProcedureRequestForLabOrder(Order order, FHIREncounter fhirEncounter, SystemProperties systemProperties, List<FHIRResource> fhirResources, CodeableConcept codingForOrder) {
+        String orderUuid = getOrderUUid(order);
+        if (!isTrConcept(codingForOrder)) {
             codingForOrder = codeableConceptService.addTRCodingOrDisplay(order.getConcept());
-        }
-        String orderUuid = order.getUuid();
-        if (Order.Action.DISCONTINUE.equals(order.getAction())) {
-            orderUuid = order.getPreviousOrder().getUuid();
+            orderUuid = formatProcedureRequestId(orderUuid, "1");
+        } else {
+            orderUuid = formatProcedureRequestId(orderUuid, getConceptCoding(codingForOrder.getCoding()).getCode());
         }
         createProcedureRequest(order, fhirEncounter, systemProperties,
                 fhirResources, codingForOrder, orderUuid);
@@ -101,7 +82,7 @@ public class TestOrderMapper implements EmrOrderResourceHandler {
 
     private void createProcedureRequest(Order order, FHIREncounter fhirEncounter, SystemProperties systemProperties,
                                         List<FHIRResource> fhirResources, CodeableConcept coding, String orderUuid) {
-        boolean isDiscontinuedOrder = Order.Action.DISCONTINUE.equals(order.getAction());
+        boolean isDiscontinuedOrder = isDiscontinuedOrder(order);
         ProcedureRequest procedureRequest = orderBuilder.createProcedureRequest(order, fhirEncounter, systemProperties, TR_ORDER_TYPE_LAB_CODE, orderUuid);
         procedureRequest.setCode(coding);
         procedureRequest.setStatus(isDiscontinuedOrder ? CANCELLED : ACTIVE);
@@ -132,30 +113,37 @@ public class TestOrderMapper implements EmrOrderResourceHandler {
     }
 
 
-//    private void addItemsToDiagnosticOrder(Order order, DiagnosticOrder diagnosticOrder) {
-//        if (order.getConcept().getConceptClass().getName().equals(MRSProperties.MRS_CONCEPT_CLASS_LAB_SET)) {
-//            CodeableConceptDt panelOrderCode = codeableConceptService.addTRCoding(order.getConcept());
-//            if (panelOrderCode != null && !panelOrderCode.isEmpty()) {
-//                diagnosticOrder.addItem(orderBuilder.createOrderItem(order, panelOrderCode));
-//            } else {
-//                for (Concept testConcept : order.getConcept().getSetMembers()) {
-//                    createOrderItemForTest(order, diagnosticOrder, testConcept);
-//                }
-//            }
-//        } else {
-//            createOrderItemForTest(order, diagnosticOrder, order.getConcept());
-//        }
-//    }
-
-    private void createOrderItemForTest(Order order, ProcedureRequest diagnosticOrder, Concept concept) {
-
-//        CodeableConcept orderCode = codeableConceptService.addTRCodingOrDisplay(concept);
-//        diagnosticOrder.addItem(orderBuilder.createOrderItem(order, orderCode));
-    }
-
-    public static Coding getConceptCoding(List<Coding> codings) {
+    private Coding getConceptCoding(List<Coding> codings) {
         return codings.stream().filter(
                 coding -> StringUtils.isNotBlank(coding.getSystem()) && coding.getSystem().contains(TR_CONCEPT_URI_PART)
         ).findFirst().orElse(null);
     }
+
+    private void createProcedureRequestsForLocalPanel(Order order, FHIREncounter fhirEncounter, SystemProperties systemProperties, List<FHIRResource> fhirResources) {
+        int count = 1;
+        for (Concept testConcept : order.getConcept().getSetMembers()) {
+            CodeableConcept trCoding = codeableConceptService.addTRCoding(testConcept);
+            String orderUuid;
+            if (isTrConcept(trCoding)) {
+                orderUuid = formatProcedureRequestId(getOrderUUid(order), getConceptCoding(trCoding.getCoding()).getCode());
+            } else {
+                trCoding = codeableConceptService.addTRCodingOrDisplay(testConcept);
+                orderUuid = formatProcedureRequestId(getOrderUUid(order), String.valueOf(count++));
+            }
+            createProcedureRequest(order, fhirEncounter, systemProperties, fhirResources, trCoding, orderUuid);
+        }
+    }
+
+    private String formatProcedureRequestId(String orderUUid, String idSuffix) {
+        return String.format("%s#%s", orderUUid, idSuffix);
+    }
+
+    private String getOrderUUid(Order order) {
+        String orderUuid = order.getUuid();
+        if (isDiscontinuedOrder(order)) {
+            orderUuid = order.getPreviousOrder().getUuid();
+        }
+        return orderUuid;
+    }
+
 }

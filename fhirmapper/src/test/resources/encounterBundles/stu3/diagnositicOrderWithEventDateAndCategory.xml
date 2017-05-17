@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bundle xmlns="http://hl7.org/fhir">
+    <id value="2979a69b-3944-4337-831a-42c8cd9584c3"/>
+    <meta>
+        <lastUpdated value="2015-08-24T16:37:53.000+05:30"/>
+    </meta>
+    <type value="collection"/>
+    <entry>
+        <fullUrl value="urn:uuid:f1aeb8d3-52c8-4c65-ab55-05a487e24092"/>
+        <resource>
+            <Composition>
+                <id value="f1aeb8d3-52c8-4c65-ab55-05a487e24092"/>
+                <identifier>
+                    <value value="urn:uuid:f1aeb8d3-52c8-4c65-ab55-05a487e24092"/>
+                </identifier>
+                <status value="final"/>
+                <type>
+                    <coding>
+                        <system value="http://hl7.org/fhir/vs/doc-typecodes"/>
+                        <code value="51899-3"/>
+                        <display value="Details Document"/>
+                    </coding>
+                </type>
+                <subject>
+                    <reference value="http://mci.com//api/default/patients/HIDA764177"/>
+                    <display value="HIDA764177"/>
+                </subject>
+                <encounter>
+                    <reference value="urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+                </encounter>
+                <date value="2015-08-24T16:37:53.000+05:30"/>
+                <author>
+                    <reference value="http://www.fr.com/10000069.json"/>
+                </author>
+                <title value="Patient Clinical Encounter"/>
+                <confidentiality value="N"/>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+                        <display value="Encounter"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:a0848743-e6ae-40c7-a271-4117e46d43cd"/>
+                        <display value="Specimen"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#1"/>
+                        <display value="Procedure Request"/>
+                    </entry>
+                </section>
+            </Composition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+        <resource>
+            <Encounter>
+                <id value="4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+                <identifier>
+                    <value value="urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+                </identifier>
+                <status value="finished"/>
+                <class>
+                    <system value="http://hl7.org/fhir/v3/ActCode"/>
+                    <code value="AMB"/>
+                </class>
+                <type>
+                    <text value="OPD"/>
+                </type>
+                <subject>
+                    <reference value="http://mci.com//api/default/patients/HIDA764177"/>
+                    <display value="HIDA764177"/>
+                </subject>
+                <participant>
+                    <individual>
+                        <reference value="http://www.pr.com/812.json"/>
+                    </individual>
+                </participant>
+                <serviceProvider>
+                    <reference value="http://www.fr.com/10000069.json"/>
+                </serviceProvider>
+            </Encounter>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:"/>
+        <resource>
+            <Specimen>
+                <id value="a0848743-e6ae-40c7-a271-4117e46d43cd"/>
+                <identifier>
+                    <value value="urn:uuid:a0848743-e6ae-40c7-a271-4117e46d43cd"/>
+                </identifier>
+                <type>
+                    <coding>
+                        <display value="Bld"/>
+                    </coding>
+                </type>
+                <subject>
+                    <reference value="http://mci.com//api/default/patients/HIDA764177"/>
+                    <display value="HIDA764177"/>
+                </subject>
+            </Specimen>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#1"/>
+        <resource>
+            <ProcedureRequest>
+                <id value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#1"/>
+                <extension url="http://hl7.org/fhir/diagnosticorder-r2-marker">
+                    <valueBoolean value="true"/>
+                </extension>
+                <identifier>
+                    <value value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#1"/>
+                </identifier>
+                <status value="active"/>
+                <intent value="order"/>
+                <category>
+                    <coding>
+                        <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/order-type"/>
+                        <code value="LAB"/>
+                    </coding>
+                </category>
+                <code>
+                    <coding>
+                        <system value="http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972"/>
+                        <code value="20563-3"/>
+                        <display value="Haemoglobin"/>
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="http://mci.com//api/default/patients/HIDA764177"/>
+                    <display value="HIDA764177"/>
+                </subject>
+                <context>
+                    <reference value="urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+                </context>
+                <requester>
+                    <agent>
+                        <reference value="http://www.pr.com/812.json"/>
+                    </agent>
+                </requester>
+                <specimen>
+                    <reference value="urn:uuid:a0848743-e6ae-40c7-a271-4117e46d43cd"/>
+                </specimen>
+            </ProcedureRequest>
+        </resource>
+    </entry>
+</Bundle>

@@ -66,7 +66,7 @@ public class FHIRProcedureRequestMapperIT extends BaseModuleWebContextSensitiveT
     public void shouldNotHandleAProcedureRequestIfCategoryIsUnknown() throws Exception {
         Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithProcedureRequest.xml");
         Resource resource = identifyFirstResourceWithName(bundle, new ProcedureRequest().getResourceType().name());
-        assertFalse(procedureRequestMapper.canHandle(resource));
+        assertFalse("Fails because not checking system",procedureRequestMapper.canHandle(resource));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class FHIRProcedureRequestMapperIT extends BaseModuleWebContextSensitiveT
         assertEquals("Colposcopy", existingOrder.getConcept().getName().getName());
         assertEquals(NEW, existingOrder.getAction());
 
-        EmrEncounter emrEncounter = mapOrder("encounterBundles/stu3/encounterWithExistingProcedureRequest.xml", existingEncounter, ProcedureRequest.ProcedureRequestStatus.ACTIVE);
+        EmrEncounter emrEncounter = mapOrder("encounterBundles/stu3/encounterWithExistingProcedureRequestForProcedureOrder.xml", existingEncounter, ProcedureRequest.ProcedureRequestStatus.ACTIVE);
 
         Set<Order> orders = emrEncounter.getOrders();
         assertTrue(orders.isEmpty());

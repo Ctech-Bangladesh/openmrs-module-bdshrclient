@@ -251,8 +251,8 @@
             instructions="ESR" date_activated="2008-08-08 00:00:00.0" order_number="12744" order_action="NEW"
             care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23" accession_number="accession-number1"
             uuid="6glco326-34ea-45d4-jsla-f1520ghkp0a0"/>
-    <order_id_mapping id="15" internal_id="6glco326-34ea-45d4-jsla-f1520ghkp0a0" external_id="shr-enc-id-1:453b7b24-7847-49f7-8a33-2fc339e5c4c7"
-                      type="DiagnosticOrder" uri="http://shr.com/patients/HIDA764177/encounters/shr-enc-id-1#DiagnosticOrder/453b7b24-7847-49f7-8a33-2fc339e5c4c7"/>
+    <order_id_mapping id="15" internal_id="6glco326-34ea-45d4-jsla-f1520ghkp0a0" external_id="shr-enc-id-1:453b7b24-7847-49f7-8a33-2fc339e5c4c7#124"
+                      type="ProcedureOrder" uri="http://shr.com/patients/HIDA764177/encounters/shr-enc-id-1#ProcedureRequest/453b7b24-7847-49f7-8a33-2fc339e5c4c7#124"/>
     <!--encounter with order to be stopped after download-->
 
 </dataset>

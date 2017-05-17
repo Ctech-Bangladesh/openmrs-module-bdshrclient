@@ -49,7 +49,7 @@ public class FHIRSubResourceMapperIT extends BaseModuleWebContextSensitiveTest {
         executeDataSet("testDataSets/labOrderDS.xml");
         Encounter existingEncounter = encounterService.getEncounter(42);
         assertEquals(1, existingEncounter.getOrders().size());
-        Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithUpdatedDiagnosticOrder.xml");
+        Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/updateEncounterWithANewLabProcedureRequest.xml");
         fhirSubResourceMapper.map(existingEncounter, new ShrEncounterBundle(bundle, "HIDA764177", "SHR-ENC-1"), getSystemProperties("1"));
         assertEquals(2, existingEncounter.getOrders().size());
     }

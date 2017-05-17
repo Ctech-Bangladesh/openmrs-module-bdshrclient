@@ -1,5 +1,6 @@
 package org.openmrs.module.fhir.mapper.emr;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.Concept;
 import org.openmrs.Order;
@@ -15,6 +16,7 @@ import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.IdMapping;
 import org.openmrs.module.shrclient.model.IdMappingType;
 import org.openmrs.module.shrclient.model.OrderIdMapping;
+import org.openmrs.module.shrclient.util.StringUtil;
 import org.openmrs.module.shrclient.util.SystemProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -89,8 +91,10 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
         setStatus(order, procedureRequest);
         order.setCareSetting(orderCareSettingLookupService.getCareSetting());
 
-        Provenance provenance = getProvenanceForProcedureRequest(procedureRequest.getId(), shrEncounterBundle.getBundle().getEntry());
-        setOrderer(order, provenance);
+        String reference = procedureRequest.getRequester().getAgent().getReference();
+        if (StringUtils.isNotBlank(reference)) {
+            order.setOrderer(providerLookupService.getProviderByReferenceUrlOrDefault(reference));
+        }
         Date dateActivate = getDateActivate(procedureRequest, emrEncounter);
         order.setDateActivated(dateActivate);
         order.setAutoExpireDate(DateUtil.addMinutes(dateActivate, ORDER_AUTO_EXPIRE_DURATION_MINUTES));
@@ -99,37 +103,19 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
         return order;
     }
 
-    private Provenance getProvenanceForProcedureRequest(String procedureRequestId, List<Bundle.BundleEntryComponent> entry) {
-        for (Bundle.BundleEntryComponent bundleEntryComponent : entry) {
-            Resource resource = bundleEntryComponent.getResource();
-            if (resource instanceof Provenance) {
-                if (procedureRequestId.equals(((Provenance) resource).getTargetFirstRep().getReference())) {
-                    return (Provenance) resource;
-                }
-            }
+    private Order getPreviousOrder(ProcedureRequest procedureRequest, ShrEncounterBundle shrEncounterBundle) {
+        Reference provenanceRef = procedureRequest.getRelevantHistoryFirstRep();
+        String previousRequestResourceId = getIdPart(getResourceId(provenanceRef));
+        String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterBundle.getShrEncounterId(), previousRequestResourceId);
+        IdMapping idMapping = idMappingRepository.findByExternalId(externalId, IdMappingType.PROCEDURE_ORDER);
+        if (null != idMapping) {
+            return orderService.getOrderByUuid(idMapping.getInternalId());
         }
         return null;
     }
 
-    private Order getPreviousOrder(ProcedureRequest procedureRequest, ShrEncounterBundle shrEncounterBundle) {
-        Reference reference = procedureRequest.getRelevantHistoryFirstRep();
-        List<Bundle.BundleEntryComponent> entry = shrEncounterBundle.getBundle().getEntry();
-        for (Bundle.BundleEntryComponent bundleEntryComponent : entry) {
-            Resource resource = bundleEntryComponent.getResource();
-            if (resource instanceof Provenance) {
-                Provenance previousProvenance = (Provenance) resource;
-                if (previousProvenance.getId().equals(reference.getReference())) {
-                    String previousRequestResourceId = getIdPart(previousProvenance.getTargetFirstRep().getReference());
-                    String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterBundle.getShrEncounterId(), previousRequestResourceId);
-                    IdMapping idMapping = idMappingRepository.findByExternalId(externalId, IdMappingType.PROCEDURE_ORDER);
-                    if (null != idMapping) {
-                        return orderService.getOrderByUuid(idMapping.getInternalId());
-                    }
-
-                }
-            }
-        }
-        return null;
+    private String getResourceId(Reference provenanceRef) {
+        return StringUtil.removeSuffix(provenanceRef.getReference(), "-provenance");
     }
 
     private void addProcedureOrderToIdMapping(Order order, ProcedureRequest procedureRequest, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
@@ -169,10 +155,4 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
         }
         return encounterDatetime;
     }
-
-    private void setOrderer(Order order, Provenance provenance) {
-        String practitionerReferenceUrl = ((Reference) provenance.getAgentFirstRep().getWho()).getReference();
-        order.setOrderer(providerLookupService.getProviderByReferenceUrlOrDefault(practitionerReferenceUrl));
-    }
-
 }
