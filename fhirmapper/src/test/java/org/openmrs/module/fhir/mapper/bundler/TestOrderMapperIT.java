@@ -196,7 +196,7 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(2, fhirResources.size());
 
         ProcedureRequest procedureRequest = (ProcedureRequest) fhirResources.get(0).getResource();
-        assertLabOrder(procedureRequest, order.getPreviousOrder().getUuid()+ "#1");
+        assertLabOrder(procedureRequest, order.getPreviousOrder().getUuid() + "#1");
         assertProvenance(fhirResources, procedureRequest);
         assertTrue(containsCoding(procedureRequest.getCode().getCoding(), null, null, "Hb Electrophoresis"));
         assertEquals(ProcedureRequest.ProcedureRequestStatus.CANCELLED, procedureRequest.getStatus());
@@ -242,12 +242,7 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
     }
 
     private FHIRResource getFhirResourceById(String id, List<FHIRResource> mappedResources) {
-        return mappedResources.stream().filter(new Predicate<FHIRResource>() {
-            @Override
-            public boolean test(FHIRResource fhirResource) {
-                return fhirResource.getResource().getId().endsWith(id);
-            }
-        }).findFirst().orElse(null);
+        return mappedResources.stream().filter(fhirResource -> fhirResource.getResource().getId().endsWith(id)).findFirst().orElse(null);
     }
 
 
