@@ -149,23 +149,6 @@ public class GenericOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(0, extensions.size());
     }
 
-
-//    private void assertProcedureRequest(ProcedureRequest diagnosticOrder, String orderId) {
-//        assertEquals(patientRef, diagnosticOrder.getSubject().getReference());
-////        assertTrue(diagnosticOrder.getOrderer().getReference().getValue().endsWith("812.json"));
-//        orderId = "urn:uuid:" + orderId;
-//        assertEquals(orderId, diagnosticOrder.getId());
-//        assertEquals(1, diagnosticOrder.getIdentifier().size());
-//        assertEquals(orderId, diagnosticOrder.getIdentifierFirstRep().getValue());
-//        assertFalse(diagnosticOrder.getIdentifier().get(0).isEmpty());
-//        assertEquals(fhirEncounterId, diagnosticOrder.getContext().getReference());
-//        assertEquals(1, diagnosticOrder.getExtension().size());
-//        Extension extensionDt = diagnosticOrder.getExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(DIAGNOSTIC_ORDER_CATEGORY_EXTENSION_NAME)).get(0);
-//        assertTrue(extensionDt.getValue() instanceof StringType);
-//        assertEquals(FHIR_DIAGNOSTIC_REPORT_CATEGORY_RADIOLOGY_CODE, ((StringType) extensionDt.getValue()).getValue());
-//
-//    }
-
     private FHIREncounter createFhirEncounter() {
         org.hl7.fhir.dstu3.model.Encounter encounter = new org.hl7.fhir.dstu3.model.Encounter();
         encounter.setSubject(new Reference(patientRef));
@@ -178,6 +161,7 @@ public class GenericOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Provenance provenance = (Provenance) getFhirResourceById(id + "-provenance", mappedResources).getResource();
         assertTrue(((Reference) provenance.getAgent().get(0).getWho()).getReference().endsWith("812.json"));
         assertEquals(provenance.getTargetFirstRep().getReference(), id);
+        assertEquals(provenance.getRecorded(), procedureRequest.getAuthoredOn());
     }
 
     private FHIRResource getFhirResourceById(String id, List<FHIRResource> mappedResources) {

@@ -239,6 +239,7 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Provenance provenance = (Provenance) getFhirResourceById(id + "-provenance", mappedResources).getResource();
         assertTrue(((Reference) provenance.getAgent().get(0).getWho()).getReference().endsWith("812.json"));
         assertEquals(provenance.getTargetFirstRep().getReference(), id);
+        assertEquals(provenance.getRecorded(), procedureRequest.getAuthoredOn());
     }
 
     private FHIRResource getFhirResourceById(String id, List<FHIRResource> mappedResources) {

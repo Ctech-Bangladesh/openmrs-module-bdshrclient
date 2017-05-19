@@ -26,6 +26,12 @@ public class FHIRProperties {
     public static final String FHIR_DIAGNOSTIC_REPORT_CATEGORY_OTHER_CODE = "OTH";
     public static final String FHIR_DIAGNOSTIC_REPORT_CATEGORY_OTHER_DISPLAY = "Other";
 
+    public static final String FHIR_DATA_OPERATION_VALUESET_URL = "http://hl7.org/fhir/v3/DataOperation";
+    public static final String FHIR_DATA_OPERATION_CREATE_CODE = "CREATE";
+    public static final String FHIR_DATA_OPERATION_UPDATE_CODE = "UPDATE";
+    public static final String FHIR_DATA_OPERATION_ABORT_CODE = "ABORT";
+
+
     public static final String FHIR_YES_NO_INDICATOR_URL = "http://hl7.org/fhir/v2/0136";
     public static final String FHIR_YES_INDICATOR_CODE = "Y";
     public static final String FHIR_YES_INDICATOR_DISPLAY = "Yes";

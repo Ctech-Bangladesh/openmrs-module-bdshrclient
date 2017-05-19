@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hl7.fhir.dstu3.model.*;
-import org.joda.time.DateTime;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
@@ -31,8 +30,10 @@ import java.util.List;
 import java.util.Map;
 
 import static org.codehaus.groovy.runtime.InvokerHelper.asList;
+import static org.openmrs.Order.Action.*;
 import static org.openmrs.module.fhir.FHIRProperties.*;
 import static org.openmrs.module.fhir.MRSProperties.*;
+import static org.openmrs.module.fhir.utils.FHIRBundleHelper.createProvenance;
 
 @Component
 public class DrugOrderMapper implements EmrOrderResourceHandler {
@@ -68,29 +69,42 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         List<FHIRResource> fhirResources = new ArrayList<>();
         DrugOrder drugOrder = (DrugOrder) order;
         MedicationRequest medicationOrder = new MedicationRequest();
+
+        medicationOrder.setIntent(MedicationRequest.MedicationRequestIntent.ORDER);
         medicationOrder.setContext(new Reference().setReference(fhirEncounter.getId()));
         medicationOrder.setSubject(fhirEncounter.getPatient());
         medicationOrder.setAuthoredOn(drugOrder.getDateActivated());
+
         medicationOrder.setMedication(getMedication(drugOrder));
         medicationOrder.setRequester(getOrdererReference(drugOrder, fhirEncounter));
         medicationOrder.addDosageInstruction(getDoseInstructions(drugOrder, systemProperties));
-        setStatusAndPriorPrescriptionAndOrderAction(drugOrder, medicationOrder, systemProperties);
         setDispenseRequest(drugOrder, medicationOrder);
         medicationOrder.setNote(asList(new Annotation(new StringType(getNotes(drugOrder)))));
 
         String id = new EntityReference().build(Order.class, systemProperties, order.getUuid());
         medicationOrder.addIdentifier().setValue(id);
         medicationOrder.setId(id);
+
+        FHIRResource fhirResource = createProvenance(medicationOrder.getAuthoredOn(), medicationOrder.getRequester().getAgent(), medicationOrder.getId());
+        setStatusAndPriorPrescriptionAndOrderAction(drugOrder, medicationOrder, (Provenance) fhirResource.getResource(), systemProperties);
+
         fhirResources.add(new FHIRResource("Medication Order", medicationOrder.getIdentifier(), medicationOrder));
+        fhirResources.add(fhirResource);
         return fhirResources;
     }
 
-    private void setOrderAction(DrugOrder drugOrder, MedicationRequest medicationOrder) {
-        Extension orderActionExtension = new Extension();
-        orderActionExtension.setUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.MEDICATIONORDER_ACTION_EXTENSION_NAME));
-        Order.Action action = drugOrder.getAction();
-        orderActionExtension.setValue(new StringType(action.name()));
-        medicationOrder.addExtension(orderActionExtension);
+    private void setOrderAction(DrugOrder drugOrder, Provenance provenance) {
+        Coding coding = new Coding();
+        coding.setSystem(FHIRProperties.FHIR_DATA_OPERATION_VALUESET_URL);
+
+        if (NEW.equals(drugOrder.getAction())) {
+            coding.setCode(FHIR_DATA_OPERATION_CREATE_CODE);
+        } else if (REVISE.equals(drugOrder.getAction())) {
+            coding.setCode(FHIR_DATA_OPERATION_UPDATE_CODE);
+        } else if (DISCONTINUE.equals(drugOrder.getAction())) {
+            coding.setCode(FHIR_DATA_OPERATION_ABORT_CODE);
+        }
+        provenance.setActivity(coding);
     }
 
     private String getNotes(DrugOrder drugOrder) {
@@ -106,17 +120,18 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         medicationOrder.setDispenseRequest(dispenseRequest);
     }
 
-    private void setStatusAndPriorPrescriptionAndOrderAction(DrugOrder drugOrder, MedicationRequest medicationOrder, SystemProperties systemProperties) {
-        if (drugOrder.getDateStopped() != null || drugOrder.getAction().equals(Order.Action.DISCONTINUE)) {
+    private void setStatusAndPriorPrescriptionAndOrderAction(DrugOrder drugOrder, MedicationRequest medicationOrder, Provenance provenance, SystemProperties systemProperties) {
+        if (drugOrder.getDateStopped() != null || drugOrder.getAction().equals(DISCONTINUE)) {
             medicationOrder.setStatus(MedicationRequest.MedicationRequestStatus.STOPPED);
-//            todo: need to populate provenance
-//            if (drugOrder.getDateStopped() != null)
-//                medicationOrder.setDateEnded(drugOrder.getDateStopped(), TemporalPrecisionEnum.MILLI);
-//            else medicationOrder.setDateEnded(drugOrder.getAutoExpireDate(), TemporalPrecisionEnum.MILLI);
+            if (drugOrder.getDateStopped() != null) {
+                provenance.getPeriod().setEnd(drugOrder.getDateStopped(), TemporalPrecisionEnum.MILLI);
+            } else {
+                provenance.getPeriod().setEnd(drugOrder.getAutoExpireDate(), TemporalPrecisionEnum.MILLI);
+            }
         } else {
             medicationOrder.setStatus(MedicationRequest.MedicationRequestStatus.ACTIVE);
         }
-        setOrderAction(drugOrder, medicationOrder);
+        setOrderAction(drugOrder, provenance);
         if (drugOrder.getPreviousOrder() != null) {
             String priorPresecription = setPriorPrescriptionReference(drugOrder, systemProperties);
             medicationOrder.setPriorPrescription(new Reference(priorPresecription));
@@ -296,16 +311,16 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         FrequencyMapperUtil.FrequencyUnit frequencyUnit = frequencyMapperUtil.getFrequencyUnits(frequencyConceptName);
         repeat.setFrequency(frequencyUnit.getFrequency());
         repeat.setPeriod(frequencyUnit.getFrequencyPeriod());
-//        repeat.setPeriodUnits(frequencyUnit.getUnitOfTime());
+        repeat.setPeriodUnit(frequencyUnit.getUnitOfTime());
     }
 
     private Duration getBounds(DrugOrder drugOrder) {
         Duration duration = new Duration();
         duration.setValue(drugOrder.getDuration());
         String durationUnit = drugOrder.getDurationUnits().getName().getName();
-//        UnitsOfTimeEnum unitOfTime = durationMapperUtil.getUnitOfTime(durationUnit);
-//        duration.setCode(unitOfTime.getCode());
-//        duration.setSystem(unitOfTime.getSystem());
+        Timing.UnitsOfTime unitOfTime = durationMapperUtil.getUnitOfTime(durationUnit);
+        duration.setCode(unitOfTime.toCode());
+        duration.setSystem(unitOfTime.getSystem());
         return duration;
     }
 
