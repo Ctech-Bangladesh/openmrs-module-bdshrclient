@@ -1,14 +1,17 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.exceptions.FHIRException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Order;
 import org.openmrs.api.OrderService;
+import org.openmrs.module.fhir.FHIRProperties;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.mapper.model.FHIRResource;
-import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -16,11 +19,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestIntent.ORDER;
+import static org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestStatus.ACTIVE;
 import static org.junit.Assert.*;
-import static org.openmrs.module.fhir.FHIRProperties.FHIR_DATA_OPERATION_CREATE_CODE;
-import static org.openmrs.module.fhir.FHIRProperties.FHIR_DATA_OPERATION_VALUESET_URL;
+import static org.openmrs.module.fhir.FHIRProperties.*;
 import static org.openmrs.module.fhir.MapperTestHelper.containsCoding;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
 
@@ -44,7 +49,7 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    public void shouldMapMedicationOrderDateAndRouteAndOrderer() throws Exception {
+    public void shouldMapMedicationRequestDateAndRouteAndOrderer() throws Exception {
         Order order = orderService.getOrder(16);
         FHIREncounter fhirEncounter = getFhirEncounter();
 
@@ -53,20 +58,12 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         assertEquals(2, fhirResources.size());
         MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
-        Date expectedDate = DateUtil.parseDate("2008-08-08 00:00:00");
-        assertMedicationOrder(medicationRequest, expectedDate);
 
-        assertEquals(fhirEncounter.getId(), medicationRequest.getContext().getReference());
-        assertEquals(1, medicationRequest.getDosageInstruction().size());
-        Dosage dosageInstruction = medicationRequest.getDosageInstruction().get(0);
-
-        assertTrue(containsCoding(dosageInstruction.getRoute().getCoding(),
-                "Oral", "http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Route-of-Administration", "Oral"));
-        assertTimingRepeat(dosageInstruction, 1, 1, Timing.UnitsOfTime.D,
-                6, Timing.UnitsOfTime.D);
-        assertTrue(medicationRequest.getRequester().getAgent().getReference().endsWith("321.json"));
-
+        assertMedicationRequest(medicationRequest, order.getDateActivated());
         assertProvenance(fhirResources, medicationRequest, order.getScheduledDate(), null);
+        assertTimingRepeat(medicationRequest.getDosageInstructionFirstRep(), 1, 1, Timing.UnitsOfTime.D,
+                6, Timing.UnitsOfTime.D);
+
     }
 
     @Test
@@ -87,8 +84,9 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         FHIREncounter fhirEncounter = getFhirEncounter();
 
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-        MedicationRequest medicationOrder = (MedicationRequest) fhirResources.get(0).getResource();
-        assertTimingRepeat(medicationOrder.getDosageInstruction().get(0), 2, 1, Timing.UnitsOfTime.WK,
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        assertTimingRepeat(medicationRequest.getDosageInstructionFirstRep(), 2, 1, Timing.UnitsOfTime.WK,
                 10, Timing.UnitsOfTime.WK);
     }
 
@@ -99,7 +97,8 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
         MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
-        assertTimingRepeat(medicationRequest.getDosageInstruction().get(0), 1, 3, Timing.UnitsOfTime.H,
+
+        assertTimingRepeat(medicationRequest.getDosageInstructionFirstRep(), 1, 3, Timing.UnitsOfTime.H,
                 10, Timing.UnitsOfTime.WK);
     }
 
@@ -110,8 +109,11 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
         MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
-        assertTimingRepeat(medicationRequest.getDosageInstruction().get(0), 1, 2, Timing.UnitsOfTime.H,
+
+        assertMedicationRequest(medicationRequest, order.getDateActivated());
+        assertTimingRepeat(medicationRequest.getDosageInstructionFirstRep(), 1, 2, Timing.UnitsOfTime.H,
                 2, Timing.UnitsOfTime.D);
+        assertProvenance(fhirResources, medicationRequest, order.getScheduledDate(), null);
     }
 
     @Test
@@ -121,13 +123,11 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
         MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
-        Dosage dosageInstruction = medicationRequest.getDosageInstruction().get(0);
 
-        assertProvenance(fhirResources, medicationRequest, order.getScheduledDate(), new Date());
+        assertMedicationRequest(medicationRequest, order.getDateActivated());
 
-//        Extension scheduledDateExtension = dosageInstruction.getTiming().getUndeclaredExtensions().get(0);
-//        assertEquals(order.getScheduledDate(), ((DateTimeType) scheduledDateExtension.getValue()).getValue());
-//        assertTrue(scheduledDateExtension.getUrl().endsWith(FHIRProperties.SCHEDULED_DATE_EXTENSION_NAME));
+        Provenance provenance = (Provenance) getFhirResourceById(medicationRequest.getId() + "-provenance", fhirResources).getResource();
+        assertEquals(order.getScheduledDate(), provenance.getPeriod().getStart());
     }
 
     @Test
@@ -136,13 +136,13 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(20);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//        assertTrue(((BooleanDt) medicationOrder.getDosageInstruction().get(0).getAsNeeded()).getValue());
-//
-//        order = orderService.getOrder(19);
-//        fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//        assertFalse(((BooleanDt) medicationOrder.getDosageInstruction().get(0).getAsNeeded()).getValue());
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+        assertTrue(medicationRequest.getDosageInstructionFirstRep().getAsNeededBooleanType().booleanValue());
+
+        order = orderService.getOrder(19);
+        fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
+        medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+        assertFalse(medicationRequest.getDosageInstructionFirstRep().getAsNeededBooleanType().booleanValue());
     }
 
     @Test
@@ -151,8 +151,8 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Order order = orderService.getOrder(19);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
 
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//        assertDoseQuantity(medicationOrder.getDosageInstruction().get(0), "http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Medication-Forms", "Pill", "Pill");
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+        assertDoseQuantity(medicationRequest.getDosageInstructionFirstRep(), "http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Medication-Forms", "Pill", "Pill");
     }
 
     @Test
@@ -161,8 +161,8 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Order order = orderService.getOrder(18);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
 
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//        assertDoseQuantity(medicationOrder.getDosageInstruction().get(0), "http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Medication-Package-Forms", "Puffs", "Puffs");
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+        assertDoseQuantity(medicationRequest.getDosageInstructionFirstRep(), "http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Medication-Package-Forms", "Puffs", "Puffs");
     }
 
     @Test
@@ -171,8 +171,8 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Order order = orderService.getOrder(17);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
 
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//        assertDoseQuantity(medicationOrder.getDosageInstruction().get(0), null, null, "mg");
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+        assertDoseQuantity(medicationRequest.getDosageInstructionFirstRep(), null, null, "mg");
     }
 
     @Test
@@ -181,10 +181,10 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(20);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//        SimpleQuantityDt quantity = medicationOrder.getDispenseRequest().getQuantity();
-//        assertThat(quantity.getValue().doubleValue(), is(190.0));
-//        assertEquals("mg", quantity.getUnit());
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+        SimpleQuantity quantity = medicationRequest.getDispenseRequest().getQuantity();
+        assertThat(quantity.getValue().doubleValue(), is(190.0));
+        assertEquals("mg", quantity.getUnit());
     }
 
     @Test
@@ -193,11 +193,10 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(21);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//        assertTrue(containsCoding(medicationOrder.getDosageInstruction().get(0).getAdditionalInstructions().getCoding(),
-//                "1101", "/concepts/1101", "As directed"));
-
-//        assertEquals("additional instructions notes", medicationOrder.getNote());
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+        assertTrue(containsCoding(medicationRequest.getDosageInstructionFirstRep().getAdditionalInstructionFirstRep().getCoding(),
+                "1101", "/concepts/1101", "As directed"));
+        assertEquals("additional instructions notes", medicationRequest.getNoteFirstRep().getText());
     }
 
     @Test
@@ -206,9 +205,9 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(29);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//
-//        assertTrue(medicationOrder.getDosageInstructionFirstRep().getAdditionalInstructions().isEmpty());
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        assertTrue(medicationRequest.getDosageInstructionFirstRep().getAdditionalInstruction().isEmpty());
     }
 
     @Test
@@ -217,19 +216,19 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(22);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
 
-//        assertEquals(1, medicationOrder.getDosageInstruction().size());
-//        MedicationOrder.DosageInstruction dosageInstruction = medicationOrder.getDosageInstructionFirstRep();
-//        List<ExtensionDt> extensions = dosageInstruction.getUndeclaredExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME));
-//        assertEquals(1, extensions.size());
-//        String value = ((StringDt) extensions.get(0).getValue()).getValue();
-//        Map map = new ObjectMapper().readValue(value, Map.class);
-//        assertEquals(3, map.size());
-//        assertEquals(1.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_MORNING_DOSE_KEY));
-//        assertEquals(2.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY));
-//        assertEquals(3.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_EVENING_DOSE_KEY));
-//        assertEquals(TimingAbbreviationEnum.TID.getCode(), dosageInstruction.getTiming().getCode().getCodingFirstRep().getCode());
+        assertEquals(1, medicationRequest.getDosageInstruction().size());
+        Dosage dosageInstruction = medicationRequest.getDosageInstructionFirstRep();
+        List<Extension> extensions = dosageInstruction.getExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME));
+        assertEquals(1, extensions.size());
+        String value = ((StringType) extensions.get(0).getValue()).getValue();
+        Map map = new ObjectMapper().readValue(value, Map.class);
+        assertEquals(3, map.size());
+        assertEquals(1.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_MORNING_DOSE_KEY));
+        assertEquals(2.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY));
+        assertEquals(3.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_EVENING_DOSE_KEY));
+        assertEquals("TID", dosageInstruction.getTiming().getCode().getCodingFirstRep().getCode());
     }
 
     @Test
@@ -238,19 +237,19 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(23);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
 
-//        assertEquals(1, medicationOrder.getDosageInstruction().size());
-//        MedicationOrder.DosageInstruction dosageInstruction = medicationOrder.getDosageInstructionFirstRep();
-//        List<ExtensionDt> extensions = dosageInstruction.getUndeclaredExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME));
-//        assertEquals(1, extensions.size());
-//        String value = ((StringDt) extensions.get(0).getValue()).getValue();
-//        Map map = new ObjectMapper().readValue(value, Map.class);
-//        assertEquals(2, map.size());
-//        assertEquals(11.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_MORNING_DOSE_KEY));
-//        assertEquals(12.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY));
-//        assertNull(map.get(FHIRProperties.FHIR_DRUG_ORDER_EVENING_DOSE_KEY));
-//        assertEquals(TimingAbbreviationEnum.BID.getCode(), dosageInstruction.getTiming().getCode().getCodingFirstRep().getCode());
+        assertEquals(1, medicationRequest.getDosageInstruction().size());
+        Dosage dosageInstruction = medicationRequest.getDosageInstructionFirstRep();
+        List<Extension> extensions = dosageInstruction.getExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME));
+        assertEquals(1, extensions.size());
+        String value = ((StringType) extensions.get(0).getValue()).getValue();
+        Map map = new ObjectMapper().readValue(value, Map.class);
+        assertEquals(2, map.size());
+        assertEquals(11.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_MORNING_DOSE_KEY));
+        assertEquals(12.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY));
+        assertNull(map.get(FHIRProperties.FHIR_DRUG_ORDER_EVENING_DOSE_KEY));
+        assertEquals("BID", dosageInstruction.getTiming().getCode().getCodingFirstRep().getCode());
     }
 
     @Test
@@ -259,19 +258,19 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(24);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//
-//        assertEquals(1, medicationOrder.getDosageInstruction().size());
-//        MedicationOrder.DosageInstruction dosageInstruction = medicationOrder.getDosageInstructionFirstRep();
-//        List<ExtensionDt> extensions = dosageInstruction.getUndeclaredExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME));
-//        assertEquals(1, extensions.size());
-//        String value = ((StringDt) extensions.get(0).getValue()).getValue();
-//        Map map = new ObjectMapper().readValue(value, Map.class);
-//        assertEquals(1, map.size());
-//        assertNull(map.get(FHIRProperties.FHIR_DRUG_ORDER_MORNING_DOSE_KEY));
-//        assertNull(map.get(FHIRProperties.FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY));
-//        assertEquals(30.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_EVENING_DOSE_KEY));
-//        assertEquals(TimingAbbreviationEnum.QD.getCode(), dosageInstruction.getTiming().getCode().getCodingFirstRep().getCode());
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        assertEquals(1, medicationRequest.getDosageInstruction().size());
+        Dosage dosageInstruction = medicationRequest.getDosageInstructionFirstRep();
+        List<Extension> extensions = dosageInstruction.getExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME));
+        assertEquals(1, extensions.size());
+        String value = ((StringType) extensions.get(0).getValue()).getValue();
+        Map map = new ObjectMapper().readValue(value, Map.class);
+        assertEquals(1, map.size());
+        assertNull(map.get(FHIRProperties.FHIR_DRUG_ORDER_MORNING_DOSE_KEY));
+        assertNull(map.get(FHIRProperties.FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY));
+        assertEquals(30.0, map.get(FHIRProperties.FHIR_DRUG_ORDER_EVENING_DOSE_KEY));
+        assertEquals("QD", dosageInstruction.getTiming().getCode().getCodingFirstRep().getCode());
     }
 
     @Test
@@ -280,10 +279,11 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(25);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//
-//        assertEquals(MedicationOrderStatusEnum.STOPPED.getCode(), medicationOrder.getStatus());
-//        assertEquals(DateUtil.parseDate("2008-10-09 13:59:59"), medicationOrder.getDateEnded());
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        assertEquals(MedicationRequest.MedicationRequestStatus.STOPPED, medicationRequest.getStatus());
+        Provenance provenance = (Provenance) getFhirResourceById(medicationRequest.getId() + "-provenance", fhirResources).getResource();
+        assertEquals(order.getDateStopped(), provenance.getPeriod().getEnd());
     }
 
     @Test
@@ -292,10 +292,10 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(26);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//
-//        assertEquals(MedicationOrderStatusEnum.ACTIVE.getCode(), medicationOrder.getStatus());
-//        assertEquals("urn:uuid:amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0", medicationOrder.getPriorPrescription().getReference().getValue());
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        assertEquals(ACTIVE, medicationRequest.getStatus());
+        assertEquals("urn:uuid:amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0", medicationRequest.getPriorPrescription().getReference());
     }
 
     @Test
@@ -304,10 +304,10 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(77);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//
-//        assertEquals(MedicationOrderStatusEnum.ACTIVE.getCode(), medicationOrder.getStatus());
-//        assertEquals("encounters/shr_enc_id_1#MedicationOrder/amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0", medicationOrder.getPriorPrescription().getReference().getValue());
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        assertEquals(ACTIVE, medicationRequest.getStatus());
+        assertEquals("encounters/shr_enc_id_1#MedicationRequest/amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0", medicationRequest.getPriorPrescription().getReference());
     }
 
     @Test
@@ -316,21 +316,30 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(24);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//        ExtensionDt orderActionExtension = medicationOrder.getUndeclaredExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.MEDICATIONORDER_ACTION_EXTENSION_NAME)).get(0);
-//        assertEquals(((StringDt) orderActionExtension.getValue()).getValue(), Order.Action.NEW.name());
-//
-//        order = orderService.getOrder(25);
-//        fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//        orderActionExtension = medicationOrder.getUndeclaredExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.MEDICATIONORDER_ACTION_EXTENSION_NAME)).get(0);
-//        assertEquals(((StringDt) orderActionExtension.getValue()).getValue(), Order.Action.DISCONTINUE.name());
-//
-//        order = orderService.getOrder(26);
-//        fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//        orderActionExtension = medicationOrder.getUndeclaredExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.MEDICATIONORDER_ACTION_EXTENSION_NAME)).get(0);
-//        assertEquals(((StringDt) orderActionExtension.getValue()).getValue(), Order.Action.REVISE.name());
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        Provenance provenance = (Provenance) getFhirResourceById(medicationRequest.getId() + "-provenance", fhirResources).getResource();
+        assertEquals(order.getScheduledDate(), provenance.getPeriod().getStart());
+        assertEquals(FHIR_DATA_OPERATION_VALUESET_URL, provenance.getActivity().getSystem());
+        assertEquals(FHIR_DATA_OPERATION_CREATE_CODE, provenance.getActivity().getCode());
+
+        order = orderService.getOrder(25);
+        fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
+        medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        provenance = (Provenance) getFhirResourceById(medicationRequest.getId() + "-provenance", fhirResources).getResource();
+        assertEquals(order.getScheduledDate(), provenance.getPeriod().getStart());
+        assertEquals(FHIR_DATA_OPERATION_VALUESET_URL, provenance.getActivity().getSystem());
+        assertEquals(FHIR_DATA_OPERATION_ABORT_CODE, provenance.getActivity().getCode());
+
+        order = orderService.getOrder(26);
+        fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
+        medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        provenance = (Provenance) getFhirResourceById(medicationRequest.getId() + "-provenance", fhirResources).getResource();
+        assertEquals(order.getScheduledDate(), provenance.getPeriod().getStart());
+        assertEquals(FHIR_DATA_OPERATION_VALUESET_URL, provenance.getActivity().getSystem());
+        assertEquals(FHIR_DATA_OPERATION_UPDATE_CODE, provenance.getActivity().getCode());
     }
 
     @Test
@@ -339,15 +348,15 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Order order = orderService.getOrder(27);
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//
-//        assertTrue(medicationOrder.getMedication() instanceof CodeableConceptDt);
-//        CodeableConceptDt medication = (CodeableConceptDt) medicationOrder.getMedication();
-//        assertEquals(1, medication.getCoding().size());
-//        CodingDt codingDt = medication.getCoding().get(0);
-//        assertEquals("Paracetamol 20mg", codingDt.getDisplay());
-//        assertNull(codingDt.getCode());
-//        assertNull(codingDt.getSystem());
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        assertTrue(medicationRequest.getMedication() instanceof CodeableConcept);
+        CodeableConcept medication = (CodeableConcept) medicationRequest.getMedication();
+        assertEquals(1, medication.getCoding().size());
+        Coding coding = medication.getCoding().get(0);
+        assertEquals("Paracetamol 20mg", coding.getDisplay());
+        assertNull(coding.getCode());
+        assertNull(coding.getSystem());
     }
 
     @Test
@@ -356,12 +365,13 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Order order = orderService.getOrder(28);
 
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//
-//        assertEquals(1, medicationOrder.getDosageInstruction().size());
-//        MedicationOrder.DosageInstruction dosageInstruction = medicationOrder.getDosageInstructionFirstRep();
-//        assertNull(dosageInstruction.getDose());
-//        assertTimingRepeat(dosageInstruction, 1, 2, UnitsOfTimeEnum.H, 2, UnitsOfTimeEnum.D);
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        assertEquals(1, medicationRequest.getDosageInstruction().size());
+        Dosage dosageInstruction = medicationRequest.getDosageInstructionFirstRep();
+        assertNull(dosageInstruction.getDose());
+        assertTimingRepeat(dosageInstruction, 1, 2, Timing.UnitsOfTime.H,
+                2, Timing.UnitsOfTime.D);
     }
 
     @Test
@@ -370,20 +380,20 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Order order = orderService.getOrder(29);
 
         List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
-//        MedicationOrder medicationOrder = (MedicationOrder) fhirResources.get(0).getResource();
-//
-//        assertEquals(1, medicationOrder.getDosageInstruction().size());
-//        MedicationOrder.DosageInstruction dosageInstruction = medicationOrder.getDosageInstructionFirstRep();
-//
-//        SimpleQuantityDt dose = (SimpleQuantityDt) dosageInstruction.getDose();
-//        assertNotNull(dose.getUnit());
-//        assertNull(dosageInstruction.getTiming().getRepeat().getFrequency());
-//        assertNull(dosageInstruction.getTiming().getRepeat().getPeriod());
-//        assertNull(dosageInstruction.getTiming().getRepeat().getPeriodUnits());
-//        assertTrue(dosageInstruction.getTiming().getCode().isEmpty());
-//
-//        String fhirExtensionUrl = FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME);
-//        assertTrue(CollectionUtils.isEmpty(dosageInstruction.getUndeclaredExtensionsByUrl(fhirExtensionUrl)));
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+
+        assertEquals(1, medicationRequest.getDosageInstruction().size());
+        Dosage dosageInstruction = medicationRequest.getDosageInstructionFirstRep();
+
+        SimpleQuantity dose = dosageInstruction.getDoseSimpleQuantity();
+        assertNotNull(dose.getUnit());
+        assertEquals(0, dosageInstruction.getTiming().getRepeat().getFrequency());
+        assertNull(dosageInstruction.getTiming().getRepeat().getPeriod());
+        assertNull(dosageInstruction.getTiming().getRepeat().getPeriodUnit());
+        assertTrue(dosageInstruction.getTiming().getCode().isEmpty());
+
+        String fhirExtensionUrl = FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME);
+        assertTrue(CollectionUtils.isEmpty(dosageInstruction.getExtensionsByUrl(fhirExtensionUrl)));
     }
 
     private FHIREncounter getFhirEncounter() {
@@ -406,30 +416,34 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertNull(repeat.getDuration());
         assertTrue(expectedFrequency == repeat.getFrequency());
         assertEquals(expectedPeriod, repeat.getPeriod().intValue());
-        //todo: should fix
         assertEquals(expectedPeriodUnits, repeat.getPeriodUnit());
     }
 
-    private void assertDoseQuantity(Dosage dosageInstruction, String valueSetUrl, String code, String displayUnit) {
-//        assertTrue(dosageInstruction.getDose() instanceof SimpleQuantityDt);
-//        SimpleQuantityDt doseQuantity = (SimpleQuantityDt) dosageInstruction.getDose();
-//        assertNotNull(doseQuantity);
-//        assertEquals(valueSetUrl, doseQuantity.getSystem());
-//        assertEquals(code, doseQuantity.getCode());
-//        assertEquals(displayUnit, doseQuantity.getUnit());
-//        assertTrue(4 == doseQuantity.getValue().doubleValue());
+    private void assertDoseQuantity(Dosage dosageInstruction, String valueSetUrl, String code, String displayUnit) throws FHIRException {
+        assertTrue(dosageInstruction.getDose() instanceof SimpleQuantity);
+        SimpleQuantity doseQuantity = dosageInstruction.getDoseSimpleQuantity();
+        assertNotNull(doseQuantity);
+        assertEquals(valueSetUrl, doseQuantity.getSystem());
+        assertEquals(code, doseQuantity.getCode());
+        assertEquals(displayUnit, doseQuantity.getUnit());
+        assertTrue(4 == doseQuantity.getValue().doubleValue());
     }
 
-    private void assertMedicationOrder(MedicationRequest medicationRequest, Date expectedDate) {
+    private void assertMedicationRequest(MedicationRequest medicationRequest, Date expectedDate) {
         assertNotNull(medicationRequest);
         assertEquals("hid", medicationRequest.getSubject().getReference());
         assertNotNull(medicationRequest.getIdentifier());
         assertEquals(ORDER, medicationRequest.getIntent());
+        assertEquals("shrEncId", medicationRequest.getContext().getReference());
+        assertEquals(1, medicationRequest.getDosageInstruction().size());
 
         assertEquals(expectedDate, medicationRequest.getAuthoredOn());
         List<Coding> coding = ((CodeableConcept) medicationRequest.getMedication()).getCoding();
         assertEquals(1, coding.size());
         assertTrue(containsCoding(coding, "104", "drugs/104", "Lactic Acid"));
+
+        assertTrue(containsCoding(medicationRequest.getDosageInstructionFirstRep().getRoute().getCoding(),
+                "Oral", "http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Route-of-Administration", "Oral"));
 
         assertTrue(medicationRequest.getRequester().getAgent().getReference().endsWith("321.json"));
     }

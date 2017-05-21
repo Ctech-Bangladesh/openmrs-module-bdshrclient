@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.codesystems.V3GTSAbbreviation;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
@@ -38,25 +39,26 @@ import static org.openmrs.module.fhir.utils.FHIRBundleHelper.createProvenance;
 @Component
 public class DrugOrderMapper implements EmrOrderResourceHandler {
     private final ObjectMapper objectMapper;
-    @Autowired
-    private IdMappingRepository idMappingsRepository;
-    @Autowired
-    private FrequencyMapperUtil frequencyMapperUtil;
-    @Autowired
-    private DurationMapperUtil durationMapperUtil;
-    @Autowired
-    private CodeableConceptService codeableConceptService;
-    @Autowired
-    private ConceptService conceptService;
-    @Autowired
-    private OMRSConceptLookup omrsConceptLookup;
-    @Autowired
-    private ProviderLookupService providerLookupService;
+    private final IdMappingRepository idMappingsRepository;
+    private final FrequencyMapperUtil frequencyMapperUtil;
+    private final DurationMapperUtil durationMapperUtil;
+    private final CodeableConceptService codeableConceptService;
+    private final ConceptService conceptService;
+    private final OMRSConceptLookup omrsConceptLookup;
+    private final ProviderLookupService providerLookupService;
 
     private static final Logger logger = Logger.getLogger(DrugOrderMapper.class);
 
-    public DrugOrderMapper() {
+    @Autowired
+    public DrugOrderMapper(IdMappingRepository idMappingsRepository, FrequencyMapperUtil frequencyMapperUtil, DurationMapperUtil durationMapperUtil, CodeableConceptService codeableConceptService, ConceptService conceptService, OMRSConceptLookup omrsConceptLookup, ProviderLookupService providerLookupService) {
         objectMapper = new ObjectMapper();
+        this.idMappingsRepository = idMappingsRepository;
+        this.frequencyMapperUtil = frequencyMapperUtil;
+        this.durationMapperUtil = durationMapperUtil;
+        this.codeableConceptService = codeableConceptService;
+        this.conceptService = conceptService;
+        this.omrsConceptLookup = omrsConceptLookup;
+        this.providerLookupService = providerLookupService;
     }
 
     @Override
@@ -86,11 +88,18 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         medicationOrder.setId(id);
 
         FHIRResource fhirResource = createProvenance(medicationOrder.getAuthoredOn(), medicationOrder.getRequester().getAgent(), medicationOrder.getId());
-        setStatusAndPriorPrescriptionAndOrderAction(drugOrder, medicationOrder, (Provenance) fhirResource.getResource(), systemProperties);
+        Provenance provenance = (Provenance) fhirResource.getResource();
+        setScheduledDate(provenance, drugOrder);
+        setStatusAndPriorPrescriptionAndOrderAction(drugOrder, medicationOrder, provenance, systemProperties);
 
         fhirResources.add(new FHIRResource("Medication Order", medicationOrder.getIdentifier(), medicationOrder));
         fhirResources.add(fhirResource);
         return fhirResources;
+    }
+
+    private void setScheduledDate(Provenance provenance, DrugOrder drugOrder) {
+        if (null == drugOrder.getScheduledDate()) return;
+        provenance.getPeriod().setStart(drugOrder.getScheduledDate(), TemporalPrecisionEnum.MILLI);
     }
 
     private void setOrderAction(DrugOrder drugOrder, Provenance provenance) {
@@ -187,11 +196,6 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
             }
         }
         dosageInstruction.getTiming().getRepeat().setBounds(getBounds(drugOrder));
-//      TODO: should be a part of provenance
-//        Extension scheduledDateExtension = getScheduledDateExtension(drugOrder);
-//        if (scheduledDateExtension != null)
-//            dosageInstruction.getTiming().addUndeclaredExtension(scheduledDateExtension);
-
         return dosageInstruction;
     }
 
@@ -206,41 +210,40 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         int count = 0;
         HashMap<String, Double> map = new HashMap<>();
         Double morningDose = getDoseValue(drugOrder, BAHMNI_DRUG_ORDER_MORNING_DOSE_KEY);
-        if (morningDose != null && morningDose > 0) {
+        if (morningDose > 0) {
             count++;
             map.put(FHIR_DRUG_ORDER_MORNING_DOSE_KEY, morningDose);
         }
         Double afternoonDose = getDoseValue(drugOrder, BAHMNI_DRUG_ORDER_AFTERNOON_DOSE_KEY);
-        if (afternoonDose != null && afternoonDose > 0) {
+        if (afternoonDose > 0) {
             count++;
             map.put(FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY, afternoonDose);
         }
         Double eveningDose = getDoseValue(drugOrder, BAHMNI_DRUG_ORDER_EVENING_DOSE_KEY);
-        if (eveningDose != null && eveningDose > 0) {
+        if (eveningDose > 0) {
             count++;
             map.put(FHIR_DRUG_ORDER_EVENING_DOSE_KEY, eveningDose);
         }
-//        todo: Need to verify what is to be done
-//        TimingAbbreviationEnum timingAbbreviationEnum = null;
-//        if (count == 0) return;
-//
-//        else if (count == 1) timingAbbreviationEnum = TimingAbbreviationEnum.QD;
-//        else if (count == 2) timingAbbreviationEnum = TimingAbbreviationEnum.BID;
-//        else if (count == 3) timingAbbreviationEnum = TimingAbbreviationEnum.TID;
-//
-//        if (timingAbbreviationEnum != null) {
-//            TimingDt timing = new TimingDt();
-//            timing.setCode(timingAbbreviationEnum);
-//            dosageInstruction.setTiming(timing);
-//        }
 
-//        try {
-//            String json = objectMapper.writeValueAsString(map);
-//            String fhirExtensionUrl = FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME);
-//            dosageInstruction.addUndeclaredExtension(false, fhirExtensionUrl, new StringDt(json));
-//        } catch (IOException e) {
-//            logger.warn("Not able to set dose.");
-//        }
+        CodeableConcept timingAbbreviation = new CodeableConcept();
+        Coding coding = timingAbbreviation.addCoding().setSystem(V3GTSAbbreviation.BID.getSystem());
+        if (count == 0) return;
+
+        else if (count == 1) coding.setCode(V3GTSAbbreviation.QD.toCode());
+        else if (count == 2) coding.setCode(V3GTSAbbreviation.BID.toCode());
+        else if (count == 3) coding.setCode(V3GTSAbbreviation.TID.toCode());
+
+        Timing timing = new Timing();
+        timing.setCode(timingAbbreviation);
+        dosageInstruction.setTiming(timing);
+
+        try {
+            String json = objectMapper.writeValueAsString(map);
+            String fhirExtensionUrl = FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME);
+            dosageInstruction.addExtension(fhirExtensionUrl, new StringType(json));
+        } catch (IOException e) {
+            logger.warn("Not able to set dose.");
+        }
     }
 
     private double getDoseValue(DrugOrder drugOrder, String doseKey) {
@@ -253,14 +256,6 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         doseQuantity.setValue(getDoseQuantityValue(drugOrder.getDose()).getValue());
         dosageInstruction.setDose(doseQuantity);
     }
-
-//    private Extension getScheduledDateExtension(DrugOrder drugOrder) {
-//        if (drugOrder.getScheduledDate() != null) {
-//            DateTime dateTime = new DateTime(drugOrder.getScheduledDate(), TemporalPrecisionEnum.MILLI);
-//            return new Extension(false, FHIRProperties.getFhirExtensionUrl(FHIRProperties.SCHEDULED_DATE_EXTENSION_NAME), dateTime);
-//        }
-//        return null;
-//    }
 
     private DecimalType getDoseQuantityValue(Double drugOrderDose) {
         DecimalType dose = new DecimalType();
