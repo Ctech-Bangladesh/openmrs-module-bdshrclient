@@ -141,7 +141,7 @@ public class EncounterPushTest {
         verify(idMappingRepository, times(2)).saveOrUpdateIdMapping(idMappingArgumentCaptor.capture());
 
         List<IdMapping> idMappings = idMappingArgumentCaptor.getAllValues();
-        String orderUrl = "http://localhost:9997/patients/" + HEALTH_ID + "/encounters/shr-uuid" + "#MedicationOrder/" + drugOrder.getUuid();
+        String orderUrl = "http://localhost:9997/patients/" + HEALTH_ID + "/encounters/shr-uuid" + "#MedicationRequest/" + drugOrder.getUuid();
         String externalId = String.format(MRSProperties.RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, "shr-uuid", drugOrder.getUuid());
         assertTrue(containsIdMapping(idMappings, drugOrder.getUuid(), externalId, IdMappingType.MEDICATION_ORDER, orderUrl));
     }

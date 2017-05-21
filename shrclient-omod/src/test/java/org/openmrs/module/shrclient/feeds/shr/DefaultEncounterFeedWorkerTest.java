@@ -54,7 +54,7 @@ public class DefaultEncounterFeedWorkerTest {
         Reference patientReference = new Reference(patientUrl);
         Composition composition = new Composition();
         composition.setSubject(patientReference);
-        composition.setConfidentiality("R");
+        composition.setConfidentiality(Composition.DocumentConfidentiality.R);
         Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         atomEntry.setResource(composition);
         bundle.addEntry(atomEntry);

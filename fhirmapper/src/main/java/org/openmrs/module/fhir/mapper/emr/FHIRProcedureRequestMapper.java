@@ -119,11 +119,10 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
     }
 
     private void addProcedureOrderToIdMapping(Order order, ProcedureRequest procedureRequest, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
-        String shrOrderId = procedureRequest.getId();
-        String OrderIdPart = getIdPart(shrOrderId);
-        String orderUrl = getOrderUrl(shrEncounterBundle, systemProperties, OrderIdPart);
+        String shrOrderId = getIdPart(procedureRequest.getId());
+        String orderUrl = getOrderUrl(shrEncounterBundle, systemProperties, shrOrderId);
         String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterBundle.getShrEncounterId(),
-                OrderIdPart);
+                shrOrderId);
         OrderIdMapping orderIdMapping = new OrderIdMapping(order.getUuid(), externalId, IdMappingType.PROCEDURE_ORDER, orderUrl);
         idMappingRepository.saveOrUpdateIdMapping(orderIdMapping);
     }

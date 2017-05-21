@@ -341,7 +341,7 @@
             care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="1"
             uuid="62020s86-efab-4629-9850-f15206e63ab0"/>
     <order_id_mapping internal_id="62020s86-efab-4629-9850-f15206e63ab0" external_id="shrEncounterId6:6daaes86-efab-ls29-sow2-f15206e63ab0" type="DiagnosticOrder"
-                          uri="http://localhost:9997/patients/hid/encounters/shrEncounterId6#DiagnosticOrder/6daaes86-efab-ls29-sow2-f15206e63ab0" />
+                          uri="http://localhost:9997/patients/hid/encounters/shrEncounterId6#ProcedureRequest/6daaes86-efab-ls29-sow2-f15206e63ab0" />
     <!-- order encounter for diagnosic report mapper with only encounterReference-->
 
     <!-- order encounter for diagnosic report mapper for local panel-->

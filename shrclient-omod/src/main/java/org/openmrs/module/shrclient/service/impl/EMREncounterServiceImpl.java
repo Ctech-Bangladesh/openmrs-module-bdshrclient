@@ -15,6 +15,7 @@ import org.openmrs.module.fhir.mapper.model.Confidentiality;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.ShrEncounterBundle;
 import org.openmrs.module.fhir.utils.DateUtil;
+import org.openmrs.module.fhir.utils.FHIRBundleHelper;
 import org.openmrs.module.shrclient.advice.SHREncounterEventService;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.EncounterIdMapping;
@@ -200,12 +201,12 @@ public class EMREncounterServiceImpl implements EMREncounterService {
     }
 
     private Confidentiality getEncounterConfidentiality(Bundle bundle) {
-        Composition composition = bundle.getAllPopulatedChildElementsOfType(Composition.class).get(0);
-        String confidentialityCode = composition.getConfidentiality();
-        if (null == confidentialityCode) {
+        Composition composition = FHIRBundleHelper.getComposition(bundle);
+        Composition.DocumentConfidentiality confidentiality = composition.getConfidentiality();
+        if (null == confidentiality) {
             return Confidentiality.Normal;
         }
-        return getConfidentiality(confidentialityCode);
+        return getConfidentiality(confidentiality.toCode());
     }
 
     private void savePatientDeathInfo(org.openmrs.Patient emrPatient) {

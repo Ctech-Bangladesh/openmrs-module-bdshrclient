@@ -100,11 +100,11 @@ public class FrequencyMapperUtil {
 
     public FrequencyUnit getFrequencyUnitsFromRepeat(Timing.TimingRepeatComponent repeat) {
         for (FrequencyUnit frequencyUnit : FrequencyUnit.values()) {
-//            if(frequencyUnit.getFrequency() == repeat.getFrequency() &&
-//                    frequencyUnit.getFrequencyPeriod() == repeat.getPeriod().intValue() &&
-//                    frequencyUnit.getUnitOfTime().equals(repeat.getPeriodUnitsElement().getValueAsEnum())) {
-//                return frequencyUnit;
-//            }
+            if (frequencyUnit.getFrequency() == repeat.getFrequency() &&
+                    frequencyUnit.getFrequencyPeriod() == repeat.getPeriod().intValue() &&
+                    frequencyUnit.getUnitOfTime().equals(repeat.getPeriodUnit())) {
+                return frequencyUnit;
+            }
         }
         return null;
     }

@@ -140,4 +140,12 @@ public class FHIRBundleHelper {
         provenance.addTarget(reference);
         return new FHIRResource("Porvenance", asList(new Identifier().setValue(provenance.getId())), provenance);
     }
+
+    public static Provenance getProvenanceForResource(Bundle bundle, String resourceId) {
+        String provenanceId = resourceId + "-provenance";
+        Bundle.BundleEntryComponent component = bundle.getEntry().stream().filter(
+                entryComponent -> provenanceId.equals(entryComponent.getFullUrl())
+        ).findFirst().orElse(null);
+        return null == component ? null : (Provenance) component.getResource();
+    }
 }

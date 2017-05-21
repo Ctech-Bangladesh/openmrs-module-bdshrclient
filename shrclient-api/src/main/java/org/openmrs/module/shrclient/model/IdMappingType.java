@@ -3,6 +3,7 @@ package org.openmrs.module.shrclient.model;
 
 public class IdMappingType {
     // todo: Change procedure Order to Procedure Request, delete Diagnostic Order and migrate data
+    // todo: Change medication order to medication Request, delete Diagnostic Order and migrate data
     public static final String ENCOUNTER = "encounter";
     public static final String CONCEPT_REFERENCE_TERM = "concept_reference_term";
     public static final String CONCEPT = "concept";

@@ -89,7 +89,7 @@ public class EMREncounterServiceImplTest {
         Bundle bundle = new Bundle();
         String healthId = "health_id";
         Composition composition = getComposition(healthId);
-        composition.setConfidentiality("R");
+        composition.setConfidentiality(Composition.DocumentConfidentiality.R);
         Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         atomEntry.setResource(composition);
         bundle.addEntry(atomEntry);
@@ -112,7 +112,7 @@ public class EMREncounterServiceImplTest {
         Bundle bundle = new Bundle();
         String healthId = "health_id";
         Composition composition = getComposition(healthId);
-        composition.setConfidentiality("N");
+        composition.setConfidentiality(Composition.DocumentConfidentiality.N);
         Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         atomEntry.setResource(composition);
         bundle.addEntry(atomEntry);
@@ -146,7 +146,7 @@ public class EMREncounterServiceImplTest {
         Bundle bundle = new Bundle();
         String healthId = "health_id";
         Composition composition = getComposition(healthId);
-        composition.setConfidentiality("N");
+        composition.setConfidentiality(Composition.DocumentConfidentiality.N);
         Bundle.BundleEntryComponent atomEntry = new Bundle.BundleEntryComponent();
         atomEntry.setResource(composition);
         bundle.addEntry(atomEntry);
@@ -228,7 +228,7 @@ public class EMREncounterServiceImplTest {
         shrProperties.put(SHR_REFERENCE_PATH, "http://shr.com/");
         shrProperties.put(SHR_PATIENT_ENC_PATH_PATTERN, "/patients/%s/encounters");
         when(mockPropertiesReader.getShrProperties()).thenReturn(shrProperties);
-        when(mockFhirmapper.getVisitPeriod(any(ShrEncounterBundle.class))).thenReturn(new PeriodDt());
+        when(mockFhirmapper.getVisitPeriod(any(ShrEncounterBundle.class))).thenReturn(new Period());
         when(mockVisitLookupService.findOrInitializeVisit(eq(emrPatient), any(Date.class), any(VisitType.class), any(Location.class), any(Date.class), any(Date.class))).thenReturn(new Visit());
 
         emrEncounterService.createOrUpdateEncounter(emrPatient, encounterEvent);
@@ -268,7 +268,7 @@ public class EMREncounterServiceImplTest {
         shrProperties.put(SHR_REFERENCE_PATH, "http://shr.com/");
         shrProperties.put(SHR_PATIENT_ENC_PATH_PATTERN, "/patients/%s/encounters");
         when(mockPropertiesReader.getShrProperties()).thenReturn(shrProperties);
-        when(mockFhirmapper.getVisitPeriod(any(ShrEncounterBundle.class))).thenReturn(new PeriodDt());
+        when(mockFhirmapper.getVisitPeriod(any(ShrEncounterBundle.class))).thenReturn(new Period());
         when(mockVisitLookupService.findOrInitializeVisit(eq(emrPatient), any(Date.class), any(VisitType.class), any(Location.class), any(Date.class), any(Date.class))).thenReturn(new Visit());
 
         emrEncounterService.createOrUpdateEncounter(emrPatient, encounterEvent);

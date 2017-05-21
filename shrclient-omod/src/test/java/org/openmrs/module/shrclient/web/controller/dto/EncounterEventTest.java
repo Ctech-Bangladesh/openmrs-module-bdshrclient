@@ -24,7 +24,8 @@ public class EncounterEventTest {
         final URL resource = URLClassLoader.getSystemResource("sample_encounter_bundle.json");
         final String json = FileUtils.readFileToString(new File(resource.getPath()));
         ObjectMapper mapper = new ObjectMapper();
-        List<EncounterEvent> events = mapper.readValue(json, new TypeReference<List<EncounterEvent>>() {});
+        List<EncounterEvent> events = mapper.readValue(json, new TypeReference<List<EncounterEvent>>() {
+        });
         assertEquals(1, events.size());
 
         EncounterEvent encounterEvent = events.get(0);
@@ -32,11 +33,11 @@ public class EncounterEventTest {
         assertNotNull(encounterEvent.getHealthId());
 
         final Bundle bundle = encounterEvent.getBundle();
-        assertEquals("Bundle/4fe6f9e2-d10a-4956-aae5-091e810090e1", bundle.getId());
+        assertEquals("4fe6f9e2-d10a-4956-aae5-091e810090e1", bundle.getId());
         assertNotNull(bundle);
         assertNotNull(bundle.getEntry());
         assertEquals(2, bundle.getEntry().size());
-        assertEquals(new Composition().getResourceType().name(), bundle.getEntry().get(0).getResource().getResourceType());
-        assertEquals(new Encounter().getResourceType().name(), bundle.getEntry().get(1).getResource().getResourceType());
+        assertEquals(new Composition().getResourceType(), bundle.getEntry().get(0).getResource().getResourceType());
+        assertEquals(new Encounter().getResourceType(), bundle.getEntry().get(1).getResource().getResourceType());
     }
 }

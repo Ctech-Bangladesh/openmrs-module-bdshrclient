@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bundle xmlns="http://hl7.org/fhir">
+    <id value="36044d0d-09ba-4eff-b7f2-beb3c20bbbbc"/>
+    <meta>
+        <lastUpdated value="2015-09-22T17:04:38.000+05:30"/>
+    </meta>
+    <type value="collection"/>
+    <entry>
+        <fullUrl value="urn:uuid:b6e96bb0-3c95-4d19-9918-41cfc0559423"/>
+        <resource>
+            <Composition>
+                <id value="b6e96bb0-3c95-4d19-9918-41cfc0559423"/>
+                <identifier>
+                    <value value="urn:uuid:b6e96bb0-3c95-4d19-9918-41cfc0559423"/>
+                </identifier>
+                <status value="final"/>
+                <type>
+                    <coding>
+                        <system value="http://hl7.org/fhir/vs/doc-typecodes"/>
+                        <code value="51899-3"/>
+                        <display value="Details Document"/>
+                    </coding>
+                </type>
+                <subject>
+                    <reference value="http://172.18.46.199:8081/api/default/patients/98001080756"/>
+                    <display value="98001080756"/>
+                </subject>
+                <encounter>
+                    <reference value="urn:uuid:445be5c3-d373-422a-b46d-d0ec5862b52f"/>
+                </encounter>
+                <date value="2015-09-22T17:04:38.000+05:30"/>
+                <author>
+                    <reference value="http://172.18.46.199:8080/api/1.0/facilities/10019842.json"/>
+                </author>
+                <title value="Patient Clinical Encounter"/>
+                <confidentiality value="N"/>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:445be5c3-d373-422a-b46d-d0ec5862b52f"/>
+                        <display value="Encounter"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0"/>
+                        <display value="Medication Request"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="zmkbja86-awaa-11f3-9qw4-ccc26cc6cabc"/>
+                        <display value="Medication Request"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0-provenance"/>
+                        <display value="Provenance Medication Request"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:zmkbja86-awaa-11f3-9qw4-ccc26cc6cabc-provenance"/>
+                        <display value="Provenance Medication Request"/>
+                    </entry>
+                </section>
+            </Composition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:445be5c3-d373-422a-b46d-d0ec5862b52f"/>
+        <resource>
+            <Encounter>
+                <id value="445be5c3-d373-422a-b46d-d0ec5862b52f"/>
+                <identifier>
+                    <value value="urn:uuid:445be5c3-d373-422a-b46d-d0ec5862b52f"/>
+                </identifier>
+                <status value="finished"/>
+                <class>
+                    <system value="http://hl7.org/fhir/v3/ActCode"/>
+                    <code value="AMB"/>
+                </class>
+                <type>
+                    <text value="OPD"/>
+                </type>
+                <subject>
+                    <reference value="http://172.18.46.199:8081/api/default/patients/98001080756"/>
+                    <display value="98001080756"/>
+                </subject>
+                <participant>
+                    <individual>
+                        <reference value="http://172.18.46.199:8080/api/1.0/providers/18.json"/>
+                    </individual>
+                </participant>
+                <serviceProvider>
+                    <reference value="http://172.18.46.199:8080/api/1.0/facilities/10019842.json"/>
+                </serviceProvider>
+            </Encounter>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0"/>
+        <resource>
+            <MedicationRequest>
+                <id value="vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0"/>
+                <identifier>
+                    <value value="urn:uuid:vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0"/>
+                </identifier>
+                <status value="stopped"/>
+                <intent value="order"/>
+                <medicationCodeableConcept>
+                    <coding>
+                        <system value="drugs/104"/>
+                        <code value="104"/>
+                        <display value="Lactic Acid"/>
+                    </coding>
+                </medicationCodeableConcept>
+                <subject>
+                    <reference value="hid"/>
+                </subject>
+                <context>
+                    <reference value="shrEncId"/>
+                </context>
+                <authoredOn value="2008-08-19T12:20:22.000+05:30"/>
+                <requester>
+                    <agent>
+                        <reference value="http://hrmtest.dghs.gov.bd/api/1.0/providers/321.json"/>
+                    </agent>
+                </requester>
+                <dosageInstruction>
+                    <timing>
+                        <repeat>
+                            <boundsDuration>
+                                <value value="2"/>
+                                <system value="http://unitsofmeasure.org"/>
+                                <code value="d"/>
+                            </boundsDuration>
+                            <frequency value="1"/>
+                            <period value="2"/>
+                            <periodUnit value="h"/>
+                        </repeat>
+                    </timing>
+                    <asNeededBoolean value="false"/>
+                    <route>
+                        <coding>
+                            <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Route-of-Administration"/>
+                            <code value="Oral"/>
+                            <display value="Oral"/>
+                        </coding>
+                    </route>
+                    <doseQuantity>
+                        <value value="4"/>
+                        <unit value="Pill"/>
+                        <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Medication-Forms"/>
+                        <code value="Pill"/>
+                    </doseQuantity>
+                </dosageInstruction>
+                <dispenseRequest>
+                    <quantity>
+                        <value value="192.0"/>
+                        <unit value="Pill"/>
+                    </quantity>
+                </dispenseRequest>
+            </MedicationRequest>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:zmkbja86-awaa-11f3-9qw4-ccc26cc6cabc"/>
+        <resource>
+            <MedicationRequest>
+                <id value="zmkbja86-awaa-11f3-9qw4-ccc26cc6cabc"/>
+                <identifier>
+                    <value value="urn:uuid:zmkbja86-awaa-11f3-9qw4-ccc26cc6cabc"/>
+                </identifier>
+                <status value="active"/>
+                <intent value="order"/>
+                <medicationCodeableConcept>
+                    <coding>
+                        <system value="drugs/104"/>
+                        <code value="104"/>
+                        <display value="Lactic Acid"/>
+                    </coding>
+                </medicationCodeableConcept>
+                <subject>
+                    <reference value="hid"/>
+                </subject>
+                <context>
+                    <reference value="shrEncId"/>
+                </context>
+                <authoredOn value="2008-08-19T12:20:22.000+05:30"/>
+                <requester>
+                    <agent>
+                        <reference value="http://hrmtest.dghs.gov.bd/api/1.0/providers/321.json"/>
+                    </agent>
+                </requester>
+                <dosageInstruction>
+                    <timing>
+                        <repeat>
+                            <boundsDuration>
+                                <value value="2"/>
+                                <system value="http://unitsofmeasure.org"/>
+                                <code value="d"/>
+                            </boundsDuration>
+                            <frequency value="1"/>
+                            <period value="2"/>
+                            <periodUnit value="h"/>
+                        </repeat>
+                    </timing>
+                    <asNeededBoolean value="false"/>
+                    <route>
+                        <coding>
+                            <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Route-of-Administration"/>
+                            <code value="Oral"/>
+                            <display value="Oral"/>
+                        </coding>
+                    </route>
+                    <doseQuantity>
+                        <value value="4"/>
+                        <unit value="Pill"/>
+                        <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Medication-Forms"/>
+                        <code value="Pill"/>
+                    </doseQuantity>
+                </dosageInstruction>
+                <dispenseRequest>
+                    <quantity>
+                        <value value="190.0"/>
+                        <unit value="Pill"/>
+                    </quantity>
+                </dispenseRequest>
+                <priorPrescription>
+                    <reference value="urn:uuid:vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0"/>
+                </priorPrescription>
+            </MedicationRequest>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0-provenance"/>
+        <resource>
+            <Provenance>
+                <id value="urn:uuid:vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0-provenance"/>
+                <target>
+                    <reference value="urn:uuid:vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0"/>
+                </target>
+                <period>
+                    <end value="2008-10-09T13:59:59+05:30"/>
+                </period>
+                <recorded value="2008-08-19T12:20:22.000+05:30"/>
+                <activity>
+                    <system value="http://hl7.org/fhir/v3/DataOperation"/>
+                    <code value="CREATE"/>
+                    <display value="create"/>
+                </activity>
+                <agent>
+                    <whoReference>
+                        <reference value="http://hrmtest.dghs.gov.bd/api/1.0/providers/321.json"/>
+                    </whoReference>
+                </agent>
+            </Provenance>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:zmkbja86-awaa-11f3-9qw4-ccc26cc6cabc-provenance"/>
+        <resource>
+            <Provenance>
+                <id value="urn:uuid:zmkbja86-awaa-11f3-9qw4-ccc26cc6cabc-provenance"/>
+                <target>
+                    <reference value="urn:uuid:zmkbja86-awaa-11f3-9qw4-ccc26cc6cabc"/>
+                </target>
+                <recorded value="2008-08-19T12:20:22.000+05:30"/>
+                <activity>
+                    <system value="http://hl7.org/fhir/v3/DataOperation"/>
+                    <code value="UPDATE"/>
+                    <display value="revise"/>
+                </activity>
+                <agent>
+                    <whoReference>
+                        <reference value="http://hrmtest.dghs.gov.bd/api/1.0/providers/321.json"/>
+                    </whoReference>
+                </agent>
+            </Provenance>
+        </resource>
+    </entry>
+</Bundle>

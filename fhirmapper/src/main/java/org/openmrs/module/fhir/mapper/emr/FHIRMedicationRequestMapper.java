@@ -1,10 +1,12 @@
 package org.openmrs.module.fhir.mapper.emr;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.dstu3.model.Duration;
+import org.hl7.fhir.exceptions.FHIRException;
 import org.openmrs.*;
 import org.openmrs.Encounter;
 import org.openmrs.api.ConceptService;
@@ -30,10 +32,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.openmrs.module.fhir.FHIRProperties.*;
 import static org.openmrs.module.fhir.MRSProperties.RESOURCE_MAPPING_EXTERNAL_ID_FORMAT;
+import static org.openmrs.module.fhir.utils.FHIREncounterUtil.getIdPart;
 
 @Component
-public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
+public class FHIRMedicationRequestMapper implements FHIRResourceMapper {
     private static final int DEFAULT_NUM_REFILLS = 0;
     private final ObjectMapper objectMapper;
 
@@ -47,14 +51,14 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
     private final GlobalPropertyLookUpService globalPropertyLookUpService;
     private final IdMappingRepository idMappingRepository;
 
-    private static final Logger logger = Logger.getLogger(FHIRMedicationOrderMapper.class);
+    private static final Logger logger = Logger.getLogger(FHIRMedicationRequestMapper.class);
 
     @Autowired
-    public FHIRMedicationOrderMapper(OMRSConceptLookup omrsConceptLookup, ConceptService conceptService,
-                                     OrderService orderService, FrequencyMapperUtil frequencyMapperUtil,
-                                     DurationMapperUtil durationMapperUtil, ProviderLookupService providerLookupService,
-                                     OrderCareSettingLookupService orderCareSettingLookupService, GlobalPropertyLookUpService globalPropertyLookUpService,
-                                     IdMappingRepository idMappingRepository) {
+    public FHIRMedicationRequestMapper(OMRSConceptLookup omrsConceptLookup, ConceptService conceptService,
+                                       OrderService orderService, FrequencyMapperUtil frequencyMapperUtil,
+                                       DurationMapperUtil durationMapperUtil, ProviderLookupService providerLookupService,
+                                       OrderCareSettingLookupService orderCareSettingLookupService, GlobalPropertyLookUpService globalPropertyLookUpService,
+                                       IdMappingRepository idMappingRepository) {
         objectMapper = new ObjectMapper();
         this.omrsConceptLookup = omrsConceptLookup;
         this.conceptService = conceptService;
@@ -82,6 +86,7 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
 
     private DrugOrder createDrugOrder(ShrEncounterBundle encounterComposition, MedicationRequest medicationOrder, EmrEncounter emrEncounter, SystemProperties systemProperties) {
         DrugOrder drugOrder = new DrugOrder();
+        Provenance provenance = FHIRBundleHelper.getProvenanceForResource(encounterComposition.getBundle(), medicationOrder.getId());
         DrugOrder previousDrugOrder = createOrFetchPreviousOrder(encounterComposition, medicationOrder, emrEncounter, systemProperties);
         if (previousDrugOrder != null) {
             drugOrder.setPreviousOrder(previousDrugOrder);
@@ -105,8 +110,8 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
             setDoseUnits(drugOrder, dosageInstruction);
         }
         setQuantity(drugOrder, medicationOrder.getDispenseRequest());
-        setScheduledDateAndUrgency(drugOrder, dosageInstruction);
-        setOrderAction(drugOrder, medicationOrder);
+        setScheduledDateAndUrgency(drugOrder, provenance);
+        setOrderAction(drugOrder, provenance);
 
         drugOrder.setRoute(mapRoute(dosageInstruction));
         drugOrder.setAsNeeded(((BooleanType) dosageInstruction.getAsNeeded()).getValue());
@@ -125,7 +130,7 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
     }
 
     private boolean shouldSyncMedicationRequest(ShrEncounterBundle encounterComposition, MedicationRequest medicationOrder) {
-        return fetchOrderByExternalId(encounterComposition.getShrEncounterId(), medicationOrder.getId()) == null;
+        return fetchOrderByExternalId(encounterComposition.getShrEncounterId(), getIdPart(medicationOrder.getId())) == null;
     }
 
     private OrderIdMapping fetchOrderByExternalId(String shrEncounterId, String medicationOrderId) {
@@ -133,15 +138,15 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
         return (OrderIdMapping) idMappingRepository.findByExternalId(externalId, IdMappingType.MEDICATION_ORDER);
     }
 
-    private void setOrderAction(DrugOrder drugOrder, MedicationRequest medicationOrder) {
-        List<Extension> extensions = medicationOrder.getExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.MEDICATIONORDER_ACTION_EXTENSION_NAME));
-        if (extensions == null || extensions.isEmpty()) {
+    private void setOrderAction(DrugOrder drugOrder, Provenance provenance) {
+        Coding activity = provenance.getActivity();
+        if (activity.isEmpty() || !FHIR_DATA_OPERATION_VALUESET_URL.equals(activity.getSystem())) {
             drugOrder.setAction(Order.Action.NEW);
             return;
         }
-        Extension orderActionExtension = extensions.get(0);
-        StringType orderAction = (StringType) orderActionExtension.getValue();
-        drugOrder.setAction(getOrderAction(orderAction.getValue()));
+        if (FHIR_DATA_OPERATION_CREATE_CODE.equals(activity.getCode())) drugOrder.setAction(Order.Action.NEW);
+        if (FHIR_DATA_OPERATION_UPDATE_CODE.equals(activity.getCode())) drugOrder.setAction(Order.Action.REVISE);
+        if (FHIR_DATA_OPERATION_ABORT_CODE.equals(activity.getCode())) drugOrder.setAction(Order.Action.DISCONTINUE);
     }
 
     private Order.Action getOrderAction(String orderAction) {
@@ -172,7 +177,7 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
 
     private DrugOrder fetchPreviousOrderFromSameEncounter(ShrEncounterBundle encounterComposition, MedicationRequest medicationOrder, EmrEncounter emrEncounter, SystemProperties systemProperties) {
         DrugOrder previousDrugOrder;
-        OrderIdMapping orderIdMapping = fetchOrderByExternalId(encounterComposition.getShrEncounterId(), medicationOrder.getPriorPrescription().getReference());
+        OrderIdMapping orderIdMapping = fetchOrderByExternalId(encounterComposition.getShrEncounterId(), getIdPart(medicationOrder.getPriorPrescription().getReference()));
         if (orderIdMapping != null) {
             previousDrugOrder = (DrugOrder) orderService.getOrderByUuid(orderIdMapping.getInternalId());
         } else {
@@ -189,7 +194,7 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
     }
 
     private void addDrugOrderToIdMapping(DrugOrder drugOrder, MedicationRequest medicationOrder, ShrEncounterBundle encounterComposition, SystemProperties systemProperties) {
-        String shrOrderId = medicationOrder.getId();
+        String shrOrderId = getIdPart(medicationOrder.getId());
         String orderUrl = getOrderUrl(encounterComposition, systemProperties, shrOrderId);
         String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, encounterComposition.getShrEncounterId(), shrOrderId);
         OrderIdMapping orderIdMapping = new OrderIdMapping(drugOrder.getUuid(), externalId, IdMappingType.MEDICATION_ORDER, orderUrl, new Date());
@@ -215,34 +220,34 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
         return false;
     }
 
-    private boolean hasPriorPrescription(MedicationRequest medicationOrder) {
-        return medicationOrder.getPriorPrescription() != null && !medicationOrder.getPriorPrescription().getReference().isEmpty();
+    private boolean hasPriorPrescription(MedicationRequest medicationRequest) {
+        return medicationRequest.getPriorPrescription() != null && StringUtils.isNotBlank(medicationRequest.getPriorPrescription().getReference());
     }
 
     private void addCustomDosageToDosingInstructions(Dosage dosageInstruction, HashMap<String, Object> dosingInstructionsMap) {
-//        List<Extension> extensions = dosageInstruction.getUndeclaredExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME));
-//        if (CollectionUtils.isNotEmpty(extensions)) {
-//            String value = ((StringType) extensions.get(0).getValue()).getValue();
-//            if (StringUtils.isNotBlank(value)) {
-//                try {
-//                    Map map = objectMapper.readValue(value, Map.class);
-//                    if (map.containsKey(FHIRProperties.FHIR_DRUG_ORDER_MORNING_DOSE_KEY)) {
-//                        Double morningDose = getDoseValue(map, FHIRProperties.FHIR_DRUG_ORDER_MORNING_DOSE_KEY);
-//                        dosingInstructionsMap.put(MRSProperties.BAHMNI_DRUG_ORDER_MORNING_DOSE_KEY, morningDose);
-//                    }
-//                    if (map.containsKey(FHIRProperties.FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY)) {
-//                        Double afternoonDose = getDoseValue(map, FHIRProperties.FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY);
-//                        dosingInstructionsMap.put(MRSProperties.BAHMNI_DRUG_ORDER_AFTERNOON_DOSE_KEY, afternoonDose);
-//                    }
-//                    if (map.containsKey(FHIRProperties.FHIR_DRUG_ORDER_EVENING_DOSE_KEY)) {
-//                        Double eveningDose = getDoseValue(map, FHIRProperties.FHIR_DRUG_ORDER_EVENING_DOSE_KEY);
-//                        dosingInstructionsMap.put(MRSProperties.BAHMNI_DRUG_ORDER_EVENING_DOSE_KEY, eveningDose);
-//                    }
-//                } catch (IOException e) {
-//                    logger.warn("Unable to map the Dosage Instructions extension value");
-//                }
-//            }
-//        }
+        List<Extension> extensions = dosageInstruction.getExtensionsByUrl(FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME));
+        if (CollectionUtils.isNotEmpty(extensions)) {
+            String value = ((StringType) extensions.get(0).getValue()).getValue();
+            if (StringUtils.isNotBlank(value)) {
+                try {
+                    Map map = objectMapper.readValue(value, Map.class);
+                    if (map.containsKey(FHIRProperties.FHIR_DRUG_ORDER_MORNING_DOSE_KEY)) {
+                        Double morningDose = getDoseValue(map, FHIRProperties.FHIR_DRUG_ORDER_MORNING_DOSE_KEY);
+                        dosingInstructionsMap.put(MRSProperties.BAHMNI_DRUG_ORDER_MORNING_DOSE_KEY, morningDose);
+                    }
+                    if (map.containsKey(FHIRProperties.FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY)) {
+                        Double afternoonDose = getDoseValue(map, FHIRProperties.FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY);
+                        dosingInstructionsMap.put(MRSProperties.BAHMNI_DRUG_ORDER_AFTERNOON_DOSE_KEY, afternoonDose);
+                    }
+                    if (map.containsKey(FHIRProperties.FHIR_DRUG_ORDER_EVENING_DOSE_KEY)) {
+                        Double eveningDose = getDoseValue(map, FHIRProperties.FHIR_DRUG_ORDER_EVENING_DOSE_KEY);
+                        dosingInstructionsMap.put(MRSProperties.BAHMNI_DRUG_ORDER_EVENING_DOSE_KEY, eveningDose);
+                    }
+                } catch (IOException e) {
+                    logger.warn("Unable to map the Dosage Instructions extension value");
+                }
+            }
+        }
     }
 
     private Double getDoseValue(Map map, String doseKey) {
@@ -271,15 +276,15 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
     }
 
     private void addNotesAndInstructionsToDosingInstructions(MedicationRequest medicationOrder, HashMap<String, Object> map) {
-//        CodeableConcept additionalInstructions = medicationOrder.getDosageInstructionFirstRep().getAdditionalInstructions();
-//        if (additionalInstructions != null && !additionalInstructions.isEmpty()) {
-//            Concept additionalInstructionsConcept = omrsConceptLookup.findConceptByCodeOrDisplay(additionalInstructions.getCoding());
-//            if (additionalInstructionsConcept != null)
-//                map.put(MRSProperties.BAHMNI_DRUG_ORDER_INSTRCTIONS_KEY, additionalInstructionsConcept.getName().getName());
-//        }
-//
-//        if (StringUtils.isNotBlank(medicationOrder.getNote()))
-//            map.put(MRSProperties.BAHMNI_DRUG_ORDER_ADDITIONAL_INSTRCTIONS_KEY, medicationOrder.getNote());
+        CodeableConcept additionalInstructions = medicationOrder.getDosageInstructionFirstRep().getAdditionalInstructionFirstRep();
+        if (additionalInstructions != null && !additionalInstructions.isEmpty()) {
+            Concept additionalInstructionsConcept = omrsConceptLookup.findConceptByCodeOrDisplay(additionalInstructions.getCoding());
+            if (additionalInstructionsConcept != null)
+                map.put(MRSProperties.BAHMNI_DRUG_ORDER_INSTRCTIONS_KEY, additionalInstructionsConcept.getName().getName());
+        }
+
+        if (StringUtils.isNotBlank(medicationOrder.getNoteFirstRep().getText()))
+            map.put(MRSProperties.BAHMNI_DRUG_ORDER_ADDITIONAL_INSTRCTIONS_KEY, medicationOrder.getNoteFirstRep().getText());
     }
 
     private void setQuantity(DrugOrder drugOrder, MedicationRequest.MedicationRequestDispenseRequestComponent dispenseRequest) {
@@ -291,17 +296,14 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
         drugOrder.setQuantityUnits(unitConcept);
     }
 
-    private void setScheduledDateAndUrgency(DrugOrder drugOrder, Dosage dosageInstruction) {
-        Timing timing = dosageInstruction.getTiming();
-        String fhirScheduledDateExtensionUrl = FHIRProperties.getFhirExtensionUrl(FHIRProperties.SCHEDULED_DATE_EXTENSION_NAME);
-//        if (timing.getUndeclaredExtensions().size() > 0
-//                && timing.getUndeclaredExtensionsByUrl(fhirScheduledDateExtensionUrl).size() > 0) {
-//            ExtensionDt scheduledDateExtension = timing.getUndeclaredExtensionsByUrl(fhirScheduledDateExtensionUrl).get(0);
-//            drugOrder.setScheduledDate(((DateTimeDt) scheduledDateExtension.getValue()).getValue());
-//            drugOrder.setUrgency(Order.Urgency.ON_SCHEDULED_DATE);
-//        } else {
-//            drugOrder.setUrgency(Order.Urgency.ROUTINE);
-//        }
+    private void setScheduledDateAndUrgency(DrugOrder drugOrder, Provenance provenance) {
+        Date start = provenance.getPeriod().getStart();
+        if (start == null) {
+            drugOrder.setUrgency(Order.Urgency.ROUTINE);
+        } else {
+            drugOrder.setScheduledDate(start);
+            drugOrder.setUrgency(Order.Urgency.ON_SCHEDULED_DATE);
+        }
     }
 
     private Provider getOrderer(MedicationRequest medicationOrder) {
@@ -314,19 +316,26 @@ public class FHIRMedicationOrderMapper implements FHIRResourceMapper {
     }
 
     private void mapFrequency(DrugOrder drugOrder, Dosage dosageInstruction) {
-//        Timing.Repeat repeat = dosageInstruction.getTiming().getRepeat();
-//        if (repeat.getFrequency() != null) {
-//            FrequencyMapperUtil.FrequencyUnit frequencyUnit = frequencyMapperUtil.getFrequencyUnitsFromRepeat(repeat);
-//            Concept frequencyConcept = conceptService.getConceptByName(frequencyUnit.getConceptName());
-//            OrderFrequency orderFrequency = orderService.getOrderFrequencyByConcept(frequencyConcept);
-//            drugOrder.setFrequency(orderFrequency);
-//        }
+        Timing.TimingRepeatComponent repeat = dosageInstruction.getTiming().getRepeat();
+        if (repeat.getFrequency() > 0) {
+            FrequencyMapperUtil.FrequencyUnit frequencyUnit = frequencyMapperUtil.getFrequencyUnitsFromRepeat(repeat);
+            Concept frequencyConcept = conceptService.getConceptByName(frequencyUnit.getConceptName());
+            OrderFrequency orderFrequency = orderService.getOrderFrequencyByConcept(frequencyConcept);
+            drugOrder.setFrequency(orderFrequency);
+        }
     }
 
     private void setOrderDuration(DrugOrder drugOrder, Dosage dosageInstruction) {
         Duration duration = (Duration) dosageInstruction.getTiming().getRepeat().getBounds();
         drugOrder.setDuration(duration.getValue().intValue());
-//        drugOrder.setDurationUnits(conceptService.getConceptByName(durationMapperUtil.getConceptNameFromUnitOfTime(UnitsOfTimeEnum.VALUESET_BINDER.fromCodeString(duration.getCode()))));
+        Timing.UnitsOfTime unitsOfTime;
+        try {
+            unitsOfTime = Timing.UnitsOfTime.fromCode(duration.getCode());
+        } catch (FHIRException e) {
+            String message = String.format("Cannot determine duration unit with code %s", duration.getCode());
+            throw new RuntimeException(message, e);
+        }
+        drugOrder.setDurationUnits(conceptService.getConceptByName(durationMapperUtil.getConceptNameFromUnitOfTime(unitsOfTime)));
     }
 
     private Concept mapRoute(Dosage dosageInstruction) {

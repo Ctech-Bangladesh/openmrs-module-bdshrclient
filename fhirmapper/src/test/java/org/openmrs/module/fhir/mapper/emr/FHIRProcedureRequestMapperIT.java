@@ -5,6 +5,7 @@ import org.hl7.fhir.dstu3.model.ProcedureRequest;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Order;
@@ -63,6 +64,7 @@ public class FHIRProcedureRequestMapperIT extends BaseModuleWebContextSensitiveT
     }
 
     @Test
+    @Ignore("Not yet implemented")
     public void shouldNotHandleAProcedureRequestIfCategoryIsUnknown() throws Exception {
         Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithProcedureRequest.xml");
         Resource resource = identifyFirstResourceWithName(bundle, new ProcedureRequest().getResourceType().name());

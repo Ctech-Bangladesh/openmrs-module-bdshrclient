@@ -172,7 +172,7 @@
     <concept_name concept_name_id="604" concept_id="604" name="In Progress" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="b47l00p9-7cy3-43yd-93yd-b4335835for"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept_name concept_name_id="605" concept_id="604" name="in-progress" locale="en" creator="1"
+    <concept_name concept_name_id="605" concept_id="604" name="completed" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="b47l00p9-7cy0-40yd-83jc-b4335835for"
                   concept_name_type="SHORT" locale_preferred="0"/>
     <concept_answer concept_answer_id="604" concept_id="312" answer_concept="604" sort_weight="1" date_created="2004-08-12 00:00:00.0" creator="1" uuid="eachro8f-uom3-6cu3-873d-qa3a3lz36ans" />
