@@ -61,6 +61,10 @@
     <concept_reference_map concept_map_id="9" concept_id="303" concept_reference_term_id="9" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0"/>
     <shr_id_mapping id="1" internal_id="baef67ac-b24e-ab04-7028-c3b994132b85" external_id="501qb827-a67c-4q1f-a705-e5efe0q6a972" 
                     type="concept_reference_term" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972"/>
+    <shr_id_mapping id="1" internal_id="baef67ac-b24e-ab04-7028-c3b994132b85" external_id="501qb827-a67c-4q1f-a705-e5efe0q6a972"
+                    type="concept_reference_term" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972"/>
+    <shr_id_mapping id="11" internal_id="7f7379ba-3ca8-11e3-bf2b-0800271c1b75" external_id="123"
+                    type="concept" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/123"/>
     <!--TR test - Haemoglobin-->
 
     <order_type order_type_id="16" name="Lab Order" description="An order for tests" creator="1" java_class_name="org.openmrs.Order"

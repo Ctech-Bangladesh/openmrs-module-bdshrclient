@@ -111,7 +111,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         executeDataSet("testDataSets/patientDeathNoteDS.xml");
 
         Patient patient = patientService.getPatient(1);
-        List<EncounterEvent> bundles = getEncounterEvents("shrEncounterId", "classpath:encounterBundles/stu3/encounterWithDiagnosticOrder.xml");
+        List<EncounterEvent> bundles = getEncounterEvents("shrEncounterId", "encounterBundles/stu3/encounterWithLabProcedureRequest.xml");
 
         assertEquals(true, patient.getDead());
         assertEquals("Unspecified Cause Of Death", patient.getCauseOfDeath().getName().getName());
@@ -127,7 +127,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         executeDataSet("testDataSets/shrDiagnosticOrderSyncTestDS.xml");
         String shrEncounterId = "shr-enc-id";
 
-        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithDiagnosticOrder.xml");
+        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithLabProcedureRequest.xml");
         Patient emrPatient = patientService.getPatient(1);
         emrEncounterService.createOrUpdateEncounters(emrPatient, bundles);
 
@@ -140,7 +140,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    public void shouldSaveTestOrdersWithoutOrder() throws Exception {
+    public void shouldSaveReportOrdersWithoutOrder() throws Exception {
         executeDataSet("testDataSets/shrDiagnosticOrderSyncTestDS.xml");
         String shrEncounterId = "shr-enc-id";
 
@@ -157,12 +157,13 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    @Ignore
+    //todo:
+    @Ignore("Openmrs is not saving retrospective orders.")
     public void shouldDiscontinueATestOrderIfUpdated() throws Exception {
         executeDataSet("testDataSets/shrDiagnosticOrderSyncTestDS.xml");
         String shrEncounterId = "shr-enc-id";
 
-        List<EncounterEvent> bundleWithNewTestOrder = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithDiagnosticOrder.xml");
+        List<EncounterEvent> bundleWithNewTestOrder = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithLabProcedureRequest.xml");
         Patient emrPatient = patientService.getPatient(1);
         emrEncounterService.createOrUpdateEncounters(emrPatient, bundleWithNewTestOrder);
 
@@ -175,7 +176,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         Order firstOrder = orders.iterator().next();
         assertNull(firstOrder.getDateStopped());
         assertEquals(Order.Action.NEW, firstOrder.getAction());
-        List<EncounterEvent> bundleWithCancelledTestOrder = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithCancelledDiagnosticOrder.xml");
+        List<EncounterEvent> bundleWithCancelledTestOrder = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithCanceledLabProcedureRequest.xml");
 
         emrEncounterService.createOrUpdateEncounters(emrPatient, bundleWithCancelledTestOrder);
 
@@ -210,7 +211,8 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    @Ignore
+    //todo:
+    @Ignore("Openmrs is not saving retrospective orders")
     public void shouldDiscontinueAProcedureOrderIfUpdated() throws Exception {
         executeDataSet("testDataSets/shrProcedureOrderSyncTestDS.xml");
         String shrEncounterId = "shr-enc-id";
@@ -401,7 +403,6 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    @Ignore
     public void shouldVoidOlderObservationsAndRecreateWithNewValues() throws Exception {
         executeDataSet("testDataSets/shrClientEncounterWithObservationTestDs.xml");
         Patient patient = patientService.getPatient(1);

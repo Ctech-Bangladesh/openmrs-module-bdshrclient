@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bundle xmlns="http://hl7.org/fhir">
+    <id value="4fe6f9e2-d10a-4956-aae5-091e810090e1"/>
+    <meta>
+        <lastUpdated value="2015-08-24T16:37:53.000+05:30"/>
+    </meta>
+    <type value="collection"/>
+    <entry>
+        <fullUrl value="urn:uuid:bce6c82a-01ec-482b-8dee-12240f372a38"/>
+        <resource>
+            <Composition>
+                <identifier>
+                    <value value="urn:uuid:bce6c82a-01ec-482b-8dee-12240f372a38"/>
+                </identifier>
+                <status value="final"/>
+                <type>
+                    <coding>
+                        <system value="http://hl7.org/fhir/vs/doc-typecodes"/>
+                        <code value="51899-3"/>
+                        <display value="Details Document"/>
+                    </coding>
+                </type>
+                <subject>
+                    <reference value="http://mci.com//api/default/patients/HIDA764177"/>
+                    <display value="HIDA764177"/>
+                </subject>
+                <encounter>
+                    <reference value="urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+                </encounter>
+                <date value="2014-07-10T16:05:09+05:30"/>
+                <author>
+                    <reference value="http://www.fr.com/10000069.json"/>
+                </author>
+                <confidentiality value="N"/>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+                        <display value="Encounter"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:4e06a589-cc74-4318-abad-d748fa8268ea"/>
+                        <display value="Diagnosis"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:4e06a589-cc74-4318-abad-e74efa8268ea"/>
+                        <display value="Diagnosis"/>
+                    </entry>
+                </section>
+            </Composition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+        <resource>
+            <Encounter>
+                <id value="4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+                <identifier>
+                    <value value="urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+                </identifier>
+                <status value="finished"/>
+                <class>
+                    <system value="http://hl7.org/fhir/v3/ActCode"/>
+                    <code value="AMB"/>
+                </class>
+                <type>
+                    <text value="OPD"/>
+                </type>
+                <subject>
+                    <reference value="http://mci.com//api/default/patients/HIDA764177"/>
+                    <display value="HIDA764177"/>
+                </subject>
+                <participant>
+                    <individual>
+                        <reference value="http://www.pr.com/812.json"/>
+                    </individual>
+                </participant>
+                <serviceProvider>
+                    <reference value="http://www.fr.com/facilities/10000069.json"/>
+                </serviceProvider>
+            </Encounter>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:4e06a589-cc74-4318-abad-d748fa8268ea"/>
+        <resource>
+            <Condition>
+                <id value="4e06a589-cc74-4318-abad-d748fa8268ea"/>
+                <identifier>
+                    <value value="urn:uuid:4e06a589-cc74-4318-abad-d748fa8268ea"/>
+                </identifier>
+                <clinicalStatus value="active"/>
+                <verificationStatus value="provisional"/>
+                <category>
+                    <coding>
+                        <system value="http://tr.com/valuesets/condition-category"/>
+                        <code value="diagnosis"/>
+                        <display value="Diagnosis"/>
+                    </coding>
+                </category>
+                <code>
+                    <coding>
+                        <system value="http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/f34f6020-9e33-4332-b7a5-bc9d464cb438"/>
+                        <code value="f34f6020-9e33-4332-b7a5-bc9d464cb438"/>
+                        <display value="Malaria"/>
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="http://mci.com//api/default/patients/HIDA764177"/>
+                    <display value="HIDA764177"/>
+                </subject>
+                <context>
+                    <reference value="urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+                </context>
+                <assertedDate value="2014-08-24"/>
+                <asserter>
+                    <reference value="http://hrmtest.dghs.gov.bd/api/1.0/providers/812.json"/>
+                </asserter>
+            </Condition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:4e06a589-cc74-4318-abad-e74efa8268ea"/>
+        <resource>
+            <Condition>
+                <id value="4e06a589-cc74-4318-abad-e74efa8268ea"/>
+                <identifier>
+                    <value value="urn:uuid:4e06a589-cc74-4318-abad-e74efa8268ea"/>
+                </identifier>
+                <clinicalStatus value="active"/>
+                <verificationStatus value="provisional"/>
+                <category>
+                    <coding>
+                        <system value="http://tr.com/valuesets/condition-category"/>
+                        <code value="diagnosis"/>
+                        <display value="Diagnosis"/>
+                    </coding>
+                </category>
+                <code>
+                    <coding>
+                        <system value="http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/96f64eb2-4d94-40ab-a386-a62ba03ff6b2"/>
+                        <code value="A00.0"/>
+                        <display value="Cholera Vibrio"/>
+                    </coding>
+                </code>
+                <subject>
+                    <reference value="http://mci.com//api/default/patients/HIDA764177"/>
+                    <display value="HIDA764177"/>
+                </subject>
+                <context>
+                    <reference value="urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b"/>
+                </context>
+                <assertedDate value="2014-08-24"/>
+                <asserter>
+                    <reference value="http://hrmtest.dghs.gov.bd/api/1.0/providers/812.json"/>
+                </asserter>
+            </Condition>
+        </resource>
+    </entry>
+</Bundle>

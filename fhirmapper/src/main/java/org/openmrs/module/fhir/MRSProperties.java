@@ -1,8 +1,8 @@
 package org.openmrs.module.fhir;
 
 public class MRSProperties {
-    public static final String MRS_OUT_PATIENT_VISIT_TYPE = "OPD";
-    public static final String MRS_IN_PATIENT_VISIT_TYPE = "IPD";
+    public static final String MRS_OUT_PATIENT_VISIT_TYPE = "outpatient";
+    public static final String MRS_IN_PATIENT_VISIT_TYPE = "inpatient";
 
     public static final String SHR_CLIENT_SYSTEM_NAME = "shrclientsystem";
 

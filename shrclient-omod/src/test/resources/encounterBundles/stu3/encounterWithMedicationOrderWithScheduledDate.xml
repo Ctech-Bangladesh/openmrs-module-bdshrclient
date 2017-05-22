@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bundle xmlns="http://hl7.org/fhir">
+    <id value="36044d0d-09ba-4eff-b7f2-beb3c20bbbbc"/>
+    <meta>
+        <lastUpdated value="2015-09-22T17:04:38.000+05:30"/>
+    </meta>
+    <type value="collection"/>
+    <entry>
+        <fullUrl value="urn:uuid:b6e96bb0-3c95-4d19-9918-41cfc0559423"/>
+        <resource>
+            <Composition>
+                <id value="b6e96bb0-3c95-4d19-9918-41cfc0559423"/>
+                <identifier>
+                    <value value="urn:uuid:b6e96bb0-3c95-4d19-9918-41cfc0559423"/>
+                </identifier>
+                <status value="final"/>
+                <type>
+                    <coding>
+                        <system value="http://hl7.org/fhir/vs/doc-typecodes"/>
+                        <code value="51899-3"/>
+                        <display value="Details Document"/>
+                    </coding>
+                </type>
+                <subject>
+                    <reference value="http://172.18.46.199:8081/api/default/patients/98001080756"/>
+                    <display value="98001080756"/>
+                </subject>
+                <encounter>
+                    <reference value="urn:uuid:445be5c3-d373-422a-b46d-d0ec5862b52f"/>
+                </encounter>
+                <date value="2015-09-22T17:04:38.000+05:30"/>
+                <author>
+                    <reference value="http://172.18.46.199:8080/api/1.0/facilities/10019842.json"/>
+                </author>
+                <title value="Patient Clinical Encounter"/>
+                <confidentiality value="N"/>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:445be5c3-d373-422a-b46d-d0ec5862b52f"/>
+                        <display value="Encounter"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:6c08551e-3d98-4ae6-8e28-bcba2f648919"/>
+                        <display value="Medication Request"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:6c08551e-3d98-4ae6-8e28-bcba2f648919-provenance"/>
+                        <display value="Provenance Medication Request"/>
+                    </entry>
+                </section>
+            </Composition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:445be5c3-d373-422a-b46d-d0ec5862b52f"/>
+        <resource>
+            <Encounter>
+                <id value="445be5c3-d373-422a-b46d-d0ec5862b52f"/>
+                <identifier>
+                    <value value="urn:uuid:445be5c3-d373-422a-b46d-d0ec5862b52f"/>
+                </identifier>
+                <status value="finished"/>
+                <class>
+                    <system value="http://hl7.org/fhir/v3/ActCode"/>
+                    <code value="AMB"/>
+                </class>
+                <type>
+                    <text value="OPD"/>
+                </type>
+                <subject>
+                    <reference value="http://172.18.46.199:8081/api/default/patients/98001080756"/>
+                    <display value="98001080756"/>
+                </subject>
+                <participant>
+                    <individual>
+                        <reference value="http://172.18.46.199:8080/api/1.0/providers/18.json"/>
+                    </individual>
+                </participant>
+                <serviceProvider>
+                    <reference value="http://172.18.46.199:8080/api/1.0/facilities/10019842.json"/>
+                </serviceProvider>
+            </Encounter>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:6c08551e-3d98-4ae6-8e28-bcba2f648919"/>
+        <resource>
+            <MedicationRequest>
+                <id value="6c08551e-3d98-4ae6-8e28-bcba2f648919"/>
+                <extension
+                        url="https://sharedhealth.atlassian.net/wiki/display/docs/fhir-extensions#MedicationOrderAction">
+                    <valueString value="NEW"/>
+                </extension>
+                <identifier>
+                    <value value="urn:uuid:6c08551e-3d98-4ae6-8e28-bcba2f648919"/>
+                </identifier>
+                <status value="active"/>
+                <intent value="order"/>
+                <medicationCodeableConcept>
+                    <coding>
+                        <system value="/openmrs/ws/rest/v1/tr/drugs/104"/>
+                        <code value="104"/>
+                        <display value="Lactic Acid"/>
+                    </coding>
+                </medicationCodeableConcept>
+                <subject>
+                    <reference value="http://172.18.46.199:8081/api/default/patients/98001080756"/>
+                    <display value="98001080756"/>
+                </subject>
+                <context>
+                    <reference value="urn:uuid:445be5c3-d373-422a-b46d-d0ec5862b52f"/>
+                </context>
+                <authoredOn value="2015-09-22T17:09:54.000+05:30"/>
+                <requester>
+                    <agent>
+                        <reference value="http://172.18.46.199:8080/api/1.0/providers/812.json"/>
+                    </agent>
+                </requester>
+                <dosageInstruction>
+                    <timing>
+                        <extension
+                                url="https://sharedhealth.atlassian.net/wiki/display/docs/fhir-extensions#TimingScheduledDate">
+                            <valueDateTime value="2015-09-24T00:00:00.000+05:30"/>
+                        </extension>
+                        <repeat>
+                            <boundsDuration>
+                                <value value="5"/>
+                                <system value="http://unitsofmeasure.org"/>
+                                <code value="d"/>
+                            </boundsDuration>
+                            <frequency value="1"/>
+                            <period value="2"/>
+                            <periodUnit value="h"/>
+                        </repeat>
+                    </timing>
+                    <asNeededBoolean value="false"/>
+                    <doseQuantity>
+                        <value value="10"/>
+                        <unit value="Pill"/>
+                        <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Medication-Forms"/>
+                        <code value="Pill"/>
+                    </doseQuantity>
+                </dosageInstruction>
+                <dispenseRequest>
+                    <quantity>
+                        <value value="192.0"/>
+                        <unit value="mg"/>
+                    </quantity>
+                </dispenseRequest>
+            </MedicationRequest>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:6c08551e-3d98-4ae6-8e28-bcba2f648919-provenance"/>
+        <resource>
+            <Provenance>
+                <id value="urn:uuid:6c08551e-3d98-4ae6-8e28-bcba2f648919-provenance"/>
+                <target>
+                    <reference value="urn:uuid:6c08551e-3d98-4ae6-8e28-bcba2f648919"/>
+                </target>
+                <period>
+                    <start value="2015-09-24T00:00:00+05:30"/>
+                </period>
+                <recorded value="2015-09-22T17:09:54.000+05:30"/>
+                <activity>
+                    <system value="http://hl7.org/fhir/v3/DataOperation"/>
+                    <code value="CREATE"/>
+                    <display value="create"/>
+                </activity>
+                <agent>
+                    <whoReference>
+                        <reference value="http://172.18.46.199:8080/api/1.0/providers/812.json"/>
+                    </whoReference>
+                </agent>
+            </Provenance>
+        </resource>
+    </entry>
+</Bundle>

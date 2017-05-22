@@ -54,7 +54,7 @@
                         identifier="GAN200004" identifier_type="2" creator="1"
                         uuid="7cb74fd1-1266-4584-842f-81d3535da3a6" preferred="1" voided="0"/>
 
-    <visit_type visit_type_id="100" name="OPD" description="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c0c579b0-8e59-401d-aaaa-976a0b183519"/>
+    <visit_type visit_type_id="100" name="outpatient" description="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c0c579b0-8e59-401d-aaaa-976a0b183519"/>
 
     <visit visit_id="1" date_started="2015-05-13 00:00:00" date_created="2015-05-13 09:00:00" patient_id="1"
            visit_type_id="100" date_stopped="2015-05-13 11:30:00" location_id="2" creator="1" changed_by="1"

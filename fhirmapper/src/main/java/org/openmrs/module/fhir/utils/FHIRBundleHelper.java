@@ -117,7 +117,25 @@ public class FHIRBundleHelper {
     private static HashSet<Reference> getChildReferences(List<Resource> compositionRefResources) {
         List<Reference> childResourceReferences = new ArrayList<>();
         for (Resource compositionRefResource : compositionRefResources) {
-            // todo: get all children for compositionRefResource
+            // add all observation as part of observation target
+            // add all observation as part of diagnosticreport result
+            // add all diagnostic reports as part of procedure.report
+            // add all medication requests as part of medicationrequest.priorprescription
+            if (compositionRefResource instanceof DiagnosticReport) {
+                DiagnosticReport diagnosticReport = (DiagnosticReport) compositionRefResource;
+                childResourceReferences.addAll(diagnosticReport.getResult());
+            }
+            if (compositionRefResource instanceof MedicationRequest) {
+                MedicationRequest medicationRequest = (MedicationRequest) compositionRefResource;
+                Reference priorPrescription = medicationRequest.getPriorPrescription();
+                if (!priorPrescription.isEmpty()) {
+                    childResourceReferences.add(priorPrescription);
+                }
+            }
+            if (compositionRefResource instanceof Procedure) {
+                Procedure procedure = (Procedure) compositionRefResource;
+                childResourceReferences.addAll(procedure.getReport());
+            }
             if (compositionRefResource instanceof Observation) {
                 List<Observation.ObservationRelatedComponent> related = ((Observation) compositionRefResource).getRelated();
                 for (Observation.ObservationRelatedComponent observationRelatedComponent : related) {

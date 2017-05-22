@@ -74,7 +74,12 @@ public class TestOrderMapper implements EmrOrderResourceHandler {
             codingForOrder = codeableConceptService.addTRCodingOrDisplay(order.getConcept());
             orderUuid = formatProcedureRequestId(orderUuid, "1");
         } else {
-            orderUuid = formatProcedureRequestId(orderUuid, getConceptCoding(codingForOrder.getCoding()).getCode());
+            Coding conceptCoding = getConceptCoding(codingForOrder.getCoding());
+            if (null == conceptCoding) {
+                String message = String.format("The concept with id %s is a TR Concept but doesn't have Concept coding", order.getConcept().getId());
+                throw new RuntimeException(message);
+            }
+            orderUuid = formatProcedureRequestId(orderUuid, conceptCoding.getCode());
         }
         createProcedureRequest(order, fhirEncounter, systemProperties,
                 fhirResources, codingForOrder, orderUuid);

@@ -52,13 +52,16 @@
     <concept concept_id="303" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
     <concept_numeric concept_id="303" precise="0"/>
-    <concept_name concept_name_id="303" concept_id="303" name="Hemoglobin" locale="en" creator="1"
+    <concept_name concept_name_id="303" concept_id="303" name="Haemoglobin" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
     <concept_reference_term concept_reference_term_id="9" concept_source_id="1" code="20563-3" name="Carboxyhemoglobin/Hemoglobin.total:MFr:Pt:Bld:Qn"
                             creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-ab04-7028-63b994132b86"/>
     <concept_reference_map concept_map_id="9" concept_id="303" concept_reference_term_id="9" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"/>
-    <shr_id_mapping id="1" internal_id="baef67ac-b24e-ab04-7028-63b994132b86" external_id="501qb827-a67c-4q1f-a705-e5efe0q6a972" type="concept_reference_term" uri="http://172.18.46.53:9080/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972"/>
+    <shr_id_mapping id="1" internal_id="baef67ac-b24e-ab04-7028-63b994132b86" external_id="501qb827-a67c-4q1f-a705-e5efe0q6a972" type="concept_reference_term"
+                    uri="http://172.18.46.53:9080/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972"/>
+    <shr_id_mapping id="11" internal_id="7f7379ba-3ca8-11e3-bf2b-0800271c1b75" external_id="123"
+                    type="concept" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/123"/>
 
     <concept concept_id="103" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="5923d0e0-8734-11e3-30d2-0800200c9a66"/>

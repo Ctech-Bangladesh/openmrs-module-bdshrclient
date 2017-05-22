@@ -3,9 +3,10 @@ package org.openmrs.module.fhir.mapper.bundler;
 
 import org.apache.log4j.Logger;
 import org.hl7.fhir.dstu3.model.*;
-import org.hl7.fhir.dstu3.model.Encounter;
-import org.openmrs.*;
+import org.openmrs.EncounterProvider;
 import org.openmrs.Location;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.utils.OMRSLocationService;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
 import java.util.Set;
+
+import static org.hl7.fhir.dstu3.model.codesystems.V3ActCode.*;
 
 @Component
 public class EncounterMapper {
@@ -69,19 +72,20 @@ public class EncounterMapper {
     private void setClass(org.openmrs.Encounter openMrsEncounter, Encounter encounter) {
         String visitType = openMrsEncounter.getVisit().getVisitType().getName().toLowerCase();
         Coding coding = new Coding();
-        coding.setSystem("http://hl7.org/fhir/v3/ActCode");
+        coding.setSystem(AMB.getSystem());
         if (visitType.contains("ipd")) {
-            coding.setCode("IMP");
-            coding.setDisplay("inpatient encounter");
+            coding.setCode(IMP.toCode());
+            coding.setDisplay(IMP.getDisplay());
         } else if (visitType.contains("emergency")) {
-            coding.setCode("EMER");
-            coding.setDisplay("emergency");
+            coding.setCode(EMER.toCode());
+            coding.setDisplay(EMER.getDisplay());
         } else {
-            coding.setCode("AMB");
-            coding.setDisplay("ambulatory");
+            coding.setCode(AMB.toCode());
+            coding.setDisplay(AMB.getDisplay());
         }
         encounter.setClass_(coding);
     }
+
     private void setPatientReference(String healthId, Encounter encounter, SystemProperties systemProperties) {
         if (null != healthId) {
             Reference subject = new Reference()

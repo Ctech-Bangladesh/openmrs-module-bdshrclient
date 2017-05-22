@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.util.List;
 
+import static org.hl7.fhir.dstu3.model.codesystems.V3ActCode.IMP;
 import static org.openmrs.module.fhir.MRSProperties.MRS_IN_PATIENT_VISIT_TYPE;
 import static org.openmrs.module.fhir.MRSProperties.MRS_OUT_PATIENT_VISIT_TYPE;
 
@@ -79,8 +80,7 @@ public class FHIRMapper {
             if (encVisitType != null) {
                 return encVisitType;
             }
-
-            if (encounterClass.equals("IMP")) {
+            if (encounterClass.equals(IMP.toCode())) {
                 return identifyVisitTypeByName(allVisitTypes, MRS_IN_PATIENT_VISIT_TYPE);
             }
         }
