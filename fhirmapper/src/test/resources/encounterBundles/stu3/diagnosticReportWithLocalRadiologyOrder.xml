@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Bundle xmlns="http://hl7.org/fhir">
     <id value="1d2652c2-420c-4cc2-b8b0-3477a93050a4"/>
     <meta>
@@ -7,7 +8,7 @@
     <entry>
         <fullUrl value="urn:uuid:03c6e997-0379-48cc-b9d0-4a02b40a6c41"/>
         <resource>
-            <Composition xmlns="http://hl7.org/fhir">
+            <Composition>
                 <identifier>
                     <value value="urn:uuid:03c6e997-0379-48cc-b9d0-4a02b40a6c41"/>
                 </identifier>
@@ -47,7 +48,7 @@
                 <section>
                     <entry>
                         <reference value="urn:uuid:83ce6024-8b1c-4ada-b96e-d753f40b8828"/>
-                        <display value="Radiology order findings"/>
+                        <display value="Radiology order Complaint"/>
                     </entry>
                 </section>
                 <section>
@@ -68,7 +69,7 @@
     <entry>
         <fullUrl value="urn:uuid:6b96a007-f93c-42ec-b9d8-78b81fe061de"/>
         <resource>
-            <Encounter xmlns="http://hl7.org/fhir">
+            <Encounter>
                 <identifier>
                     <value value="urn:uuid:6b96a007-f93c-42ec-b9d8-78b81fe061de"/>
                 </identifier>
@@ -98,7 +99,7 @@
     <entry>
         <fullUrl value="urn:uuid:0db5bad5-b1f0-45d2-a35f-ea8281cd328a"/>
         <resource>
-            <Observation xmlns="http://hl7.org/fhir">
+            <Observation>
                 <identifier>
                     <value value="urn:uuid:0db5bad5-b1f0-45d2-a35f-ea8281cd328a"/>
                 </identifier>
@@ -125,14 +126,14 @@
     <entry>
         <fullUrl value="urn:uuid:83ce6024-8b1c-4ada-b96e-d753f40b8828"/>
         <resource>
-            <Observation xmlns="http://hl7.org/fhir">
+            <Observation>
                 <identifier>
                     <value value="urn:uuid:83ce6024-8b1c-4ada-b96e-d753f40b8828"/>
                 </identifier>
                 <status value="preliminary"/>
                 <code>
                     <coding>
-                        <display value="Radiology order findings"/>
+                        <display value="Radiology order Complaint"/>
                     </coding>
                 </code>
                 <subject>
@@ -145,14 +146,25 @@
                 <performer>
                     <reference value="http://pr.com/api/1.0/providers/812.json"/>
                 </performer>
-                <valueString value="crack head"/>
+                <related>
+                    <type value="has-member"/>
+                    <target>
+                        <reference value="urn:uuid:0db5bad5-b1f0-45d2-a35f-ea8281cd328a"/>
+                    </target>
+                </related>
+                <related>
+                    <type value="has-member"/>
+                    <target>
+                        <reference value="urn:uuid:dc13d429-ec27-4070-ac9f-0ac3f6747299"/>
+                    </target>
+                </related>
             </Observation>
         </resource>
     </entry>
     <entry>
         <fullUrl value="urn:uuid:dc13d429-ec27-4070-ac9f-0ac3f6747299"/>
         <resource>
-            <Observation xmlns="http://hl7.org/fhir">
+            <Observation>
                 <identifier>
                     <value value="urn:uuid:dc13d429-ec27-4070-ac9f-0ac3f6747299"/>
                 </identifier>
@@ -174,9 +186,7 @@
                 </performer>
                 <valueCodeableConcept>
                     <coding>
-                        <system value="http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/501qb827-a67c-4q1f-a705-e5efe0q6a972"/>
-                        <code value="501qb827-a67c-4q1f-a705-e5efe0q6a972"/>
-                        <display value="X-Ray Right Chest"/>
+                        <display value="X-Ray Left Chest"/>
                     </coding>
                 </valueCodeableConcept>
             </Observation>
@@ -185,7 +195,7 @@
     <entry>
         <fullUrl value="urn:uuid:b8d65b9c-8242-4db5-bb17-9a064ef8df16"/>
         <resource>
-            <DiagnosticReport xmlns="http://hl7.org/fhir">
+            <DiagnosticReport>
                 <identifier>
                     <value value="urn:uuid:b8d65b9c-8242-4db5-bb17-9a064ef8df16"/>
                 </identifier>
@@ -203,9 +213,7 @@
                 </category>
                 <code>
                     <coding>
-                        <system value="http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/501qb827-a67c-4q1f-a705-e5efe0q6a972"/>
-                        <code value="501qb827-a67c-4q1f-a705-e5efe0q6a972"/>
-                        <display value="X-Ray Right Chest"/>
+                        <display value="X-Ray Left Chest"/>
                     </coding>
                 </code>
                 <subject>
@@ -223,13 +231,7 @@
                     </actor>
                 </performer>
                 <result>
-                    <reference value="urn:uuid:0db5bad5-b1f0-45d2-a35f-ea8281cd328a"/>
-                </result>
-                <result>
                     <reference value="urn:uuid:83ce6024-8b1c-4ada-b96e-d753f40b8828"/>
-                </result>
-                <result>
-                    <reference value="urn:uuid:dc13d429-ec27-4070-ac9f-0ac3f6747299"/>
                 </result>
             </DiagnosticReport>
         </resource>
