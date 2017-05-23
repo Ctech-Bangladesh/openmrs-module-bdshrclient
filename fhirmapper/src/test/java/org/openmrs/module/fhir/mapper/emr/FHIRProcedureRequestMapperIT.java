@@ -64,14 +64,6 @@ public class FHIRProcedureRequestMapperIT extends BaseModuleWebContextSensitiveT
     }
 
     @Test
-    @Ignore("Not yet implemented")
-    public void shouldNotHandleAProcedureRequestIfCategoryIsUnknown() throws Exception {
-        Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithProcedureRequest.xml");
-        Resource resource = identifyFirstResourceWithName(bundle, new ProcedureRequest().getResourceType().name());
-        assertFalse("Fails because not checking system",procedureRequestMapper.canHandle(resource));
-    }
-
-    @Test
     public void shouldMapAProcedureRequest() throws Exception {
         EmrEncounter emrEncounter = mapOrder("encounterBundles/stu3/encounterWithProcedureRequest.xml", ProcedureRequest.ProcedureRequestStatus.ACTIVE);
 

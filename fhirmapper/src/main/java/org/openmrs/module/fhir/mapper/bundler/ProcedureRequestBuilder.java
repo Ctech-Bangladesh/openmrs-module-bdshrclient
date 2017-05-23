@@ -13,9 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DiagnosticOrderBuilder {
+public class ProcedureRequestBuilder {
+    private final ProviderLookupService providerLookupService;
+
     @Autowired
-    private ProviderLookupService providerLookupService;
+    public ProcedureRequestBuilder(ProviderLookupService providerLookupService) {
+        this.providerLookupService = providerLookupService;
+    }
 
     public ProcedureRequest createProcedureRequest(Order order, FHIREncounter fhirEncounter,
                                                    SystemProperties systemProperties, String orderTypeCode, String orderUuid) {
@@ -29,20 +33,6 @@ public class DiagnosticOrderBuilder {
         return procedureRequest;
     }
 
-//    public DiagnosticOrder.Item createOrderItem(Order order, CodeableConceptDt orderCode) {
-//        DiagnosticOrder.Item orderItem = new DiagnosticOrder.Item();
-//        orderItem.setCode(orderCode);
-//        if (isDiscontinuedOrder(order)) {
-//            orderItem.setStatus(ProcedureRequest.ProcedureRequestStatus.CANCELLED);
-//            addEvent(orderItem, ProcedureRequest.ProcedureRequestStatus.REQUESTED, order.getPreviousOrder().getDateActivated());
-//            addEvent(orderItem, ProcedureRequest.ProcedureRequestStatus.CANCELLED, order.getDateActivated());
-//        } else {
-//            orderItem.setStatus(DiagnosticOrderStatusEnum.REQUESTED);
-//            addEvent(orderItem, DiagnosticOrderStatusEnum.REQUESTED, order.getDateActivated());
-//        }
-//        return orderItem;
-//    }
-
     private void addCategory(ProcedureRequest procedureRequest, SystemProperties systemProperties, String trOrderTypeCode) {
         Coding coding = procedureRequest.addCategory().addCoding();
         coding.setCode(trOrderTypeCode);
@@ -55,16 +45,6 @@ public class DiagnosticOrderBuilder {
         diagnosticOrder.addIdentifier().setValue(id);
         diagnosticOrder.setId(id);
     }
-
-    private boolean isDiscontinuedOrder(Order order) {
-        return order.getAction().equals(Order.Action.DISCONTINUE);
-    }
-
-//    private void addEvent(DiagnosticOrder.Item orderItem, DiagnosticOrderStatusEnum status, Date dateActivated) {
-//        DiagnosticOrder.Event event = orderItem.addEvent();
-//        event.setStatus(status);
-//        event.setDateTime(dateActivated, TemporalPrecisionEnum.MILLI);
-//    }
 
     private Reference getOrdererReference(Order order, FHIREncounter fhirEncounter) {
         if (order.getOrderer() != null) {

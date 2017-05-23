@@ -157,8 +157,6 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    //todo:
-    @Ignore("Openmrs is not saving retrospective orders.")
     public void shouldDiscontinueATestOrderIfUpdated() throws Exception {
         executeDataSet("testDataSets/shrDiagnosticOrderSyncTestDS.xml");
         String shrEncounterId = "shr-enc-id";
@@ -211,8 +209,6 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    //todo:
-    @Ignore("Openmrs is not saving retrospective orders")
     public void shouldDiscontinueAProcedureOrderIfUpdated() throws Exception {
         executeDataSet("testDataSets/shrProcedureOrderSyncTestDS.xml");
         String shrEncounterId = "shr-enc-id";

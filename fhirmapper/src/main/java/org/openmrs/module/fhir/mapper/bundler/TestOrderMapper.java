@@ -27,10 +27,14 @@ import static org.openmrs.module.fhir.utils.FHIRBundleHelper.createProvenance;
 public class TestOrderMapper implements EmrOrderResourceHandler {
     private static final String TR_CONCEPT_URI_PART = "/tr/concepts/";
 
+    private final CodeableConceptService codeableConceptService;
+    private final ProcedureRequestBuilder procedureRequestBuilder;
+
     @Autowired
-    private CodeableConceptService codeableConceptService;
-    @Autowired
-    private DiagnosticOrderBuilder orderBuilder;
+    public TestOrderMapper(CodeableConceptService codeableConceptService, ProcedureRequestBuilder procedureRequestBuilder) {
+        this.codeableConceptService = codeableConceptService;
+        this.procedureRequestBuilder = procedureRequestBuilder;
+    }
 
     @Override
     public boolean canHandle(Order order) {
@@ -88,7 +92,7 @@ public class TestOrderMapper implements EmrOrderResourceHandler {
     private void createProcedureRequest(Order order, FHIREncounter fhirEncounter, SystemProperties systemProperties,
                                         List<FHIRResource> fhirResources, CodeableConcept coding, String orderUuid) {
         boolean isDiscontinuedOrder = isDiscontinuedOrder(order);
-        ProcedureRequest procedureRequest = orderBuilder.createProcedureRequest(order, fhirEncounter, systemProperties, TR_ORDER_TYPE_LAB_CODE, orderUuid);
+        ProcedureRequest procedureRequest = procedureRequestBuilder.createProcedureRequest(order, fhirEncounter, systemProperties, TR_ORDER_TYPE_LAB_CODE, orderUuid);
         procedureRequest.setCode(coding);
         procedureRequest.setStatus(isDiscontinuedOrder ? CANCELLED : ACTIVE);
         procedureRequest.setAuthoredOn(order.getDateActivated());

@@ -25,12 +25,16 @@ import static org.openmrs.module.fhir.utils.FHIRBundleHelper.createProvenance;
 @Component("fhirRadiologyOrderMapper")
 public class GenericOrderMapper implements EmrOrderResourceHandler {
 
+    private final CodeableConceptService codeableConceptService;
+    private final ProcedureRequestBuilder procedureRequestBuilder;
+    private final GlobalPropertyLookUpService globalPropertyLookUpService;
+
     @Autowired
-    private CodeableConceptService codeableConceptService;
-    @Autowired
-    private DiagnosticOrderBuilder orderBuilder;
-    @Autowired
-    private GlobalPropertyLookUpService globalPropertyLookUpService;
+    public GenericOrderMapper(CodeableConceptService codeableConceptService, ProcedureRequestBuilder procedureRequestBuilder, GlobalPropertyLookUpService globalPropertyLookUpService) {
+        this.codeableConceptService = codeableConceptService;
+        this.procedureRequestBuilder = procedureRequestBuilder;
+        this.globalPropertyLookUpService = globalPropertyLookUpService;
+    }
 
     @Override
     public boolean canHandle(Order order) {
@@ -52,7 +56,7 @@ public class GenericOrderMapper implements EmrOrderResourceHandler {
         if (isDiscontinuedOrder) {
             orderUuid = order.getPreviousOrder().getUuid();
         }
-        ProcedureRequest procedureRequest = orderBuilder.createProcedureRequest(order, fhirEncounter,
+        ProcedureRequest procedureRequest = procedureRequestBuilder.createProcedureRequest(order, fhirEncounter,
                 systemProperties, getCategoryFromOrder(order), orderUuid);
 
         procedureRequest.setCode(codeableConceptService.addTRCodingOrDisplay(order.getConcept()));

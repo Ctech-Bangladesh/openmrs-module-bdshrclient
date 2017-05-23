@@ -141,7 +141,6 @@ public class FHIRBundleHelper {
                 for (Observation.ObservationRelatedComponent observationRelatedComponent : related) {
                     childResourceReferences.add(observationRelatedComponent.getTarget());
                 }
-//            childResourceReferences.addAll(compositionRefResource.getAllPopulatedChildElementsOfType(Reference.class));
             }
         }
         HashSet<Reference> childRef = new HashSet<>();
