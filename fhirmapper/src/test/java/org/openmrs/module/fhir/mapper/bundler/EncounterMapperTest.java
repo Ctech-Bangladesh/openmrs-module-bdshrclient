@@ -1,6 +1,7 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
 import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.codesystems.V3ActCode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -42,15 +43,17 @@ public class EncounterMapperTest {
     @Test
     public void shouldSetVisitType() throws Exception {
         mapEncounterWithVisitType("LAB VISIT");
-//        assertEquals(EncounterClassEnum.OUTPATIENT.getCode(), mapEncounterWithVisitType("LAB VISIT").getClassElement());
-//        assertEquals(EncounterClassEnum.HOME.getCode(), mapEncounterWithVisitType("home").getClassElement());
-//        assertEquals(EncounterClassEnum.FIELD.getCode(), mapEncounterWithVisitType("field").getClassElement());
-//        assertEquals(EncounterClassEnum.AMBULATORY.getCode(), mapEncounterWithVisitType("ambulatory").getClassElement());
-//        assertEquals(EncounterClassEnum.EMERGENCY.getCode(), mapEncounterWithVisitType("emergency").getClassElement());
-//        assertEquals(EncounterClassEnum.OUTPATIENT.getCode(), mapEncounterWithVisitType("outpatient").getClassElement());
-//        assertEquals(EncounterClassEnum.INPATIENT.getCode(), mapEncounterWithVisitType("inpatient").getClassElement());
-//        assertEquals(EncounterClassEnum.OUTPATIENT.getCode(), mapEncounterWithVisitType("OPD").getClassElement());
-//        assertEquals(EncounterClassEnum.INPATIENT.getCode(), mapEncounterWithVisitType("IPD").getClassElement());
+        assertEquals(V3ActCode.HH.toCode(), mapEncounterWithVisitType("home").getClass_().getCode());
+        assertEquals(V3ActCode.FLD.toCode(), mapEncounterWithVisitType("field").getClass_().getCode());
+        assertEquals(V3ActCode.EMER.toCode(), mapEncounterWithVisitType("emergency").getClass_().getCode());
+
+        assertEquals(V3ActCode.AMB.toCode(), mapEncounterWithVisitType("LAB VISIT").getClass_().getCode());
+        assertEquals(V3ActCode.AMB.toCode(), mapEncounterWithVisitType("ambulatory").getClass_().getCode());
+        assertEquals(V3ActCode.AMB.toCode(), mapEncounterWithVisitType("outpatient").getClass_().getCode());
+        assertEquals(V3ActCode.AMB.toCode(), mapEncounterWithVisitType("OPD").getClass_().getCode());
+
+        assertEquals(V3ActCode.IMP.toCode(), mapEncounterWithVisitType("inpatient").getClass_().getCode());
+        assertEquals(V3ActCode.IMP.toCode(), mapEncounterWithVisitType("IPD").getClass_().getCode());
     }
 
     private org.hl7.fhir.dstu3.model.Encounter mapEncounterWithVisitType(String visitType) {

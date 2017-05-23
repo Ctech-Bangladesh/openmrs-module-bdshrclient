@@ -7,6 +7,7 @@ import org.openmrs.EncounterProvider;
 import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
+import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.utils.OMRSLocationService;
@@ -70,20 +71,32 @@ public class EncounterMapper {
     }
 
     private void setClass(org.openmrs.Encounter openMrsEncounter, Encounter encounter) {
+        //todo : need to be discussed for now let's map it in code like inpatient => IPD, outpatient => OPD
         String visitType = openMrsEncounter.getVisit().getVisitType().getName().toLowerCase();
+        Coding coding = getClassFromVisitType(visitType);
+        encounter.setClass_(coding);
+    }
+
+    private Coding getClassFromVisitType(String visitType) {
         Coding coding = new Coding();
         coding.setSystem(AMB.getSystem());
-        if (visitType.contains("ipd")) {
+        if (visitType.equalsIgnoreCase(MRSProperties.MRS_INPATIENT_VISIT_TYPE) || visitType.equalsIgnoreCase(MRSProperties.MRS_IDP_VISIT_TYPE)) {
             coding.setCode(IMP.toCode());
             coding.setDisplay(IMP.getDisplay());
-        } else if (visitType.contains("emergency")) {
+        } else if (visitType.equalsIgnoreCase(MRSProperties.MRS_EMERGENCY_VISIT_TYPE)) {
             coding.setCode(EMER.toCode());
             coding.setDisplay(EMER.getDisplay());
+        } else if (visitType.equalsIgnoreCase(MRSProperties.MRS_FIELD_VISIT_TYPE)) {
+            coding.setCode(FLD.toCode());
+            coding.setDisplay(FLD.getDisplay());
+        } else if (visitType.equalsIgnoreCase(MRSProperties.MRS_HOME_VISIT_TYPE)) {
+            coding.setCode(HH.toCode());
+            coding.setDisplay(HH.getDisplay());
         } else {
             coding.setCode(AMB.toCode());
             coding.setDisplay(AMB.getDisplay());
         }
-        encounter.setClass_(coding);
+        return coding;
     }
 
     private void setPatientReference(String healthId, Encounter encounter, SystemProperties systemProperties) {
