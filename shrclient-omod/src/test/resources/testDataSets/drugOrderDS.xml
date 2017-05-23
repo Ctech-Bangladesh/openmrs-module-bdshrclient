@@ -281,7 +281,7 @@
                 duration_units="803" dosing_instructions="{&quot;instructions&quot;:&quot;As directed&quot;,&quot;eveningDose&quot;:30}"
                 quantity_units="50" dispense_as_written="true" dose_units="807"/>
     <order_id_mapping id="1" internal_id="amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0" external_id="shr_enc_id_1:amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"
-                      type="MedicationOrder" uri="encounters/shr_enc_id_1#MedicationOrder/amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"/>
+                      type="MedicationRequest" uri="encounters/shr_enc_id_1#MedicationRequest/amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"/>
     <!--Encounter for download, drug order edited in previous order-->
     
     <!--Encounter for upload drug order-->

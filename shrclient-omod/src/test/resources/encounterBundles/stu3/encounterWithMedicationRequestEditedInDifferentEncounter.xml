@@ -91,10 +91,6 @@
         <resource>
             <MedicationRequest>
                 <id value="amkbja86-awaa-11f3-9qw4-ccc26cc6ccbc"/>
-                <extension
-                        url="https://sharedhealth.atlassian.net/wiki/display/docs/fhir-extensions#MedicationOrderAction">
-                    <valueString value="REVISE"/>
-                </extension>
                 <identifier>
                     <value value="urn:uuid:amkbja86-awaa-11f3-9qw4-ccc26cc6ccbc"/>
                 </identifier>
@@ -154,7 +150,7 @@
                     </quantity>
                 </dispenseRequest>
                 <priorPrescription>
-                    <reference value="encounters/shr_enc_id_1#MedicationOrder/amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"/>
+                    <reference value="encounters/shr_enc_id_1#MedicationRequest/amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"/>
                 </priorPrescription>
             </MedicationRequest>
         </resource>

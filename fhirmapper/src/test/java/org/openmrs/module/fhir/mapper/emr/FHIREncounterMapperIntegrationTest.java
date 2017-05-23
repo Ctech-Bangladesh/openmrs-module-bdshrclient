@@ -42,7 +42,6 @@ public class FHIREncounterMapperIntegrationTest extends BaseModuleWebContextSens
     public void shouldMapFhirEncounter() throws Exception {
         executeDataSet("testDataSets/shrClientEncounterReverseSyncTestDS.xml");
         final Bundle encounterBundle = loadSampleFHIREncounter();
-        // todo verify
         assertEquals("4fe6f9e2-d10a-4956-aae5-091e810090e1", encounterBundle.getId());
 
         FHIRBundleHelper.getComposition(encounterBundle);

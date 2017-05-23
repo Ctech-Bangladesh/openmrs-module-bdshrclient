@@ -221,7 +221,7 @@ public class FHIRLabReportMapperIT extends BaseModuleWebContextSensitiveTest {
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
         encounter.setPatient(patientService.getPatient(1));
         //Multiple orders present for the request detail.
-        assertEquals(3, idMappingRepository.findMappingsByExternalId("shrEncounterId22:6daaes86-efab-ls29-sow2-f15206e63ab0", IdMappingType.DIAGNOSTIC_ORDER).size());
+        assertEquals(3, idMappingRepository.findMappingsByExternalId("shrEncounterId22:6daaes86-efab-ls29-sow2-f15206e63ab0", IdMappingType.PROCEDURE_REQUEST).size());
 
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(bundle, "98101039678", "shr-enc-id-1");
         diagnosticReportMapper.map(report, emrEncounter, encounterComposition, getSystemProperties("1"));

@@ -5,13 +5,13 @@
     <shr_id_mapping id="150" internal_id="juydg80f-1yz9-4xv3-bz88-8z22a1dx1zt" external_id="150" type="concept"
                     uri="/concepts/150"/>
     <order_id_mapping id="151" internal_id="juydg81f-1yz9-4xv3-bz88-8z22a1dx1zt" external_id="597d18f5-bc92-4c43-b0fa-526fe6181d0e:e30e5355-cca5-4eb5-947f-0"
-                      type="MedicationOrder" uri="/patients/Health_id2/encounters/597d18f5-bc92-4c43-b0fa-526fe6181d0e#MedicationOrder/e30e5355-cca5-4eb5-947f-0"/>
+                      type="MedicationRequest" uri="/patients/Health_id2/encounters/597d18f5-bc92-4c43-b0fa-526fe6181d0e#MedicationRequest/e30e5355-cca5-4eb5-947f-0"/>
     <patient_id_mapping id="50" internal_id="75e04d42-3ca8-11e3-bf2b-0800271c1b77" external_id="Health_id2"
                         uri="/patients/Health_id"/>
     <encounter_id_mapping id="51" internal_id="75e04d42-3ca8-11e3-bf2b-0800271c1b75" external_id="75e04d42-3ca8-11e3-bf2b-0800271c1b76"
                           uri="/patients/Health_id/encounters"/>
     <order_id_mapping id="52" internal_id="76e04d42-3ca8-11e3-bf2b-0800271c1b75" external_id="76e04d42-3ca8-11e3-bf2b-0800271c1b76"
-                          uri="/patients/Health_id/encounters/enc_id#ProcedureOrder/76e04d42-3ca8-11e3-bf2b-0800271c1b75" type="ProcedureOrder"/>
+                          uri="/patients/Health_id/encounters/enc_id#ProcedureRequest/76e04d42-3ca8-11e3-bf2b-0800271c1b75" type="ProcedureRequest"/>
     <diagnosis_id_mapping id="1" internal_id="76e04d42-123s-11e3-bf2b-0800271c1b75" external_id="76e04d42-3ca8-lk87-bf2b-0800271c1b76"
                           uri="/patients/Health_id/encounters/enc_id#Condition/76e04d42-123s-11e3-bf2b-0800271c1b75"/>
 </dataset>

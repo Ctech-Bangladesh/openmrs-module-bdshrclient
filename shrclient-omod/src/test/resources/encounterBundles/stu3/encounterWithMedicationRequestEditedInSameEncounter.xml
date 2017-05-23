@@ -103,10 +103,6 @@
         <resource>
             <MedicationRequest>
                 <id value="vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0"/>
-                <extension
-                        url="https://sharedhealth.atlassian.net/wiki/display/docs/fhir-extensions#MedicationOrderAction">
-                    <valueString value="NEW"/>
-                </extension>
                 <identifier>
                     <value value="urn:uuid:vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0"/>
                 </identifier>
@@ -173,10 +169,6 @@
         <resource>
             <MedicationRequest>
                 <id value="zmkbja86-awaa-11f3-9qw4-ccc26cc6cabc"/>
-                <extension
-                        url="https://sharedhealth.atlassian.net/wiki/display/docs/fhir-extensions#MedicationOrderAction">
-                    <valueString value="REVISE"/>
-                </extension>
                 <identifier>
                     <value value="urn:uuid:zmkbja86-awaa-11f3-9qw4-ccc26cc6cabc"/>
                 </identifier>

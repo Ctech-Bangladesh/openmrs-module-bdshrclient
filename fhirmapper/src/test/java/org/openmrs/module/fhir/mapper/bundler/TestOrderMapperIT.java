@@ -17,11 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 import static org.junit.Assert.*;
-import static org.openmrs.module.fhir.FHIRProperties.DIAGNOSTIC_ORDER_CATEGORY_EXTENSION_NAME;
-import static org.openmrs.module.fhir.FHIRProperties.getFhirExtensionUrl;
 import static org.openmrs.module.fhir.MapperTestHelper.containsCoding;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
 import static org.openmrs.module.fhir.TestFhirFeedHelper.getFirstResourceByType;
@@ -220,11 +217,6 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Coding category = procedureRequest.getCategoryFirstRep().getCodingFirstRep();
         assertEquals("http://localhost:9080/openmrs/ws/rest/v1/tr/vs/order-type", category.getSystem());
         assertEquals(MRSProperties.TR_ORDER_TYPE_LAB_CODE, category.getCode());
-
-        assertEquals(fhirEncounterId, procedureRequest.getContext().getReference());
-        String fhirExtensionUrl = getFhirExtensionUrl(DIAGNOSTIC_ORDER_CATEGORY_EXTENSION_NAME);
-        List<Extension> extensions = procedureRequest.getExtensionsByUrl(fhirExtensionUrl);
-        assertEquals(0, extensions.size());
     }
 
     private FHIREncounter createFhirEncounter() {

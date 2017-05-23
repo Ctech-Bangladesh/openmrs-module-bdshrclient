@@ -43,9 +43,6 @@ public class ObservationValueConverter {
             if (typeValue.getClass().equals(CodeableConcept.class))
                 return fromCodeableConcept((CodeableConcept) typeValue);
 
-//            if (typeValue.getClass().equals(BoundCodeableConcept.class))
-//                return fromCodeableConcept((CodeableConcept) typeValue);
-
             if (typeValue.getClass().equals(Ratio.class))
                 return fromRatio((Ratio) typeValue);
 
@@ -207,7 +204,6 @@ public class ObservationValueConverter {
     private static String fromTiming(Timing typeValue) {
         String result = "";
         Timing.TimingRepeatComponent repeat = typeValue.getRepeat();
-//        todo: need to verify what to do
         if (repeat == null) return "timing not specified";
         Integer frequency = repeat.getFrequency();
         List<Enumeration<Timing.EventTiming>> when = repeat.getWhen();

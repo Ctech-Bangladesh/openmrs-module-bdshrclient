@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.openmrs.Obs;
 import org.openmrs.api.ObsService;
 import org.openmrs.module.fhir.FHIRProperties;
+import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.mapper.model.FHIRResource;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
@@ -19,7 +20,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.openmrs.module.fhir.FHIRProperties.FHIR_CONDITION_CATEGORY_DIAGNOSIS_CODE;
 import static org.openmrs.module.fhir.MapperTestHelper.containsCoding;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
 
@@ -148,7 +148,7 @@ public class DiagnosisMapperIT extends BaseModuleWebContextSensitiveTest {
 
         assertEquals(fhirEncounter.getPatient().getReference(), diagnosisCondition.getSubject().getReference());
         assertEquals(fhirEncounter.getId(), diagnosisCondition.getContext().getReference());
-        assertEquals(FHIR_CONDITION_CATEGORY_DIAGNOSIS_CODE, diagnosisCondition.getCategory().get(0).getCodingFirstRep().getCode());
+        assertEquals(MRSProperties.TR_CONDITION_CATEGORY_DIAGNOSIS_CODE, diagnosisCondition.getCategory().get(0).getCodingFirstRep().getCode());
         assertEquals(fhirEncounter.getFirstParticipantReference(), diagnosisCondition.getAsserter());
 
         assertEquals(1, diagnosisCondition.getCode().getCoding().size());

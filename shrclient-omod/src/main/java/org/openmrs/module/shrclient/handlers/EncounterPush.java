@@ -106,13 +106,13 @@ public class EncounterPush implements EventWorker {
                 saveOrderIdMapping(shrEncounterId, order.getUuid(), IdMappingType.MEDICATION_ORDER, orderUrlReferenceIds, systemProperties);
             } else if (order.getOrderType().getName().equals(MRSProperties.MRS_PROCEDURE_ORDER_TYPE)) {
                 orderUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new ProcedureRequest().getResourceType().name());
-                saveOrderIdMapping(shrEncounterId, order.getUuid(), IdMappingType.PROCEDURE_ORDER, orderUrlReferenceIds, systemProperties);
+                saveOrderIdMapping(shrEncounterId, order.getUuid(), IdMappingType.PROCEDURE_REQUEST, orderUrlReferenceIds, systemProperties);
             } else if (order.getOrderType().getName().equals(MRSProperties.MRS_LAB_ORDER_TYPE)) {
                 orderUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new ProcedureRequest().getResourceType().name());
-                saveOrderIdMapping(shrEncounterId, order.getUuid(), IdMappingType.DIAGNOSTIC_ORDER, orderUrlReferenceIds, systemProperties);
+                saveOrderIdMapping(shrEncounterId, order.getUuid(), IdMappingType.PROCEDURE_REQUEST, orderUrlReferenceIds, systemProperties);
             } else if (order.getOrderType().getName().equals(MRSProperties.MRS_RADIOLOGY_ORDER_TYPE)) {
                 orderUrlReferenceIds.put(EntityReference.REFERENCE_RESOURCE_NAME, new ProcedureRequest().getResourceType().name());
-                saveOrderIdMapping(shrEncounterId, order.getUuid(), IdMappingType.DIAGNOSTIC_ORDER, orderUrlReferenceIds, systemProperties);
+                saveOrderIdMapping(shrEncounterId, order.getUuid(), IdMappingType.PROCEDURE_REQUEST, orderUrlReferenceIds, systemProperties);
             }
         }
     }

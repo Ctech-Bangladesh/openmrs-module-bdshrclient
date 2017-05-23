@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Order;
 import org.openmrs.api.OrderService;
-import org.openmrs.module.fhir.FHIRProperties;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.mapper.model.FHIRResource;
@@ -103,11 +102,6 @@ public class ProcedureOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         Reference historyReference = procedureRequest.getRelevantHistory().get(0);
         assertEquals(expectedPreviousOrderUri + "-provenance", historyReference.getReference());
-
-
-        final List<Extension> extensions = procedureRequest.getExtensionsByUrl(
-                FHIRProperties.getFhirExtensionUrl(FHIRProperties.PROCEDURE_REQUEST_PREVIOUS_REQUEST_EXTENSION_NAME));
-        assertTrue(extensions.isEmpty());
     }
 
     private FHIREncounter createFhirEncounter() {

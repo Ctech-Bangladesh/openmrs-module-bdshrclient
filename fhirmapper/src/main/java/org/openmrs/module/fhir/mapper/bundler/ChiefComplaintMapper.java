@@ -6,7 +6,6 @@ import org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus;
 import org.hl7.fhir.dstu3.model.Condition.ConditionVerificationStatus;
 import org.joda.time.DateTime;
 import org.openmrs.Obs;
-import org.openmrs.module.fhir.FHIRProperties;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.CompoundObservation;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
@@ -22,7 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 import static org.codehaus.groovy.runtime.InvokerHelper.asList;
-import static org.openmrs.module.fhir.FHIRProperties.*;
+import static org.openmrs.module.fhir.MRSProperties.TR_CONDITION_CATEGORY_COMPLAINT_CODE;
+import static org.openmrs.module.fhir.MRSProperties.TR_CONDITION_CATEGORY_VALUESET_NAME;
 import static org.openmrs.module.fhir.mapper.model.ObservationType.COMPLAINT_CONDITION_TEMPLATE;
 
 @Component
@@ -53,7 +53,7 @@ public class ChiefComplaintMapper implements EmrObsResourceHandler {
         condition.setContext(new Reference().setReference(fhirEncounter.getId()));
         condition.setSubject(fhirEncounter.getPatient());
         condition.setAsserter(fhirEncounter.getFirstParticipantReference());
-        condition.setCategory(setComplainCategory());
+        condition.setCategory(setComplainCategory(systemProperties));
         condition.setClinicalStatus(ConditionClinicalStatus.ACTIVE);
         condition.setVerificationStatus(ConditionVerificationStatus.PROVISIONAL);
 
@@ -82,12 +82,13 @@ public class ChiefComplaintMapper implements EmrObsResourceHandler {
         identifier.setValue(conditionId);
         condition.setId(conditionId);
 
-        return new FHIRResource(FHIR_CONDITION_CODE_CHIEF_COMPLAINT_DISPLAY,condition.getIdentifier(),condition);
+        return new FHIRResource(MRSProperties.TR_CONDITION_CATEGORY_COMPLAINT_DISPLAY, condition.getIdentifier(), condition);
     }
 
-    private List<CodeableConcept> setComplainCategory() {
+    private List<CodeableConcept> setComplainCategory(SystemProperties systemProperties) {
         CodeableConcept codeableConcept = new CodeableConcept();
-        codeableConcept.addCoding().setSystem(FHIR_CONDITION_CATEGORY_URL).setCode( FHIR_CONDITION_CATEGORY_COMPLAINT_CODE);
+        String valuesetUrl = systemProperties.createValueSetUrlFor(TR_CONDITION_CATEGORY_VALUESET_NAME);
+        codeableConcept.addCoding().setSystem(valuesetUrl).setCode(TR_CONDITION_CATEGORY_COMPLAINT_CODE);
         return asList(codeableConcept);
     }
 

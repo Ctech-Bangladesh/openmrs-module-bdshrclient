@@ -78,28 +78,28 @@ public class FHIRMedicationRequestMapper implements FHIRResourceMapper {
 
     @Override
     public void map(Resource resource, EmrEncounter emrEncounter, ShrEncounterBundle encounterComposition, SystemProperties systemProperties) {
-        MedicationRequest medicationOrder = (MedicationRequest) resource;
-        if (!shouldSyncMedicationRequest(encounterComposition, medicationOrder)) return;
-        DrugOrder drugOrder = createDrugOrder(encounterComposition, medicationOrder, emrEncounter, systemProperties);
+        MedicationRequest medicationRequest = (MedicationRequest) resource;
+        if (!shouldSyncMedicationRequest(encounterComposition, medicationRequest)) return;
+        DrugOrder drugOrder = createDrugOrder(encounterComposition, medicationRequest, emrEncounter, systemProperties);
         emrEncounter.addOrder(drugOrder);
     }
 
-    private DrugOrder createDrugOrder(ShrEncounterBundle encounterComposition, MedicationRequest medicationOrder, EmrEncounter emrEncounter, SystemProperties systemProperties) {
+    private DrugOrder createDrugOrder(ShrEncounterBundle encounterComposition, MedicationRequest medicationRequest, EmrEncounter emrEncounter, SystemProperties systemProperties) {
         DrugOrder drugOrder = new DrugOrder();
-        Provenance provenance = FHIRBundleHelper.getProvenanceForResource(encounterComposition.getBundle(), medicationOrder.getId());
-        DrugOrder previousDrugOrder = createOrFetchPreviousOrder(encounterComposition, medicationOrder, emrEncounter, systemProperties);
+        Provenance provenance = FHIRBundleHelper.getProvenanceForResource(encounterComposition.getBundle(), medicationRequest.getId());
+        DrugOrder previousDrugOrder = createOrFetchPreviousOrder(encounterComposition, medicationRequest, emrEncounter, systemProperties);
         if (previousDrugOrder != null) {
             drugOrder.setPreviousOrder(previousDrugOrder);
         }
 
-        mapDrug(medicationOrder, drugOrder);
-        if (medicationOrder.getDosageInstruction().isEmpty()) return null;
+        mapDrug(medicationRequest, drugOrder);
+        if (medicationRequest.getDosageInstruction().isEmpty()) return null;
         //will work only because any order created through bahmni is activated immediately
-        drugOrder.setDateActivated(medicationOrder.getAuthoredOn());
-        Dosage dosageInstruction = medicationOrder.getDosageInstructionFirstRep();
+        drugOrder.setDateActivated(medicationRequest.getAuthoredOn());
+        Dosage dosageInstruction = medicationRequest.getDosageInstructionFirstRep();
         mapFrequency(drugOrder, dosageInstruction);
         HashMap<String, Object> dosingInstructionsMap = new HashMap<>();
-        addNotesAndInstructionsToDosingInstructions(medicationOrder, dosingInstructionsMap);
+        addNotesAndInstructionsToDosingInstructions(medicationRequest, dosingInstructionsMap);
         setOrderDuration(drugOrder, dosageInstruction);
         if (dosageInstruction.getDose() != null) {
             if (((SimpleQuantity) dosageInstruction.getDose()).getValue() != null) {
@@ -109,13 +109,13 @@ public class FHIRMedicationRequestMapper implements FHIRResourceMapper {
             }
             setDoseUnits(drugOrder, dosageInstruction);
         }
-        setQuantity(drugOrder, medicationOrder.getDispenseRequest());
+        setQuantity(drugOrder, medicationRequest.getDispenseRequest());
         setScheduledDateAndUrgency(drugOrder, provenance);
         setOrderAction(drugOrder, provenance);
 
         drugOrder.setRoute(mapRoute(dosageInstruction));
         drugOrder.setAsNeeded(((BooleanType) dosageInstruction.getAsNeeded()).getValue());
-        drugOrder.setOrderer(getOrderer(medicationOrder));
+        drugOrder.setOrderer(getOrderer(medicationRequest));
         drugOrder.setNumRefills(DEFAULT_NUM_REFILLS);
         drugOrder.setCareSetting(orderCareSettingLookupService.getCareSetting());
         try {
@@ -125,16 +125,16 @@ public class FHIRMedicationRequestMapper implements FHIRResourceMapper {
         }
         drugOrder.setDosingType(FlexibleDosingInstructions.class);
 
-        addDrugOrderToIdMapping(drugOrder, medicationOrder, encounterComposition, systemProperties);
+        addDrugOrderToIdMapping(drugOrder, medicationRequest, encounterComposition, systemProperties);
         return drugOrder;
     }
 
-    private boolean shouldSyncMedicationRequest(ShrEncounterBundle encounterComposition, MedicationRequest medicationOrder) {
-        return fetchOrderByExternalId(encounterComposition.getShrEncounterId(), getIdPart(medicationOrder.getId())) == null;
+    private boolean shouldSyncMedicationRequest(ShrEncounterBundle encounterComposition, MedicationRequest medicationRequest) {
+        return fetchOrderByExternalId(encounterComposition.getShrEncounterId(), getIdPart(medicationRequest.getId())) == null;
     }
 
-    private OrderIdMapping fetchOrderByExternalId(String shrEncounterId, String medicationOrderId) {
-        String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, medicationOrderId);
+    private OrderIdMapping fetchOrderByExternalId(String shrEncounterId, String medicationRequestId) {
+        String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, medicationRequestId);
         return (OrderIdMapping) idMappingRepository.findByExternalId(externalId, IdMappingType.MEDICATION_ORDER);
     }
 
@@ -156,12 +156,12 @@ public class FHIRMedicationRequestMapper implements FHIRResourceMapper {
         return Order.Action.NEW;
     }
 
-    private DrugOrder createOrFetchPreviousOrder(ShrEncounterBundle encounterComposition, MedicationRequest medicationOrder, EmrEncounter emrEncounter, SystemProperties systemProperties) {
-        if (hasPriorPrescription(medicationOrder)) {
-            if (isMedicationRequestInSameEncounter(medicationOrder)) {
-                return fetchPreviousOrderFromSameEncounter(encounterComposition, medicationOrder, emrEncounter, systemProperties);
+    private DrugOrder createOrFetchPreviousOrder(ShrEncounterBundle encounterComposition, MedicationRequest medicationRequest, EmrEncounter emrEncounter, SystemProperties systemProperties) {
+        if (hasPriorPrescription(medicationRequest)) {
+            if (isMedicationRequestInSameEncounter(medicationRequest)) {
+                return fetchPreviousOrderFromSameEncounter(encounterComposition, medicationRequest, emrEncounter, systemProperties);
             } else {
-                String previousOrderUrl = medicationOrder.getPriorPrescription().getReference();
+                String previousOrderUrl = medicationRequest.getPriorPrescription().getReference();
                 String prevOrderEncounterId = new EntityReference().parse(Encounter.class, previousOrderUrl);
                 String previousOrderRefId = StringUtils.substringAfterLast(previousOrderUrl, "/");
                 String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, prevOrderEncounterId, previousOrderRefId);
@@ -175,26 +175,26 @@ public class FHIRMedicationRequestMapper implements FHIRResourceMapper {
         return null;
     }
 
-    private DrugOrder fetchPreviousOrderFromSameEncounter(ShrEncounterBundle encounterComposition, MedicationRequest medicationOrder, EmrEncounter emrEncounter, SystemProperties systemProperties) {
+    private DrugOrder fetchPreviousOrderFromSameEncounter(ShrEncounterBundle encounterComposition, MedicationRequest medicationRequest, EmrEncounter emrEncounter, SystemProperties systemProperties) {
         DrugOrder previousDrugOrder;
-        OrderIdMapping orderIdMapping = fetchOrderByExternalId(encounterComposition.getShrEncounterId(), getIdPart(medicationOrder.getPriorPrescription().getReference()));
+        OrderIdMapping orderIdMapping = fetchOrderByExternalId(encounterComposition.getShrEncounterId(), getIdPart(medicationRequest.getPriorPrescription().getReference()));
         if (orderIdMapping != null) {
             previousDrugOrder = (DrugOrder) orderService.getOrderByUuid(orderIdMapping.getInternalId());
         } else {
-            previousDrugOrder = createPreviousOrder(encounterComposition, medicationOrder, emrEncounter, systemProperties);
+            previousDrugOrder = createPreviousOrder(encounterComposition, medicationRequest, emrEncounter, systemProperties);
         }
         return previousDrugOrder;
     }
 
-    private DrugOrder createPreviousOrder(ShrEncounterBundle encounterComposition, MedicationRequest medicationOrder, EmrEncounter emrEncounter, SystemProperties systemProperties) {
+    private DrugOrder createPreviousOrder(ShrEncounterBundle encounterComposition, MedicationRequest medicationRequest, EmrEncounter emrEncounter, SystemProperties systemProperties) {
         DrugOrder previousDrugOrder;
-        previousDrugOrder = createDrugOrder(encounterComposition, (MedicationRequest) FHIRBundleHelper.findResourceByReference(encounterComposition.getBundle(), medicationOrder.getPriorPrescription()), emrEncounter, systemProperties);
+        previousDrugOrder = createDrugOrder(encounterComposition, (MedicationRequest) FHIRBundleHelper.findResourceByReference(encounterComposition.getBundle(), medicationRequest.getPriorPrescription()), emrEncounter, systemProperties);
         emrEncounter.addOrder(previousDrugOrder);
         return previousDrugOrder;
     }
 
-    private void addDrugOrderToIdMapping(DrugOrder drugOrder, MedicationRequest medicationOrder, ShrEncounterBundle encounterComposition, SystemProperties systemProperties) {
-        String shrOrderId = getIdPart(medicationOrder.getId());
+    private void addDrugOrderToIdMapping(DrugOrder drugOrder, MedicationRequest medicationRequest, ShrEncounterBundle encounterComposition, SystemProperties systemProperties) {
+        String shrOrderId = getIdPart(medicationRequest.getId());
         String orderUrl = getOrderUrl(encounterComposition, systemProperties, shrOrderId);
         String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, encounterComposition.getShrEncounterId(), shrOrderId);
         OrderIdMapping orderIdMapping = new OrderIdMapping(drugOrder.getUuid(), externalId, IdMappingType.MEDICATION_ORDER, orderUrl, new Date());
@@ -210,8 +210,8 @@ public class FHIRMedicationRequestMapper implements FHIRResourceMapper {
         return new EntityReference().build(BaseResource.class, systemProperties, orderUrlReferenceIds);
     }
 
-    private boolean isMedicationRequestInSameEncounter(MedicationRequest medicationOrder) {
-        Reference priorPrescription = medicationOrder.getPriorPrescription();
+    private boolean isMedicationRequestInSameEncounter(MedicationRequest medicationRequest) {
+        Reference priorPrescription = medicationRequest.getPriorPrescription();
         if (priorPrescription != null && !priorPrescription.isEmpty()) {
             if (priorPrescription.getReference().startsWith("urn:uuid")) {
                 return true;
@@ -275,16 +275,16 @@ public class FHIRMedicationRequestMapper implements FHIRResourceMapper {
         drugOrder.setDoseUnits(doseUnitConcept);
     }
 
-    private void addNotesAndInstructionsToDosingInstructions(MedicationRequest medicationOrder, HashMap<String, Object> map) {
-        CodeableConcept additionalInstructions = medicationOrder.getDosageInstructionFirstRep().getAdditionalInstructionFirstRep();
+    private void addNotesAndInstructionsToDosingInstructions(MedicationRequest medicationRequest, HashMap<String, Object> map) {
+        CodeableConcept additionalInstructions = medicationRequest.getDosageInstructionFirstRep().getAdditionalInstructionFirstRep();
         if (additionalInstructions != null && !additionalInstructions.isEmpty()) {
             Concept additionalInstructionsConcept = omrsConceptLookup.findConceptByCodeOrDisplay(additionalInstructions.getCoding());
             if (additionalInstructionsConcept != null)
                 map.put(MRSProperties.BAHMNI_DRUG_ORDER_INSTRCTIONS_KEY, additionalInstructionsConcept.getName().getName());
         }
 
-        if (StringUtils.isNotBlank(medicationOrder.getNoteFirstRep().getText()))
-            map.put(MRSProperties.BAHMNI_DRUG_ORDER_ADDITIONAL_INSTRCTIONS_KEY, medicationOrder.getNoteFirstRep().getText());
+        if (StringUtils.isNotBlank(medicationRequest.getNoteFirstRep().getText()))
+            map.put(MRSProperties.BAHMNI_DRUG_ORDER_ADDITIONAL_INSTRCTIONS_KEY, medicationRequest.getNoteFirstRep().getText());
     }
 
     private void setQuantity(DrugOrder drugOrder, MedicationRequest.MedicationRequestDispenseRequestComponent dispenseRequest) {
@@ -306,8 +306,8 @@ public class FHIRMedicationRequestMapper implements FHIRResourceMapper {
         }
     }
 
-    private Provider getOrderer(MedicationRequest medicationOrder) {
-        Reference prescriber = medicationOrder.getRequester().getAgent();
+    private Provider getOrderer(MedicationRequest medicationRequest) {
+        Reference prescriber = medicationRequest.getRequester().getAgent();
         String presciberReferenceUrl = null;
         if (prescriber != null && !prescriber.isEmpty()) {
             presciberReferenceUrl = prescriber.getReference();
@@ -349,8 +349,8 @@ public class FHIRMedicationRequestMapper implements FHIRResourceMapper {
         return route;
     }
 
-    private void mapDrug(MedicationRequest medicationOrder, DrugOrder drugOrder) {
-        CodeableConcept medication = (CodeableConcept) medicationOrder.getMedication();
+    private void mapDrug(MedicationRequest medicationRequest, DrugOrder drugOrder) {
+        CodeableConcept medication = (CodeableConcept) medicationRequest.getMedication();
         Drug drug = omrsConceptLookup.findDrug(medication.getCoding());
         if (drug != null) {
             drugOrder.setDrug(drug);

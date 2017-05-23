@@ -68,7 +68,7 @@ public class GenericOrderFulfillmentMapperIT extends BaseModuleWebContextSensiti
         FHIRResource resource = TestFhirFeedHelper.getFirstResourceByType(new DiagnosticReport().getResourceType().name(), resources);
         DiagnosticReport report = (DiagnosticReport) resource.getResource();
         assertEquals(1, report.getBasedOn().size());
-        String requestUrl = "http://localhost:9997/patients/hid/encounters/shr-enc-1#DiagnosticOrder/6d0ae396-efab-4629-1930-f15206e63ab0";
+        String requestUrl = "http://localhost:9997/patients/hid/encounters/shr-enc-1#ProcedureRequest/6d0ae396-efab-4629-1930-f15206e63ab0";
         assertEquals(requestUrl, report.getBasedOn().get(0).getReference());
         Coding categoryCoding = report.getCategory().getCodingFirstRep();
         assertEquals(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_RADIOLOGY_DISPLAY, categoryCoding.getDisplay());
@@ -102,7 +102,7 @@ public class GenericOrderFulfillmentMapperIT extends BaseModuleWebContextSensiti
 
         FHIRResource resource = TestFhirFeedHelper.getFirstResourceByType(new DiagnosticReport().getResourceType().name(), resources);
         DiagnosticReport report = (DiagnosticReport) resource.getResource();
-        String requestUrl = "http://localhost:9997/patients/hid/encounters/shr-enc-1#DiagnosticOrder/6d0ae396-efab-4629-1930-f16206e63ab0";
+        String requestUrl = "http://localhost:9997/patients/hid/encounters/shr-enc-1#ProcedureRequest/6d0ae396-efab-4629-1930-f16206e63ab0";
         assertEquals(requestUrl, report.getBasedOn().get(0).getReference());
         Coding categoryCoding = report.getCategory().getCodingFirstRep();
         assertEquals(FHIRProperties.FHIR_DIAGNOSTIC_REPORT_CATEGORY_RADIOLOGY_DISPLAY, categoryCoding.getDisplay());

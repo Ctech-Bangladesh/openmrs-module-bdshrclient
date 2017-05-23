@@ -5,7 +5,6 @@ import org.hl7.fhir.dstu3.model.ProcedureRequest;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Order;
@@ -41,7 +40,7 @@ public class FHIRProcedureRequestMapperIT extends BaseModuleWebContextSensitiveT
     private final String PATIENT_HEALTH_ID = "HIDA764177";
     private final String SHR_ENC_ID = "shr-enc-id-1";
     @Autowired
-    private FHIRProcedureRequestMapper procedureRequestMapper;
+    private FHIRProcedureRequestToProcedureOrderMapper procedureRequestMapper;
     @Autowired
     private ProviderService providerService;
     @Autowired
@@ -80,7 +79,7 @@ public class FHIRProcedureRequestMapperIT extends BaseModuleWebContextSensitiveT
         assertEquals(parseDate("2016-02-04T15:30:20+05:30"), order.getAutoExpireDate());
         assertEquals("Some Notes", order.getCommentToFulfiller());
 
-        IdMapping mapping = idMappingRepository.findByInternalId(order.getUuid(), IdMappingType.PROCEDURE_ORDER);
+        IdMapping mapping = idMappingRepository.findByInternalId(order.getUuid(), IdMappingType.PROCEDURE_REQUEST);
         assertNotNull(mapping);
         assertEquals(SHR_ENC_ID + ":f3703dad-7e1e-47b6-9152-4aa5774fb361", mapping.getExternalId());
         String expected = String.format("http://shr.com/patients/%s/encounters/%s#ProcedureRequest/f3703dad-7e1e-47b6-9152-4aa5774fb361", PATIENT_HEALTH_ID, SHR_ENC_ID);

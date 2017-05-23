@@ -70,29 +70,29 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
     public List<FHIRResource> map(Order order, FHIREncounter fhirEncounter, Bundle bundle, SystemProperties systemProperties) {
         List<FHIRResource> fhirResources = new ArrayList<>();
         DrugOrder drugOrder = (DrugOrder) order;
-        MedicationRequest medicationOrder = new MedicationRequest();
+        MedicationRequest medicationRequest = new MedicationRequest();
 
-        medicationOrder.setIntent(MedicationRequest.MedicationRequestIntent.ORDER);
-        medicationOrder.setContext(new Reference().setReference(fhirEncounter.getId()));
-        medicationOrder.setSubject(fhirEncounter.getPatient());
-        medicationOrder.setAuthoredOn(drugOrder.getDateActivated());
+        medicationRequest.setIntent(MedicationRequest.MedicationRequestIntent.ORDER);
+        medicationRequest.setContext(new Reference().setReference(fhirEncounter.getId()));
+        medicationRequest.setSubject(fhirEncounter.getPatient());
+        medicationRequest.setAuthoredOn(drugOrder.getDateActivated());
 
-        medicationOrder.setMedication(getMedication(drugOrder));
-        medicationOrder.setRequester(getOrdererReference(drugOrder, fhirEncounter));
-        medicationOrder.addDosageInstruction(getDoseInstructions(drugOrder, systemProperties));
-        setDispenseRequest(drugOrder, medicationOrder);
-        medicationOrder.setNote(asList(new Annotation(new StringType(getNotes(drugOrder)))));
+        medicationRequest.setMedication(getMedication(drugOrder));
+        medicationRequest.setRequester(getOrdererReference(drugOrder, fhirEncounter));
+        medicationRequest.addDosageInstruction(getDoseInstructions(drugOrder, systemProperties));
+        setDispenseRequest(drugOrder, medicationRequest);
+        medicationRequest.setNote(asList(new Annotation(new StringType(getNotes(drugOrder)))));
 
         String id = new EntityReference().build(Order.class, systemProperties, order.getUuid());
-        medicationOrder.addIdentifier().setValue(id);
-        medicationOrder.setId(id);
+        medicationRequest.addIdentifier().setValue(id);
+        medicationRequest.setId(id);
 
-        FHIRResource fhirResource = createProvenance(medicationOrder.getAuthoredOn(), medicationOrder.getRequester().getAgent(), medicationOrder.getId());
+        FHIRResource fhirResource = createProvenance(medicationRequest.getAuthoredOn(), medicationRequest.getRequester().getAgent(), medicationRequest.getId());
         Provenance provenance = (Provenance) fhirResource.getResource();
         setScheduledDate(provenance, drugOrder);
-        setStatusAndPriorPrescriptionAndOrderAction(drugOrder, medicationOrder, provenance, systemProperties);
+        setStatusAndPriorPrescriptionAndOrderAction(drugOrder, medicationRequest, provenance, systemProperties);
 
-        fhirResources.add(new FHIRResource("Medication Order", medicationOrder.getIdentifier(), medicationOrder));
+        fhirResources.add(new FHIRResource("Medication Order", medicationRequest.getIdentifier(), medicationRequest));
         fhirResources.add(fhirResource);
         return fhirResources;
     }
@@ -120,30 +120,30 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         return (String) readFromDoseInstructions(drugOrder, MRSProperties.BAHMNI_DRUG_ORDER_ADDITIONAL_INSTRCTIONS_KEY);
     }
 
-    private void setDispenseRequest(DrugOrder drugOrder, MedicationRequest medicationOrder) {
+    private void setDispenseRequest(DrugOrder drugOrder, MedicationRequest medicationRequest) {
         MedicationRequest.MedicationRequestDispenseRequestComponent dispenseRequest = new MedicationRequest.MedicationRequestDispenseRequestComponent();
         SimpleQuantity quantity = new SimpleQuantity();
         quantity.setValue(drugOrder.getQuantity());
         quantity.setUnit(drugOrder.getQuantityUnits().getName().getName());
         dispenseRequest.setQuantity(quantity);
-        medicationOrder.setDispenseRequest(dispenseRequest);
+        medicationRequest.setDispenseRequest(dispenseRequest);
     }
 
-    private void setStatusAndPriorPrescriptionAndOrderAction(DrugOrder drugOrder, MedicationRequest medicationOrder, Provenance provenance, SystemProperties systemProperties) {
+    private void setStatusAndPriorPrescriptionAndOrderAction(DrugOrder drugOrder, MedicationRequest medicationRequest, Provenance provenance, SystemProperties systemProperties) {
         if (drugOrder.getDateStopped() != null || drugOrder.getAction().equals(DISCONTINUE)) {
-            medicationOrder.setStatus(MedicationRequest.MedicationRequestStatus.STOPPED);
+            medicationRequest.setStatus(MedicationRequest.MedicationRequestStatus.STOPPED);
             if (drugOrder.getDateStopped() != null) {
                 provenance.getPeriod().setEnd(drugOrder.getDateStopped(), TemporalPrecisionEnum.MILLI);
             } else {
                 provenance.getPeriod().setEnd(drugOrder.getAutoExpireDate(), TemporalPrecisionEnum.MILLI);
             }
         } else {
-            medicationOrder.setStatus(MedicationRequest.MedicationRequestStatus.ACTIVE);
+            medicationRequest.setStatus(MedicationRequest.MedicationRequestStatus.ACTIVE);
         }
         setOrderAction(drugOrder, provenance);
         if (drugOrder.getPreviousOrder() != null) {
             String priorPresecription = setPriorPrescriptionReference(drugOrder, systemProperties);
-            medicationOrder.setPriorPrescription(new Reference(priorPresecription));
+            medicationRequest.setPriorPrescription(new Reference(priorPresecription));
         }
     }
 

@@ -9,7 +9,6 @@ import org.hl7.fhir.dstu3.model.Resource;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
-import org.openmrs.module.fhir.FHIRProperties;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.EmrEncounter;
 import org.openmrs.module.fhir.mapper.model.ShrEncounterBundle;
@@ -41,7 +40,7 @@ public class FHIRChiefComplaintConditionMapper implements FHIRResourceMapper {
             if (resourceCoding == null || resourceCoding.isEmpty()) {
                 return false;
             }
-            return resourceCoding.get(0).getCode().equalsIgnoreCase(FHIRProperties.FHIR_CONDITION_CODE_CHIEF_COMPLAINT);
+            return resourceCoding.get(0).getCode().equalsIgnoreCase(MRSProperties.TR_CONDITION_CATEGORY_COMPLAINT_CODE);
         }
         return false;
     }

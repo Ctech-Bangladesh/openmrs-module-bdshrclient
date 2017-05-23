@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.codehaus.groovy.runtime.InvokerHelper.asList;
-import static org.openmrs.module.fhir.FHIRProperties.*;
-import static org.openmrs.module.fhir.MRSProperties.MRS_CONCEPT_NAME_INITIAL_DIAGNOSIS;
+import static org.openmrs.module.fhir.FHIRProperties.PREVIOUS_CONDITION_EXTENSION_NAME;
+import static org.openmrs.module.fhir.MRSProperties.*;
 import static org.openmrs.module.fhir.mapper.model.ObservationType.VISIT_DIAGNOSES;
 
 @Component("fhirDiagnosisMapper")
@@ -65,7 +65,7 @@ public class DiagnosisMapper implements EmrObsResourceHandler {
         condition.setContext(new Reference().setReference(fhirEncounter.getId()));
         condition.setSubject(fhirEncounter.getPatient());
         setAsserter(fhirEncounter, condition);
-        condition.setCategory(setDiagnosisCategory());
+        condition.setCategory(setDiagnosisCategory(systemProperties));
 
         final CompoundObservation visitDiagnosisObservation = new CompoundObservation(visitDiagnosisObs);
         Obs codedDiagnosisObs = visitDiagnosisObservation.getMemberObsForConceptName(MRSProperties.MRS_CONCEPT_NAME_CODED_DIAGNOSIS);
@@ -77,13 +77,13 @@ public class DiagnosisMapper implements EmrObsResourceHandler {
 
         setId(visitDiagnosisObs, systemProperties, condition);
         condition.setNote(asList(new Annotation(new StringType(visitDiagnosisObs.getComment()))));
-        return new FHIRResource(FHIRProperties.FHIR_CONDITION_CODE_DIAGNOSIS_DISPLAY, condition.getIdentifier(), condition);
+        return new FHIRResource(MRSProperties.TR_CONDITION_CODE_DIAGNOSIS_DISPLAY, condition.getIdentifier(), condition);
     }
 
-    private List<CodeableConcept> setDiagnosisCategory() {
-
+    private List<CodeableConcept> setDiagnosisCategory(SystemProperties systemProperties) {
         CodeableConcept codeableConcept = new CodeableConcept();
-        codeableConcept.addCoding().setSystem(FHIR_CONDITION_CATEGORY_URL).setCode(FHIR_CONDITION_CATEGORY_DIAGNOSIS_CODE);
+        String valuesetUrl = systemProperties.createValueSetUrlFor(TR_CONDITION_CATEGORY_VALUESET_NAME);
+        codeableConcept.addCoding().setSystem(valuesetUrl).setCode(TR_CONDITION_CATEGORY_DIAGNOSIS_CODE);
         return asList(codeableConcept);
     }
 

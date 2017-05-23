@@ -57,7 +57,7 @@ public class ProcedureFulfillmentMapper implements EmrObsResourceHandler {
 
     public void setRequest(Obs obs, Procedure procedure) {
         Order order = obs.getOrder();
-        IdMapping idMapping = idMappingRepository.findByInternalId(order.getUuid(), IdMappingType.PROCEDURE_ORDER);
+        IdMapping idMapping = idMappingRepository.findByInternalId(order.getUuid(), IdMappingType.PROCEDURE_REQUEST);
         if (idMapping != null) {
             procedure.addBasedOn().setReference(idMapping.getUri());
         }

@@ -307,7 +307,7 @@
             care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="1"
             uuid="xljse386-20sl-20so-9850-f15206e63ab0"/>
     <order_id_mapping id="20" internal_id="xljse386-20sl-20so-9850-f15206e63ab0" external_id="shrEncounterId19:200ae386-20sx-4629-9850-f15206e63ab0"
-                      type="DiagnosticOrder" uri="http://shr.com/patients/hid/encounters/shrEncounterId19#DiagnosticOrder/200ae386-20sx-4629-9850-f15206e63ab0"/>
+                      type="ProcedureRequest" uri="http://shr.com/patients/hid/encounters/shrEncounterId19#ProcedureRequest/200ae386-20sx-4629-9850-f15206e63ab0"/>
     <!--encounter for test order with orderIdMapping-->
 
     <!--encounter for test result with orderIdMapping -->
@@ -340,7 +340,7 @@
             instructions="Hemoglobin" date_activated="2008-08-08 00:00:00.0" order_number="12344" order_action="NEW"
             care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="1"
             uuid="62020s86-efab-4629-9850-f15206e63ab0"/>
-    <order_id_mapping internal_id="62020s86-efab-4629-9850-f15206e63ab0" external_id="shrEncounterId6:6daaes86-efab-ls29-sow2-f15206e63ab0" type="DiagnosticOrder"
+    <order_id_mapping internal_id="62020s86-efab-4629-9850-f15206e63ab0" external_id="shrEncounterId6:6daaes86-efab-ls29-sow2-f15206e63ab0" type="ProcedureRequest"
                           uri="http://localhost:9997/patients/hid/encounters/shrEncounterId6#ProcedureRequest/6daaes86-efab-ls29-sow2-f15206e63ab0" />
     <!-- order encounter for diagnosic report mapper with only encounterReference-->
 
@@ -355,22 +355,22 @@
             instructions="Hemoglobin" date_activated="2008-08-08 00:00:00.0" order_number="12344" order_action="NEW"
             care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="1"
             uuid="6slkds86-efab-4629-9850-f15206e63ab0"/>
-    <order_id_mapping internal_id="6slkds86-efab-4629-9850-f15206e63ab0" external_id="shrEncounterId22:6daaes86-efab-ls29-sow2-f15206e63ab0" type="DiagnosticOrder"
-                      uri="http://localhost:9997/patients/hid/encounters/shrEncounterId22#DiagnosticOrder/6daaes86-efab-ls29-sow2-f15206e63ab0" />
+    <order_id_mapping internal_id="6slkds86-efab-4629-9850-f15206e63ab0" external_id="shrEncounterId22:6daaes86-efab-ls29-sow2-f15206e63ab0" type="ProcedureRequest"
+                      uri="http://localhost:9997/patients/hid/encounters/shrEncounterId22#ProcedureRequest/6daaes86-efab-ls29-sow2-f15206e63ab0" />
 
     <orders order_id="57" order_type_id="16" encounter_id="22" urgency="ROUTINE" concept_id="303"
             instructions="Hemoglobin" date_activated="2008-08-08 00:00:00.0" order_number="12344" order_action="NEW"
             care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="1"
             uuid="62293086-2201-2020-9850-slss06e63ab0"/>
-    <order_id_mapping internal_id="62293086-2201-2020-9850-slss06e63ab0" external_id="shrEncounterId22:6daaes86-efab-ls29-sow2-f15206e63ab0" type="DiagnosticOrder"
-                      uri="http://localhost:9997/patients/hid/encounters/shrEncounterId22#DiagnosticOrder/6daaes86-efab-ls29-sow2-f15206e63ab0" />
+    <order_id_mapping internal_id="62293086-2201-2020-9850-slss06e63ab0" external_id="shrEncounterId22:6daaes86-efab-ls29-sow2-f15206e63ab0" type="ProcedureRequest"
+                      uri="http://localhost:9997/patients/hid/encounters/shrEncounterId22#ProcedureRequest/6daaes86-efab-ls29-sow2-f15206e63ab0" />
 
     <orders order_id="58" order_type_id="16" encounter_id="22" urgency="ROUTINE" concept_id="306"
             instructions="Hemoglobin" date_activated="2008-08-08 00:00:00.0" order_number="12344" order_action="NEW"
             care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="1"
             uuid="62020s86-efab-4629-9850-f15206wi2b0"/>
-    <order_id_mapping internal_id="62020s86-efab-4629-9850-f15206wi2b0" external_id="shrEncounterId22:6daaes86-efab-ls29-sow2-f15206e63ab0" type="DiagnosticOrder"
-                          uri="http://localhost:9997/patients/hid/encounters/shrEncounterId22#DiagnosticOrder/6daaes86-efab-ls29-sow2-f15206e63ab0" />
+    <order_id_mapping internal_id="62020s86-efab-4629-9850-f15206wi2b0" external_id="shrEncounterId22:6daaes86-efab-ls29-sow2-f15206e63ab0" type="ProcedureRequest"
+                          uri="http://localhost:9997/patients/hid/encounters/shrEncounterId22#ProcedureRequest/6daaes86-efab-ls29-sow2-f15206e63ab0" />
     <!-- order encounter for diagnosic report mapper for local panel-->
 
 </dataset>

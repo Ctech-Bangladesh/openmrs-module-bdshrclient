@@ -49,7 +49,7 @@ public class EntityReferenceTest {
     @Test
     public void shouldGetEncounterIdFromResourceUrl() {
         EntityReference entityReference = new EntityReference();
-        assertEquals("enc1", entityReference.parse(Encounter.class, "http://shr.com/patients/hid1/encounters/enc1#MedicationOrder/order1"));
+        assertEquals("enc1", entityReference.parse(Encounter.class, "http://shr.com/patients/hid1/encounters/enc1#MedicationRequest/order1"));
     }
 
     @Test(expected = RuntimeException.class)
@@ -109,10 +109,10 @@ public class EntityReferenceTest {
         String resourceUrl = entityReference.build(BaseResource.class, getSystemProperties(), new HashMap<String, String>() {{
             put(EntityReference.HEALTH_ID_REFERENCE, "hid1");
             put(EntityReference.ENCOUNTER_ID_REFERENCE, "enc1");
-            put(EntityReference.REFERENCE_RESOURCE_NAME, "MedicationOrder");
+            put(EntityReference.REFERENCE_RESOURCE_NAME, "MedicationRequest");
             put(EntityReference.REFERENCE_ID, "resource-1");
         }});
-        assertEquals("http://shr.com/patients/hid1/encounters/enc1#MedicationOrder/resource-1", resourceUrl);
+        assertEquals("http://shr.com/patients/hid1/encounters/enc1#MedicationRequest/resource-1", resourceUrl);
 
     }
 

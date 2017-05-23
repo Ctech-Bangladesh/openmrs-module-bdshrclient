@@ -1,15 +1,14 @@
 package org.openmrs.module.shrclient.service;
 
 import com.sun.syndication.feed.atom.Category;
-import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Condition;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.*;
-import org.openmrs.Encounter;
-import org.openmrs.Patient;
 import org.openmrs.api.*;
 import org.openmrs.module.fhir.mapper.emr.FHIRMapper;
 import org.openmrs.module.fhir.utils.DateUtil;
@@ -124,7 +123,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSaveTestOrders() throws Exception {
-        executeDataSet("testDataSets/shrDiagnosticOrderSyncTestDS.xml");
+        executeDataSet("testDataSets/shrLabProcedureRequestSyncTestDS.xml");
         String shrEncounterId = "shr-enc-id";
 
         List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithLabProcedureRequest.xml");
@@ -141,7 +140,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSaveReportOrdersWithoutOrder() throws Exception {
-        executeDataSet("testDataSets/shrDiagnosticOrderSyncTestDS.xml");
+        executeDataSet("testDataSets/shrLabProcedureRequestSyncTestDS.xml");
         String shrEncounterId = "shr-enc-id";
 
         List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithDiagnosticReport.xml");
@@ -158,7 +157,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldDiscontinueATestOrderIfUpdated() throws Exception {
-        executeDataSet("testDataSets/shrDiagnosticOrderSyncTestDS.xml");
+        executeDataSet("testDataSets/shrLabProcedureRequestSyncTestDS.xml");
         String shrEncounterId = "shr-enc-id";
 
         List<EncounterEvent> bundleWithNewTestOrder = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithLabProcedureRequest.xml");
@@ -248,7 +247,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         executeDataSet("testDataSets/drugOrderDS.xml");
         String shrEncounterId = "shr-enc-id";
 
-        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithMedicationOrder.xml");
+        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithMedicationRequest.xml");
         Patient emrPatient = patientService.getPatient(110);
 
         emrEncounterService.createOrUpdateEncounters(emrPatient, bundles);
@@ -267,7 +266,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         executeDataSet("testDataSets/drugOrderDS.xml");
         String shrEncounterId = "shr-enc-id";
 
-        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithStoppedMedicationOrderAndCustomDosage.xml");
+        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithStoppedMedicationRequestAndCustomDosage.xml");
         Patient emrPatient = patientService.getPatient(110);
 
         emrEncounterService.createOrUpdateEncounters(emrPatient, bundles);
@@ -286,7 +285,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         executeDataSet("testDataSets/drugOrderDS.xml");
         String shrEncounterId = "shr-enc-id";
 
-        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithMedicationOrderWithScheduledDate.xml");
+        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithMedicationRequestWithScheduledDate.xml");
         Patient emrPatient = patientService.getPatient(110);
 
         emrEncounterService.createOrUpdateEncounters(emrPatient, bundles);
@@ -305,7 +304,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         executeDataSet("testDataSets/drugOrderDS.xml");
         String shrEncounterId = "shr-enc-id";
 
-        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithMedicationOrderEditedInDifferentEncounter.xml");
+        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithMedicationRequestEditedInDifferentEncounter.xml");
         Patient emrPatient = patientService.getPatient(110);
 
         emrEncounterService.createOrUpdateEncounters(emrPatient, bundles);
@@ -324,7 +323,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         executeDataSet("testDataSets/drugOrderDS.xml");
         String shrEncounterId = "shr-enc-id";
 
-        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithMedicationOrderEditedInSameEncounter.xml");
+        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/encounterWithMedicationRequestEditedInSameEncounter.xml");
         Patient emrPatient = patientService.getPatient(110);
 
         emrEncounterService.createOrUpdateEncounters(emrPatient, bundles);
@@ -339,11 +338,11 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    public void shouldSaveAMedicationOrderWithoutDoseRoutes() throws Exception {
+    public void shouldSaveAMedicationRequestWithoutDoseRoutes() throws Exception {
         executeDataSet("testDataSets/drugOrderDS.xml");
         String shrEncounterId = "shr-enc-id";
 
-        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/medicationOrderWithoutDoseRouteAndAdditionalInstructions.xml");
+        List<EncounterEvent> bundles = getEncounterEvents(shrEncounterId, "encounterBundles/stu3/medicationRequestWithoutDoseRouteAndAdditionalInstructions.xml");
         Patient emrPatient = patientService.getPatient(110);
 
         emrEncounterService.createOrUpdateEncounters(emrPatient, bundles);
@@ -433,8 +432,8 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         String shrEncounterId1 = "shr-enc-id1";
         String shrEncounterId2 = "shr-enc-id2";
 
-        EncounterEvent bundle1 = getEncounterEvents(shrEncounterId1, "encounterBundles/stu3/medicationOrderWithPriorPrescription.xml").get(0);
-        EncounterEvent bundle2 = getEncounterEvents(shrEncounterId2, "encounterBundles/stu3/encounterWithMedicationOrder.xml").get(0);
+        EncounterEvent bundle1 = getEncounterEvents(shrEncounterId1, "encounterBundles/stu3/medicationRequestWithPriorPrescription.xml").get(0);
+        EncounterEvent bundle2 = getEncounterEvents(shrEncounterId2, "encounterBundles/stu3/encounterWithMedicationRequest.xml").get(0);
         List<EncounterEvent> encounterEvents = asList(bundle1, bundle2);
         emrEncounterService.createOrUpdateEncounters(patient, encounterEvents);
 

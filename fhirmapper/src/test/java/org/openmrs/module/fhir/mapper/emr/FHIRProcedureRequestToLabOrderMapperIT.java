@@ -45,7 +45,7 @@ public class FHIRProcedureRequestToLabOrderMapperIT extends BaseModuleWebContext
     private ApplicationContext springContext;
 
     @Autowired
-    private FHIRProcedureRequestToLabOrderMapper procedureRequestToTestOrderMapper;
+    private FHIRProcedureRequestMapper procedureRequestToTestOrderMapper;
 
     @Autowired
     private ProviderService providerService;
@@ -72,14 +72,21 @@ public class FHIRProcedureRequestToLabOrderMapperIT extends BaseModuleWebContext
     }
 
     @Test
-    public void shouldNotHandleLabProcedureRequest() throws Exception {
+    public void shouldHandleRadiologyProcedureRequest() throws Exception {
+        Bundle bundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithRadiologyOrder.xml", applicationContext);
+        Resource resource = identifyFirstResourceWithName(bundle, new ProcedureRequest().getResourceType().name());
+        assertTrue(procedureRequestToTestOrderMapper.canHandle(resource));
+    }
+
+    @Test
+    public void shouldNotHandleProcedureOrderProcedureRequest() throws Exception {
         Bundle bundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithExistingProcedureRequestForProcedureOrder.xml", applicationContext);
         Resource resource = identifyFirstResourceWithName(bundle, new ProcedureRequest().getResourceType().name());
         assertFalse(procedureRequestToTestOrderMapper.canHandle(resource));
     }
 
     @Test
-    public void shouldMapDiagnosticOrder() throws Exception {
+    public void shouldMapALabProcedureRequest() throws Exception {
         executeDataSet("testDataSets/labOrderDS.xml");
         EmrEncounter emrEncounter = mapOrder("encounterBundles/stu3/encounterWithLabProcedureRequest.xml", "HIDA764177", "shr-enc-id");
         Set<Order> orders = emrEncounter.getOrders();
@@ -92,15 +99,15 @@ public class FHIRProcedureRequestToLabOrderMapperIT extends BaseModuleWebContext
         assertEquals(orderService.getCareSetting(1), order.getCareSetting());
         assertEquals(DateUtil.parseDate("2015-08-24T17:10:10.000+05:30"), order.getDateActivated());
         assertEquals(DateUtil.parseDate("2015-08-25T17:10:10.000+05:30"), order.getAutoExpireDate());
-        IdMapping idMapping = idMappingRepository.findByExternalId("shr-enc-id:453b7b24-7847-49f7-8a33-2fc339e5c4c7#124", IdMappingType.DIAGNOSTIC_ORDER);
+        IdMapping idMapping = idMappingRepository.findByExternalId("shr-enc-id:453b7b24-7847-49f7-8a33-2fc339e5c4c7#124", IdMappingType.PROCEDURE_REQUEST);
         assertEquals(order.getUuid(), idMapping.getInternalId());
-        assertEquals(IdMappingType.PROCEDURE_ORDER, idMapping.getType());
+        assertEquals(IdMappingType.PROCEDURE_REQUEST, idMapping.getType());
         assertEquals("http://shr.com/patients/HIDA764177/encounters/shr-enc-id#ProcedureRequest/453b7b24-7847-49f7-8a33-2fc339e5c4c7#124",
                 idMapping.getUri());
     }
 
     @Test
-    public void shouldMapDiagnosticOrderWithoutOrderer() throws Exception {
+    public void shouldMapALabProcedureRequestWithoutRequester() throws Exception {
         executeDataSet("testDataSets/labOrderDS.xml");
         int shrClientSystemProviderId = 22;
         EmrEncounter emrEncounter = mapOrder("encounterBundles/stu3/encounterWithLabProcedureRequestWithoutRequester.xml", "HIDA764177", "shr-enc-id-1");
@@ -184,7 +191,7 @@ public class FHIRProcedureRequestToLabOrderMapperIT extends BaseModuleWebContext
         Date encounterDatetime = new Date();
         encounter.setEncounterDatetime(encounterDatetime);
 
-        Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithDiagnosticOrderWithoutEventDate.xml");
+        Bundle bundle = loadSampleFHIREncounter("encounterBundles/stu3/encounterWithLabProcedureRequestWithoutAuthoredOn.xml");
         Resource resource = identifyFirstResourceWithName(bundle, new ProcedureRequest().getResourceType().name());
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(bundle, "HIDA764177", "shr-enc-id-1");
         EmrEncounter emrEncounter = new EmrEncounter(encounter);
@@ -216,7 +223,7 @@ public class FHIRProcedureRequestToLabOrderMapperIT extends BaseModuleWebContext
         assertEquals(orderService.getCareSetting(1), order.getCareSetting());
         assertEquals(DateUtil.parseDate("2016-03-11T13:02:16.000+05:30"), order.getDateActivated());
         assertEquals(DateUtil.parseDate("2016-03-12T13:02:16.000+05:30"), order.getAutoExpireDate());
-        IdMapping idMapping = idMappingRepository.findByExternalId("shr-enc-id:bdee83c1-f559-433f-8932-8711f6174676", IdMappingType.PROCEDURE_ORDER);
+        IdMapping idMapping = idMappingRepository.findByExternalId("shr-enc-id:bdee83c1-f559-433f-8932-8711f6174676", IdMappingType.PROCEDURE_REQUEST);
         assertEquals(order.getUuid(), idMapping.getInternalId());
         assertEquals("http://shr.com/patients/HIDA764177/encounters/shr-enc-id#ProcedureRequest/bdee83c1-f559-433f-8932-8711f6174676",
                 idMapping.getUri());

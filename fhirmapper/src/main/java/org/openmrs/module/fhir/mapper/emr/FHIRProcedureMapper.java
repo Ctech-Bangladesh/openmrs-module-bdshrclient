@@ -108,7 +108,7 @@ public class FHIRProcedureMapper implements FHIRResourceMapper {
         String requestEncounterId = new EntityReference().parse(Encounter.class, procedureRequestUrl);
         String procedureRequestReference = StringUtils.substringAfterLast(procedureRequestUrl, "/");
         String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, requestEncounterId, procedureRequestReference);
-        IdMapping mapping = idMappingRepository.findByExternalId(externalId, IdMappingType.PROCEDURE_ORDER);
+        IdMapping mapping = idMappingRepository.findByExternalId(externalId, IdMappingType.PROCEDURE_REQUEST);
         if (mapping != null) {
             return orderService.getOrderByUuid(mapping.getInternalId());
         }

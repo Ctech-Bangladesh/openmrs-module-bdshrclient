@@ -125,8 +125,7 @@
                     <value value="urn:uuid:2f933127-feb9-4131-be06-4c92980d0b7b"/>
                 </identifier>
                 <basedOn>
-                    <reference
-                            value="http://localhost:9997/patients/hid/encounters/shrEncounterId22#DiagnosticOrder/6daaes86-efab-ls29-sow2-f15206e63ab0"/>
+                    <reference value="http://localhost:9997/patients/hid/encounters/shrEncounterId22#DiagnosticOrder/6daaes86-efab-ls29-sow2-f15206e63ab0"/>
                 </basedOn>
                 <status value="final"/>
                 <code>

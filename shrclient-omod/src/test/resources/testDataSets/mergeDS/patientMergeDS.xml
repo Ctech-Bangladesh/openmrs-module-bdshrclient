@@ -155,7 +155,7 @@
                 duration_units="803" dosing_instructions="{&quot;instructions&quot;:&quot;As directed&quot;,&quot;eveningDose&quot;:30}"
                 quantity_units="50" dispense_as_written="true" dose_units="807"/>
     <order_id_mapping id="24" internal_id="amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0" external_id="shr_enc_id_2:amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"
-                      type="MedicationOrder" uri="/patients/11421467785/encounters/shr_enc_id_2#MedicationOrder/amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"/>
+                      type="MedicationRequest" uri="/patients/11421467785/encounters/shr_enc_id_2#MedicationRequest/amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"/>
 
     <concept concept_id="803" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-eee8-e1e3-bf2b-a8a02a1vava5"/>

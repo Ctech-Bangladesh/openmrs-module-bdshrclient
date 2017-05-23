@@ -178,7 +178,7 @@ public class EncounterPushTest {
         List<IdMapping> idMappings = idMappingArgumentCaptor.getAllValues();
         String orderUrl = "http://localhost:9997/patients/" + HEALTH_ID + "/encounters/shr-uuid" + "#ProcedureRequest/" + procedureOrder.getUuid();
         String externalId = String.format(MRSProperties.RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, "shr-uuid", procedureOrder.getUuid());
-        assertTrue(containsIdMapping(idMappings, procedureOrder.getUuid(), externalId, IdMappingType.PROCEDURE_ORDER, orderUrl));
+        assertTrue(containsIdMapping(idMappings, procedureOrder.getUuid(), externalId, IdMappingType.PROCEDURE_REQUEST, orderUrl));
     }
 
 

@@ -131,7 +131,7 @@ public class TestResultMapperIT extends BaseModuleWebContextSensitiveTest {
         assertDiagnosticReportWithResult(fhirResources, diagnosticReportResource, "Urea Nitorgen",
                 "http://localhost:9997/openmrs/ws/rest/v1/tr/concept/501qb827-a67c-4q1f-a705-e5efe0qjki2w",
                 "501qb827-a67c-4q1f-a705-e5efe0qjki2w",
-                "http://shr.com/patients/hid/encounters/shrEncounterId19#DiagnosticOrder/200ae386-20sx-4629-9850-f15206e63ab0",
+                "http://shr.com/patients/hid/encounters/shrEncounterId19#ProcedureRequest/200ae386-20sx-4629-9850-f15206e63ab0",
                 new Quantity(120.0), "Lab Notes");
     }
 

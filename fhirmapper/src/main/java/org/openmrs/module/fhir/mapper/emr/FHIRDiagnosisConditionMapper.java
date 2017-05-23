@@ -8,7 +8,6 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
-import org.openmrs.module.fhir.FHIRProperties;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.EmrEncounter;
 import org.openmrs.module.fhir.mapper.model.ShrEncounterBundle;
@@ -27,6 +26,7 @@ import java.util.Map;
 
 import static org.openmrs.module.fhir.FHIRProperties.RESOURCE_MAPPING_URL_FORMAT;
 import static org.openmrs.module.fhir.MRSProperties.RESOURCE_MAPPING_EXTERNAL_ID_FORMAT;
+import static org.openmrs.module.fhir.MRSProperties.TR_CONDITION_CATEGORY_DIAGNOSIS_CODE;
 import static org.openmrs.module.fhir.utils.FHIREncounterUtil.getIdPart;
 import static org.openmrs.module.fhir.utils.FHIREncounterUtil.getSHREncounterUrl;
 
@@ -53,7 +53,7 @@ public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
             if (resourceCoding == null || resourceCoding.isEmpty()) {
                 return false;
             }
-            return resourceCoding.get(0).getCode().equalsIgnoreCase(FHIRProperties.FHIR_CONDITION_CODE_DIAGNOSIS);
+            return resourceCoding.get(0).getCode().equalsIgnoreCase(TR_CONDITION_CATEGORY_DIAGNOSIS_CODE);
         }
         return false;
     }
@@ -68,7 +68,6 @@ public class FHIRDiagnosisConditionMapper implements FHIRResourceMapper {
         Concept visitDiagnosis = conceptService.getConceptByName(MRSProperties.MRS_CONCEPT_NAME_VISIT_DIAGNOSES);
 
         Concept bahmniInitialDiagnosis = conceptService.getConceptByName(MRSProperties.MRS_CONCEPT_NAME_INITIAL_DIAGNOSIS);
-        Concept bahmniDiagnosisStatus = conceptService.getConceptByName(MRSProperties.MRS_CONCEPT_NAME_DIAGNOSIS_STATUS);
         Concept bahmniDiagnosisRevised = conceptService.getConceptByName(MRSProperties.MRS_CONCEPT_NAME_DIAGNOSIS_REVISED);
 
         Concept diagnosisConceptAnswer = omrsConceptLookup.findConceptByCode(condition.getCode().getCoding());

@@ -52,7 +52,7 @@ public class FHIRDiagnosticReportRequestHelper {
                 String orderId = new EntityReference().parse(BaseResource.class, requestDetailReference);
                 String encounterId = new EntityReference().parse(Encounter.class, requestDetailReference);
                 String externalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, encounterId, orderId);
-                List<IdMapping> idMappingList = idMappingRepository.findMappingsByExternalId(externalId, IdMappingType.DIAGNOSTIC_ORDER);
+                List<IdMapping> idMappingList = idMappingRepository.findMappingsByExternalId(externalId, IdMappingType.PROCEDURE_REQUEST);
                 if (CollectionUtils.isNotEmpty(idMappingList)) {
                     for (IdMapping idMapping : idMappingList) {
                         Order order = orderService.getOrderByUuid(idMapping.getInternalId());

@@ -60,7 +60,7 @@ public class IdMappingRepository {
 
     public void replaceHealthId(final String toBeReplaced, final String toReplaceWith) {
         final List<IdMapping> reassignedEncounterIdMappings = updateHealthIds(findByHealthId(toBeReplaced, IdMappingType.ENCOUNTER), toBeReplaced, toReplaceWith);
-        final List<IdMapping> reassignedMedicationOrderIdMappings = updateHealthIds(findByHealthId(toBeReplaced, IdMappingType.MEDICATION_ORDER), toBeReplaced, toReplaceWith);
+        final List<IdMapping> reassignedMedicationRequestIdMappings = updateHealthIds(findByHealthId(toBeReplaced, IdMappingType.MEDICATION_ORDER), toBeReplaced, toReplaceWith);
 //        not required now with type procedureOrder as medication order will take care of all orders.
 //        final List<IdMapping> reassignedProcedureOrderIdMappings = updateHealthIds(findByHealthId(toBeReplaced, IdMappingType.PROCEDURE_ORDER), toBeReplaced, toReplaceWith);
         final List<IdMapping> reassignedDiagnosisIdMappings = updateHealthIds(findByHealthId(toBeReplaced, IdMappingType.DIAGNOSIS), toBeReplaced, toReplaceWith);
@@ -68,20 +68,20 @@ public class IdMappingRepository {
             @Override
             public Object execute(Connection connection) {
                 PreparedStatement updateEncounterIdMappingBatch = null;
-                PreparedStatement updateMedicationOrderMappingBatch = null;
+                PreparedStatement updateMedicationRequestMappingBatch = null;
                 PreparedStatement updateProcedureOrderIdMappingBatch = null;
                 PreparedStatement updateDiagnosisIdMappingBatch = null;
                 try {
                     updateEncounterIdMappingBatch = idMappingDao(IdMappingType.ENCOUNTER).getBatchStatement(connection, reassignedEncounterIdMappings);
-                    updateMedicationOrderMappingBatch = idMappingDao(IdMappingType.MEDICATION_ORDER).getBatchStatement(connection, reassignedMedicationOrderIdMappings);
+                    updateMedicationRequestMappingBatch = idMappingDao(IdMappingType.MEDICATION_ORDER).getBatchStatement(connection, reassignedMedicationRequestIdMappings);
 //                    updateProcedureOrderIdMappingBatch = idMappingDao(IdMappingType.PROCEDURE_ORDER).getBatchStatement(connection, reassignedProcedureOrderIdMappings);
                     updateDiagnosisIdMappingBatch = idMappingDao(IdMappingType.DIAGNOSIS).getBatchStatement(connection, reassignedDiagnosisIdMappings);
-                    executeBatch(updateEncounterIdMappingBatch, updateMedicationOrderMappingBatch, updateDiagnosisIdMappingBatch, updateProcedureOrderIdMappingBatch);
+                    executeBatch(updateEncounterIdMappingBatch, updateMedicationRequestMappingBatch, updateDiagnosisIdMappingBatch, updateProcedureOrderIdMappingBatch);
                 } catch (Exception e) {
                     throw new RuntimeException("Error occurred while replacing healthids of id mapping", e);
                 } finally {
                     try {
-                        close(updateMedicationOrderMappingBatch, updateEncounterIdMappingBatch);
+                        close(updateMedicationRequestMappingBatch, updateEncounterIdMappingBatch);
                     } catch (SQLException e) {
                         logger.warn("Could not close db statement or resultset", e);
                     }
@@ -125,10 +125,10 @@ public class IdMappingRepository {
             return orderIdMappingDao;
         else if (IdMappingType.DIAGNOSIS.equals(idMappingType))
             return diagnosisIdMappingDao;
-        else if (IdMappingType.PROCEDURE_ORDER.equals(idMappingType))
+        else if (IdMappingType.PROCEDURE_REQUEST.equals(idMappingType))
             return orderIdMappingDao;
-        else if (IdMappingType.DIAGNOSTIC_ORDER.equals(idMappingType))
-            return orderIdMappingDao;
+//        else if (IdMappingType.DIAGNOSTIC_ORDER.equals(idMappingType))
+//            return orderIdMappingDao;
         else if (IdMappingType.PROVIDER.equals(idMappingType))
             return providerIdMappingDao;
         else

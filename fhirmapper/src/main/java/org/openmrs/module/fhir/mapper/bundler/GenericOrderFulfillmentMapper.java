@@ -103,7 +103,7 @@ public class GenericOrderFulfillmentMapper implements EmrObsResourceHandler {
     }
 
     private String getRequestUrl(Order order) {
-        IdMapping orderIdMapping = idMappingRepository.findByInternalId(order.getUuid(), IdMappingType.DIAGNOSTIC_ORDER);
+        IdMapping orderIdMapping = idMappingRepository.findByInternalId(order.getUuid(), IdMappingType.PROCEDURE_REQUEST);
         if (orderIdMapping != null) {
             return orderIdMapping.getUri();
         }

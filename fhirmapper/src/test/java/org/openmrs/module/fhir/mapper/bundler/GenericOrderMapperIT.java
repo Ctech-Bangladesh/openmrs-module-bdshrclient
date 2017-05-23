@@ -18,8 +18,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.openmrs.module.fhir.FHIRProperties.DIAGNOSTIC_ORDER_CATEGORY_EXTENSION_NAME;
-import static org.openmrs.module.fhir.FHIRProperties.getFhirExtensionUrl;
 import static org.openmrs.module.fhir.MRSProperties.TR_ORDER_TYPE_RADIOLOGY_CODE;
 import static org.openmrs.module.fhir.MapperTestHelper.containsCoding;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
@@ -95,9 +93,9 @@ public class GenericOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         List<FHIRResource> mappedResources = genericOrderMapper.map(order, fhirEncounter, bundle, getSystemProperties("1"));
         assertNotNull(mappedResources);
         assertEquals(2, mappedResources.size());
-        ProcedureRequest diagnosticOrder = (ProcedureRequest) TestFhirFeedHelper.getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
-        assertNotNull(diagnosticOrder);
-        assertTrue(containsCoding(diagnosticOrder.getCode().getCoding(), "501qb827-a67c-4q1f-a705-e5efe0q6a972", "http://localhost:9997/openmrs/ws/rest/v1/tr/concept/501qb827-a67c-4q1f-a705-e5efe0q6a972", "X-Ray Right Chest"));
+        ProcedureRequest procedureRequest = (ProcedureRequest) TestFhirFeedHelper.getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
+        assertNotNull(procedureRequest);
+        assertTrue(containsCoding(procedureRequest.getCode().getCoding(), "501qb827-a67c-4q1f-a705-e5efe0q6a972", "http://localhost:9997/openmrs/ws/rest/v1/tr/concept/501qb827-a67c-4q1f-a705-e5efe0q6a972", "X-Ray Right Chest"));
     }
 
     @Test
@@ -142,11 +140,6 @@ public class GenericOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         Coding category = procedureRequest.getCategoryFirstRep().getCodingFirstRep();
         assertEquals("http://localhost:9080/openmrs/ws/rest/v1/tr/vs/order-type", category.getSystem());
         assertEquals(orderTypeLabCode, category.getCode());
-
-        assertEquals(fhirEncounterId, procedureRequest.getContext().getReference());
-        String fhirExtensionUrl = getFhirExtensionUrl(DIAGNOSTIC_ORDER_CATEGORY_EXTENSION_NAME);
-        List<Extension> extensions = procedureRequest.getExtensionsByUrl(fhirExtensionUrl);
-        assertEquals(0, extensions.size());
     }
 
     private FHIREncounter createFhirEncounter() {

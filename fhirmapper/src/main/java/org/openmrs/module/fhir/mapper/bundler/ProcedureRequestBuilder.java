@@ -27,7 +27,7 @@ public class ProcedureRequestBuilder {
         procedureRequest.setIntent(ProcedureRequest.ProcedureRequestIntent.ORDER);
         procedureRequest.setSubject(fhirEncounter.getPatient());
         procedureRequest.setRequester(new ProcedureRequest.ProcedureRequestRequesterComponent().setAgent(getOrdererReference(order, fhirEncounter)));
-        setProcedureRequesetId(systemProperties, procedureRequest, orderUuid);
+        setProcedureRequestId(systemProperties, procedureRequest, orderUuid);
         procedureRequest.setContext(new Reference().setReference(fhirEncounter.getId()));
         addCategory(procedureRequest, systemProperties, orderTypeCode);
         return procedureRequest;
@@ -40,10 +40,10 @@ public class ProcedureRequestBuilder {
         coding.setSystem(trValuesetUrl);
     }
 
-    private void setProcedureRequesetId(SystemProperties systemProperties, ProcedureRequest diagnosticOrder, String orderUuid) {
+    private void setProcedureRequestId(SystemProperties systemProperties, ProcedureRequest procedureRequest, String orderUuid) {
         String id = new EntityReference().build(Order.class, systemProperties, orderUuid);
-        diagnosticOrder.addIdentifier().setValue(id);
-        diagnosticOrder.setId(id);
+        procedureRequest.addIdentifier().setValue(id);
+        procedureRequest.setId(id);
     }
 
     private Reference getOrdererReference(Order order, FHIREncounter fhirEncounter) {
