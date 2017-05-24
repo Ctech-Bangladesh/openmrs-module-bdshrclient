@@ -1326,4 +1326,25 @@
             schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.CatchmentPatientDownloadTask';
         </sql>
     </changeSet>
+    <changeSet id="bdshrclient-24052017-1100" author="sukreet,dubey" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) != 0 from order_id_mapping where type='MedicationOrder';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            update order_id_mapping set type = 'MedicationRequest' ,  uri=REPLACE(uri,'#MedicationOrder',
+            '#MedicationRequest') where type = 'MedicationOrder';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-24052017-1101" author="sukreet,dubey" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) != 0 from order_id_mapping where type='ProcedureOrder';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            update order_id_mapping set type = 'ProcedureRequest' where type = 'ProcedureOrder';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
