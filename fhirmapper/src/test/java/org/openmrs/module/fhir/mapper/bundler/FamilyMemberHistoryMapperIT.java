@@ -77,6 +77,7 @@ public class FamilyMemberHistoryMapperIT extends BaseModuleWebContextSensitiveTe
         Age onset = (Age) familyMemberCondition.getOnset();
         assertEquals(12, onset.getValue().intValue());
         assertEquals(UCUM_UNIT_FOR_YEARS, onset.getUnit());
+        assertEquals(UCUM_UNIT_FOR_YEARS, onset.getCode());
         assertEquals(UCUM_URL, onset.getSystem());
     }
 

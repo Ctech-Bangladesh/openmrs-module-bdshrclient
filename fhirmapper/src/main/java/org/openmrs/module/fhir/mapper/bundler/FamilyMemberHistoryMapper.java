@@ -94,6 +94,7 @@ public class FamilyMemberHistoryMapper implements EmrObsResourceHandler {
             age.setValue(onsetAgeObs.getValueNumeric());
             age.setUnit(UCUM_UNIT_FOR_YEARS);
             age.setSystem(UCUM_URL);
+            age.setCode(UCUM_UNIT_FOR_YEARS);
             familyMemberCondition.setOnset(age);
         }
     }
