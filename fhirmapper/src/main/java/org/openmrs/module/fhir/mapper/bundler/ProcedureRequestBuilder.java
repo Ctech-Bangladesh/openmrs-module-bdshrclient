@@ -7,7 +7,6 @@ import org.openmrs.Order;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
-import org.openmrs.module.fhir.utils.FHIRBundleHelper;
 import org.openmrs.module.fhir.utils.ProviderLookupService;
 import org.openmrs.module.shrclient.util.SystemProperties;
 import org.springframework.beans.factory.annotation.Autowired;
