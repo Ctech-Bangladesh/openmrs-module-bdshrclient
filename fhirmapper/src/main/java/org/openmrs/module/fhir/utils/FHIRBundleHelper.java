@@ -12,6 +12,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public class FHIRBundleHelper {
+    public static final String PROVENANCE_ENTRY_URI_SUFFIX = "-provenance";
 
     public static Composition getComposition(Bundle bundle) {
         Resource resource = identifyFirstResourceWithName(bundle, "Composition");
@@ -148,18 +149,18 @@ public class FHIRBundleHelper {
         return childRef;
     }
 
-    public static FHIRResource createProvenance(Date recorded, Reference agentReference, String targetReference) {
+    public static FHIRResource createProvenance(String resourceName, Date recorded, Reference agentReference, String targetReference) {
         Provenance provenance = new Provenance();
-        provenance.setId(targetReference + "-provenance");
+        provenance.setId(targetReference + PROVENANCE_ENTRY_URI_SUFFIX);
         provenance.addAgent().setWho(agentReference);
         provenance.setRecorded(recorded);
         Reference reference = new Reference().setReference(targetReference);
         provenance.addTarget(reference);
-        return new FHIRResource("Porvenance", asList(new Identifier().setValue(provenance.getId())), provenance);
+        return new FHIRResource(resourceName + " Provenance", asList(new Identifier().setValue(provenance.getId())), provenance);
     }
 
     public static Provenance getProvenanceForResource(Bundle bundle, String resourceId) {
-        String provenanceId = resourceId + "-provenance";
+        String provenanceId = resourceId + PROVENANCE_ENTRY_URI_SUFFIX;
         Bundle.BundleEntryComponent component = bundle.getEntry().stream().filter(
                 entryComponent -> provenanceId.equals(entryComponent.getFullUrl())
         ).findFirst().orElse(null);

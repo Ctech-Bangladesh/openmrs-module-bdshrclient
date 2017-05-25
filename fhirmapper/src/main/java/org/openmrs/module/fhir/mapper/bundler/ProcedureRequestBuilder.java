@@ -7,10 +7,13 @@ import org.openmrs.Order;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
+import org.openmrs.module.fhir.utils.FHIRBundleHelper;
 import org.openmrs.module.fhir.utils.ProviderLookupService;
 import org.openmrs.module.shrclient.util.SystemProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.openmrs.module.fhir.utils.FHIRBundleHelper.PROVENANCE_ENTRY_URI_SUFFIX;
 
 @Component
 public class ProcedureRequestBuilder {
@@ -30,6 +33,7 @@ public class ProcedureRequestBuilder {
         setProcedureRequestId(systemProperties, procedureRequest, orderUuid);
         procedureRequest.setContext(new Reference().setReference(fhirEncounter.getId()));
         addCategory(procedureRequest, systemProperties, orderTypeCode);
+        setHistory(order, procedureRequest, systemProperties);
         return procedureRequest;
     }
 
@@ -55,4 +59,18 @@ public class ProcedureRequestBuilder {
         }
         return fhirEncounter.getFirstParticipantReference();
     }
+
+    private void setHistory(Order order, ProcedureRequest procedureRequest, SystemProperties systemProperties) {
+        Order previousOrder = order.getPreviousOrder();
+        if (!order.getAction().equals(Order.Action.DISCONTINUE) || null == previousOrder) return;
+        String previousOrderUuid = previousOrder.getUuid();
+        String previousOrderUri = new EntityReference().build(Order.class, systemProperties, previousOrderUuid);
+        Reference reference = procedureRequest.addRelevantHistory();
+        reference.setReference(buildProvenanceReference(previousOrderUri));
+    }
+
+    private String buildProvenanceReference(String resourceEntryUri) {
+        return resourceEntryUri + PROVENANCE_ENTRY_URI_SUFFIX;
+    }
+
 }

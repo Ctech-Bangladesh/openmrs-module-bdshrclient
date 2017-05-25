@@ -120,7 +120,7 @@ public class FHIRProcedureRequestMapper implements FHIRResourceMapper {
     }
 
     private String getResourceId(Reference provenanceRef) {
-        return StringUtil.removeSuffix(provenanceRef.getReference(), "-provenance");
+        return StringUtil.removeSuffix(provenanceRef.getReference(), PROVENANCE_ENTRY_URI_SUFFIX);
     }
 
     private Date getDateActivate(ProcedureRequest procedureRequest, EmrEncounter emrEncounter) {

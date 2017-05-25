@@ -2,8 +2,6 @@ package org.openmrs.module.fhir.mapper.bundler;
 
 import org.hl7.fhir.dstu3.model.*;
 import org.openmrs.Order;
-import org.openmrs.module.fhir.MRSProperties;
-import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.mapper.model.FHIRResource;
 import org.openmrs.module.fhir.utils.CodeableConceptService;
@@ -16,17 +14,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.hl7.fhir.dstu3.model.ProcedureRequest.ProcedureRequestStatus.ACTIVE;
+import static org.hl7.fhir.dstu3.model.ProcedureRequest.ProcedureRequestStatus.SUSPENDED;
 import static org.openmrs.Order.Action.DISCONTINUE;
 import static org.openmrs.module.fhir.MRSProperties.MRS_PROCEDURE_ORDER_TYPE;
+import static org.openmrs.module.fhir.MRSProperties.TR_ORDER_TYPE_PROCEDURE_CODE;
 import static org.openmrs.module.fhir.utils.FHIRBundleHelper.createProvenance;
 
 @Component
 public class ProcedureOrderMapper implements EmrOrderResourceHandler {
     private final static String PROCEDURE_REQUEST_RESOURCE_DISPLAY = "Procedure Request";
-    @Autowired
+
     private ProviderLookupService providerLookupService;
-    @Autowired
     private CodeableConceptService codeableConceptService;
+    private ProcedureRequestBuilder procedureRequestBuilder;
+
+    @Autowired
+    public ProcedureOrderMapper(ProviderLookupService providerLookupService, CodeableConceptService codeableConceptService, ProcedureRequestBuilder procedureRequestBuilder) {
+        this.providerLookupService = providerLookupService;
+        this.codeableConceptService = codeableConceptService;
+        this.procedureRequestBuilder = procedureRequestBuilder;
+    }
 
     @Override
     public boolean canHandle(Order order) {
@@ -40,64 +48,34 @@ public class ProcedureOrderMapper implements EmrOrderResourceHandler {
         FHIRResource fhirResource = createProcedureRequestResource(order, fhirEncounter, systemProperties);
         if (null != fhirResource) {
             resources.add(fhirResource);
-            resources.add(createProvenance(order.getDateActivated(), getOrdererReference(order, fhirEncounter), fhirResource.getResource().getId()));
+            resources.add(createProvenance(PROCEDURE_REQUEST_RESOURCE_DISPLAY, order.getDateActivated(), getOrdererReference(order, fhirEncounter), fhirResource.getResource().getId()));
         }
         return resources;
     }
 
     public FHIRResource createProcedureRequestResource(Order order, FHIREncounter fhirEncounter, SystemProperties systemProperties) {
-        //todo: delegate basic create
-        ProcedureRequest procedureRequest = new ProcedureRequest();
-        procedureRequest.setSubject(fhirEncounter.getPatient());
-
-        ProcedureRequest.ProcedureRequestRequesterComponent requester = new ProcedureRequest.ProcedureRequestRequesterComponent();
-        requester.setAgent(getOrdererReference(order, fhirEncounter));
-        procedureRequest.setRequester(requester);
-
-        procedureRequest.setAuthoredOn(order.getDateActivated());
-        String id = new EntityReference().build(Order.class, systemProperties, order.getUuid());
-        procedureRequest.addIdentifier().setValue(id);
-        procedureRequest.setId(id);
-        procedureRequest.setContext(new Reference().setReference(fhirEncounter.getId()));
-        procedureRequest.setIntent(ProcedureRequest.ProcedureRequestIntent.ORDER);
-
-        setOrderStatus(order, procedureRequest);
-        setHistory(order, procedureRequest, systemProperties);
-        addCategory(procedureRequest, systemProperties);
-        addNotes(order, procedureRequest);
         CodeableConcept code = findCodeForOrder(order);
         if (code == null) {
             return null;
         }
+        boolean isDiscontinuedOrder = Order.Action.DISCONTINUE.equals(order.getAction());
+        String orderUuid = order.getUuid();
+        if (isDiscontinuedOrder) {
+            orderUuid = order.getPreviousOrder().getUuid();
+        }
+
+        ProcedureRequest procedureRequest = procedureRequestBuilder.createProcedureRequest(order, fhirEncounter, systemProperties,
+                TR_ORDER_TYPE_PROCEDURE_CODE, orderUuid);
+        procedureRequest.setAuthoredOn(order.getDateActivated());
+        setOrderStatus(order, procedureRequest);
+        addNotes(order, procedureRequest);
         procedureRequest.setCode(code);
         return new FHIRResource(PROCEDURE_REQUEST_RESOURCE_DISPLAY, procedureRequest.getIdentifier(), procedureRequest);
     }
 
-    private void addCategory(ProcedureRequest procedureRequest, SystemProperties systemProperties) {
-        Coding coding = procedureRequest.addCategory().addCoding();
-        coding.setCode(MRSProperties.TR_ORDER_TYPE_PROCEDURE_CODE);
-        String trValuesetUrl = systemProperties.createValueSetUrlFor(MRSProperties.TR_ORDER_TYPE_VALUESET_NAME);
-        coding.setSystem(trValuesetUrl);
-    }
-
-    private void setHistory(Order order, ProcedureRequest procedureRequest, SystemProperties systemProperties) {
-        Order previousOrder = order.getPreviousOrder();
-        if (null == previousOrder) return;
-        String previousOrderUuid = previousOrder.getUuid();
-        String previousOrderUri = new EntityReference().build(Order.class, systemProperties, previousOrderUuid);
-        Reference reference = procedureRequest.addRelevantHistory();
-        reference.setReference(buildProvenanceReference(previousOrderUri));
-    }
-
-    private String buildProvenanceReference(String resourceEntryUri) {
-        return resourceEntryUri + "-provenance";
-    }
 
     private void setOrderStatus(Order order, ProcedureRequest procedureRequest) {
-        if (order.getAction().equals(DISCONTINUE))
-            procedureRequest.setStatus(ProcedureRequest.ProcedureRequestStatus.SUSPENDED);
-        else
-            procedureRequest.setStatus(ProcedureRequest.ProcedureRequestStatus.ACTIVE);
+        procedureRequest.setStatus(order.getAction().equals(DISCONTINUE) ? SUSPENDED : ACTIVE);
     }
 
     private void addNotes(Order order, ProcedureRequest procedureRequest) {

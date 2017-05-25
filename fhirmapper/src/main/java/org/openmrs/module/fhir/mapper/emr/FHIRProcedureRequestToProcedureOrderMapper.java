@@ -8,10 +8,7 @@ import org.openmrs.api.OrderService;
 import org.openmrs.module.fhir.mapper.model.EmrEncounter;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.ShrEncounterBundle;
-import org.openmrs.module.fhir.utils.DateUtil;
-import org.openmrs.module.fhir.utils.OMRSConceptLookup;
-import org.openmrs.module.fhir.utils.OrderCareSettingLookupService;
-import org.openmrs.module.fhir.utils.ProviderLookupService;
+import org.openmrs.module.fhir.utils.*;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.IdMapping;
 import org.openmrs.module.shrclient.model.IdMappingType;
@@ -26,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.openmrs.module.fhir.MRSProperties.*;
+import static org.openmrs.module.fhir.utils.FHIRBundleHelper.PROVENANCE_ENTRY_URI_SUFFIX;
 import static org.openmrs.module.fhir.utils.FHIREncounterUtil.getIdPart;
 
 @Component
@@ -115,7 +113,7 @@ public class FHIRProcedureRequestToProcedureOrderMapper implements FHIRResourceM
     }
 
     private String getResourceId(Reference provenanceRef) {
-        return StringUtil.removeSuffix(provenanceRef.getReference(), "-provenance");
+        return StringUtil.removeSuffix(provenanceRef.getReference(), PROVENANCE_ENTRY_URI_SUFFIX);
     }
 
     private void addProcedureOrderToIdMapping(Order order, ProcedureRequest procedureRequest, ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {

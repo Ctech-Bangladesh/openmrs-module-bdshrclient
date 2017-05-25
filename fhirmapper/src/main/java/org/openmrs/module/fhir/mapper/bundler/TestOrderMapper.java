@@ -97,30 +97,13 @@ public class TestOrderMapper implements EmrOrderResourceHandler {
         procedureRequest.setStatus(isDiscontinuedOrder ? CANCELLED : ACTIVE);
         procedureRequest.setAuthoredOn(order.getDateActivated());
 
-        if (isDiscontinuedOrder) {
-            setHistory(order, procedureRequest, systemProperties);
-        }
-
-        FHIRResource fhirProcedureRequest = new FHIRResource("Procedure Request", procedureRequest.getIdentifier(), procedureRequest);
+        String resourceName = "Procedure Request";
+        FHIRResource fhirProcedureRequest = new FHIRResource(resourceName, procedureRequest.getIdentifier(), procedureRequest);
         fhirResources.add(fhirProcedureRequest);
 
-        FHIRResource provenance = createProvenance(order.getDateActivated(), procedureRequest.getRequester().getAgent(), fhirProcedureRequest.getResource().getId());
+        FHIRResource provenance = createProvenance(resourceName, order.getDateActivated(), procedureRequest.getRequester().getAgent(), fhirProcedureRequest.getResource().getId());
         fhirResources.add(provenance);
     }
-
-    private void setHistory(Order order, ProcedureRequest procedureRequest, SystemProperties systemProperties) {
-        Order previousOrder = order.getPreviousOrder();
-        if (null == previousOrder) return;
-        String previousOrderUuid = previousOrder.getUuid();
-        String previousOrderUri = new EntityReference().build(Order.class, systemProperties, previousOrderUuid);
-        Reference reference = procedureRequest.addRelevantHistory();
-        reference.setReference(buildProvenanceReference(previousOrderUri));
-    }
-
-    private String buildProvenanceReference(String resourceEntryUri) {
-        return resourceEntryUri + "-provenance";
-    }
-
 
     private Coding getConceptCoding(List<Coding> codings) {
         return codings.stream().filter(

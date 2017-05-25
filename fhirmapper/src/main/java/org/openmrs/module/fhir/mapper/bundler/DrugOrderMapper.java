@@ -68,6 +68,7 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
 
     @Override
     public List<FHIRResource> map(Order order, FHIREncounter fhirEncounter, Bundle bundle, SystemProperties systemProperties) {
+        String resourceName = "Medication Request";
         List<FHIRResource> fhirResources = new ArrayList<>();
         DrugOrder drugOrder = (DrugOrder) order;
         MedicationRequest medicationRequest = new MedicationRequest();
@@ -87,12 +88,12 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         medicationRequest.addIdentifier().setValue(id);
         medicationRequest.setId(id);
 
-        FHIRResource fhirResource = createProvenance(medicationRequest.getAuthoredOn(), medicationRequest.getRequester().getAgent(), medicationRequest.getId());
+        FHIRResource fhirResource = createProvenance(resourceName, medicationRequest.getAuthoredOn(), medicationRequest.getRequester().getAgent(), medicationRequest.getId());
         Provenance provenance = (Provenance) fhirResource.getResource();
         setScheduledDate(provenance, drugOrder);
         setStatusAndPriorPrescriptionAndOrderAction(drugOrder, medicationRequest, provenance, systemProperties);
 
-        fhirResources.add(new FHIRResource("Medication Order", medicationRequest.getIdentifier(), medicationRequest));
+        fhirResources.add(new FHIRResource(resourceName, medicationRequest.getIdentifier(), medicationRequest));
         fhirResources.add(fhirResource);
         return fhirResources;
     }

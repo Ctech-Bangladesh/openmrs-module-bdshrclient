@@ -19,6 +19,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
+import static org.hl7.fhir.dstu3.model.Condition.ConditionClinicalStatus.ACTIVE;
 import static org.junit.Assert.*;
 import static org.openmrs.module.fhir.MapperTestHelper.containsCoding;
 import static org.openmrs.module.fhir.MapperTestHelper.getSystemProperties;
@@ -153,6 +154,7 @@ public class DiagnosisMapperIT extends BaseModuleWebContextSensitiveTest {
 
         assertEquals(1, diagnosisCondition.getCode().getCoding().size());
         assertTrue(containsCoding(diagnosisCondition.getCode().getCoding(), code, system, display));
+        assertEquals(ACTIVE, diagnosisCondition.getClinicalStatus());
         assertEquals(verificationStatus.getDisplay(), diagnosisCondition.getVerificationStatus().getDisplay());
         assertEquals(comments, diagnosisCondition.getNote().get(0).getText());
     }

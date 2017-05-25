@@ -72,6 +72,7 @@ public class DiagnosisMapper implements EmrObsResourceHandler {
         if (codedDiagnosisObs == null) return null;
         setConditionCode(condition, codedDiagnosisObs);
         if (condition.getCode().isEmpty()) return null;
+        condition.setClinicalStatus(Condition.ConditionClinicalStatus.ACTIVE);
         setConditionVerificationStatus(condition, visitDiagnosisObservation);
         setPreviousDiagnosisExtension(condition, visitDiagnosisObservation);
 
