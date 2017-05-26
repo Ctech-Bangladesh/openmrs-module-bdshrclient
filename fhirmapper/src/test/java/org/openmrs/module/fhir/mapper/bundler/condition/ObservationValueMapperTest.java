@@ -44,8 +44,8 @@ public class ObservationValueMapperTest extends BaseModuleWebContextSensitiveTes
         Date obsDate = dateFormat.parse("2014-03-12");
         obs.setValueDate(obsDate);
         Type value = observationValueMapper.map(obs);
-        assertTrue(value instanceof DateType);
-        java.util.Date actualDate = ((DateType) value).getValue();
+        assertTrue(value instanceof DateTimeType);
+        java.util.Date actualDate = ((DateTimeType) value).getValue();
         assertEquals(obsDate, actualDate);
     }
 

@@ -71,7 +71,7 @@ public class ObservationValueMapper {
             @Override
             public Type readValue(Obs obs, CodeableConceptService codeableConceptService) {
                 if (obs.getConcept().getDatatype().isDate() && obs.getValueDate() != null) {
-                    return new DateType(obs.getValueDate());
+                    return new DateTimeType(obs.getValueDate());
                 }
                 return null;
             }
