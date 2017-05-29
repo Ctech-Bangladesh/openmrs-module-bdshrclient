@@ -139,7 +139,7 @@
                 <intent value="order"/>
                 <category>
                     <coding>
-                        <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/order-type"/>
+                        <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Order-Type"/>
                         <code value="LAB"/>
                     </coding>
                 </category>
@@ -198,7 +198,7 @@
                 <intent value="order"/>
                 <category>
                     <coding>
-                        <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/order-type"/>
+                        <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Order-Type"/>
                         <code value="LAB"/>
                     </coding>
                 </category>

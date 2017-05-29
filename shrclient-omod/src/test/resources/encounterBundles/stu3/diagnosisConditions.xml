@@ -96,7 +96,7 @@
                 <verificationStatus value="provisional"/>
                 <category>
                     <coding>
-                        <system value="http://tr.com/valuesets/condition-category"/>
+                        <system value="http://tr.com/valuesets/Condition-Category"/>
                         <code value="diagnosis"/>
                         <display value="Diagnosis"/>
                     </coding>
@@ -134,7 +134,7 @@
                 <verificationStatus value="provisional"/>
                 <category>
                     <coding>
-                        <system value="http://tr.com/valuesets/condition-category"/>
+                        <system value="http://tr.com/valuesets/Condition-Category"/>
                         <code value="diagnosis"/>
                         <display value="Diagnosis"/>
                     </coding>

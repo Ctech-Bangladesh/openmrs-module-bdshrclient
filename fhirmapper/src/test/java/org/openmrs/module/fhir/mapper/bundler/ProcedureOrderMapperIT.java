@@ -120,7 +120,7 @@ public class ProcedureOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         assertEquals(ORDER, procedureRequest.getIntent());
         Coding category = procedureRequest.getCategoryFirstRep().getCodingFirstRep();
-        assertEquals("http://localhost:9080/openmrs/ws/rest/v1/tr/vs/order-type", category.getSystem());
+        assertEquals("http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Order-Type", category.getSystem());
         assertEquals(MRSProperties.TR_ORDER_TYPE_PROCEDURE_CODE, category.getCode());
 
         assertEquals(procedureStatus, procedureRequest.getStatus());

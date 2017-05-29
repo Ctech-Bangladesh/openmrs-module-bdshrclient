@@ -88,7 +88,7 @@
                 <verificationStatus value="provisional"/>
                 <category>
                     <coding>
-                        <system value="http://tr.com/valuesets/condition-category"/>
+                        <system value="http://tr.com/valuesets/Condition-Category"/>
                         <code value="complaint"/>
                         <display value="Complaint"/>
                     </coding>

@@ -94,7 +94,7 @@
                 <intent value="order"/>
                 <category>
                     <coding>
-                        <system value="http://localhost.com/valuesets/order-type"/>
+                        <system value="http://localhost.com/valuesets/Order-Type"/>
                         <code value="PROCEDURE"/>
                     </coding>
                 </category>

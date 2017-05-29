@@ -95,7 +95,7 @@
                 <intent value="order"/>
                 <category>
                     <coding>
-                        <system value="http://tr.com/valuesets/order-type"/>
+                        <system value="http://tr.com/valuesets/Order-Type"/>
                         <code value="PROCEDURE"/>
                     </coding>
                 </category>

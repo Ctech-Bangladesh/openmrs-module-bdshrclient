@@ -91,7 +91,7 @@
                 <verificationStatus value="provisional"/>
                 <category>
                     <coding>
-                        <system value="http://tr.com/valuesets/condition-category"/>
+                        <system value="http://tr.com/valuesets/Condition-Category"/>
                         <code value="diagnosis"/>
                         <display value="Diagnosis"/>
                     </coding>
@@ -127,7 +127,7 @@
                 <verificationStatus value="confirmed"/>
                 <category>
                     <coding>
-                        <system value="http://hl7.org/fhir/vs/condition-category"/>
+                        <system value="http://hl7.org/fhir/vs/Condition-Category"/>
                         <code value="Complaint"/>
                         <display value="Complaint"/>
                     </coding>
