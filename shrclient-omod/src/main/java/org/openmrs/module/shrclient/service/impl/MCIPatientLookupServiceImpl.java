@@ -233,7 +233,7 @@ public class MCIPatientLookupServiceImpl extends BaseOpenmrsService implements M
     }
 
     private void createOrUpdateEncounters(String healthId, org.openmrs.Patient emrPatient) {
-        final String url = String.format("/patients/%s/encounters", healthId);
+        final String url = String.format(propertiesReader.getShrPatientEncPathPattern(), healthId);
         List<EncounterEvent> encounterEvents = null;
         try {
             encounterEvents = new ClientRegistry(propertiesReader, identityStore).getSHRClient().getEncounters(url);

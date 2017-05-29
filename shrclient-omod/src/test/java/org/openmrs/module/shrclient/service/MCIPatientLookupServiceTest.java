@@ -254,6 +254,7 @@ public class MCIPatientLookupServiceTest {
 
         when(addressHierarchyService.getAddressHierarchyEntryByUserGenId(anyString())).thenReturn(entry);
         when(mockPropertiesReader.getFacilityInstanceProperties()).thenReturn(getFacilityInstanceProperties(xAuthToken, clientIdValue, email, "password"));
+        when(mockPropertiesReader.getShrPatientEncPathPattern()).thenReturn("/v2/patients/%s/encounters");
         org.openmrs.Patient emrPatient = new org.openmrs.Patient();
         when(mockEmrPatientService.createOrUpdateEmrPatient(any(Patient.class))).thenReturn(emrPatient);
         String patientContext = StringUtil.removeSuffix(mockPropertiesReader.getMciPatientContext(), "/");
@@ -264,7 +265,7 @@ public class MCIPatientLookupServiceTest {
                 .withHeader(AUTH_TOKEN_KEY, equalTo(token))
                 .willReturn(aResponse().withBody(asString("patients_response/by_hid.json"))));
 
-        givenThat(get(urlEqualTo("/patients/" + hid + "/encounters"))
+        givenThat(get(urlEqualTo("/v2/patients/" + hid + "/encounters"))
                 .withHeader(FROM_KEY, equalTo(email))
                 .withHeader(CLIENT_ID_KEY, equalTo(clientIdValue))
                 .withHeader(AUTH_TOKEN_KEY, equalTo(token))
@@ -273,6 +274,7 @@ public class MCIPatientLookupServiceTest {
         Map downloadResponse = (Map) lookupService.downloadPatient(request);
         assertTrue(downloadResponse.containsKey("uuid"));
     }
+
 
     private void assertPatient(Map<String, Object> patient, String hid, String firstName, String gender, List<String> inactiveHids) {
         assertPatient(patient, hid, firstName, gender);
