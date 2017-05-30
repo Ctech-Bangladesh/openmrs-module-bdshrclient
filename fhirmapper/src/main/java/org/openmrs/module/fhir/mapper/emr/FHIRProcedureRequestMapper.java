@@ -27,6 +27,7 @@ import static org.hl7.fhir.dstu3.model.ProcedureRequest.ProcedureRequestStatus.C
 import static org.openmrs.Order.Action.DISCONTINUE;
 import static org.openmrs.Order.Action.NEW;
 import static org.openmrs.module.fhir.MRSProperties.*;
+import static org.openmrs.module.fhir.utils.FHIRBundleHelper.PROVENANCE_ENTRY_URI_SUFFIX;
 import static org.openmrs.module.fhir.utils.FHIREncounterUtil.getIdPart;
 
 @Component

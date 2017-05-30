@@ -1347,4 +1347,10 @@
             update order_id_mapping set type = 'ProcedureRequest' where type = 'ProcedureOrder';
         </sql>
     </changeSet>
+    <changeSet id="bdshrclient-30052017-1023" author="Dubey" context="setup">
+        <comment>Increasing length of external_id column</comment>
+        <modifyDataType tableName="order_id_mapping"
+                        columnName="external_id"
+                        newDataType="varchar(150)" />
+    </changeSet>
 </databaseChangeLog>
