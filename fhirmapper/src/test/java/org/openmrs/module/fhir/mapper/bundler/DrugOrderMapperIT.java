@@ -24,6 +24,7 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestIntent.ORDER;
 import static org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestStatus.ACTIVE;
+import static org.hl7.fhir.dstu3.model.MedicationRequest.MedicationRequestStatus.CANCELLED;
 import static org.junit.Assert.*;
 import static org.openmrs.module.fhir.FHIRProperties.*;
 import static org.openmrs.module.fhir.MapperTestHelper.containsCoding;
@@ -394,6 +395,21 @@ public class DrugOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
         String fhirExtensionUrl = FHIRProperties.getFhirExtensionUrl(FHIRProperties.DOSAGEINSTRUCTION_CUSTOM_DOSAGE_EXTENSION_NAME);
         assertTrue(CollectionUtils.isEmpty(dosageInstruction.getExtensionsByUrl(fhirExtensionUrl)));
+    }
+
+    @Test
+    public void shouldMapAsCancelledMedicationOrderIfStopDateIsBeforeStartDate() throws Exception {
+        FHIREncounter fhirEncounter = getFhirEncounter();
+        Order order = orderService.getOrder(67);
+
+        List<FHIRResource> fhirResources = orderMapper.map(order, fhirEncounter, new Bundle(), getSystemProperties("1"));
+        MedicationRequest medicationRequest = (MedicationRequest) fhirResources.get(0).getResource();
+        assertEquals(CANCELLED, medicationRequest.getStatus());
+
+        Provenance provenance = (Provenance) fhirResources.get(1).getResource();
+        assertEquals(order.getScheduledDate(), provenance.getPeriod().getStart());
+        assertNull(provenance.getPeriod().getEnd());
+        assertEquals(FHIR_DATA_OPERATION_CANCEL_CODE, provenance.getActivity().getCode());
     }
 
     private FHIREncounter getFhirEncounter() {

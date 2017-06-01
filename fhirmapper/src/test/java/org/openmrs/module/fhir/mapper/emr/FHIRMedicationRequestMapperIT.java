@@ -331,6 +331,32 @@ public class FHIRMedicationRequestMapperIT extends BaseModuleWebContextSensitive
         assertEquals(emrEncounter.getOrders().iterator().next().getUuid(), newOrderIdMapping.getInternalId());
     }
 
+    @Test
+    public void shouldCreatePreviousCancelledOrderInSameSession() throws Exception {
+        Bundle bundle = (Bundle) mapperTestHelper.loadSampleFHIREncounter("encounterBundles/stu3/medicationRequestCancelledByOtherOrder.xml", springContext);
+        String cancelledOrderId = "amkb3idk-ciek-u6y4-c83k-d92sc6c63ab0";
+        String cancellingOrderId = "amkb3idk-ciek-u6y4-h6y5-d92sc6c63ab0";
+
+        MedicationRequest resource = (MedicationRequest) FHIRBundleHelper.findResourceByReference(bundle, new Reference("urn:uuid:" + cancellingOrderId));
+
+        Encounter mappedEncounter = encounterService.getEncounter(37);
+        EmrEncounter emrEncounter = new EmrEncounter(mappedEncounter);
+        ShrEncounterBundle encounterComposition = new ShrEncounterBundle(bundle, "98001080756", "shr-enc-id-1");
+        mapper.map(resource, emrEncounter, encounterComposition, getSystemProperties("1"));
+        assertEquals(2, emrEncounter.getOrders().size());
+
+        IdMapping cancelledOrderMapping = idMappingRepository.findByExternalId(String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, "shr-enc-id-1", cancelledOrderId), IdMappingType.MEDICATION_ORDER);
+        Order editedOrder = findOrderByUuid(emrEncounter.getOrders(), cancelledOrderMapping.getInternalId());
+        assertEquals(Order.Action.NEW, editedOrder.getAction());
+        assertNotNull(editedOrder);
+
+        IdMapping cancellingOrderMapping = idMappingRepository.findByExternalId(String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, "shr-enc-id-1", cancellingOrderId), IdMappingType.MEDICATION_ORDER);
+        Order newOrder = findOrderByUuid(emrEncounter.getOrders(), cancellingOrderMapping.getInternalId());
+        assertNotNull(newOrder);
+
+        assertEquals(editedOrder, newOrder.getPreviousOrder());
+    }
+
     private Object readFromJson(String json, String key) throws IOException {
         Map map = new ObjectMapper().readValue(json, Map.class);
         return map.get(key);

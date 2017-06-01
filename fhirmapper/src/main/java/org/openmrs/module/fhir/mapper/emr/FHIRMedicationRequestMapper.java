@@ -149,12 +149,6 @@ public class FHIRMedicationRequestMapper implements FHIRResourceMapper {
         if (FHIR_DATA_OPERATION_ABORT_CODE.equals(activity.getCode())) drugOrder.setAction(Order.Action.DISCONTINUE);
     }
 
-    private Order.Action getOrderAction(String orderAction) {
-        for (Order.Action action : Order.Action.values()) {
-            if (action.name().equals(orderAction)) return action;
-        }
-        return Order.Action.NEW;
-    }
 
     private DrugOrder createOrFetchPreviousOrder(ShrEncounterBundle encounterComposition, MedicationRequest medicationRequest, EmrEncounter emrEncounter, SystemProperties systemProperties) {
         if (hasPriorPrescription(medicationRequest)) {

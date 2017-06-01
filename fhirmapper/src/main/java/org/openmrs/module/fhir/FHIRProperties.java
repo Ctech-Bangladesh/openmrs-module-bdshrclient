@@ -24,6 +24,7 @@ public class FHIRProperties {
     public static final String FHIR_DATA_OPERATION_CREATE_CODE = "CREATE";
     public static final String FHIR_DATA_OPERATION_UPDATE_CODE = "UPDATE";
     public static final String FHIR_DATA_OPERATION_ABORT_CODE = "ABORT";
+    public static final String FHIR_DATA_OPERATION_CANCEL_CODE = "CANCEL";
 
 
     public static final String FHIR_YES_NO_INDICATOR_URL = "http://hl7.org/fhir/v2/0136";

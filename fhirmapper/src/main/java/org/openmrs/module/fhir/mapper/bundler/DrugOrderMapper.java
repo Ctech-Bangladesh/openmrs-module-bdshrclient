@@ -84,6 +84,11 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         setDispenseRequest(drugOrder, medicationRequest);
         medicationRequest.setNote(asList(new Annotation(new StringType(getNotes(drugOrder)))));
 
+        if (drugOrder.getPreviousOrder() != null) {
+            String priorPresecription = setPriorPrescriptionReference(drugOrder, systemProperties);
+            medicationRequest.setPriorPrescription(new Reference(priorPresecription));
+        }
+
         String id = new EntityReference().build(Order.class, systemProperties, order.getUuid());
         medicationRequest.addIdentifier().setValue(id);
         medicationRequest.setId(id);
@@ -91,7 +96,7 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         FHIRResource fhirResource = createProvenance(resourceName, medicationRequest.getAuthoredOn(), medicationRequest.getRequester().getAgent(), medicationRequest.getId());
         Provenance provenance = (Provenance) fhirResource.getResource();
         setScheduledDate(provenance, drugOrder);
-        setStatusAndPriorPrescriptionAndOrderAction(drugOrder, medicationRequest, provenance, systemProperties);
+        setStatusAndOrderAction(drugOrder, medicationRequest, provenance, systemProperties);
 
         fhirResources.add(new FHIRResource(resourceName, medicationRequest.getIdentifier(), medicationRequest));
         fhirResources.add(fhirResource);
@@ -130,7 +135,15 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
         medicationRequest.setDispenseRequest(dispenseRequest);
     }
 
-    private void setStatusAndPriorPrescriptionAndOrderAction(DrugOrder drugOrder, MedicationRequest medicationRequest, Provenance provenance, SystemProperties systemProperties) {
+    private void setStatusAndOrderAction(DrugOrder drugOrder, MedicationRequest medicationRequest, Provenance provenance, SystemProperties systemProperties) {
+        if (drugOrder.getDateStopped() != null && drugOrder.getScheduledDate() != null && drugOrder.getDateStopped().before(drugOrder.getScheduledDate())) {
+            medicationRequest.setStatus(MedicationRequest.MedicationRequestStatus.CANCELLED);
+            provenance.setActivity(new Coding()
+                    .setSystem(FHIRProperties.FHIR_DATA_OPERATION_VALUESET_URL)
+                    .setCode(FHIRProperties.FHIR_DATA_OPERATION_CANCEL_CODE)
+            );
+            return;
+        }
         if (drugOrder.getDateStopped() != null || drugOrder.getAction().equals(DISCONTINUE)) {
             medicationRequest.setStatus(MedicationRequest.MedicationRequestStatus.STOPPED);
             if (drugOrder.getDateStopped() != null) {
@@ -142,10 +155,6 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
             medicationRequest.setStatus(MedicationRequest.MedicationRequestStatus.ACTIVE);
         }
         setOrderAction(drugOrder, provenance);
-        if (drugOrder.getPreviousOrder() != null) {
-            String priorPresecription = setPriorPrescriptionReference(drugOrder, systemProperties);
-            medicationRequest.setPriorPrescription(new Reference(priorPresecription));
-        }
     }
 
     private String setPriorPrescriptionReference(DrugOrder drugOrder, SystemProperties systemProperties) {
