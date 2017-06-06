@@ -1,29 +1,23 @@
 package org.openmrs.module.shrclient.service;
 
 import com.sun.syndication.feed.atom.Category;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Condition;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.joda.time.DateTime;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.ExpectedException;
 import org.openmrs.*;
 import org.openmrs.api.*;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.fhir.mapper.emr.FHIRMapper;
 import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.fhir.utils.FHIRBundleHelper;
-import org.openmrs.module.shrclient.advice.SHREncounterEventService;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.EncounterIdMapping;
 import org.openmrs.module.shrclient.model.IdMapping;
 import org.openmrs.module.shrclient.model.IdMappingType;
-import org.openmrs.module.shrclient.service.impl.EMREncounterServiceImpl;
 import org.openmrs.module.shrclient.util.FhirBundleContextHolder;
-import org.openmrs.module.shrclient.util.PropertiesReader;
-import org.openmrs.module.shrclient.util.SystemUserService;
 import org.openmrs.module.shrclient.web.controller.dto.EncounterEvent;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +49,9 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     private VisitService visitService;
     @Autowired
     private EMREncounterService emrEncounterService;
+
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -429,8 +426,11 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         assertTrue(mapping1.getLastSyncDateTime().after(mapping2.getLastSyncDateTime()));
     }
 
-    @Test(expected = org.openmrs.api.ValidationException.class)
+    @Test
     public void shouldPerformEventsAsTransactions() throws Exception {
+        expectedEx.expect(ValidationException.class);
+        expectedEx.expectMessage(getMatcher());
+
         executeDataSet("testDataSets/drugOrderDSWithoutDrugRouts.xml");
         Patient patient = patientService.getPatient(110);
         String shrEncounterId1 = "shr-enc-id1";
@@ -518,10 +518,34 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         return events;
     }
 
-    public Resource loadSampleFHIREncounter(String filePath, ApplicationContext springContext) throws Exception {
+    private Resource loadSampleFHIREncounter(String filePath, ApplicationContext springContext) throws Exception {
         org.springframework.core.io.Resource resource = springContext.getResource(filePath);
         String bundleXML = org.apache.commons.io.IOUtils.toString(resource.getInputStream());
         return (Resource) FhirBundleContextHolder.getFhirContext().newXmlParser().parseResource(bundleXML);
+    }
+
+    private Matcher<String> getMatcher() {
+        return new Matcher<String>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((String) o).endsWith("failed to validate with reason: route: DrugOrder.error.routeNotAmongAllowedConcepts");
+            }
+
+            @Override
+            public void describeMismatch(Object o, Description description) {
+
+            }
+
+            @Override
+            public void _dont_implement_Matcher___instead_extend_BaseMatcher_() {
+
+            }
+
+            @Override
+            public void describeTo(Description description) {
+
+            }
+        };
     }
 
     @After
