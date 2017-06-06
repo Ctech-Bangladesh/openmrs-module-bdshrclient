@@ -11,6 +11,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.*;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.mapper.emr.FHIRMapper;
 import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.fhir.utils.FHIRBundleHelper;
@@ -34,6 +35,7 @@ import java.util.*;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 import static org.openmrs.module.shrclient.model.IdMappingType.ENCOUNTER;
+import static org.openmrs.module.shrclient.model.IdMappingType.MEDICATION_ORDER;
 import static org.openmrs.module.shrclient.web.controller.dto.EncounterEvent.ENCOUNTER_UPDATED_CATEGORY_TAG;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -50,32 +52,12 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     @Autowired
     private IdMappingRepository idMappingRepository;
     @Autowired
-    private EMRPatientService emrPatientService;
-    @Autowired
-    private PropertiesReader propertiesReader;
-    @Autowired
-    private SystemUserService systemUserService;
-    @Autowired
     private VisitService visitService;
     @Autowired
-    private FHIRMapper fhirMapper;
-    @Autowired
-    private OrderService orderService;
-    @Autowired
-    private EMRPatientDeathService patientDeathService;
-    @Autowired
-    private EMRPatientMergeService emrPatientMergeService;
-    @Autowired
-    private VisitLookupService visitLookupService;
-    @Autowired
-    private SHREncounterEventService shrEncounterEventService;
-
     private EMREncounterService emrEncounterService;
 
     @Before
     public void setUp() throws Exception {
-        emrEncounterService = new EMREncounterServiceImpl(emrPatientService, idMappingRepository, propertiesReader, systemUserService,
-                visitService, fhirMapper, orderService, patientDeathService, emrPatientMergeService, visitLookupService, shrEncounterEventService, encounterService);
         executeDataSet("testDataSets/omrsGlobalPropertyTestDS.xml");
     }
 
@@ -401,7 +383,7 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    @Ignore("Failing on ci") 
+    @Ignore("Failing on ci")
     public void shouldVoidOlderObservationsAndRecreateWithNewValues() throws Exception {
         executeDataSet("testDataSets/shrClientEncounterWithObservationTestDs.xml");
         Patient patient = patientService.getPatient(1);
@@ -445,6 +427,22 @@ public class EMREncounterServiceIT extends BaseModuleWebContextSensitiveTest {
         IdMapping mapping2 = idMappingRepository.findByExternalId(shrEncounterId2, ENCOUNTER);
 
         assertTrue(mapping1.getLastSyncDateTime().after(mapping2.getLastSyncDateTime()));
+    }
+
+    @Test(expected = org.openmrs.api.ValidationException.class)
+    public void shouldPerformEventsAsTransactions() throws Exception {
+        executeDataSet("testDataSets/drugOrderDSWithoutDrugRouts.xml");
+        Patient patient = patientService.getPatient(110);
+        String shrEncounterId1 = "shr-enc-id1";
+
+        EncounterEvent bundle1 = getEncounterEvents(shrEncounterId1, "encounterBundles/stu3/encounterWithMedicationRequest.xml").get(0);
+        emrEncounterService.createOrUpdateEncounters(patient, asList(bundle1));
+
+        IdMapping mapping1 = idMappingRepository.findByExternalId(shrEncounterId1, ENCOUNTER);
+        IdMapping orderIdMapping = idMappingRepository.findByExternalId(shrEncounterId1 + ":" + "7af48133-4c47-47d7-8d94-6a07abc18bf9", MEDICATION_ORDER);
+        assertNull(mapping1);
+        assertNull(orderIdMapping);
+        assertNull(encounterService.getEncountersByPatient(patient).isEmpty());
     }
 
     @Test

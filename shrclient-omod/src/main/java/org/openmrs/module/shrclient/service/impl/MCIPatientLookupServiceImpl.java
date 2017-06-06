@@ -112,7 +112,7 @@ public class MCIPatientLookupServiceImpl extends BaseOpenmrsService implements M
             if (emrPatient != null) {
                 Map<String, Object> downloadResponse = new HashMap<>();
                 List<String> mergedHealthIds = null;
-                if(CollectionUtils.isNotEmpty(request.getInactiveHids())) {
+                if (CollectionUtils.isNotEmpty(request.getInactiveHids())) {
                     mergedHealthIds = emrPatientMergeService.mergePatients(mciPatient.getHealthId(), request.getInactiveHids());
                 }
                 createOrUpdateEncounters(healthId, emrPatient);
@@ -180,7 +180,7 @@ public class MCIPatientLookupServiceImpl extends BaseOpenmrsService implements M
 
     private Patient searchActivePatient(String hid, List<String> inactiveHids) {
         Patient mergedWithPatient = searchPatientByHealthId(hid);
-        if(mergedWithPatient != null && !mergedWithPatient.isActive()) {
+        if (mergedWithPatient != null && !mergedWithPatient.isActive()) {
             inactiveHids.add(mergedWithPatient.getHealthId());
             return searchActivePatient(mergedWithPatient.getMergedWith(), inactiveHids);
         }
@@ -237,11 +237,15 @@ public class MCIPatientLookupServiceImpl extends BaseOpenmrsService implements M
         List<EncounterEvent> encounterEvents = null;
         try {
             encounterEvents = new ClientRegistry(propertiesReader, identityStore).getSHRClient().getEncounters(url);
+            emrEncounterService.createOrUpdateEncounters(emrPatient, encounterEvents);
         } catch (IdentityUnauthorizedException e) {
             log.info("Clearing unauthorized identity token.");
             identityStore.clearToken();
+        } catch (Exception e) {
+            String message = String.format("Error while downloading encounters for patient %s ", healthId);
+            log.error(message, e);
+            throw new RuntimeException(message, e);
         }
-        emrEncounterService.createOrUpdateEncounters(emrPatient, encounterEvents);
     }
 
     private Patient[] searchPatients(String searchParamKey, String searchParamValue) {
