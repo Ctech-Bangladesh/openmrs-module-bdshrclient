@@ -146,6 +146,25 @@ public class EMRPatientServiceImpl implements EMRPatientService {
         }
     }
 
+
+    @Override
+    public org.openmrs.Patient getEMRPatientByHealthId(String healthId) {
+        PatientIdMapping patientIdMapping = (PatientIdMapping) idMappingsRepository.findByExternalId(healthId, IdMappingType.PATIENT);
+        if (patientIdMapping == null) return null;
+        logger.info("Patient with HealthId " + healthId + " already exists. Using reference to the patient for downloaded encounters.");
+        return patientService.getPatientByUuid(patientIdMapping.getInternalId());
+    }
+
+    @Override
+    public void savePatient(org.openmrs.Patient emrPatient) {
+        patientService.savePatient(emrPatient);
+    }
+
+    @Override
+    public void mergePatients(org.openmrs.Patient toBeRetainedPatient, org.openmrs.Patient toBeRetiredPatient) throws SerializationException {
+        patientService.mergePatients(toBeRetainedPatient, toBeRetiredPatient);
+    }
+
     private boolean shouldProcessEvent(Patient updatePatient, PatientIdMapping patientIdMapping) {
         if (patientIdMapping == null) return true;
         Date lastSyncDateTime = patientIdMapping.getLastSyncDateTime();
@@ -197,24 +216,6 @@ public class EMRPatientServiceImpl implements EMRPatientService {
                             "Can't identify relevant concept for patient hid:%s, occupation:%s, code:%s",
                     mciPatient.getHealthId(), occupationConceptName, occupation));
         }
-    }
-
-    @Override
-    public org.openmrs.Patient getEMRPatientByHealthId(String healthId) {
-        PatientIdMapping patientIdMapping = (PatientIdMapping) idMappingsRepository.findByExternalId(healthId, IdMappingType.PATIENT);
-        if (patientIdMapping == null) return null;
-        logger.info("Patient with HealthId " + healthId + " already exists. Using reference to the patient for downloaded encounters.");
-        return patientService.getPatientByUuid(patientIdMapping.getInternalId());
-    }
-
-    @Override
-    public void savePatient(org.openmrs.Patient emrPatient) {
-        patientService.savePatient(emrPatient);
-    }
-
-    @Override
-    public void mergePatients(org.openmrs.Patient toBeRetainedPatient, org.openmrs.Patient toBeRetiredPatient) throws SerializationException {
-        patientService.mergePatients(toBeRetainedPatient, toBeRetiredPatient);
     }
 
     private void mapRelations(org.openmrs.Patient emrPatient, Patient mciPatient) {
@@ -301,7 +302,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
             emrPatient.addName(emrPersonName);
         }
         emrPersonName.setGivenName(mciPatient.getGivenName());
-        emrPersonName.setFamilyName(mciPatient.getSurName());
+        emrPersonName.setFamilyName(StringUtils.isBlank(mciPatient.getSurName())  ? DEFAULT_NAME_CONSTANT : mciPatient.getSurName());
     }
 
     private void addPersonAttribute(org.openmrs.Patient emrPatient, String attributeName, String attributeValue) {

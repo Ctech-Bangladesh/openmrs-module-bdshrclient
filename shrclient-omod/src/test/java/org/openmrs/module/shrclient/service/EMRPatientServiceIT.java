@@ -60,6 +60,30 @@ public class EMRPatientServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    public void shouldSaveAMCIPatientWithoutSurNameAsEmrPatient() throws Exception {
+        executeDataSet("testDataSets/patientUpdateDS.xml");
+        org.openmrs.module.shrclient.model.Patient patient = getPatientFromJson("patients_response/patient_without_sur_name.json");
+
+        emrPatientService.createOrUpdateEmrPatient(patient);
+
+        Patient savedPatient = patientService.getPatient(1);
+
+        assertEquals("No Surname", savedPatient.getGivenName());
+        assertEquals("X", savedPatient.getFamilyName());
+        assertEquals(savedPatient.getGender(), "F");
+        assertFalse(savedPatient.getBirthdateEstimated());
+
+        PatientIdentifier healthId = savedPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE);
+        assertEquals(healthId.getIdentifier(), "11421467785");
+
+        assertAttribute(savedPatient, HEALTH_ID_ATTRIBUTE_TYPE, "11421467785");
+        assertAttribute(savedPatient, NATIONAL_ID_ATTRIBUTE_TYPE, "7654376543127");
+        assertAttribute(savedPatient, BIRTH_REG_NO_ATTRIBUTE_TYPE, "54098540985409815");
+
+        assertNull(savedPatient.getAttribute(HID_CARD_ISSUED_ATTRIBUTE_TYPE));
+    }
+
+    @Test
     public void shouldSaveAMCIPatientWithEstimatedDOB() throws Exception {
         executeDataSet("testDataSets/patientUpdateDS.xml");
         org.openmrs.module.shrclient.model.Patient patient = getPatientFromJson("patients_response/patient_with_estimated_DOB.json");
