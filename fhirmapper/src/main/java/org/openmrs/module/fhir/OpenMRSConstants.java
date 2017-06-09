@@ -14,7 +14,7 @@ public class OpenMRSConstants {
     public final static String FATHER_NAME_ATTRIBUTE_TYPE = "fatherName";
     public final static String MOTHER_NAME_ATTRIBUTE_TYPE = "motherName";
     public final static String SPOUSE_NAME_ATTRIBUTE_TYPE = "spouseName";
-    public final static String DEFAULT_NAME_CONSTANT = "X";
+    public final static String DEFAULT_LAST_NAME_CONSTANT = "X";
 
     public static final String PHONE_NUMBER_ATTRIBUTE_TYPE = "phoneNumber";
     public static final String EDUCATION_ATTRIBUTE_TYPE = "education";

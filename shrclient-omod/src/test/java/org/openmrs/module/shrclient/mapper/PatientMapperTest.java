@@ -47,6 +47,12 @@ public class PatientMapperTest {
     private BbsCodeService bbsCodeService;
 
     private PatientMapper patientMapper;
+
+    private String givenName = "Sachin";
+    private String middleName = "Ramesh";
+    private String familyName = "Tendulkar";
+    private String gender = "M";
+
     private String nationalId = "nid-100";
     private String healthId = "hid-200";
     private String brnId = "brn-200";
@@ -81,6 +87,15 @@ public class PatientMapperTest {
 
     @Test
     public void shouldMapOpenMrsPatientToMciPatient() throws Exception {
+        Patient expectedPatient = patientMapper.map(openMrsPatient);
+        assertEquals(this.patient, expectedPatient);
+    }
+
+    @Test
+    public void shouldMapOpenMrsPatientWithDefaultFamilyNamePatient() throws Exception {
+        patient.setSurName(null);
+        PersonName personName = openMrsPatient.getPersonName();
+        personName.setFamilyName("x");
         Patient expectedPatient = patientMapper.map(openMrsPatient);
         assertEquals(this.patient, expectedPatient);
     }
@@ -159,29 +174,16 @@ public class PatientMapperTest {
     }
 
     private void setupData() throws ParseException {
-        final String givenName = "Sachin";
-        final String middleName = "Ramesh";
-        final String familyName = "Tendulkar";
-        final String gender = "M";
         final Date dateOfBirth = DateUtil.parseDate("2000-12-31", DateUtil.SIMPLE_DATE_FORMAT);
         final Date dateOfDeath = DateUtil.parseDate("2010-12-31", DateUtil.SIMPLE_DATE_FORMAT);
 
-        Person person = new Person();
+        setupMciPatient(dateOfBirth, dateOfDeath);
+        setUpOpenMrsPatien(new PersonName(givenName, middleName, familyName), dateOfBirth, dateOfDeath);
 
-        PersonName personName = new PersonName(givenName, middleName, familyName);
-        person.addName(personName);
-        person.setGender(gender);
-        person.setBirthdate(dateOfBirth);
-        person.setDeathDate(dateOfDeath);
-        person.setDead(true);
-        person.addAddress(this.address);
-        person.setBirthdateEstimated(Boolean.FALSE);
-        openMrsPatient = new org.openmrs.Patient(person);
-        PatientIdentifierType patientIdentifierType = new PatientIdentifierType();
-        patientIdentifierType.setName(HEALTH_ID_IDENTIFIER_TYPE);
-        openMrsPatient.addIdentifier(new PatientIdentifier(healthId, patientIdentifierType, new Location(1)));
-        openMrsPatient.setAttributes(createOpenMrsPersonAttributes());
 
+    }
+
+    private void setupMciPatient(Date dateOfBirth, Date dateOfDeath) {
         patient = new Patient();
         patient.setNationalId(nationalId);
         patient.setBirthRegNumber(brnId);
@@ -209,6 +211,22 @@ public class PatientMapperTest {
         a.setUnionOrUrbanWardId("50");
         a.setRuralWardId("01");
         patient.setAddress(a);
+    }
+
+    private void setUpOpenMrsPatien(PersonName personName, Date dateOfBirth, Date dateOfDeath) {
+        Person person = new Person();
+        person.addName(personName);
+        person.setGender(gender);
+        person.setBirthdate(dateOfBirth);
+        person.setDeathDate(dateOfDeath);
+        person.setDead(true);
+        person.addAddress(this.address);
+        person.setBirthdateEstimated(Boolean.FALSE);
+        openMrsPatient = new org.openmrs.Patient(person);
+        PatientIdentifierType patientIdentifierType = new PatientIdentifierType();
+        patientIdentifierType.setName(HEALTH_ID_IDENTIFIER_TYPE);
+        openMrsPatient.addIdentifier(new PatientIdentifier(healthId, patientIdentifierType, new Location(1)));
+        openMrsPatient.setAttributes(createOpenMrsPersonAttributes());
     }
 
     private void setUpAddressHierarchy() {

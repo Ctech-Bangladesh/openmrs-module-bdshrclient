@@ -302,7 +302,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
             emrPatient.addName(emrPersonName);
         }
         emrPersonName.setGivenName(mciPatient.getGivenName());
-        emrPersonName.setFamilyName(StringUtils.isBlank(mciPatient.getSurName())  ? DEFAULT_NAME_CONSTANT : mciPatient.getSurName());
+        emrPersonName.setFamilyName(StringUtils.isBlank(mciPatient.getSurName())  ? DEFAULT_LAST_NAME_CONSTANT : mciPatient.getSurName());
     }
 
     private void addPersonAttribute(org.openmrs.Patient emrPatient, String attributeName, String attributeValue) {

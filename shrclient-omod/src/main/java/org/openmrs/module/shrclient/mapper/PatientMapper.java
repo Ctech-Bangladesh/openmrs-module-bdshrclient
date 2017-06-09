@@ -2,7 +2,6 @@ package org.openmrs.module.shrclient.mapper;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAttribute;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.Patient;
@@ -48,7 +47,9 @@ public class PatientMapper {
                 .concat((StringUtils.isNotBlank(familyNameLocal) ? familyNameLocal : "")).trim();
 
         patient.setGivenName(openMrsPatient.getGivenName());
-        patient.setSurName(openMrsPatient.getFamilyName());
+        if (!openMrsPatient.getFamilyName().equalsIgnoreCase(DEFAULT_LAST_NAME_CONSTANT))
+            patient.setSurName(openMrsPatient.getFamilyName());
+
         patient.setGender(openMrsPatient.getGender());
         Date birthDateTime = openMrsPatient.getBirthDateTime() != null ? openMrsPatient.getBirthDateTime() : openMrsPatient.getBirthdate();
         patient.setDateOfBirth(birthDateTime);

@@ -1,5 +1,7 @@
 package org.openmrs.module.shrclient.model;
 
+import org.openmrs.module.fhir.OpenMRSConstants;
+
 import java.util.Date;
 
 import static org.openmrs.module.fhir.utils.DateUtil.SIMPLE_DATE_FORMAT_DATE_MONTH_YEAR_ORDER;
@@ -26,6 +28,8 @@ public class HealthIdCard {
     }
 
     public String getFamilyName() {
+        if (familyName.equalsIgnoreCase(OpenMRSConstants.DEFAULT_LAST_NAME_CONSTANT))
+            return "";
         return familyName;
     }
 
