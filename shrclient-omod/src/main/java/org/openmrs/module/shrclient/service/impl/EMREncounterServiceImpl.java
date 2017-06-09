@@ -6,10 +6,14 @@ import org.apache.log4j.Logger;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Composition;
 import org.hl7.fhir.dstu3.model.Period;
+import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.transaction.AFTransactionManager;
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.atomfeed.transaction.support.AtomFeedSpringTransactionManager;
 import org.openmrs.module.fhir.mapper.emr.FHIRMapper;
 import org.openmrs.module.fhir.mapper.model.Confidentiality;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
@@ -29,7 +33,10 @@ import org.openmrs.serialization.SerializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 
+import java.sql.Connection;
+import java.sql.Savepoint;
 import java.util.*;
 
 import static org.openmrs.module.fhir.mapper.model.Confidentiality.getConfidentiality;
@@ -72,22 +79,28 @@ public class EMREncounterServiceImpl implements EMREncounterService {
     }
 
     @Override
-    public void createOrUpdateEncounters(Patient emrPatient, List<EncounterEvent> encounterEvents) {
+    public void createOrUpdateEncounters(Patient emrPatient, List<EncounterEvent> encounterEvents) throws Exception {
+        AFTransactionManager atomFeedTransactionManager = getAtomFeedTransactionManager();
+        Connection connection = getConnectionProvider(atomFeedTransactionManager).getConnection();
+        Savepoint savepoint = connection.setSavepoint("Before patient encounters download");
+
         ArrayList<EncounterEvent> failedEncounters = new ArrayList<>();
         for (EncounterEvent encounterEvent : encounterEvents) {
             try {
                 createOrUpdateEncounter(emrPatient, encounterEvent);
             } catch (Exception e) {
                 failedEncounters.add(encounterEvent);
+                connection.rollback(savepoint);
             }
         }
+
         for (EncounterEvent failedEncounterEvent : failedEncounters) {
             try {
                 createOrUpdateEncounter(emrPatient, failedEncounterEvent);
             } catch (Exception e) {
                 //TODO do proper handling, write to log API?
                 logger.error("error Occurred while trying to process Encounter from SHR.", e);
-                throw new RuntimeException(e);
+                throw e;
             }
         }
     }
@@ -215,5 +228,22 @@ public class EMREncounterServiceImpl implements EMREncounterService {
             emrPatientService.savePatient(emrPatient);
             systemUserService.setOpenmrsShrSystemUserAsCreator(emrPatient);
         }
+    }
+
+    private JdbcConnectionProvider getConnectionProvider(AFTransactionManager txMgr) {
+        if (txMgr instanceof AtomFeedSpringTransactionManager) {
+            return (AtomFeedSpringTransactionManager) txMgr;
+        }
+        throw new RuntimeException("Atom Feed TransactionManager should provide a connection provider.");
+    }
+
+    private AFTransactionManager getAtomFeedTransactionManager() {
+        return new AtomFeedSpringTransactionManager(getSpringPlatformTransactionManager());
+    }
+
+    private PlatformTransactionManager getSpringPlatformTransactionManager() {
+        List<PlatformTransactionManager> platformTransactionManagers = Context.getRegisteredComponents
+                (PlatformTransactionManager.class);
+        return platformTransactionManagers.get(0);
     }
 }
