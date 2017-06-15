@@ -1,11 +1,13 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.ProcedureRequest;
 import org.openmrs.Concept;
 import org.openmrs.Order;
 import org.openmrs.module.fhir.MRSProperties;
-import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.mapper.model.FHIRResource;
 import org.openmrs.module.fhir.utils.CodeableConceptService;
@@ -26,6 +28,8 @@ import static org.openmrs.module.fhir.utils.FHIRBundleHelper.createProvenance;
 @Component("fhirTestOrderMapper")
 public class TestOrderMapper implements EmrOrderResourceHandler {
     private static final String TR_CONCEPT_URI_PART = "/tr/concepts/";
+    private static final String TR_CONCEPT_INDICATOR = "TR";
+    private static final String LOCAL_CONCEPT_INDICATOR = "LOCAL";
 
     private final CodeableConceptService codeableConceptService;
     private final ProcedureRequestBuilder procedureRequestBuilder;
@@ -52,7 +56,7 @@ public class TestOrderMapper implements EmrOrderResourceHandler {
             return fhirResources;
         }
         if (isTrConcept(trCodingForOrder)) {
-            String orderUuid = formatProcedureRequestId(getOrderUUid(order), getConceptCoding(trCodingForOrder.getCoding()).getCode());
+            String orderUuid = formatProcedureRequestId(getOrderUUid(order), TR_CONCEPT_INDICATOR, getConceptCoding(trCodingForOrder.getCoding()).getCode());
             createProcedureRequest(order, fhirEncounter, systemProperties, fhirResources, trCodingForOrder, orderUuid);
             return fhirResources;
         }
@@ -76,14 +80,14 @@ public class TestOrderMapper implements EmrOrderResourceHandler {
         String orderUuid = getOrderUUid(order);
         if (!isTrConcept(codingForOrder)) {
             codingForOrder = codeableConceptService.addTRCodingOrDisplay(order.getConcept());
-            orderUuid = formatProcedureRequestId(orderUuid, "1");
+            orderUuid = formatProcedureRequestId(orderUuid, LOCAL_CONCEPT_INDICATOR, "1");
         } else {
             Coding conceptCoding = getConceptCoding(codingForOrder.getCoding());
             if (null == conceptCoding) {
                 String message = String.format("The concept with id %s is a TR Concept but doesn't have Concept coding", order.getConcept().getId());
                 throw new RuntimeException(message);
             }
-            orderUuid = formatProcedureRequestId(orderUuid, conceptCoding.getCode());
+            orderUuid = formatProcedureRequestId(orderUuid, TR_CONCEPT_INDICATOR, conceptCoding.getCode());
         }
         createProcedureRequest(order, fhirEncounter, systemProperties,
                 fhirResources, codingForOrder, orderUuid);
@@ -117,17 +121,17 @@ public class TestOrderMapper implements EmrOrderResourceHandler {
             CodeableConcept trCoding = codeableConceptService.addTRCoding(testConcept);
             String orderUuid;
             if (isTrConcept(trCoding)) {
-                orderUuid = formatProcedureRequestId(getOrderUUid(order), getConceptCoding(trCoding.getCoding()).getCode());
+                orderUuid = formatProcedureRequestId(getOrderUUid(order), TR_CONCEPT_INDICATOR, getConceptCoding(trCoding.getCoding()).getCode());
             } else {
                 trCoding = codeableConceptService.addTRCodingOrDisplay(testConcept);
-                orderUuid = formatProcedureRequestId(getOrderUUid(order), String.valueOf(count++));
+                orderUuid = formatProcedureRequestId(getOrderUUid(order), LOCAL_CONCEPT_INDICATOR, String.valueOf(count++));
             }
             createProcedureRequest(order, fhirEncounter, systemProperties, fhirResources, trCoding, orderUuid);
         }
     }
 
-    private String formatProcedureRequestId(String orderUUid, String idSuffix) {
-        return String.format("%s#%s", orderUUid, idSuffix);
+    private String formatProcedureRequestId(String orderUUid, String idPrefix, String idSuffix) {
+        return String.format("%s#%s:%s", orderUUid, idPrefix, idSuffix);
     }
 
     private String getOrderUUid(Order order) {

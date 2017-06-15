@@ -48,13 +48,13 @@
                 </section>
                 <section>
                     <entry>
-                        <reference value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#124"/>
+                        <reference value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#TR:124"/>
                         <display value="Procedure Request"/>
                     </entry>
                 </section>
                 <section>
                     <entry>
-                        <reference value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#124-provenance"/>
+                        <reference value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#TR:124-provenance"/>
                         <display value="Provenance Procedure Request"/>
                     </entry>
                 </section>
@@ -113,15 +113,15 @@
         </resource>
     </entry>
     <entry>
-        <fullUrl value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#124"/>
+        <fullUrl value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#TR:124"/>
         <resource>
             <ProcedureRequest>
-                <id value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#124"/>
+                <id value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#TR:124"/>
                 <extension url="http://hl7.org/fhir/diagnosticorder-r2-marker">
                     <valueBoolean value="true"/>
                 </extension>
                 <identifier>
-                    <value value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#124"/>
+                    <value value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#TR:124"/>
                 </identifier>
                 <status value="active"/>
                 <intent value="order"/>
@@ -163,7 +163,7 @@
         </resource>
     </entry>
     <entry>
-        <fullUrl value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#124-provenance"/>
+        <fullUrl value="urn:uuid:453b7b24-7847-49f7-8a33-2fc339e5c4c7#TR:124-provenance"/>
         <resource>
             <Provenance xmlns="http://hl7.org/fhir">
                 <target>

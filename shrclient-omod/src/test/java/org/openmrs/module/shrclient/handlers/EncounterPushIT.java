@@ -266,7 +266,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(1, loggedRequests.size());
         String bundleXML = loggedRequests.get(0).getBodyAsString();
         Bundle bundle = (Bundle) FhirBundleContextHolder.getFhirContext().newXmlParser().parseResource(bundleXML);
-        final Resource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new Reference("urn:uuid:" + procedureRequestId + "#123"));
+        final Resource resourceByReference = FHIRBundleHelper.findResourceByReference(bundle, new Reference("urn:uuid:" + procedureRequestId + "#TR:123"));
         assertNotNull(resourceByReference);
 
         IdMapping encounterIdMapping = idMappingRepository.findByExternalId(shrEncounterId, IdMappingType.ENCOUNTER);
@@ -279,7 +279,7 @@ public class EncounterPushIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(procedureRequestId, procedureRequestMapping.getInternalId());
         String expectedExternalId = String.format(RESOURCE_MAPPING_EXTERNAL_ID_FORMAT, shrEncounterId, getIdPart(resourceByReference.getId()));
         //todo:need to make sure whether this 123 should be there or not
-        assertEquals(expectedExternalId, procedureRequestMapping.getExternalId() + "#123");
+        assertEquals(expectedExternalId, procedureRequestMapping.getExternalId() + "#TR:123");
         String procedureRequestUrl = encounterIdMapping.getUri() + "#ProcedureRequest/" + procedureRequestId;
         assertEquals(procedureRequestUrl, procedureRequestMapping.getUri());
     }

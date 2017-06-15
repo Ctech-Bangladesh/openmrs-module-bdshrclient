@@ -65,7 +65,7 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(2, mappedResources.size());
         ProcedureRequest procedureRequest = (ProcedureRequest) mappedResources.get(0).getResource();
 
-        assertLabOrder(procedureRequest, order.getUuid() + "#1");
+        assertLabOrder(procedureRequest, order.getUuid() + "#LOCAL:1");
         assertProvenance(mappedResources, procedureRequest);
 
         assertTrue(containsCoding(procedureRequest.getCode().getCoding(), null, null, "Urea Nitorgen"));
@@ -88,7 +88,7 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         ProcedureRequest procedureRequest = (ProcedureRequest) getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
         assertNotNull(procedureRequest);
 
-        assertLabOrder(procedureRequest, order.getUuid() + "#123");
+        assertLabOrder(procedureRequest, order.getUuid() + "#TR:123");
         assertProvenance(mappedResources, procedureRequest);
 
         assertTrue(containsCoding(procedureRequest.getCode().getCoding(), "20563-3",
@@ -113,7 +113,7 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(2, mappedResources.size());
         ProcedureRequest procedureRequest = (ProcedureRequest) getFirstResourceByType(new ProcedureRequest().getResourceType().name(), mappedResources).getResource();
 
-        assertLabOrder(procedureRequest, order.getUuid() + "#" + trConceptUuid);
+        assertLabOrder(procedureRequest, order.getUuid() + "#TR:" + trConceptUuid);
         assertProvenance(mappedResources, procedureRequest);
 
         assertTrue(containsCoding(procedureRequest.getCode().getCoding(), trConceptUuid,
@@ -124,10 +124,10 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldMapLocalPanelOrder() throws Exception {
-        String orderIdHemoglobine = "6glco326-eaab-4629-jsla-f1520ghkp0a0#123";
-        String orderIdESR = "6glco326-eaab-4629-jsla-f1520ghkp0a0#124";
-        String orderIdWBC = "6glco326-eaab-4629-jsla-f1520ghkp0a0#1";
-        String orderIdHb = "6glco326-eaab-4629-jsla-f1520ghkp0a0#2";
+        String orderIdHemoglobine = "6glco326-eaab-4629-jsla-f1520ghkp0a0#TR:123";
+        String orderIdESR = "6glco326-eaab-4629-jsla-f1520ghkp0a0#TR:124";
+        String orderIdWBC = "6glco326-eaab-4629-jsla-f1520ghkp0a0#LOCAL:1";
+        String orderIdHb = "6glco326-eaab-4629-jsla-f1520ghkp0a0#LOCAL:2";
 
         Encounter encounter = encounterService.getEncounter(40);
         FHIREncounter fhirEncounter = createFhirEncounter();
@@ -193,7 +193,7 @@ public class TestOrderMapperIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(2, fhirResources.size());
 
         ProcedureRequest procedureRequest = (ProcedureRequest) fhirResources.get(0).getResource();
-        assertLabOrder(procedureRequest, order.getPreviousOrder().getUuid() + "#1");
+        assertLabOrder(procedureRequest, order.getPreviousOrder().getUuid() + "#LOCAL:1");
         assertProvenance(fhirResources, procedureRequest);
         assertTrue(containsCoding(procedureRequest.getCode().getCoding(), null, null, "Hb Electrophoresis"));
         assertEquals(ProcedureRequest.ProcedureRequestStatus.CANCELLED, procedureRequest.getStatus());

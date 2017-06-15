@@ -99,10 +99,10 @@ public class FHIRProcedureRequestToLabOrderMapperIT extends BaseModuleWebContext
         assertEquals(orderService.getCareSetting(1), order.getCareSetting());
         assertEquals(DateUtil.parseDate("2015-08-24T17:10:10.000+05:30"), order.getDateActivated());
         assertEquals(DateUtil.parseDate("2015-08-25T17:10:10.000+05:30"), order.getAutoExpireDate());
-        IdMapping idMapping = idMappingRepository.findByExternalId("shr-enc-id:453b7b24-7847-49f7-8a33-2fc339e5c4c7#124", IdMappingType.PROCEDURE_REQUEST);
+            IdMapping idMapping = idMappingRepository.findByExternalId("shr-enc-id:453b7b24-7847-49f7-8a33-2fc339e5c4c7#TR:124", IdMappingType.PROCEDURE_REQUEST);
         assertEquals(order.getUuid(), idMapping.getInternalId());
         assertEquals(IdMappingType.PROCEDURE_REQUEST, idMapping.getType());
-        assertEquals("http://shr.com/patients/HIDA764177/encounters/shr-enc-id#ProcedureRequest/453b7b24-7847-49f7-8a33-2fc339e5c4c7#124",
+        assertEquals("http://shr.com/patients/HIDA764177/encounters/shr-enc-id#ProcedureRequest/453b7b24-7847-49f7-8a33-2fc339e5c4c7#TR:124",
                 idMapping.getUri());
     }
 
@@ -234,13 +234,6 @@ public class FHIRProcedureRequestToLabOrderMapperIT extends BaseModuleWebContext
         executeDataSet("testDataSets/radiologyOrderDS.xml");
         EmrEncounter emrEncounter = mapOrder("encounterBundles/stu3/encounterWithOrderCategoryCodeNotPresentLocally.xml", "HIDA764177", "shr-enc-id");
         assertTrue(CollectionUtils.isEmpty(emrEncounter.getOrders()));
-    }
-
-    private Order getOrderWithAction(Set<Order> orders, Order.Action action) {
-        for (Order order : orders) {
-            if (order.getAction().equals(action)) return order;
-        }
-        return null;
     }
 
     private EmrEncounter mapOrder(String filePath, String healthId, String shrEncounterId) throws Exception {
