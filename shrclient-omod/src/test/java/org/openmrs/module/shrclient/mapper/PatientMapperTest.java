@@ -93,10 +93,11 @@ public class PatientMapperTest {
 
     @Test
     public void shouldMapOpenMrsPatientWithDefaultFamilyNamePatient() throws Exception {
-        patient.setSurName(null);
+        patient.setSurName("");
         PersonName personName = openMrsPatient.getPersonName();
         personName.setFamilyName("x");
         Patient expectedPatient = patientMapper.map(openMrsPatient);
+
         assertEquals(this.patient, expectedPatient);
     }
 

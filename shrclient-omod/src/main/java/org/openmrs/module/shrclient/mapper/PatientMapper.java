@@ -47,8 +47,8 @@ public class PatientMapper {
                 .concat((StringUtils.isNotBlank(familyNameLocal) ? familyNameLocal : "")).trim();
 
         patient.setGivenName(openMrsPatient.getGivenName());
-        if (!openMrsPatient.getFamilyName().equalsIgnoreCase(DEFAULT_LAST_NAME_CONSTANT))
-            patient.setSurName(openMrsPatient.getFamilyName());
+        patient.setSurName(!openMrsPatient.getFamilyName().equalsIgnoreCase(DEFAULT_LAST_NAME_CONSTANT)
+                ? openMrsPatient.getFamilyName() : "");
 
         patient.setGender(openMrsPatient.getGender());
         Date birthDateTime = openMrsPatient.getBirthDateTime() != null ? openMrsPatient.getBirthDateTime() : openMrsPatient.getBirthdate();
