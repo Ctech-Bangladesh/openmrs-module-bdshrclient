@@ -139,6 +139,6 @@ public class EntityReferenceTest {
         mciProperties.put(PropertyKeyConstants.MCI_REFERENCE_PATH, "http://mci.com/");
         mciProperties.put(PropertyKeyConstants.MCI_PATIENT_CONTEXT, "/api/default/patients");
 
-        return new SystemProperties(frProperties, trProperties, prPoperties, facilityInstanceProperties, mciProperties, shrProperties);
+        return new SystemProperties(frProperties, trProperties, prPoperties, facilityInstanceProperties, mciProperties, shrProperties, null);
     }
 }

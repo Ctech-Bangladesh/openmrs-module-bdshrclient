@@ -80,6 +80,7 @@ public class EMREncounterServiceImpl implements EMREncounterService {
 
     @Override
     public void createOrUpdateEncounters(Patient emrPatient, List<EncounterEvent> encounterEvents) throws Exception {
+        //Todo: This should be done using transactional
         AFTransactionManager atomFeedTransactionManager = getAtomFeedTransactionManager();
         Connection connection = getConnectionProvider(atomFeedTransactionManager).getConnection();
         Savepoint savepoint = connection.setSavepoint("Before patient encounters download");
@@ -120,12 +121,13 @@ public class EMREncounterServiceImpl implements EMREncounterService {
                 propertiesReader.getPrProperties(),
                 propertiesReader.getFacilityInstanceProperties(),
                 propertiesReader.getMciProperties(),
-                propertiesReader.getShrProperties());
+                propertiesReader.getShrProperties(),
+                propertiesReader.getVisitTypeProperties());
 
         ShrEncounterBundle shrEncounterBundle = new ShrEncounterBundle(bundle, healthId, shrEncounterId);
         org.openmrs.Encounter newEmrEncounter = fhirMapper.map(emrPatient, shrEncounterBundle, systemProperties);
 
-        VisitType visitType = fhirMapper.getVisitType(shrEncounterBundle);
+        VisitType visitType = fhirMapper.getVisitType(shrEncounterBundle,systemProperties);
         Period visitPeriod = fhirMapper.getVisitPeriod(shrEncounterBundle);
         Visit visit = visitLookupService.findOrInitializeVisit(emrPatient, newEmrEncounter.getEncounterDatetime(), visitType, newEmrEncounter.getLocation(), visitPeriod.getStart(), visitPeriod.getEnd());
 

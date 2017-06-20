@@ -52,6 +52,10 @@ public class PropertiesReader {
         return getProperties("facility_instance.properties");
     }
 
+    public Properties getVisitTypeProperties() {
+        return getProperties("visit_type.properties");
+    }
+
     private Map<String, Properties> allProperties = new HashMap<String, Properties>();
 
     private String getTrBaseUrl() {
@@ -111,7 +115,7 @@ public class PropertiesReader {
         if (resourceProperties != null) return resourceProperties;
         try {
             Properties properties = new Properties();
-            final File file =  new File(OpenmrsUtil.getApplicationDataDirectory(), resourceName);
+            final File file = new File(OpenmrsUtil.getApplicationDataDirectory(), resourceName);
             final InputStream inputStream;
             if (file.exists()) {
                 inputStream = new FileInputStream(file);
@@ -130,7 +134,7 @@ public class PropertiesReader {
     private String getPropertiesLocation() {
         String propertiesLocation = System.getProperty("user.home") + File.separator + ".OpenMRS" + File.separator;
         File propertiesDirectory = new File(propertiesLocation);
-        if(propertiesDirectory.exists() && propertiesDirectory.isDirectory())
+        if (propertiesDirectory.exists() && propertiesDirectory.isDirectory())
             return propertiesLocation;
         return "/opt/openmrs/etc";
     }
@@ -158,6 +162,7 @@ public class PropertiesReader {
         String shrMaxFailedEventCount = getShrProperties().getProperty(PropertyKeyConstants.SHR_MAX_FAILED_EVENT);
         return getMaxFailedEventCount(shrMaxFailedEventCount);
     }
+
     public String getShrCatchmentPathPattern() {
         return getShrProperties().getProperty(PropertyKeyConstants.SHR_CATCHMENT_PATH_PATTERN).trim();
     }

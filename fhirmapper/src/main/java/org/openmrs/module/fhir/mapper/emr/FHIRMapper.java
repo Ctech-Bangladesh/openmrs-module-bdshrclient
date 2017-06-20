@@ -5,7 +5,6 @@ import org.hl7.fhir.dstu3.model.Period;
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
-import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.ShrEncounterBundle;
 import org.openmrs.module.fhir.utils.FHIRBundleHelper;
 import org.openmrs.module.fhir.utils.ProviderLookupService;
@@ -17,8 +16,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.hl7.fhir.dstu3.model.codesystems.V3ActCode.*;
-import static org.openmrs.module.fhir.MRSProperties.MRS_INPATIENT_VISIT_TYPE;
 import static org.openmrs.module.fhir.MRSProperties.MRS_OUTPATIENT_VISIT_TYPE;
 
 @Component
@@ -73,25 +70,22 @@ public class FHIRMapper {
         openmrsEncounter.setEncounterType(encounterType);
     }
 
-    public VisitType getVisitType(ShrEncounterBundle shrEncounterBundle) {
+    public VisitType getVisitType(ShrEncounterBundle shrEncounterBundle, SystemProperties systemProperties) {
         org.hl7.fhir.dstu3.model.Encounter fhirEncounter = FHIRBundleHelper.getEncounter(shrEncounterBundle.getBundle());
         List<VisitType> allVisitTypes = visitService.getAllVisitTypes();
-        String visitName = getVistNameFromEncounterClass(fhirEncounter.getClass_().getCode());
+        String visitName = getVistNameFromEncounterClass(fhirEncounter.getClass_().getCode(), systemProperties);
         if (visitName != null) {
             VisitType encVisitType = identifyVisitTypeByName(allVisitTypes, visitName);
             if (encVisitType != null) {
                 return encVisitType;
             }
-            if (visitName.equals(IMP.toCode())) {
-                return identifyVisitTypeByName(allVisitTypes, MRS_INPATIENT_VISIT_TYPE);
-            }
         }
         return identifyVisitTypeByName(allVisitTypes, MRS_OUTPATIENT_VISIT_TYPE);
     }
 
-    private String getVistNameFromEncounterClass(String encounterClass) {
-        HashMap<String, String> encounterClassToVisitTypeNameMap = getStringStringHashMap();
-        return encounterClassToVisitTypeNameMap.get(encounterClass);
+    private String getVistNameFromEncounterClass(String encounterClass, SystemProperties systemProperties) {
+        HashMap<String, String> encounterClassToVisitTypeMap = systemProperties.getEncounterClassToVisitTypeMap();
+        return encounterClassToVisitTypeMap.get(encounterClass);
     }
 
     private VisitType identifyVisitTypeByName(List<VisitType> allVisitTypes, String visitTypeName) {
@@ -110,13 +104,4 @@ public class FHIRMapper {
         return fhirEncounter.getPeriod();
     }
 
-    private HashMap<String, String> getStringStringHashMap() {
-        HashMap<String, String> encounterClassToVisitTypeNameMap = new HashMap<>();
-        encounterClassToVisitTypeNameMap.put(IMP.toCode(), MRSProperties.MRS_INPATIENT_VISIT_TYPE);
-        encounterClassToVisitTypeNameMap.put(FLD.toCode(), MRSProperties.MRS_FIELD_VISIT_TYPE);
-        encounterClassToVisitTypeNameMap.put(AMB.toCode(), MRSProperties.MRS_CARE_SETTING_FOR_OUTPATIENT);
-        encounterClassToVisitTypeNameMap.put(HH.toCode(), MRSProperties.MRS_HOME_VISIT_TYPE);
-        encounterClassToVisitTypeNameMap.put(EMER.toCode(), MRSProperties.MRS_EMERGENCY_VISIT_TYPE);
-        return encounterClassToVisitTypeNameMap;
-    }
 }

@@ -34,7 +34,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import static org.openmrs.module.fhir.OpenMRSConstants.*;
 import static org.openmrs.module.fhir.utils.MCIConstants.DOB_TYPE_ESTIMATED;
@@ -302,7 +301,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
             emrPatient.addName(emrPersonName);
         }
         emrPersonName.setGivenName(mciPatient.getGivenName());
-        emrPersonName.setFamilyName(StringUtils.isBlank(mciPatient.getSurName())  ? DEFAULT_LAST_NAME_CONSTANT : mciPatient.getSurName());
+        emrPersonName.setFamilyName(StringUtils.isBlank(mciPatient.getSurName()) ? DEFAULT_LAST_NAME_CONSTANT : mciPatient.getSurName());
     }
 
     private void addPersonAttribute(org.openmrs.Patient emrPatient, String attributeName, String attributeValue) {
@@ -328,7 +327,9 @@ public class EMRPatientServiceImpl implements EMRPatientService {
                 propertiesReader.getTrProperties(),
                 propertiesReader.getPrProperties(),
                 propertiesReader.getFacilityInstanceProperties(),
-                propertiesReader.getMciProperties(), new Properties());
+                propertiesReader.getMciProperties(),
+                propertiesReader.getShrProperties(),
+                propertiesReader.getVisitTypeProperties());
         String url = new EntityReference().build(org.openmrs.Patient.class, systemProperties, healthId);
         idMappingsRepository.saveOrUpdateIdMapping(new PatientIdMapping(patientUuid, healthId, url, new Date(), new Date(), serverModifiedTime));
     }

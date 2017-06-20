@@ -80,7 +80,8 @@ public class EncounterPush implements EventWorker {
                     propertiesReader.getPrProperties(),
                     propertiesReader.getFacilityInstanceProperties(),
                     propertiesReader.getMciProperties(),
-                    propertiesReader.getShrProperties());
+                    propertiesReader.getShrProperties(),
+                    propertiesReader.getVisitTypeProperties());
             if (shrEncounterId != null) {
                 pushEncounterUpdate(openMrsEncounter, shrEncounterId, healthId, systemProperties);
             } else {

@@ -52,7 +52,8 @@ public class ProviderPull {
                 propertiesReader.getPrProperties(),
                 propertiesReader.getFacilityInstanceProperties(),
                 propertiesReader.getMciProperties(),
-                propertiesReader.getShrProperties());
+                propertiesReader.getShrProperties(),
+                propertiesReader.getVisitTypeProperties());
 
         synchronizeUpdates(systemProperties);
     }

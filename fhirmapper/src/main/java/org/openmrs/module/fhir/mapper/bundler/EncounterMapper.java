@@ -1,17 +1,22 @@
 package org.openmrs.module.fhir.mapper.bundler;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.codesystems.V3ActCode;
+import org.hl7.fhir.exceptions.FHIRException;
 import org.openmrs.EncounterProvider;
 import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
+import org.openmrs.module.fhir.FHIRProperties;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.utils.OMRSLocationService;
 import org.openmrs.module.fhir.utils.ProviderLookupService;
+import org.openmrs.module.shrclient.util.StringUtil;
 import org.openmrs.module.shrclient.util.SystemProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,7 +39,7 @@ public class EncounterMapper {
     public FHIREncounter map(org.openmrs.Encounter openMrsEncounter, String healthId, SystemProperties systemProperties) {
         Encounter encounter = new Encounter();
         encounter.setStatus(Encounter.EncounterStatus.FINISHED);
-        setClass(openMrsEncounter, encounter);
+        setClass(openMrsEncounter, encounter , systemProperties);
         setPatientReference(healthId, encounter, systemProperties);
         setParticipant(openMrsEncounter, encounter);
         encounter.setServiceProvider(getServiceProvider(openMrsEncounter, systemProperties));
@@ -70,31 +75,27 @@ public class EncounterMapper {
                 getReference(Location.class, systemProperties, serviceProviderId));
     }
 
-    private void setClass(org.openmrs.Encounter openMrsEncounter, Encounter encounter) {
+    private void setClass(org.openmrs.Encounter openMrsEncounter, Encounter encounter, SystemProperties systemProperties) {
         //todo : need to be discussed for now let's map it in code like inpatient => IPD, outpatient => OPD
-        String visitType = openMrsEncounter.getVisit().getVisitType().getName().toLowerCase();
-        Coding coding = getClassFromVisitType(visitType);
+        String visitType = openMrsEncounter.getVisit().getVisitType().getName();
+        String encounterClass = systemProperties.getVisitTypeToEncounterClassMap().get(visitType);
+        if(StringUtils.isBlank(encounterClass) )
+            encounterClass = FHIRProperties.DEFAULT_ENCOUNTER_CLASS;
+
+        Coding coding = getCodingForClass(encounterClass);
         encounter.setClass_(coding);
     }
 
-    private Coding getClassFromVisitType(String visitType) {
+    private Coding getCodingForClass(String encounterClass) {
         Coding coding = new Coding();
-        coding.setSystem(AMB.getSystem());
-        if (visitType.equalsIgnoreCase(MRSProperties.MRS_INPATIENT_VISIT_TYPE) || visitType.equalsIgnoreCase(MRSProperties.MRS_IDP_VISIT_TYPE)) {
-            coding.setCode(IMP.toCode());
-            coding.setDisplay(IMP.getDisplay());
-        } else if (visitType.equalsIgnoreCase(MRSProperties.MRS_EMERGENCY_VISIT_TYPE)) {
-            coding.setCode(EMER.toCode());
-            coding.setDisplay(EMER.getDisplay());
-        } else if (visitType.equalsIgnoreCase(MRSProperties.MRS_FIELD_VISIT_TYPE)) {
-            coding.setCode(FLD.toCode());
-            coding.setDisplay(FLD.getDisplay());
-        } else if (visitType.equalsIgnoreCase(MRSProperties.MRS_HOME_VISIT_TYPE)) {
-            coding.setCode(HH.toCode());
-            coding.setDisplay(HH.getDisplay());
-        } else {
-            coding.setCode(AMB.toCode());
-            coding.setDisplay(AMB.getDisplay());
+        try {
+            V3ActCode v3ActCode = V3ActCode.fromCode(encounterClass);
+            coding.setSystem(v3ActCode.getSystem());
+            coding.setDisplay(v3ActCode.getDisplay());
+            coding.setCode(v3ActCode.toCode());
+        } catch (FHIRException e) {
+            logger.error("Unable to map encounter class for visit");
+            e.printStackTrace();
         }
         return coding;
     }

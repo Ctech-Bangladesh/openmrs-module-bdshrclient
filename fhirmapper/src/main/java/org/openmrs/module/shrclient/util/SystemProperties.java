@@ -1,8 +1,12 @@
 package org.openmrs.module.shrclient.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.module.fhir.utils.PropertyKeyConstants;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Properties;
 
 import static org.openmrs.module.fhir.utils.PropertyKeyConstants.*;
@@ -14,17 +18,19 @@ public class SystemProperties {
     private Properties facilityInstanceProperties;
     private Properties mciProperties;
     private Properties shrProperties;
+    private Properties visitTypeProperties;
 
     public SystemProperties(Properties frProperties,
                             Properties trProperties, Properties prProperties,
                             Properties facilityInstanceProperties,
-                            Properties mciProperties, Properties shrProperties) {
+                            Properties mciProperties, Properties shrProperties, Properties visitTypeProperties) {
         this.frProperties = frProperties;
         this.trProperties = trProperties;
         this.prProperties = prProperties;
         this.facilityInstanceProperties = facilityInstanceProperties;
         this.mciProperties = mciProperties;
         this.shrProperties = shrProperties;
+        this.visitTypeProperties = visitTypeProperties;
     }
 
     public String getFacilityId() {
@@ -65,5 +71,29 @@ public class SystemProperties {
 
     public String getFacilityResourcePath() {
         return frProperties.getProperty(FACILITY_REFERENCE_PATH).trim();
+    }
+
+    public HashMap<String, String> getVisitTypeToEncounterClassMap() {
+        String property = visitTypeProperties.getProperty(VISIT_TYPE_TO_ENCOUNTER_CLASS_MAP);
+        return getMap(property);
+
+    }
+
+    public HashMap<String, String> getEncounterClassToVisitTypeMap() {
+        String property = visitTypeProperties.getProperty(ENCOUNTER_CLASS_TO_VISIT_TYPE_MAP);
+        return getMap(property);
+
+    }
+
+    private HashMap<String, String> getMap(String property) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        TypeReference<HashMap<String, String>> typeRef
+                = new TypeReference<HashMap<String, String>>() {
+        };
+        try {
+            return objectMapper.readValue(property, typeRef);
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 }

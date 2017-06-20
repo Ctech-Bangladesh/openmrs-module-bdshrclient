@@ -35,4 +35,7 @@ public class PropertyKeyConstants {
     public static final String TR_VALUESET_IMMUNIZATION_REFUSAL_REASON = "tr.valueset.refusalReason";
     public static final String TR_VALUESET_PROCEDURE_OUTCOME = "tr.valueset.procedureOutcome";
     public static final String TR_VALUESET_PROCEDURE_FOLLOWUP = "tr.valueset.procedureFollowup";
+
+    public static final String VISIT_TYPE_TO_ENCOUNTER_CLASS_MAP = "visitTypeToEncounterClassMap";
+    public static final String ENCOUNTER_CLASS_TO_VISIT_TYPE_MAP = "encounterClassToVisitTypeMap";
 }

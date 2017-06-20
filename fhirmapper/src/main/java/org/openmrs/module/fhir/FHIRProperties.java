@@ -1,5 +1,7 @@
 package org.openmrs.module.fhir;
 
+import org.hl7.fhir.dstu3.model.Encounter;
+
 public class FHIRProperties {
 
     public static final String LOINC_SOURCE_NAME = "LOINC";
@@ -33,6 +35,8 @@ public class FHIRProperties {
     public static final String FHIR_NO_INDICATOR_CODE = "N";
     public static final String FHIR_NO_INDICATOR_DISPLAY = "No";
     public static final String RESOURCE_MAPPING_URL_FORMAT = "%s#%s/%s";
+
+    public static final String DEFAULT_ENCOUNTER_CLASS = "AMB";
 
     public static String FHIR_DRUG_ORDER_AFTERNOON_DOSE_KEY = "afternoonDose";
     public static String FHIR_DRUG_ORDER_MORNING_DOSE_KEY = "morningDose";

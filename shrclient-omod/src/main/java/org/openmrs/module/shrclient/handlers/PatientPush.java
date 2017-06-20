@@ -21,7 +21,10 @@ import org.openmrs.module.shrclient.model.PatientIdMapping;
 import org.openmrs.module.shrclient.model.mci.api.MciPatientUpdateResponse;
 import org.openmrs.module.shrclient.util.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -176,7 +179,7 @@ public class PatientPush implements EventWorker {
         PatientIdentifier healthIdIdentifier = openMrsPatient.getPatientIdentifier(HEALTH_ID_IDENTIFIER_TYPE);
         PersonAttribute healthIdAttribute = openMrsPatient.getAttribute(HEALTH_ID_ATTRIBUTE_TYPE);
 
-        if (!shouldUpdateHealthId(healthIdAttribute,healthIdIdentifier,healthId)) {
+        if (!shouldUpdateHealthId(healthIdAttribute, healthIdIdentifier, healthId)) {
             log.debug("OpenMRS patient health id is same as the health id provided. Hence, not updated.");
             saveOrUpdateIdMapping(openMrsPatient, healthId);
             return;
@@ -207,10 +210,10 @@ public class PatientPush implements EventWorker {
     }
 
     private boolean shouldUpdateHealthId(PersonAttribute healthIdAttribute, PatientIdentifier healthIdIdentifier, String healthId) {
-        if( healthIdIdentifier != null &&
+        if (healthIdIdentifier != null &&
                 healthId.equals(healthIdIdentifier.getIdentifier()) &&
                 healthIdAttribute != null &&
-                healthId.equals(healthIdAttribute.getValue()) ) {
+                healthId.equals(healthIdAttribute.getValue())) {
             return false;
         }
         return true;
@@ -228,7 +231,9 @@ public class PatientPush implements EventWorker {
                 propertiesReader.getTrProperties(),
                 propertiesReader.getPrProperties(),
                 propertiesReader.getFacilityInstanceProperties(),
-                propertiesReader.getMciProperties(), new Properties());
+                propertiesReader.getMciProperties(),
+                propertiesReader.getShrProperties(),
+                propertiesReader.getVisitTypeProperties());
     }
 
     String getPatientUuid(Event event) {

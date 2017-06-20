@@ -57,7 +57,9 @@ public class MapperTestHelper {
         shrProperties.put(PropertyKeyConstants.SHR_REFERENCE_PATH, "http://shr.com/");
         shrProperties.put(PropertyKeyConstants.SHR_PATIENT_ENC_PATH_PATTERN, "/patients/%s/encounters");
 
-        return new SystemProperties(facilityRegistry, trProperties, providerRegistry, facilityInstanceProperties, mciProperties, shrProperties);
+        Properties visitTypeProperties = new Properties();
+        visitTypeProperties.put(PropertyKeyConstants.VISIT_TYPE_TO_ENCOUNTER_CLASS_MAP, "{\"home\":\"HH\",\"field\":\"FLD\",\"emergency\":\"EMER\",\"ambulatory\":\"AMB\",\"outpatient\":\"AMB\",\"OPD\":\"AMB\",\"inpatient\":\"IMP\",\"IPD\":\"IMP\"}");
+        return new SystemProperties(facilityRegistry, trProperties, providerRegistry, facilityInstanceProperties, mciProperties, shrProperties, visitTypeProperties);
     }
 
     public static boolean containsCoding(List<Coding> coding, final String code, final String system, final String display) {

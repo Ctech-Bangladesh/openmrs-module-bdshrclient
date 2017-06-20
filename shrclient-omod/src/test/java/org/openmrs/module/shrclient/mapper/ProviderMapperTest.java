@@ -9,7 +9,6 @@ import org.openmrs.ProviderAttribute;
 import org.openmrs.ProviderAttributeType;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.IdMapping;
 import org.openmrs.module.shrclient.model.IdMappingType;
@@ -21,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.junit.Assert.*;
-import static org.openmrs.module.fhir.utils.DateUtil.SIMPLE_DATE_FORMAT;
-import static org.openmrs.module.fhir.utils.DateUtil.toDateString;
 import static org.openmrs.module.shrclient.mapper.ProviderMapper.PERSON_RETIRE_REASON;
 import static org.openmrs.module.shrclient.mapper.ProviderMapper.PROVIDER_RETIRE_REASON;
 
@@ -50,7 +47,8 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
                 propertiesReader.getPrProperties(),
                 propertiesReader.getFacilityInstanceProperties(),
                 propertiesReader.getMciProperties(),
-                propertiesReader.getShrProperties());
+                propertiesReader.getShrProperties(),
+                propertiesReader.getVisitTypeProperties());
     }
 
     @Test
