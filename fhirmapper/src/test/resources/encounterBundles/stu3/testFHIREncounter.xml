@@ -63,7 +63,11 @@
                     <code value="AMB"/>
                 </class>
                 <type>
-                    <text value="OPD"/>
+                    <coding>
+                        <system value="http://tr.com/valuesets/"/>
+                        <code value="Registration"/>
+                        <display value="Registration"/>
+                    </coding>
                 </type>
                 <subject>
                     <reference value="http://mci.com//api/default/patients/HIDA764177"/>

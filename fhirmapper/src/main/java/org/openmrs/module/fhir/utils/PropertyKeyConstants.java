@@ -38,4 +38,6 @@ public class PropertyKeyConstants {
 
     public static final String VISIT_TYPE_TO_ENCOUNTER_CLASS_MAP = "visitTypeToEncounterClassMap";
     public static final String ENCOUNTER_CLASS_TO_VISIT_TYPE_MAP = "encounterClassToVisitTypeMap";
+    public static final String MRS_ENCOUNTER_TYPE_TO_FHIR_ENCOUNTER_TYPE_MAP = "mrsEncounterTypeToFhirEncounterTypeMap";
+    public static final String FHIR_ENCOUNTER_TYPE_TO_MRS_ENCOUNTER_TYPE_MAP = "fhirEncounterTypeToMrsEncounterTypeMap";
 }

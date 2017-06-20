@@ -72,9 +72,9 @@ public class SystemPropertiesTest {
 
     @Test
     public void shouldReadVisitTypeToEncounterClassMap() throws Exception {
-        Properties visitTypeProperties = new Properties();
-        visitTypeProperties.setProperty(PropertyKeyConstants.VISIT_TYPE_TO_ENCOUNTER_CLASS_MAP, "{\"OPD\":\"AMB\",\"Field\":\"FF\"}");
-        SystemProperties systemProperties = new SystemProperties(null, null, null, null, null, null, visitTypeProperties);
+        Properties fhirMappingProperties = new Properties();
+        fhirMappingProperties.setProperty(PropertyKeyConstants.VISIT_TYPE_TO_ENCOUNTER_CLASS_MAP, "{\"OPD\":\"AMB\",\"Field\":\"FF\"}");
+        SystemProperties systemProperties = new SystemProperties(null, null, null, null, null, null, fhirMappingProperties);
         HashMap<String, String> visitTypeToEncounterClassMap = systemProperties.getVisitTypeToEncounterClassMap();
         assertEquals("AMB", visitTypeToEncounterClassMap.get("OPD"));
         assertEquals("FF", visitTypeToEncounterClassMap.get("Field"));

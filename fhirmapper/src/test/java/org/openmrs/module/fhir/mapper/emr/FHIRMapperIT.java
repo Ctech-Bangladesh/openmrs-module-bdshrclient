@@ -59,6 +59,8 @@ public class FHIRMapperIT extends BaseModuleWebContextSensitiveTest {
 
         ShrEncounterBundle encounterComposition = new ShrEncounterBundle(encounterBundle, "98101039678", "shr-enc-id");
         Encounter encounter = fhirMapper.map(patient, encounterComposition, getSystemProperties("1"));
+        String encounterTypeFromText = encounter.getEncounterType().getName();
+        assertEquals("Registration", encounterTypeFromText);
 
         Set<Obs> topLevelObs = encounter.getObsAtTopLevel(false);
         assertEquals(1, topLevelObs.size());
@@ -275,6 +277,34 @@ public class FHIRMapperIT extends BaseModuleWebContextSensitiveTest {
 
         assertNotNull(emrEncounter);
         assertTrue(3 == emrEncounter.getLocation().getId());
+    }
+
+    @Test
+    public void shouldMapCodeableConceptEncounterType() throws Exception {
+        executeDataSet("testDataSets/shrClientObservationsTestDs.xml");
+        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithTypeAsCodeableConcept.xml", springContext);
+
+        Patient patient = patientService.getPatient(1);
+
+        ShrEncounterBundle encounterComposition = new ShrEncounterBundle(encounterBundle, "98101039678", "shr-enc-id");
+        Encounter encounter = fhirMapper.map(patient, encounterComposition, getSystemProperties("1"));
+        String encounterTypeFromCodeableConcept = encounter.getEncounterType().getName();
+        assertEquals("Registration", encounterTypeFromCodeableConcept);
+
+    }
+
+    @Test
+    public void shouldMapCodeableConceptEncounterTypeFromProperties() throws Exception {
+        executeDataSet("testDataSets/shrClientObservationsTestDs.xml");
+        Bundle encounterBundle = (Bundle) new MapperTestHelper().loadSampleFHIREncounter("encounterBundles/stu3/encounterWithTypeAsMemReg.xml", springContext);
+
+        Patient patient = patientService.getPatient(1);
+
+        ShrEncounterBundle encounterComposition = new ShrEncounterBundle(encounterBundle, "98101039678", "shr-enc-id");
+        Encounter encounter = fhirMapper.map(patient, encounterComposition, getSystemProperties("1"));
+        String encounterTypeFromCodeableConcept = encounter.getEncounterType().getName();
+        assertEquals("Member Registration", encounterTypeFromCodeableConcept);
+
     }
 
     private void assertCreatedConcept(Concept concept, String expectedShortName) {

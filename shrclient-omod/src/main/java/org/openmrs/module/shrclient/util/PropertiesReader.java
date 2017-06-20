@@ -52,8 +52,8 @@ public class PropertiesReader {
         return getProperties("facility_instance.properties");
     }
 
-    public Properties getVisitTypeProperties() {
-        return getProperties("visit_type.properties");
+    public Properties getFhirMappingProperties() {
+        return getProperties("fhir_mapping.properties");
     }
 
     private Map<String, Properties> allProperties = new HashMap<String, Properties>();

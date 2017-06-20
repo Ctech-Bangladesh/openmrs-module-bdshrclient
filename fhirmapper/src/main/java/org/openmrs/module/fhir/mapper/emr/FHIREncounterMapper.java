@@ -2,6 +2,8 @@ package org.openmrs.module.fhir.mapper.emr;
 
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Composition;
 import org.hl7.fhir.dstu3.model.Encounter;
 import org.hl7.fhir.dstu3.model.Reference;
@@ -25,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import static org.apache.commons.lang3.StringUtils.*;
 import static org.openmrs.module.fhir.OpenMRSConstants.ORGANIZATION_ATTRIBUTE_TYPE;
 
 @Component
@@ -61,9 +64,14 @@ public class FHIREncounterMapper {
         }
     }
 
-    public EncounterType getEncounterType(Encounter fhirEncounter) {
-        String encounterTypeName = fhirEncounter.getType().get(0).getText();
-        return encounterService.getEncounterType(encounterTypeName);
+    public EncounterType getEncounterType(Encounter fhirEncounter, SystemProperties systemProperties) {
+        CodeableConcept encounterTypeCodeableConcept = fhirEncounter.getTypeFirstRep();
+        if (encounterTypeCodeableConcept.getCodingFirstRep().isEmpty()) {
+            return encounterService.getEncounterType(encounterTypeCodeableConcept.getText());
+        }
+        String fhirEncounterType = encounterTypeCodeableConcept.getCodingFirstRep().getCode();
+        String mrsEncounterType = systemProperties.getFhirToMrsEncounterTypeMap().get(fhirEncounterType);
+        return isNotBlank(mrsEncounterType) ? encounterService.getEncounterType(mrsEncounterType) : encounterService.getEncounterType(fhirEncounterType);
     }
 
     public org.openmrs.Encounter getOrCreateEmrEncounter(String fhirEncounterId) {

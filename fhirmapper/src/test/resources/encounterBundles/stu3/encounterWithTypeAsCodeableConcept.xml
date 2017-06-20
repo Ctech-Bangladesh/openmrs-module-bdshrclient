@@ -78,7 +78,11 @@
                     <code value="AMB"/>
                 </class>
                 <type>
-                    <text value="Registration"/>
+                    <coding>
+                        <system value="http://tr.com/valuesets/"/>
+                        <code value="Registration"/>
+                        <display value="Registration"/>
+                    </coding>
                 </type>
                 <subject>
                     <reference value="http://172.18.46.56:8081/api/v1/patients/98101039678"/>

@@ -233,7 +233,7 @@ public class PatientPush implements EventWorker {
                 propertiesReader.getFacilityInstanceProperties(),
                 propertiesReader.getMciProperties(),
                 propertiesReader.getShrProperties(),
-                propertiesReader.getVisitTypeProperties());
+                propertiesReader.getFhirMappingProperties());
     }
 
     String getPatientUuid(Event event) {

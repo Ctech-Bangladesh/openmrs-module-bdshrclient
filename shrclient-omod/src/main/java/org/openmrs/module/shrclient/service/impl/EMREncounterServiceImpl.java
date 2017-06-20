@@ -122,7 +122,7 @@ public class EMREncounterServiceImpl implements EMREncounterService {
                 propertiesReader.getFacilityInstanceProperties(),
                 propertiesReader.getMciProperties(),
                 propertiesReader.getShrProperties(),
-                propertiesReader.getVisitTypeProperties());
+                propertiesReader.getFhirMappingProperties());
 
         ShrEncounterBundle shrEncounterBundle = new ShrEncounterBundle(bundle, healthId, shrEncounterId);
         org.openmrs.Encounter newEmrEncounter = fhirMapper.map(emrPatient, shrEncounterBundle, systemProperties);

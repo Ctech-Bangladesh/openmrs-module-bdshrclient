@@ -57,9 +57,11 @@ public class MapperTestHelper {
         shrProperties.put(PropertyKeyConstants.SHR_REFERENCE_PATH, "http://shr.com/");
         shrProperties.put(PropertyKeyConstants.SHR_PATIENT_ENC_PATH_PATTERN, "/patients/%s/encounters");
 
-        Properties visitTypeProperties = new Properties();
-        visitTypeProperties.put(PropertyKeyConstants.VISIT_TYPE_TO_ENCOUNTER_CLASS_MAP, "{\"home\":\"HH\",\"field\":\"FLD\",\"emergency\":\"EMER\",\"ambulatory\":\"AMB\",\"outpatient\":\"AMB\",\"OPD\":\"AMB\",\"inpatient\":\"IMP\",\"IPD\":\"IMP\"}");
-        return new SystemProperties(facilityRegistry, trProperties, providerRegistry, facilityInstanceProperties, mciProperties, shrProperties, visitTypeProperties);
+        Properties fhirMappingProperties = new Properties();
+        fhirMappingProperties.put(PropertyKeyConstants.VISIT_TYPE_TO_ENCOUNTER_CLASS_MAP, "{\"home\":\"HH\",\"field\":\"FLD\",\"emergency\":\"EMER\",\"ambulatory\":\"AMB\",\"outpatient\":\"AMB\",\"OPD\":\"AMB\",\"inpatient\":\"IMP\",\"IPD\":\"IMP\"}");
+        fhirMappingProperties.put(PropertyKeyConstants.MRS_ENCOUNTER_TYPE_TO_FHIR_ENCOUNTER_TYPE_MAP, "{\"Member Registration\":\"Registration\",\"Injection\":\"Vaccination\"}");
+        fhirMappingProperties.put(PropertyKeyConstants.FHIR_ENCOUNTER_TYPE_TO_MRS_ENCOUNTER_TYPE_MAP, "{\"Mem Reg\":\"Member Registration\"}");
+        return new SystemProperties(facilityRegistry, trProperties, providerRegistry, facilityInstanceProperties, mciProperties, shrProperties, fhirMappingProperties);
     }
 
     public static boolean containsCoding(List<Coding> coding, final String code, final String system, final String display) {

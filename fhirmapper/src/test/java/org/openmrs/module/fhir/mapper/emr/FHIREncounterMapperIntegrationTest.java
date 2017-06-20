@@ -5,6 +5,7 @@ import org.hl7.fhir.dstu3.model.Composition;
 import org.hl7.fhir.dstu3.model.Encounter;
 import org.junit.After;
 import org.junit.Test;
+import org.openmrs.EncounterType;
 import org.openmrs.api.PatientService;
 import org.openmrs.module.fhir.MapperTestHelper;
 import org.openmrs.module.fhir.mapper.model.ShrEncounterBundle;

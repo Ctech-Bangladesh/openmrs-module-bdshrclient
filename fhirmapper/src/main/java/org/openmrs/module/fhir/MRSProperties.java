@@ -84,14 +84,15 @@ public class MRSProperties {
     public static final String TR_VALUESET_IMMUNIZATION_STATUS = "Immunization Status";
     public static final String TR_VALUESET_PROCEDURE_OUTCOME = "Procedure Outcome";
     public static final String TR_VALUESET_PROCEDURE_STATUS = "Procedure Status";
-
     public static final String TR_CONDITION_CATEGORY_VALUESET_NAME = "Condition-Category";
+
     public static final String TR_CONDITION_CATEGORY_COMPLAINT_CODE = "complaint";
     public static final String TR_CONDITION_CATEGORY_COMPLAINT_DISPLAY = "Complaint";
     public static final String TR_CONDITION_CATEGORY_DIAGNOSIS_CODE = "diagnosis";
     public static final String TR_CONDITION_CODE_DIAGNOSIS_DISPLAY = "Diagnosis";
 
     public static final String TR_ORDER_TYPE_VALUESET_NAME = "Order-Type";
+    public static final String TR_VALUESET_FHIR_ENCOUNTER_TYPE = "Encounter-Type";
     public static final String TR_ORDER_TYPE_LAB_CODE = "LAB";
     public static final String TR_ORDER_TYPE_PROCEDURE_CODE = "PROCEDURE";
     public static final String TR_ORDER_TYPE_RADIOLOGY_CODE = "RAD";

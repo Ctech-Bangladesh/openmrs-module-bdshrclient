@@ -48,7 +48,7 @@ public class ProviderMapperTest extends BaseModuleWebContextSensitiveTest {
                 propertiesReader.getFacilityInstanceProperties(),
                 propertiesReader.getMciProperties(),
                 propertiesReader.getShrProperties(),
-                propertiesReader.getVisitTypeProperties());
+                propertiesReader.getFhirMappingProperties());
     }
 
     @Test

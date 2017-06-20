@@ -40,7 +40,7 @@ public class FHIRMapper {
         org.hl7.fhir.dstu3.model.Encounter fhirEncounter = FHIRBundleHelper.getEncounter(shrEncounterBundle.getBundle());
         Encounter openmrsEncounter = fhirEncounterMapper.map(emrPatient, shrEncounterBundle, systemProperties);
 
-        addEncounterType(fhirEncounter, openmrsEncounter);
+        addEncounterType(fhirEncounter, openmrsEncounter, systemProperties);
         addEncounterLocation(fhirEncounter, openmrsEncounter);
         addEncounterProviders(fhirEncounter, openmrsEncounter);
 
@@ -65,8 +65,8 @@ public class FHIRMapper {
         openmrsEncounter.setLocation(facilityLocation);
     }
 
-    public void addEncounterType(org.hl7.fhir.dstu3.model.Encounter fhirEncounter, Encounter openmrsEncounter) {
-        EncounterType encounterType = fhirEncounterMapper.getEncounterType(fhirEncounter);
+    public void addEncounterType(org.hl7.fhir.dstu3.model.Encounter fhirEncounter, Encounter openmrsEncounter, SystemProperties systemProperties) {
+        EncounterType encounterType = fhirEncounterMapper.getEncounterType(fhirEncounter, systemProperties);
         openmrsEncounter.setEncounterType(encounterType);
     }
 

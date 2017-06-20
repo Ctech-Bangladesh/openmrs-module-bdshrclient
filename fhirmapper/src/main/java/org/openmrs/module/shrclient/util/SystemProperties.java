@@ -18,19 +18,19 @@ public class SystemProperties {
     private Properties facilityInstanceProperties;
     private Properties mciProperties;
     private Properties shrProperties;
-    private Properties visitTypeProperties;
+    private Properties fhirMappingProperties;
 
     public SystemProperties(Properties frProperties,
                             Properties trProperties, Properties prProperties,
                             Properties facilityInstanceProperties,
-                            Properties mciProperties, Properties shrProperties, Properties visitTypeProperties) {
+                            Properties mciProperties, Properties shrProperties, Properties fhirMappingProperties) {
         this.frProperties = frProperties;
         this.trProperties = trProperties;
         this.prProperties = prProperties;
         this.facilityInstanceProperties = facilityInstanceProperties;
         this.mciProperties = mciProperties;
         this.shrProperties = shrProperties;
-        this.visitTypeProperties = visitTypeProperties;
+        this.fhirMappingProperties = fhirMappingProperties;
     }
 
     public String getFacilityId() {
@@ -74,15 +74,23 @@ public class SystemProperties {
     }
 
     public HashMap<String, String> getVisitTypeToEncounterClassMap() {
-        String property = visitTypeProperties.getProperty(VISIT_TYPE_TO_ENCOUNTER_CLASS_MAP);
+        String property = fhirMappingProperties.getProperty(VISIT_TYPE_TO_ENCOUNTER_CLASS_MAP);
         return getMap(property);
-
     }
 
     public HashMap<String, String> getEncounterClassToVisitTypeMap() {
-        String property = visitTypeProperties.getProperty(ENCOUNTER_CLASS_TO_VISIT_TYPE_MAP);
+        String property = fhirMappingProperties.getProperty(ENCOUNTER_CLASS_TO_VISIT_TYPE_MAP);
         return getMap(property);
+    }
 
+    public HashMap<String, String> getMrsToFHIREncounterTypeMap() {
+        String property = fhirMappingProperties.getProperty(MRS_ENCOUNTER_TYPE_TO_FHIR_ENCOUNTER_TYPE_MAP);
+        return getMap(property);
+    }
+
+    public HashMap<String, String> getFhirToMrsEncounterTypeMap() {
+        String property = fhirMappingProperties.getProperty(FHIR_ENCOUNTER_TYPE_TO_MRS_ENCOUNTER_TYPE_MAP);
+        return getMap(property);
     }
 
     private HashMap<String, String> getMap(String property) {
@@ -93,7 +101,7 @@ public class SystemProperties {
         try {
             return objectMapper.readValue(property, typeRef);
         } catch (IOException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 }

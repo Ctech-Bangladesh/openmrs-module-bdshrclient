@@ -16,15 +16,12 @@ import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.FHIREncounter;
 import org.openmrs.module.fhir.utils.OMRSLocationService;
 import org.openmrs.module.fhir.utils.ProviderLookupService;
-import org.openmrs.module.shrclient.util.StringUtil;
 import org.openmrs.module.shrclient.util.SystemProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
 import java.util.Set;
-
-import static org.hl7.fhir.dstu3.model.codesystems.V3ActCode.*;
 
 @Component
 public class EncounterMapper {
@@ -39,12 +36,12 @@ public class EncounterMapper {
     public FHIREncounter map(org.openmrs.Encounter openMrsEncounter, String healthId, SystemProperties systemProperties) {
         Encounter encounter = new Encounter();
         encounter.setStatus(Encounter.EncounterStatus.FINISHED);
-        setClass(openMrsEncounter, encounter , systemProperties);
+        setClass(openMrsEncounter, encounter, systemProperties);
         setPatientReference(healthId, encounter, systemProperties);
         setParticipant(openMrsEncounter, encounter);
         encounter.setServiceProvider(getServiceProvider(openMrsEncounter, systemProperties));
         setIdentifiers(encounter, openMrsEncounter, systemProperties);
-        setType(encounter, openMrsEncounter);
+        setType(encounter, openMrsEncounter, systemProperties);
         setPeriod(encounter, openMrsEncounter);
         return new FHIREncounter(encounter);
     }
@@ -57,8 +54,18 @@ public class EncounterMapper {
         encounter.setPeriod(visitPeriod);
     }
 
-    private void setType(Encounter encounter, org.openmrs.Encounter openMrsEncounter) {
-        encounter.addType().setText(openMrsEncounter.getEncounterType().getName());
+    private void setType(Encounter encounter, org.openmrs.Encounter openMrsEncounter, SystemProperties systemProperties) {
+        CodeableConcept encounterType = encounter.addType();
+        Coding coding = encounterType.addCoding();
+        coding.setSystem(systemProperties.createValueSetUrlFor(MRSProperties.TR_VALUESET_FHIR_ENCOUNTER_TYPE));
+
+        String mrsEncounterType = openMrsEncounter.getEncounterType().getName();
+        String fhirEncounterType = systemProperties.getMrsToFHIREncounterTypeMap().get(mrsEncounterType);
+        if (StringUtils.isEmpty(fhirEncounterType))
+            fhirEncounterType = mrsEncounterType;
+        coding.setCode(fhirEncounterType);
+        coding.setDisplay(fhirEncounterType);
+
     }
 
     private void setIdentifiers(Encounter encounter, org.openmrs.Encounter openMrsEncounter, SystemProperties systemProperties) {
@@ -76,10 +83,9 @@ public class EncounterMapper {
     }
 
     private void setClass(org.openmrs.Encounter openMrsEncounter, Encounter encounter, SystemProperties systemProperties) {
-        //todo : need to be discussed for now let's map it in code like inpatient => IPD, outpatient => OPD
         String visitType = openMrsEncounter.getVisit().getVisitType().getName();
         String encounterClass = systemProperties.getVisitTypeToEncounterClassMap().get(visitType);
-        if(StringUtils.isBlank(encounterClass) )
+        if (StringUtils.isBlank(encounterClass))
             encounterClass = FHIRProperties.DEFAULT_ENCOUNTER_CLASS;
 
         Coding coding = getCodingForClass(encounterClass);

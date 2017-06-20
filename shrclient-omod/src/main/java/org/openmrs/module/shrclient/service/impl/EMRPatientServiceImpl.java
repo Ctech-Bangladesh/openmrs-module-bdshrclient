@@ -329,7 +329,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
                 propertiesReader.getFacilityInstanceProperties(),
                 propertiesReader.getMciProperties(),
                 propertiesReader.getShrProperties(),
-                propertiesReader.getVisitTypeProperties());
+                propertiesReader.getFhirMappingProperties());
         String url = new EntityReference().build(org.openmrs.Patient.class, systemProperties, healthId);
         idMappingsRepository.saveOrUpdateIdMapping(new PatientIdMapping(patientUuid, healthId, url, new Date(), new Date(), serverModifiedTime));
     }
