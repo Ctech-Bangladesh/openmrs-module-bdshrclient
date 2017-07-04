@@ -230,7 +230,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
     }
 
     private IdentifierSource getIdentifierSource(IdentifierSourceService identifierSourceService, PatientIdentifierType identifierType) {
-        String defaultPatientIdSourceId = globalPropertyLookUpService.getGlobalPropertyValue(MRSProperties.GLOBAL_PROPERTY_DEFAULT_IDENTIFIER_TYPE_ID);
+        String defaultPatientIdSourceId = globalPropertyLookUpService.getGlobalPropertyValue(MRSProperties.GLOBAL_PROPERTY_DEFAULT_IDENTIFIER_SOURCE_ID);
         if (defaultPatientIdSourceId != null)
             return identifierSourceService.getIdentifierSource(Integer.parseInt(defaultPatientIdSourceId));
         else {
