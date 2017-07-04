@@ -125,8 +125,8 @@ public class MRSProperties {
     public static final String GLOBAL_PROPERTY_SHR_SYSTEM_USER_TAG = "shr.system.user";
     public static final String GLOBAL_PROPERTY_SHR_CATEGORY_EVENT = "shr.system.shrCategoryForEncounterEvents";
 
-    public static final String GLOBAL_PROPERTY_EMR_PRIMARY_IDENTIFIER_TYPE = "emr.primaryIdentifierType";
-    public static final String GLOBAL_PROPERTY_DEFAULT_IDENTIFIER_TYPE_ID = "shr.defaultPatientIdentifierSourceId";
+    public static final String GLOBAL_PROPERTY_EMR_PRIMARY_IDENTIFIER_TYPE = "bahmni.primaryIdentifierType";
+    public static final String GLOBAL_PROPERTY_DEFAULT_IDENTIFIER_SOURCE_ID = "shr.defaultPatientIdentifierSourceId";
     public static final String GLOBAL_PROPERTY_FIELD_WORKER_ROLE_NAME = "user.fieldWorkerRoleName";
 
     public static final String BAHMNI_DRUG_ORDER_ADDITIONAL_INSTRCTIONS_KEY = "additionalInstructions";
