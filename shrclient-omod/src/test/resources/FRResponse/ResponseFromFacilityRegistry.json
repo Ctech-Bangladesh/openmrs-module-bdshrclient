@@ -1,0 +1,422 @@
+[
+    {
+        "name": "Dhaka Divisional Health Office",
+        "url": "",
+        "id": "10000001",
+        "active": "1",
+        "createdAt": "",
+        "updatedAt": "-0001-11-30 00:00:00",
+        "coordinates": [
+            "90.39659940000001",
+            "23.742545"
+        ],
+        "identifiers": {
+            "agency": "DGHS",
+            "context": "HRM",
+            "id": "1"
+        },
+        "properties": {
+            "ownership": "Fully Government-owned",
+            "org_type": "Divisional Level Office",
+            "org_level": "National",
+            "care_level": "",
+            "services": [],
+            "locations": {
+                "division_code": "30",
+                "district_code": "26",
+                "upazila_code": "1",
+                "paurasava_code": "",
+                "union_code": "",
+                "ward_code": ""
+            },
+            "contacts": {
+                "name": "",
+                "email": "ddho@ld.dghs.gov.bd",
+                "phone": "9560909",
+                "mobile": "001711956722",
+                "fax": "9561531"
+            },
+            "catchment": [
+                "30261"
+            ]
+        }
+    },
+    {
+        "name": "Directorate General of Health Services (DGHS) Mohakhali, Dhaka",
+        "url": "",
+        "id": "10000002",
+        "active": "1",
+        "createdAt": "",
+        "updatedAt": "-0001-11-30 00:00:00",
+        "coordinates": [
+            "90.399004",
+            "23.780868"
+        ],
+        "identifiers": {
+            "agency": "DGHS",
+            "context": "HRM",
+            "id": "2"
+        },
+        "properties": {
+            "ownership": "Fully Government-owned",
+            "org_type": "Directorate General or Directorate",
+            "org_level": "National",
+            "care_level": "",
+            "services": [],
+            "locations": {
+                "division_code": "30",
+                "district_code": "26",
+                "upazila_code": "1",
+                "paurasava_code": "",
+                "union_code": "",
+                "ward_code": ""
+            },
+            "contacts": {
+                "name": "",
+                "email": "dg@ld.dghs.gov.bd",
+                "phone": "9899516",
+                "mobile": "0",
+                "fax": "9886415"
+            },
+            "catchment": [
+                "30261"
+            ]
+        }
+    },
+    {
+        "name": "Institute of Epidemiology Disease Control & Research(IEDC&R)  Mohakhali  Dhaka",
+        "url": "",
+        "id": "10000003",
+        "active": "1",
+        "createdAt": "",
+        "updatedAt": "-0001-11-30 00:00:00",
+        "coordinates": [
+            "0",
+            "0"
+        ],
+        "identifiers": {
+            "agency": "DGHS",
+            "context": "HRM",
+            "id": "3"
+        },
+        "properties": {
+            "ownership": "Fully Government-owned",
+            "org_type": "Public Health Institution",
+            "org_level": "National",
+            "care_level": "",
+            "services": [],
+            "locations": {
+                "division_code": "30",
+                "district_code": "26",
+                "upazila_code": "1",
+                "paurasava_code": "",
+                "union_code": "",
+                "ward_code": ""
+            },
+            "contacts": {
+                "name": "",
+                "email": "iedcr@ld.dghs.gov.bd",
+                "phone": "",
+                "mobile": "0",
+                "fax": "0\r"
+            },
+            "catchment": [
+                "30261"
+            ]
+        }
+    },
+    {
+        "name": "Institute of Public Health (IPH)- Mohakhali- Dhaka",
+        "url": "",
+        "id": "10000004",
+        "active": "1",
+        "createdAt": "",
+        "updatedAt": "-0001-11-30 00:00:00",
+        "coordinates": [
+            "0",
+            "0"
+        ],
+        "identifiers": {
+            "agency": "DGHS",
+            "context": "HRM",
+            "id": "4"
+        },
+        "properties": {
+            "ownership": "Fully Government-owned",
+            "org_type": "Public Health Institution",
+            "org_level": "National",
+            "care_level": "",
+            "services": [],
+            "locations": {
+                "division_code": "30",
+                "district_code": "26",
+                "upazila_code": "1",
+                "paurasava_code": "",
+                "union_code": "",
+                "ward_code": ""
+            },
+            "contacts": {
+                "name": "",
+                "email": "iph@ld.dghs.gov.bd",
+                "phone": "",
+                "mobile": "0",
+                "fax": "0\r"
+            },
+            "catchment": [
+                "30261"
+            ]
+        }
+    },
+    {
+        "name": "Institute of Public Health Nutrition (IPHN)- Mohakhali- Dhaka",
+        "url": "",
+        "id": "10000005",
+        "active": "1",
+        "createdAt": "",
+        "updatedAt": "-0001-11-30 00:00:00",
+        "coordinates": [
+            "0",
+            "0"
+        ],
+        "identifiers": {
+            "agency": "DGHS",
+            "context": "HRM",
+            "id": "5"
+        },
+        "properties": {
+            "ownership": "Fully Government-owned",
+            "org_type": "Public Health Institution",
+            "org_level": "National",
+            "care_level": "",
+            "services": [],
+            "locations": {
+                "division_code": "30",
+                "district_code": "26",
+                "upazila_code": "1",
+                "paurasava_code": "",
+                "union_code": "",
+                "ward_code": ""
+            },
+            "contacts": {
+                "name": "",
+                "email": "iphn@ld.dghs.gov.bd",
+                "phone": "8821361",
+                "mobile": "0",
+                "fax": "0\r"
+            },
+            "catchment": [
+                "30261"
+            ]
+        }
+    },
+    {
+        "name": "National Institute of Cancer Research and Hospital (NICR&H)- Mohakhali- Dhaka",
+        "url": "",
+        "id": "10000006",
+        "active": "1",
+        "createdAt": "",
+        "updatedAt": "-0001-11-30 00:00:00",
+        "coordinates": [
+            "90.375",
+            "23.7"
+        ],
+        "identifiers": {
+            "agency": "DGHS",
+            "context": "HRM",
+            "id": "6"
+        },
+        "properties": {
+            "ownership": "Fully Government-owned",
+            "org_type": "Specialty Postgraduate Institute & Hospital",
+            "org_level": "National",
+            "care_level": "",
+            "services": [],
+            "locations": {
+                "division_code": "30",
+                "district_code": "26",
+                "upazila_code": "1",
+                "paurasava_code": "",
+                "union_code": "",
+                "ward_code": ""
+            },
+            "contacts": {
+                "name": "",
+                "email": "nicrh@hospi.dghs.gov.bd",
+                "phone": "9880078",
+                "mobile": "1819239017",
+                "fax": "9880078"
+            },
+            "catchment": [
+                "30261"
+            ]
+        }
+    },
+    {
+        "name": "National Institute of Cardiovascular Disease (NICVD)- Sher-e-Bangla Nagar- Dhaka",
+        "url": "",
+        "id": "10000007",
+        "active": "1",
+        "createdAt": "",
+        "updatedAt": "-0001-11-30 00:00:00",
+        "coordinates": [
+            "0",
+            "0"
+        ],
+        "identifiers": {
+            "agency": "DGHS",
+            "context": "HRM",
+            "id": "7"
+        },
+        "properties": {
+            "ownership": "Fully Government-owned",
+            "org_type": "Specialty Postgraduate Institute & Hospital",
+            "org_level": "National",
+            "care_level": "",
+            "services": [],
+            "locations": {
+                "division_code": "30",
+                "district_code": "26",
+                "upazila_code": "1",
+                "paurasava_code": "",
+                "union_code": "",
+                "ward_code": ""
+            },
+            "contacts": {
+                "name": "",
+                "email": "nicvd@hospi.dghs.gov.bd",
+                "phone": "8142806",
+                "mobile": "1819223140",
+                "fax": "880-2-8110986"
+            },
+            "catchment": [
+                "30261"
+            ]
+        }
+    },
+    {
+        "name": "National Institute of Chest Disease and Hospital (NIDCH)- Mohakhali- Dhaka",
+        "url": "",
+        "id": "10000008",
+        "active": "1",
+        "createdAt": "",
+        "updatedAt": "-0001-11-30 00:00:00",
+        "coordinates": [
+            "90.375",
+            "23.7"
+        ],
+        "identifiers": {
+            "agency": "DGHS",
+            "context": "HRM",
+            "id": "8"
+        },
+        "properties": {
+            "ownership": "Fully Government-owned",
+            "org_type": "Specialty Postgraduate Institute & Hospital",
+            "org_level": "National",
+            "care_level": "",
+            "services": [],
+            "locations": {
+                "division_code": "30",
+                "district_code": "26",
+                "upazila_code": "1",
+                "paurasava_code": "",
+                "union_code": "",
+                "ward_code": ""
+            },
+            "contacts": {
+                "name": "",
+                "email": "nidch@hospi.dghs.gov.bd",
+                "phone": "8811910",
+                "mobile": "1711561489",
+                "fax": "29899424"
+            },
+            "catchment": [
+                "30261"
+            ]
+        }
+    },
+    {
+        "name": "National Institute of Kidney Disease and Urology (NIKD&U)- Sher-e-Bangla Nagar- Dhaka",
+        "url": "",
+        "id": "10000009",
+        "active": "1",
+        "createdAt": "",
+        "updatedAt": "-0001-11-30 00:00:00",
+        "coordinates": [
+            "0",
+            "0"
+        ],
+        "identifiers": {
+            "agency": "DGHS",
+            "context": "HRM",
+            "id": "9"
+        },
+        "properties": {
+            "ownership": "Fully Government-owned",
+            "org_type": "Specialty Postgraduate Institute & Hospital",
+            "org_level": "National",
+            "care_level": "",
+            "services": [],
+            "locations": {
+                "division_code": "30",
+                "district_code": "26",
+                "upazila_code": "1",
+                "paurasava_code": "",
+                "union_code": "",
+                "ward_code": ""
+            },
+            "contacts": {
+                "name": "",
+                "email": "nikdu@hospi.dghs.gov.bd",
+                "phone": "2147483647",
+                "mobile": "1711545023",
+                "fax": "-9106152"
+            },
+            "catchment": [
+                "30261"
+            ]
+        }
+    },
+    {
+        "name": "National Institute of Mental Health & Research (NIMH&R)- Sher-e-Bangla Nagar- Dhaka",
+        "url": "",
+        "id": "10000010",
+        "active": "1",
+        "createdAt": "",
+        "updatedAt": "-0001-11-30 00:00:00",
+        "coordinates": [
+            "0",
+            "0"
+        ],
+        "identifiers": {
+            "agency": "DGHS",
+            "context": "HRM",
+            "id": "10"
+        },
+        "properties": {
+            "ownership": "Fully Government-owned",
+            "org_type": "Specialty Postgraduate Institute & Hospital",
+            "org_level": "National",
+            "care_level": "",
+            "services": [],
+            "locations": {
+                "division_code": "30",
+                "district_code": "26",
+                "upazila_code": "1",
+                "paurasava_code": "",
+                "union_code": "",
+                "ward_code": ""
+            },
+            "contacts": {
+                "name": "",
+                "email": "nimhr@hospi.dghs.gov.bd",
+                "phone": "9118171",
+                "mobile": "01711027705",
+                "fax": "02-9111362"
+            },
+            "catchment": [
+                "30261"
+            ]
+        }
+    }
+]

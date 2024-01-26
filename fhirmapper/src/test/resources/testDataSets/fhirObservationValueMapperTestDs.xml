@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <concept_reference_source concept_source_id="1" name="ATC" creator="1" date_created="2004-08-12 00:00:00.0"
+                              uuid="b5e44116-778f-11e2-ad73-903c7bb72694"/>
+    <!--Drug concepts-->
+    <concept concept_id="301" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_name_id="301" concept_id="301" name="Lactic Acid" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_reference_term concept_reference_term_id="9" concept_source_id="1" code="G01AD01" name="lactic acid"
+                            creator="1" date_created="2004-08-12 00:00:00.0" retired="0"
+                            uuid="baef67ac-b24e-ab04-7028-c3b994132b85"></concept_reference_term>
+    <concept_reference_map concept_map_id="9" concept_id="301" concept_reference_term_id="9" concept_map_type_id="1"
+                           creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-93kf-ix3d-c3b994132b85"/>
+    <drug drug_id="301" concept_id="301" name="Lactic Acid" combination="true" creator="1"
+          date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00b94-26fe-102b-80cb-0017a47871b2"/>
+    <shr_id_mapping id="1" internal_id="baef67ac-b24e-ab04-7028-c3b994132b85" external_id="101"
+                    type="concept_reference_term" uri="http://tr.com/ws/rest/v1/tr/referenceterms/101"></shr_id_mapping>
+    <shr_id_mapping id="2" internal_id="7f7379ba-3ca8-11e3-bf2b-0800271c1b75" external_id="102" type="concept"
+                    uri="http://tr.com/ws/rest/v1/tr/concepts/102"></shr_id_mapping>
+    <shr_id_mapping id="3" internal_id="42f00b94-26fe-102b-80cb-0017a47871b2" external_id="104" type="medication"
+                    uri="http://tr.com/ws/rest/v1/tr/drugs/104"></shr_id_mapping>
+    <!--Drug concepts-->
+</dataset>

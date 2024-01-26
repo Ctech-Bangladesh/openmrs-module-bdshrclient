@@ -1,0 +1,342 @@
+[
+    {
+        "code": "1004092001",
+        "id": "1004092001",
+        "name": "URBAN WARD NO-01",
+        "type": "union",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "09",
+                "name": "AMTALI",
+                "type": "upazila"
+            },
+            {
+                "code": "20",
+                "name": "AMTALI PAURASAVA",
+                "type": "paurasava"
+            },
+            {
+                "code": "01",
+                "name": "URBAN WARD NO-01",
+                "type": "union"
+            }
+        ]
+    },
+    {
+        "code": "1004092002",
+        "id": "1004092002",
+        "name": "URBAN WARD NO-02",
+        "type": "union",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "09",
+                "name": "AMTALI",
+                "type": "upazila"
+            },
+            {
+                "code": "20",
+                "name": "AMTALI PAURASAVA",
+                "type": "paurasava"
+            },
+            {
+                "code": "02",
+                "name": "URBAN WARD NO-02",
+                "type": "union"
+            }
+        ]
+    },
+    {
+        "code": "1004092003",
+        "id": "1004092003",
+        "name": "URBAN WARD NO-03",
+        "type": "union",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "09",
+                "name": "AMTALI",
+                "type": "upazila"
+            },
+            {
+                "code": "20",
+                "name": "AMTALI PAURASAVA",
+                "type": "paurasava"
+            },
+            {
+                "code": "03",
+                "name": "URBAN WARD NO-03",
+                "type": "union"
+            }
+        ]
+    },
+    {
+        "code": "1004092004",
+        "id": "1004092004",
+        "name": "URBAN WARD NO-04",
+        "type": "union",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "09",
+                "name": "AMTALI",
+                "type": "upazila"
+            },
+            {
+                "code": "20",
+                "name": "AMTALI PAURASAVA",
+                "type": "paurasava"
+            },
+            {
+                "code": "04",
+                "name": "URBAN WARD NO-04",
+                "type": "union"
+            }
+        ]
+    },
+    {
+        "code": "1004092005",
+        "id": "1004092005",
+        "name": "URBAN WARD NO-05",
+        "type": "union",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "09",
+                "name": "AMTALI",
+                "type": "upazila"
+            },
+            {
+                "code": "20",
+                "name": "AMTALI PAURASAVA",
+                "type": "paurasava"
+            },
+            {
+                "code": "05",
+                "name": "URBAN WARD NO-05",
+                "type": "union"
+            }
+        ]
+    },
+    {
+        "code": "1004092006",
+        "id": "1004092006",
+        "name": "URBAN WARD NO-06",
+        "type": "union",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "09",
+                "name": "AMTALI",
+                "type": "upazila"
+            },
+            {
+                "code": "20",
+                "name": "AMTALI PAURASAVA",
+                "type": "paurasava"
+            },
+            {
+                "code": "06",
+                "name": "URBAN WARD NO-06",
+                "type": "union"
+            }
+        ]
+    },
+    {
+        "code": "1004092007",
+        "id": "1004092007",
+        "name": "URBAN WARD NO-07",
+        "type": "union",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "09",
+                "name": "AMTALI",
+                "type": "upazila"
+            },
+            {
+                "code": "20",
+                "name": "AMTALI PAURASAVA",
+                "type": "paurasava"
+            },
+            {
+                "code": "07",
+                "name": "URBAN WARD NO-07",
+                "type": "union"
+            }
+        ]
+    },
+    {
+        "code": "1004092008",
+        "id": "1004092008",
+        "name": "URBAN WARD NO-08",
+        "type": "union",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "09",
+                "name": "AMTALI",
+                "type": "upazila"
+            },
+            {
+                "code": "20",
+                "name": "AMTALI PAURASAVA",
+                "type": "paurasava"
+            },
+            {
+                "code": "08",
+                "name": "URBAN WARD NO-08",
+                "type": "union"
+            }
+        ]
+    },
+    {
+        "code": "1004092009",
+        "id": "1004092009",
+        "name": "URBAN WARD NO-09",
+        "type": "union",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "09",
+                "name": "AMTALI",
+                "type": "upazila"
+            },
+            {
+                "code": "20",
+                "name": "AMTALI PAURASAVA",
+                "type": "paurasava"
+            },
+            {
+                "code": "09",
+                "name": "URBAN WARD NO-09",
+                "type": "union"
+            }
+        ]
+    },
+    {
+        "code": "1004099913",
+        "id": "1004099913",
+        "name": "AMTALI",
+        "type": "union",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "09",
+                "name": "AMTALI",
+                "type": "upazila"
+            },
+            {
+                "code": "99",
+                "name": "Unions of AMTALI Upazila",
+                "type": "paurasava"
+            },
+            {
+                "code": "13",
+                "name": "AMTALI",
+                "type": "union"
+            }
+        ]
+    }
+]

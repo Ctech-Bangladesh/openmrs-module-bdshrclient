@@ -1,0 +1,59 @@
+{
+  "http_status": 200,
+  "results": [
+    {
+      "hid": "11408769630",
+      "nid": "9000001191832",
+      "uid": "63113530122",
+      "bin_brn": "12150220121256780",
+      "given_name": "house 1",
+      "sur_name": "patient",
+      "gender": "F",
+      "date_of_birth": "2000-02-29T00:00:00.000+05:30",
+      "present_address": {
+        "address_line": "Testnew",
+        "division_id": "30",
+        "district_id": "26",
+        "upazila_id": "11",
+        "country_code": "050"
+      },
+      "active": true
+    },
+    {
+      "hid": "11408923337",
+      "nid": "9000001151832",
+      "uid": "63113530122",
+      "bin_brn": "16343220121256780",
+      "given_name": "house 2",
+      "sur_name": "patient",
+      "gender": "F",
+      "date_of_birth": "2000-02-29T00:00:00.000+05:30",
+      "present_address": {
+        "address_line": "Testnew",
+        "division_id": "30",
+        "district_id": "26",
+        "upazila_id": "11",
+        "country_code": "050"
+      },
+      "active": true
+    },
+    {
+      "hid": "11408953847",
+      "nid": "9000001191832",
+      "uid": "63113530122",
+      "bin_brn": "16343220121256780",
+      "given_name": "house 3",
+      "sur_name": "patient",
+      "gender": "M",
+      "date_of_birth": "2000-02-29T00:00:00.000+05:30",
+      "present_address": {
+        "address_line": "Testnew",
+        "division_id": "30",
+        "district_id": "26",
+        "upazila_id": "11",
+        "country_code": "050"
+      },
+      "active": true
+    }
+  ]
+}

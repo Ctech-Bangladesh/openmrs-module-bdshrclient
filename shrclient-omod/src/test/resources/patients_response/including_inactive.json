@@ -1,0 +1,74 @@
+{
+  "http_status": 200,
+  "results": [
+    {
+      "hid": "98001000317",
+      "nid": "1434112171310",
+      "uid": "94112171310",
+      "bin_brn": "14341121713100000",
+      "given_name": "A89 805045",
+      "sur_name": "ATEST",
+      "gender": "M",
+      "date_of_birth": "2000-03-01T00:00:00.000+05:30",
+      "present_address": {
+        "address_line": "Test",
+        "division_id": "30",
+        "district_id": "26",
+        "upazila_id": "07",
+        "country_code": "050"
+      },
+      "phone_number": {
+        "country_code": "88",
+        "number": "01678904560"
+      },
+      "active": true
+    },
+    {
+      "hid": "98001000325",
+      "active": false,
+      "merged_with": "11421467785"
+    },
+    {
+      "hid": "98001000333",
+      "nid": "1434112187722",
+      "bin_brn": "14341121877220000",
+      "given_name": "A89 47125",
+      "sur_name": "ATEST",
+      "gender": "F",
+      "date_of_birth": "2000-03-01T00:00:00.000+05:30",
+      "present_address": {
+        "address_line": "Test",
+        "division_id": "30",
+        "district_id": "26",
+        "upazila_id": "07",
+        "country_code": "050"
+      },
+      "phone_number": {
+        "country_code": "88",
+        "number": "01678904560"
+      },
+      "active": true
+    },
+    {
+      "hid": "98001000341",
+      "nid": "1434110798907",
+      "bin_brn": "14341107989070000",
+      "given_name": "A89 560325",
+      "sur_name": "ATEST",
+      "gender": "M",
+      "date_of_birth": "2000-03-01T00:00:00.000+05:30",
+      "present_address": {
+        "address_line": "Test",
+        "division_id": "30",
+        "district_id": "26",
+        "upazila_id": "07",
+        "country_code": "050"
+      },
+      "phone_number": {
+        "country_code": "88",
+        "number": "01678904560"
+      },
+      "active": true
+    }
+  ]
+}

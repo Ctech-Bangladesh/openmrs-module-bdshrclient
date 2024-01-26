@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <!--Person and Patient setup-->
+    <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
+
+    <encounter_type encounter_type_id="2" name="OPD" description="Some desc 2" creator="1"
+                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
+
+    <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
+    <patient patient_id="1" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+    <person_name person_name_id="1" preferred="true" person_id="1" prefix="" given_name="firstName" middle_name=""
+                 family_name="lastName" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+                 voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
+    <patient_id_mapping id="1" internal_id="75e04d42-3ca8-11e3-bf2b-0800271c1b75" external_id="98104750156"
+                        uri="http:/localhost:9997/api/v1/patients/98104750156"/>
+
+
+    <care_setting care_setting_id="1" name="OutPatient" description="OutPatient" care_setting_type="OUTPATIENT"
+                  creator="1" date_created="2008-08-19 12:35:30.0" retired="false"
+                  uuid="6f0c9a92-6f24-11e3-af88-005056821db0"/>
+
+    <visit visit_id="1" date_started="2014-07-10 00:00:00" date_created="2014-07-10 00:00:00" patient_id="1"
+           visit_type_id="1" date_stopped="2014-07-10 23:59:59" location_id="2" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
+    <!--Person and Patient setup-->
+
+    <!--shr client system provider-->
+    <person person_id="2" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bf2b-080009861b75"/>
+    <person_name person_name_id="2" preferred="true" person_id="2" prefix="" given_name="shrclientsystem" middle_name=""
+                 family_name="system" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+                 voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07b12343cca"/>
+
+    <users user_id="777" person_id="2" system_id="3-6" username="shrclientsystem" retired="false"
+           password="ff6d1655327d385e11a04e1632b4f33ceb8fafd2" salt="5d32c5fd9fde391c755f1f4dfd5e1d6e3debe6"
+           secret_question="" creator="1" date_created="2008-08-15 15:46:47.0"
+           uuid="Z9fd3a7b-6482-487d-87eR-c07b123MxF99"/>
+
+    <provider provider_id="22" person_id="2" name="shrclientsystem" creator="1" date_created="2005-01-01 00:00:00.0"
+              retired="false" uuid="331c6bf8-7846-11e3-a96a-0900271c1b75"/>
+    <!--shr client system provider-->
+
+    <!--hie provider-->
+    <provider provider_id="23" identifier="812" name="demo provider" creator="1" date_created="2005-01-01 00:00:00.0"
+              retired="false" uuid="331c6bf8-7846-11e3-az6a-z9z0z7zc1b75"/>
+
+    <global_property property="shr.system.user" property_value="777" description="Shr System User" uuid="lkieyg88-efd9-fda3-2b99-z12aalsa677h"/>
+    <!--hie provider-->
+
+    <!--Create Procedure Order Type-->
+    <order_type order_type_id="16" name="Procedure Order" description="An order for procedures" creator="1"
+                java_class_name="org.openmrs.Order"
+                date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
+    <!--Create Procedure Order Type-->
+
+    <concept_reference_source concept_source_id="1" name="LOINC" creator="1" date_created="2004-08-12 00:00:00.0"
+                              uuid="b5e44116-778f-11e2-ad73-903c7bb72694"/>
+
+    <!--Procedure Colposcopy-->
+    <concept concept_id="107" retired="false" datatype_id="1" class_id="2" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7923d0e0-8734-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_name_id="9" concept_id="107" name="Colposcopy" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="252b58c0-872e-11f3-baa7-080X12Fc9a66" locale_preferred="0"/>
+    <shr_id_mapping id="1" internal_id="7923d0e0-8734-11e3-baa7-0800200c9a66"
+                    external_id="101" type="concept" uri="http://tr.com/ws/concepts/101"/>
+    <!--Procedure Colposcopy-->
+
+    <!--local procdure concept-->
+    <concept concept_id="108" retired="false" datatype_id="1" class_id="2" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7923d0e0-8734-11e3-4er2-0800200c9a66"/>
+    <concept_name concept_name_id="10" concept_id="108" name="Division of Brain" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="252b58c0-872e-9uj5-baa7-080X12Fc9a66" locale_preferred="0"/>
+    <!--local procdure concept-->
+
+
+    <!--encounter with procedure order -->
+    <encounter encounter_id="36" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-707a-4629-9850-f15206e63ab0"/>
+
+    <encounter_provider encounter_provider_id="2" encounter_id="36" provider_id="22" creator="1"
+                        date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>
+
+    <!--Procedure Order with tr concept-->
+    <orders order_id="17" order_type_id="16" encounter_id="36" urgency="ROUTINE" concept_id="107"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-17" order_action="NEW"
+            care_setting="1" date_created="2008-08-08 00:00:00.0" voided="false" patient_id="1" orderer="23"
+            comment_to_fulfiller="Some Notes" uuid="6d0ae386-707a-f123-16ws-f15206e63ab0"/>
+    <!--Procedure Order with tr concept-->
+    <!--encounter with procedure order-->
+
+    <!--Updated encounter having procedure orders-->
+    <encounter encounter_id="37" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-12se-4629-9850-f15206e63ab0"/>
+
+    <encounter_provider encounter_provider_id="3" encounter_id="37" provider_id="22" creator="1"
+                        date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6g0bf6767-707a-4329-2ws1-f15206e63ab0"/>
+
+    <!--Stopped Procedure Order-->
+    <orders order_id="19" order_type_id="16" encounter_id="37" urgency="ROUTINE" concept_id="107"
+            date_activated="2008-08-19 12:20:22.0" creator="1" order_number="ORD-19" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" date_stopped="2008-08-19 12:22:22.0"
+            voided="false" patient_id="1" orderer="23" comment_to_fulfiller="Some Notes"
+            uuid="6d0ae386-707a-43ed-16ws-f15206e63ab0"/>
+    <!--Stopped Procedure Order-->
+
+    <!--Discontinued Procedure Order with previous order id-->
+    <orders order_id="20" order_type_id="16" encounter_id="37" urgency="ROUTINE" concept_id="107"
+            date_activated="2008-08-19 12:22:22.0" creator="1" order_number="ORD-20" order_action="DISCONTINUE"
+            voided="false" patient_id="1" orderer="23" care_setting="1" date_created="2008-08-19 12:22:22.0"
+            previous_order_id="19" comment_to_fulfiller="Some Notes" uuid="6d0ae386-uj76-f123-16ws-f15206e63ab0"/>
+    <!--Discontinued Procedure Order with previous order id-->
+
+</dataset>

@@ -1,0 +1,86 @@
+{
+  "hid": "11421467785",
+  "nid": "7654376543127",
+  "bin_brn": "54098540985409815",
+  "given_name": "HouseHold",
+  "sur_name": "Patient",
+  "date_of_birth": "2015-02-15T00:00:00.000+05:30",
+  "dob_type": "1",
+  "gender": "F",
+  "uid": "54676546761",
+  "edu_level": "06",
+  "occupation": "09",
+  "phone_number": {
+    "number": "100"
+  },
+  "relations": [
+    {
+      "type": "FTH",
+      "name_bangla": "মোঃ সাকিব আলী খান",
+      "given_name": "Md. Sakib Ali",
+      "sur_name": "Khan",
+      "nid": "1951557890163",
+      "uid": "09811217611",
+      "bin_brn": "76545678901633456",
+      "hid": "58767890987",
+      "id": "9c50449e-6e62-11e5-9d70-feff819cdc9f"
+    },
+    {
+      "type": "MTH",
+      "name_bangla": "শবনম চৌধুরী",
+      "given_name": "Shana",
+      "sur_name": "Khan",
+      "nid": "1960567890163",
+      "uid": "03689119011",
+      "bin_brn": "92345678901633456",
+      "hid": "56456789098",
+      "id": "9c504700-6e62-11e5-9d70-feff819cdc9f"
+    },
+    {
+      "type": "SPS",
+      "name_bangla": "আজাদ খান",
+      "given_name": "Azad",
+      "sur_name": "Khan",
+      "nid": "1990567890163",
+      "uid": "38761111111",
+      "bin_brn": "52345678901633456",
+      "hid": "56789098765",
+      "marriage_id": "12345678",
+      "relational_status": "3",
+      "id": "9c504804-6e62-11e5-9d70-feff819cdc9f"
+    }
+
+  ],
+  "present_address": {
+    "address_line": "house",
+    "division_id": "30",
+    "district_id": "26",
+    "upazila_id": "18",
+    "country_code": "050"
+  },
+  "confidential": "No",
+  "household_code": "124",
+  "created_by": {
+    "facility": {
+      "id": "10019841",
+      "name": null
+    },
+    "provider": null,
+    "admin": null,
+    "active": true
+  },
+  "updated_by": {
+    "facility": {
+      "id": "10019841",
+      "name": null
+    },
+    "provider": null,
+    "admin": null
+  },
+  "status": {
+    "type": "1"
+  },
+  "modified": "2015-04-07T15:05:16.916+05:30",
+  "created": "2015-04-07T15:05:16.916+05:30",
+  "active": true
+}

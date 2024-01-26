@@ -1,0 +1,238 @@
+[
+  {
+    "name": "Dr. MD. Mizanur Rahman",
+    "url": "http://hrmtest.dghs.gov.bd/api/1.0/providers/18.json",
+    "id": 18,
+    "active": 1,
+    "createdAt": "-0001-11-30",
+    "updatedAt": "2014-11-27",
+    "birthDate": "1965-10-10",
+    "gender": "Male",
+    "organization": null,
+    "identifiers": [
+      {
+        "system": "DGHS",
+        "value": 18
+      },
+      {
+        "system": "NationalId",
+        "value": null
+      },
+      {
+        "system": "PDS",
+        "value": "40549"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "01819128542"
+      },
+      {
+        "system": "email",
+        "value": "drmizanur65@yahoo.com"
+      }
+    ],
+    "address": {
+      "text": "Upazila Health Complex, Doctor Quater, Patiya, Chi"
+    },
+    "properties": {
+      "postingOption": "Against Sanctioned Post ",
+      "maritalStatus": "Married",
+      "qualification": "D.D.V",
+      "category": "Physican",
+      "discipline": "N/A",
+      "department": null
+    }
+  },
+  {
+    "name": "Dr.Md. Alauddin",
+    "url": "http://hrmtest.dghs.gov.bd/api/1.0/providers/19.json",
+    "id": 19,
+    "active": 1,
+    "createdAt": "-0001-11-30",
+    "updatedAt": "2014-11-27",
+    "birthDate": "1955-01-01",
+    "gender": "Male",
+    "organization": null,
+    "identifiers": [
+      {
+        "system": "DGHS",
+        "value": 19
+      },
+      {
+        "system": "NationalId",
+        "value": null
+      },
+      {
+        "system": "PDS",
+        "value": "33312"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "01715139433"
+      },
+      {
+        "system": "email",
+        "value": ""
+      }
+    ],
+    "address": {
+      "text": "Mohisbathan,rajshahi"
+    },
+    "properties": {
+      "postingOption": "Against Sanctioned Post ",
+      "maritalStatus": "Married",
+      "qualification": "MBBS",
+      "category": "Physican",
+      "discipline": "N/A",
+      "department": null
+    }
+  },
+  {
+    "name": "Md. Rafiqul  Islam",
+    "url": "http://hrmtest.dghs.gov.bd/api/1.0/providers/20.json",
+    "id": 20,
+    "active": 1,
+    "createdAt": "-0001-11-30",
+    "updatedAt": "2014-06-08",
+    "birthDate": "1980-07-17",
+    "gender": "Male",
+    "organization": {
+      "reference": "http://hrmtest.dghs.gov.bd/api/1.0/facilities/1302.json",
+      "display": "Bhurungamari Upazila Health Complex"
+    },
+    "identifiers": [
+      {
+        "system": "DGHS",
+        "value": 20
+      },
+      {
+        "system": "NationalId",
+        "value": null
+      },
+      {
+        "system": "PDS",
+        "value": "0"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "01725546715"
+      },
+      {
+        "system": "email",
+        "value": ""
+      }
+    ],
+    "address": {
+      "text": "Upazila Health Complex bhurungamari,Kurigram"
+    },
+    "properties": {
+      "postingOption": "Against Sanctioned Post ",
+      "maritalStatus": "Married",
+      "qualification": "",
+      "category": "",
+      "discipline": "N/A",
+      "department": null
+    }
+  },
+  {
+    "name": "DR.SK.MD.MANZUR RAHMAN",
+    "url": "http://hrmtest.dghs.gov.bd/api/1.0/providers/22.json",
+    "id": 22,
+    "active": 1,
+    "createdAt": "-0001-11-30",
+    "updatedAt": "2014-11-27",
+    "birthDate": "1962-11-18",
+    "gender": "Male",
+    "organization": null,
+    "identifiers": [
+      {
+        "system": "DGHS",
+        "value": 22
+      },
+      {
+        "system": "NationalId",
+        "value": null
+      },
+      {
+        "system": "PDS",
+        "value": "1000283"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "01715384820"
+      },
+      {
+        "system": "email",
+        "value": "manzur2142@yahoo.com"
+      }
+    ],
+    "address": {
+      "text": "UH&FPO,Sadar Upazila, Magura."
+    },
+    "properties": {
+      "postingOption": "Against Sanctioned Post ",
+      "maritalStatus": "Married",
+      "qualification": "MBBS",
+      "category": "Physican",
+      "discipline": "Administration",
+      "department": null
+    }
+  },
+  {
+    "name": "Dr.Md.Mizanur Rahman",
+    "url": "http://hrmtest.dghs.gov.bd/api/1.0/providers/23.json",
+    "id": 23,
+    "active": 1,
+    "createdAt": "-0001-11-30",
+    "updatedAt": "2014-09-24",
+    "birthDate": "1960-01-01",
+    "gender": "Male",
+    "organization": {
+      "reference": "http://hrmtest.dghs.gov.bd/api/1.0/facilities/1886.json",
+      "display": "Meherpur (sadar) Upazila Health Office"
+    },
+    "identifiers": [
+      {
+        "system": "DGHS",
+        "value": 23
+      },
+      {
+        "system": "NationalId",
+        "value": null
+      },
+      {
+        "system": "PDS",
+        "value": "1002674"
+      }
+    ],
+    "telecom": [
+      {
+        "system": "phone",
+        "value": "01712586688"
+      },
+      {
+        "system": "email",
+        "value": "meherpursadar@uhfpo.dghs.gov.bd"
+      }
+    ],
+    "address": {
+      "text": "Upazila Health & F.P.Office.Sadar,Meherpur."
+    },
+    "properties": {
+      "postingOption": "Against Sanctioned Post ",
+      "maritalStatus": "Married",
+      "qualification": "Bachelor-MBBS",
+      "category": "Physican",
+      "discipline": "N/A",
+      "department": null
+    }
+  }
+]

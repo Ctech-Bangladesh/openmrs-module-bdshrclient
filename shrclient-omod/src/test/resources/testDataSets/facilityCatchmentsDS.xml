@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <location location_id="1" name="foo" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
+
+    <location location_id="2" name="bar" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="d37006a5-9abb-4a20-856b-0ece245615a1"/>
+
+
+    <location location_id="3" name="bar" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="a38006a5-9abb-5a20-851b-0ede245615e1"/>
+
+    <facility_catchment location_id="1" catchment="302010"/>
+    <facility_catchment location_id="1" catchment="3020"/>
+    <facility_catchment location_id="1" catchment="30"/>
+
+    <facility_catchment location_id="3" catchment="902110"/>
+    <facility_catchment location_id="3" catchment="3020"/>
+    <facility_catchment location_id="3" catchment="90"/>
+
+</dataset>

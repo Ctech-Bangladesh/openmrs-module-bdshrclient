@@ -1,0 +1,527 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <global_property property="shr.orderTypeToFHIRCodeMappings" property_value='[{"type":"Radiology Order","code":"RAD","display":"Radiology"},
+    {"type":"Custom Order","code":"CUST","display":"Custom"}]' description="A Map for Openmrs Order to FHIR Order Category Code" uuid="qkieyg88-efd9-fda3-2b99-z12aalsa677h"/>
+
+    <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
+
+    <encounter_type encounter_type_id="2" name="OPD" description="Some desc 2" creator="1"
+                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
+
+    <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false"
+            uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
+    <patient patient_id="1" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false"/>
+    <person_name person_name_id="1" preferred="true" person_id="1" given_name="firstName"
+                 family_name="lastName" creator="1" date_created="2005-09-22 00:00:00.0"
+                 voided="false" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
+    <care_setting care_setting_id="1" name="OutPatient" description="OutPatient" care_setting_type="OUTPATIENT"
+                  creator="1" date_created="2008-08-19 12:35:30.0" retired="false"
+                  uuid="6f0c9a92-6f24-11e3-af88-005056821db0"/>
+
+    <visit visit_id="1" date_started="2014-07-10 00:00:00" date_created="2014-07-10 00:00:00" patient_id="1"
+           visit_type_id="1" date_stopped="2014-07-10 23:59:59" location_id="2" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
+
+    <person person_id="2" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false"
+            uuid="75e04d42-3ca8-11e3-bf2b-080009861b75"/>
+    <person_name person_name_id="2" preferred="true" person_id="2" given_name="shrclientsystem"
+                 family_name="system" creator="1" date_created="2005-09-22 00:00:00.0"
+                 voided="false" uuid="399e3a7b-6482-487d-94ce-c07b12343cca"/>
+
+    <users user_id="777" person_id="2" system_id="3-6" username="shrclientsystem" retired="false"
+           password="ff6d1655327d385e11a04e1632b4f33ceb8fafd2" salt="5d32c5fd9fde391c755f1f4dfd5e1d6e3debe6"
+           creator="1" date_created="2008-08-15 15:46:47.0" uuid="Z9fd3a7b-6482-487d-87eR-c07b123MxF99"/>
+    <!--local system provider-->
+    <provider provider_id="22" person_id="2" name="shrclientsystem" creator="1" date_created="2005-01-01 00:00:00.0"
+              retired="false" uuid="331c6bf8-7846-11e3-a96a-0900271c1b75"/>
+    <!--local system provider-->
+    <!--hie provider-->
+    <provider provider_id="23" identifier="321" name="demo provider" creator="1" date_created="2005-01-01 00:00:00.0"
+              retired="false" uuid="331c6bf8-7846-11e3-az6a-z9z0z7zc1b75"/>
+    <provider_id_mapping id="1" internal_id="331c6bf8-7846-11e3-az6a-z9z0z7zc1b75" external_id="321"
+                         uri="http://pr.com/provider/321.json"/>
+    <!--hie provider-->
+
+    <concept_reference_source concept_source_id="1" name="ATC" creator="1" date_created="2004-08-12 00:00:00.0"
+                              uuid="b5e44116-778f-11e2-ad73-903c7bb72694"/>
+
+    <!--creating concepts drug other-->
+    <concept concept_id="103" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-eee8-e1ec-bf2b-a8a02a1vcva5"/>
+    <concept_name concept_name_id="103" concept_id="103" name="Drug Other" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="c37caev9-e1v4-41d4-b2d6-bc4335835eaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <global_property property="drugOrder.drugOther" property_value="7f7379ba-eee8-e1ec-bf2b-a8a02a1vcva5" description="Drug other concept uuid" uuid="lkiwy8w8-1fw9-fda3-2b99-812aalsa677h"/>
+    <!--creating concepts drug other-->
+
+    <!--Drug concepts-->
+
+    <!--Creating duration Units-->
+    <concept concept_id="803" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-eee8-e1e3-bf2b-a8a02a1vava5"/>
+    <concept_name concept_name_id="803" concept_id="803" name="Day(s)" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a37ae9v9-e1v4-41d4-b2d6-bc4335835eaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="803" concept_id="803" concept_set="27" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+    <concept_reference_term concept_reference_term_id="19" concept_source_id="2" code="258703001" name="Day(s)"
+                            creator="1" date_created="2004-08-12 00:00:00.0" retired="false"
+                            uuid="baef67ac-b24e-ab04-ider-c3b994132b85"></concept_reference_term>
+    <concept_reference_map concept_map_id="19" concept_id="803" concept_reference_term_id="19" concept_map_type_id="2"
+                           creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-ixke-ider-c3b994132b85"/>
+
+
+    <concept concept_id="804" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-eee8-a1a3-ba2b-a8a02a1vava5"/>
+    <concept_name concept_name_id="804" concept_id="804" name="Week(s)" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3zazzv9-e1v4-41d4-b2d6-bc4335835eaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="804" concept_id="804" concept_set="27" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+
+    <concept concept_id="805" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7h7379ba-eee8-a1a3-bh2b-a8a02a1vava5"/>
+    <concept_name concept_name_id="805" concept_id="805" name="Hour(s)" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="g3zazzv9-e1w4-41d4-b2d6-bc4335835eaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="805" concept_id="805" concept_set="27" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+    <shr_id_mapping id="805" internal_id="7h7379ba-eee8-a1a3-bh2b-a8a02a1vava5" external_id="805" type="concept"
+                    uri="/concepts/805"></shr_id_mapping>
+    <!--Creating duration Units-->
+
+    <!--creating valuesets for dose units-->
+    <concept concept_id="1207" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4xv3-bz88-8z22a1dx1zt"/>
+    <concept_name concept_name_id="1207" concept_id="1207" name="Quantity Units" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3zazhyu-e1y4-5zz0-z9z6-bc4335851j1i"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <shr_id_mapping id="150" internal_id="juydg80f-1yz9-4xv3-bz88-8z22a1dx1zt" external_id="150" type="concept"
+                    uri="/concepts/150"></shr_id_mapping>
+
+    <concept concept_id="1208" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4xv3-bz88-cz2ca1cx1zz"/>
+    <concept_name concept_name_id="1208" concept_id="1208" name="Medication Forms" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3zazhyu-e1y4-5zz0-z9z6-bc433585zj1z"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <shr_id_mapping id="151" internal_id="juydg80f-1yz9-4xv3-bz88-cz2ca1cx1zz" external_id="151" type="concept"
+                    uri="/concepts/151"></shr_id_mapping>
+
+    <concept concept_id="1209" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4xv3-bz88-cz2ya1yx1zz"/>
+    <concept_name concept_name_id="1209" concept_id="1209" name="Medication Package Forms" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3zazhyu-e1y4-5zz0-z9z6-by4y3585zj1z"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <shr_id_mapping id="152" internal_id="juydg80f-1yz9-4xv3-bz88-cz2ya1yx1zz" external_id="152" type="concept"
+                    uri="/concepts/152"></shr_id_mapping>
+    <!--creating valuesets for dose units-->
+
+    <!-- Creating dose-->
+    <shr_id_mapping id="50" internal_id="557b9699-68a3-11e3-bd76-0800271c1b75" external_id="50" type="concept"
+                    uri="/concepts/50"></shr_id_mapping>
+    <concept_set concept_set_id="815" concept_id="50" concept_set="1207" creator="1"
+                 date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+
+    <concept concept_id="806" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7h7379ba-eee8-a1a3-bh2b-a8a02a1vafyl"/>
+    <concept_name concept_name_id="806" concept_id="806" name="Thousand Units" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="g3zazzv9-e1w4-41d4-b2d6-bc4335835bbe"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_name concept_name_id="1806" concept_id="806" name="TU" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="g3zazzv9-e1w4-41d4-b2d6-bc43x58x5bbe"
+                  concept_name_type="SHORT" locale_preferred="0"/>
+    <concept_set concept_set_id="816" concept_id="806" concept_set="1207" creator="1"
+                 date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+    <concept_set concept_set_id="821" concept_id="806" concept_set="25" creator="1"
+                 date_created="2004-08-12 00:00:00.0" sort_weight="2"></concept_set>
+    <concept_set concept_set_id="822" concept_id="806" concept_set="26" creator="1"
+                 date_created="2004-08-12 00:00:00.0" sort_weight="2"></concept_set>
+    <shr_id_mapping id="50" internal_id="7h7379ba-eee8-a1a3-bh2b-a8a02a1vafyl" external_id="51" type="concept"
+                    uri="/concepts/51"></shr_id_mapping>
+
+    <concept concept_id="807" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7h7379ba-eee8-a1a3-bh2b-a8ax2axvafyl"/>
+    <concept_name concept_name_id="807" concept_id="807" name="Pill" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="g3zazzv9-e1w4-41d4-b2d6-bx43x5835bbe"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_answer concept_answer_id="807" concept_id="1208" answer_concept="807" sort_weight="1" date_created="2004-08-12 00:00:00.0"
+                    creator="1" uuid="qkiay80e-1fz9-ccac-2b6c-qc2aalza687h" />
+    <concept_set concept_set_id="820" concept_id="807" concept_set="25" creator="1"
+                 date_created="2004-08-12 00:00:00.0" sort_weight="2"></concept_set>
+    <concept_set concept_set_id="823" concept_id="807" concept_set="26" creator="1"
+                 date_created="2004-08-12 00:00:00.0" sort_weight="2"></concept_set>
+    <shr_id_mapping id="52" internal_id="7h7379ba-eee8-a1a3-bh2b-a8ax2axvafyl" external_id="52" type="concept"
+                    uri="/concepts/52"></shr_id_mapping>
+
+    <concept concept_id="808" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7h7379ba-eee8-a1a3-bh2b-a8ak2axvafyl"/>
+    <concept_name concept_name_id="808" concept_id="808" name="Puffs" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="g3zazzvj-e1w4-41d4-b2d6-bx43x5835bbe"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_answer concept_answer_id="808" concept_id="1209" answer_concept="808" sort_weight="1" date_created="2004-08-12 00:00:00.0"
+                    creator="1" uuid="qkiay80e-1fz9-fdac-2b6c-qa2aalza687h" />
+    <concept_set concept_set_id="819" concept_id="808" concept_set="25" creator="1"
+                 date_created="2004-08-12 00:00:00.0" sort_weight="2"></concept_set>
+    <concept_set concept_set_id="824" concept_id="808" concept_set="26" creator="1"
+                 date_created="2004-08-12 00:00:00.0" sort_weight="2"></concept_set>
+    <shr_id_mapping id="53" internal_id="7h7379ba-eee8-a1a3-bh2b-a8ak2axvafyl" external_id="53" type="concept"
+                    uri="/concepts/53"></shr_id_mapping>
+
+    <!--Creationg dose-->
+
+    <!--creating quantity units-->
+    <concept concept_id="810" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7hz379bz-eee8-a1a3-bz2b-a8a02a1vafyl"/>
+    <concept_name concept_name_id="810" concept_id="810" name="Unit(s)" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="g3zazzv9-e1w4-41d4-b2d6-zcz335835bbe"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="810" concept_id="810" concept_set="25" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="2"></concept_set>
+    <concept_set concept_set_id="811" concept_id="810" concept_set="26" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+    <!--creating quantity units-->
+
+    <!--Creating Routes-->
+    <concept concept_id="701" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-a8a02a1cab75"/>
+    <concept_name concept_name_id="701" concept_id="701" name="Oral" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a37ae9a9-e1a4-41d4-b2d6-bc4335835ea9"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="701" concept_id="701" concept_set="30" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+    <shr_id_mapping id="701" internal_id="7f7379ba-3ca8-11e3-bf2b-a8a02a1cab75" external_id="1011" type="concept"
+                    uri="/concepts/1011"></shr_id_mapping>
+    <!--Creating Routes-->
+
+    <!--Creating Additional Instructions Set-->
+    <concept concept_id="1101" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="cc75c9ba-3ca8-11e3-bf2b-a8a02a1cab75"/>
+    <concept_name concept_name_id="1101" concept_id="1101" name="As directed" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="c3cae9a9-e1a4-41d4-b2d6-bc4335835ea9"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <shr_id_mapping id="1101" internal_id="cc75c9ba-3ca8-11e3-bf2b-a8a02a1cab75" external_id="1101" type="concept"
+                    uri="/concepts/1101"></shr_id_mapping>
+    <!--Creating Routes-->
+
+    <!--Creating Frequency-->
+    <concept concept_id="902" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-eee8-e1e3-bf2b-a8a02a1caba5"/>
+    <concept_name concept_name_id="902" concept_id="902" name="Once a day" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a37ae9a9-e1a4-41d4-b2d6-bc4335835eaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <order_frequency order_frequency_id="1" concept_id="902" frequency_per_day="1" creator="1"
+                     date_created="2005-01-01 00:00:00.0"
+                     retired="0" uuid="3c43a5b8-af04-11e4-b8c1-080027b662ec"/>
+
+    <concept concept_id="903" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7g7379ba-eee8-e2e3-bf2b-a8a02a1caba5"/>
+    <concept_name concept_name_id="903" concept_id="903" name="Twice a week" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a67ae9a9-e1a4-41r4-b2d6-bc4335835eaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <order_frequency order_frequency_id="2" concept_id="903" frequency_per_day="0.28571" creator="1"
+                     date_created="2005-01-01 00:00:00.0"
+                     retired="0" uuid="3d43a5b8-af04-11e4-b9c1-080027b662ec"/>
+
+    <concept concept_id="904" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7g7779ba-eee8-e8e3-bf2b-a8a02a1caba5"/>
+    <concept_name concept_name_id="904" concept_id="904" name="Every 3 hours" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a57ae9a9-g1a4-41r4-b2d6-bc4335835eaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <order_frequency order_frequency_id="3" concept_id="904" frequency_per_day="8" creator="1"
+                     date_created="2005-01-01 00:00:00.0"
+                     retired="0" uuid="3r43a5b8-af04-11t4-b9c1-080027b662ec"/>
+
+    <concept concept_id="905" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7g7779ba-eee8-e8e3-bf2b-a8b0zazcaaa5"/>
+    <concept_name concept_name_id="905" concept_id="905" name="Every 2 hours" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a57ae9a9-g1z4-41r4-b2d6-bz4335835eaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <order_frequency order_frequency_id="4" concept_id="905" frequency_per_day="12" creator="1"
+                     date_created="2005-01-01 00:00:00.0"
+                     retired="0" uuid="3r43a5b8-af04-11t4-b9c1-0w00w7bz62zc"/>
+
+    <!--Creating Frequency-->
+
+    <concept concept_id="301" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_name_id="301" concept_id="301" name="Lactic Acid" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_reference_term concept_reference_term_id="9" concept_source_id="1" code="G01AD01" name="lactic acid"
+                            creator="1" date_created="2004-08-12 00:00:00.0" retired="0"
+                            uuid="baef67ac-b24e-ab04-7028-c3b994132b85"></concept_reference_term>
+    <concept_reference_map concept_map_id="9" concept_id="301" concept_reference_term_id="9" concept_map_type_id="1"
+                           creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-93kf-ix3d-c3b994132b85"/>
+    <drug drug_id="301" concept_id="301" dosage_form="51" name="Lactic Acid" combination="true" creator="1"
+          strength="200" date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00b94-26fe-102b-80cb-0017a47871b2"/>
+    <shr_id_mapping id="1" internal_id="baef67ac-b24e-ab04-7028-c3b994132b85" external_id="101"
+                    type="concept_reference_term" uri="/referenceterms/101"></shr_id_mapping>
+    <shr_id_mapping id="2" internal_id="7f7379ba-3ca8-11e3-bf2b-0800271c1b75" external_id="102" type="concept"
+                    uri="/concepts/102"></shr_id_mapping>
+    <shr_id_mapping id="3" internal_id="42f00b94-26fe-102b-80cb-0017a47871b2" external_id="104" type="medication"
+                    uri="drugs/104"></shr_id_mapping>
+    <!--Drug concepts-->
+
+    <!--Previous encounter with order-->
+    <encounter encounter_id="35" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-doce-ceke-9850-ttc2c6e63ab0"/>
+    <encounter_id_mapping id="1121" internal_id="6d0af6767-doce-ceke-9850-ttc2c6e63ab0" external_id="shr_enc_id_3" uri="http://shr.com/patients/98104750156/encounters/shr_enc_id_3" />
+
+    <encounter_provider encounter_provider_id="21" encounter_id="35" provider_id="22" creator="1"
+                        date_created="2008-07-01 14:09:05.0" voided="false" uuid="6g0bf6767-707a-cvo3-ciek-f15206c3b0c3"/>
+
+    <!--drug order with evening dose only, without route-->
+    <orders order_id="15" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-09 23:59:59" uuid="amkb3idk-cie3-g1f3-9qw0-ccc2c6c63ab0"/>
+    <drug_order order_id="15" drug_inventory_id="301" as_needed="false" quantity="192" duration="2"
+                duration_units="803" dosing_instructions="{&quot;instructions&quot;:&quot;As directed&quot;,&quot;eveningDose&quot;:30.0}"
+                quantity_units="50" dispense_as_written="true" dose_units="807"/>
+    <order_id_mapping id="15" internal_id="amkb3idk-cie3-g1f3-9qw0-ccc2c6c63ab0" external_id="shr_enc_id_3:amkb3idk-cie3-g1f3-9qw0-ccc2c6c63ab0"
+                   type="MedicationRequest" uri="encounters/shr_enc_id_3#MedicationRequest/amkb3idk-cie3-g1f3-9qw0-ccc2c6c63ab0"/>
+    <!--Previous encounter with order-->
+
+    <!--Encounter with Drug Orders for upload-->
+    <encounter encounter_id="36" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-707a-4629-9850-f15206e63ab0"/>
+    <encounter_id_mapping id="1111" internal_id="6d0af6767-707a-4629-9850-f15206e63ab0" external_id="shr_enc_id_1"
+                          uri="http://shr.com/patients/98104750156/encounters/shr_enc_id_1" />
+
+    <encounter_provider encounter_provider_id="36" encounter_id="36" provider_id="22" creator="1"
+                        date_created="2008-07-01 14:09:05.0" voided="false" uuid="6g0bf6767-707a-4329-c3kc-f15206e6cl3d"/>
+
+    <!--drug order with medication, date and route-->
+    <orders order_id="16" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            uuid="6d0ae386-707a-f123-9850-f15206e63ab0" auto_expire_date="2008-08-13 23:59:59.0"/>
+    <drug_order order_id="16" drug_inventory_id="301" dose="4" as_needed="false" quantity="192" duration="6"
+                duration_units="803" route="701" frequency="1"
+                quantity_units="50" dispense_as_written="true" dose_units="50"/>
+
+    <!--drug order with frequency TwiceAWeek, mg as dose unit, local system provider-->
+    <orders order_id="17" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="22"
+            auto_expire_date="2008-10-16 23:59:59" uuid="adeaea86-707a-f123-9850-f15206e63ab0"/>
+    <drug_order order_id="17" drug_inventory_id="301" dose="4" as_needed="false" quantity="192" duration="10"
+                duration_units="804" route="701" frequency="2"
+                quantity_units="50" dispense_as_written="true" dose_units="50"/>
+
+    <!--drug order with frequency EveryThreeHoursFor10Weeks, puffs as dose unit-->
+    <orders order_id="18" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-16 23:59:59" uuid="amebea86-707a-f123-9850-f15206e63ab0"/>
+    <drug_order order_id="18" drug_inventory_id="301" dose="4" as_needed="false" quantity="192" duration="10"
+                duration_units="804" route="701" frequency="3"
+                quantity_units="50" dispense_as_written="true" dose_units="808"/>
+
+    <!--drug order with frequency EveryTwoHoursFor48Hours, as needed(false), pills as dose unit, pills as quantity unit-->
+    <orders order_id="19" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-09 23:59:59" uuid="amebea86-awaa-g1f3-98w0-f152w6e63ab0"/>
+    <drug_order order_id="19" drug_inventory_id="301" dose="4" as_needed="false" quantity="192" duration="2"
+                duration_units="803" route="701" frequency="4"
+                quantity_units="807" dispense_as_written="true" dose_units="807"/>
+
+    <!--drug order with scheduledDate, as needed(true), local quantity unit-->
+    <orders order_id="20" order_type_id="1" encounter_id="36" urgency="ON_SCHEDULED_DATE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            scheduled_date="2008-08-10 00:00:00.0" auto_expire_date="2008-10-18 23:59:59" uuid="adeaea86-xoel-f123-9850-f15206e63ab0"/>
+    <drug_order order_id="20" drug_inventory_id="301" dose="4" as_needed="true" quantity="190" duration="10"
+                duration_units="804" route="701" frequency="2"
+                quantity_units="50" dispense_as_written="true" dose_units="50"/>
+
+    <!--drug order with additional instructions and notes-->
+    <orders order_id="21" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-09 23:59:59" uuid="amkbja86-awaa-g1f3-98w0-f152w6e63ab0"/>
+    <drug_order order_id="21" drug_inventory_id="301" dose="4" as_needed="false" quantity="192" duration="2"
+                duration_units="803" route="701" frequency="4" dosing_instructions="{&quot;instructions&quot;:&quot;As directed&quot;,&quot;additionalInstructions&quot;:&quot;additional instructions notes&quot;}"
+                quantity_units="50" dispense_as_written="true" dose_units="806"/>
+
+    <!--drug order with morning afternoon and evening dose, without route-->
+    <orders order_id="22" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-09 23:59:59" uuid="amkbja86-awaa-g1f3-98w0-f1c2c6c63ab0"/>
+    <drug_order order_id="22" drug_inventory_id="301" as_needed="false" quantity="192" duration="2"
+                duration_units="803" dosing_instructions="{&quot;instructions&quot;:&quot;As directed&quot;,&quot;morningDose&quot;:1,&quot;afternoonDose&quot;:2,&quot;eveningDose&quot;:3}"
+                quantity_units="50" dispense_as_written="true" dose_units="807"/>
+
+    <!--drug order with morning and afternoon dose only-->
+    <orders order_id="23" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-09 23:59:59" uuid="amkbja86-awqa-q1f3-q8w0-f1c2c6c63ab0"/>
+    <drug_order order_id="23" drug_inventory_id="301" as_needed="false" quantity="192" duration="2"
+                duration_units="803" dosing_instructions="{&quot;instructions&quot;:&quot;As directed&quot;,&quot;morningDose&quot;:11,&quot;afternoonDose&quot;:12}"
+                quantity_units="50" route="701" dispense_as_written="true" dose_units="807"/>
+
+    <!--drug order with evening dose only, without route-->
+    <orders order_id="24" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-09 23:59:59" uuid="amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"/>
+    <drug_order order_id="24" drug_inventory_id="301" as_needed="false" quantity="192" duration="2"
+                duration_units="803" dosing_instructions="{&quot;instructions&quot;:&quot;As directed&quot;,&quot;eveningDose&quot;:30.0}"
+                quantity_units="50" dispense_as_written="true" dose_units="807"/>
+    <order_id_mapping id="24" internal_id="amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0" external_id="amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"
+                      type="MedicationRequest" uri="encounters/shr_enc_id_1#MedicationRequest/amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"/>
+
+
+    <!--stopped drug order-->
+    <orders order_id="25" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="DISCONTINUE"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            date_stopped="2008-10-09 13:59:59" auto_expire_date="2008-10-09 23:59:59" uuid="amkbja86-awaa-g1f3-9qw0-ccc26cc6cabc"/>
+    <drug_order order_id="25" drug_inventory_id="301" dose="4" as_needed="false" quantity="192" duration="2"
+                duration_units="803" route="701" frequency="4"
+                quantity_units="807" dispense_as_written="true" dose_units="807"/>
+    <order_id_mapping id="25" internal_id="amkbja86-awaa-g1f3-9qw0-ccc26cc6cabc" external_id="amkbja86-awaa-g1f3-9qw0-ccc26cc6cabc"
+                      type="MedicationRequest" uri="encounters/shr_enc_id_1#MedicationRequest/amkbja86-awaa-g1f3-9qw0-ccc26cc6cabc"/>
+
+    <!--edited drug order, previous order 24-->
+    <orders order_id="26" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="REVISE"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            previous_order_id="24" auto_expire_date="2008-10-09 23:59:59" uuid="amkbja86-awaa-11f3-9qw4-ccc26cc6cabc"/>
+    <drug_order order_id="26" drug_inventory_id="301" dose="4" as_needed="false" quantity="192" duration="2"
+                duration_units="803" route="701" frequency="4"
+                quantity_units="807" dispense_as_written="true" dose_units="807"/>
+
+    <!--noncoded drug order-->
+    <orders order_id="27" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="103"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-09 23:59:59" uuid="amkbja86-5waa-1153-5qw4-ccc26cc6cabc"/>
+    <drug_order order_id="27" drug_non_coded="Paracetamol 20mg" dose="4" as_needed="false"
+                quantity="192" duration="2" duration_units="803" route="701" frequency="4"
+                quantity_units="807" dispense_as_written="true" dose_units="807"/>
+    <!--noncoded drug order-->
+
+    <!--drug order without dose-->
+    <orders order_id="28" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="103"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-09 23:59:59" uuid="amkbja86-1s34-1153-5qw4-ccc26cc6cabc"/>
+    <drug_order order_id="28" drug_non_coded="Paracetamol 20mg" as_needed="false"
+                quantity="1" duration="2" duration_units="803" frequency="4"
+                quantity_units="807" dispense_as_written="false"/>
+    <!--drug order without dose-->
+
+    <!--drug order with custom dosage as zero, instructions as null-->
+    <orders order_id="29" order_type_id="1" encounter_id="36" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-09 23:59:59" uuid="amkbja86-1831-g1f3-1830-ccc2c6c63ab0"/>
+    <drug_order order_id="29" drug_inventory_id="301" as_needed="false" quantity="192" duration="2"
+                duration_units="803" dosing_instructions="{&quot;instructions&quot;:null,&quot;morningDose&quot;:0&quot;,afternoonDose&quot;:0,&quot;eveningDose&quot;:0}"
+                quantity_units="50" dispense_as_written="true" dose_units="807"/>
+    <!--drug order with custom dosage as zero, instructions as null-->
+    <!--Encounter with Drug Orders for upload-->
+
+    <!--Empty encounter for download-->
+    <encounter encounter_id="37" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-707a-4629-9850-ttc2c6e63ab0"/>
+    <encounter_id_mapping id="1111" internal_id="6d0af6767-707a-4629-9850-ttc2c6e63ab0" external_id="shr_enc_id_2" uri="http://shr.com/patients/98104750156/encounters/shr_enc_id_2" />
+
+    <encounter_provider encounter_provider_id="37" encounter_id="37" provider_id="22" creator="1"
+                        date_created="2008-07-01 14:09:05.0" voided="false" uuid="6g0bf6767-deic-cke3-9850-f15206e63ab0"/>
+    <!--Empty encounter for download-->
+
+    <!--edited drug order, previous order 24 (edited in different encounter)-->
+    <encounter encounter_id="38" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af67c7-707c-4629-9850-f15206e63ab0"/>
+    <encounter_provider encounter_provider_id="38" encounter_id="38" provider_id="22" creator="1"
+                        date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6g0bf6767-707a-43c9-c850-f15206e63ab0"/>
+
+    <orders order_id="77" order_type_id="1" encounter_id="38" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="REVISE"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            previous_order_id="24" auto_expire_date="2008-10-09 23:59:59" uuid="amkbja86-awaa-11f3-9qw4-ccc26cc6ccbc"/>
+    <drug_order order_id="77" drug_inventory_id="301" dose="4" as_needed="false" quantity="192" duration="2"
+                duration_units="803" route="701" frequency="4"
+                quantity_units="807" dispense_as_written="true" dose_units="807"/>
+    <!--Drug Orders for patients-->
+    <!--edited drug order, previous order 24 (edited in different encounter)-->
+
+    <!--Encounter with drug order already downloaded. For download same encounter twice-->
+    <encounter encounter_id="39" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-83kd-cokc-9850-ttc2c6e63ab0"/>
+    <encounter_id_mapping id="1101" internal_id="6d0af6767-83kd-cokc-9850-ttc2c6e63ab0" external_id="shr_enc_id_4"
+                          uri="http://shr.com/patients/98104750156/encounters/shr_enc_id_4" />
+
+    <encounter_provider encounter_provider_id="39" encounter_id="39" provider_id="22" creator="1"
+                        date_created="2008-07-01 14:09:05.0" voided="false" uuid="6g0bf6767-c8k3-ck3m-c9k3-f15206e63ab0"/>
+
+    <orders order_id="65" order_type_id="1" encounter_id="39" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-09 23:59:59" uuid="amkb3idk-ciek-ciek-c83k-ccc2c6c63ab0"/>
+    <drug_order order_id="65" drug_inventory_id="301" dose="10" as_needed="false" quantity="192" duration="10"
+                duration_units="804" route="701" frequency="2"
+                quantity_units="50" dispense_as_written="true" dose_units="50"/>
+    <order_id_mapping id="16" internal_id="amkb3idk-ciek-ciek-c83k-ccc2c6c63ab0" external_id="shr-enc-id-4:7af48133-4c47-47d7-8d94-6a07abc18bf9"
+                      type="MedicationRequest" uri="http://shr.com/patients/98104750156/encounters/shr_enc_id_4#MedicationRequest/7af48133-4c47-47d7-8d94-6a07abc18bf9"/>
+    <!--Encounter with drug order already downloaded. For download same encounter twice-->
+
+    <!--Encounter with drug order. previous order in same encounter already downloaded-->
+    <encounter encounter_id="40" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-cleo-cl3s-c93s-co32c6e63ab0"/>
+    <encounter_id_mapping id="1102" internal_id="6d0af6767-cleo-cl3s-c93s-co32c6e63ab0" external_id="shr_enc_id_5"
+                          uri="http://shr.com/patients/98104750156/encounters/shr_enc_id_5" />
+
+    <encounter_provider encounter_provider_id="40" encounter_id="40" provider_id="22" creator="1"
+                        date_created="2008-07-01 14:09:05.0" voided="false" uuid="2sl2f6767-c8k3-ck3m-c9k3-f1520cc83ab0"/>
+
+    <orders order_id="66" order_type_id="1" encounter_id="40" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-10-09 23:59:59" uuid="amkb3idk-ciek-cp2f-c83k-d92sc6c63ab0"/>
+    <drug_order order_id="66" drug_inventory_id="301" dose="10" as_needed="false" quantity="192" duration="10"
+                duration_units="804" route="701" frequency="2"
+                quantity_units="50" dispense_as_written="true" dose_units="50"/>
+    <order_id_mapping id="17" internal_id="amkb3idk-ciek-cp2f-c83k-d92sc6c63ab0" external_id="shr-enc-id-5:vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0"
+                      type="MedicationRequest" uri="http://shr.com/patients/98104750156/encounters/shr_enc_id_5#MedicationRequest/vmkbja86-awaa-g1f3-9qv0-cccvc6c63ab0"/>
+    <!--Encounter with drug order. previous order in same encounter already downloaded-->
+
+    <!--Encounter with drug order stopped before the scheduled date-->
+    <encounter encounter_id="41" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-18 14:09:05.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-cleo-hj65-c93s-co32c6e63ab0"/>
+
+    <encounter_provider encounter_provider_id="41" encounter_id="40" provider_id="22" creator="1"
+                        date_created="2008-07-01 14:09:05.0" voided="false" uuid="2sl2f6767-edr5-ck3m-c9k3-f1520cc83ab0"/>
+
+    <orders order_id="67" order_type_id="1" encounter_id="41" urgency="ROUTINE" concept_id="301" date_stopped="2008-08-18 14:11:05.0"
+            scheduled_date="2008-08-20 14:09:05.0" date_activated="2008-08-18 14:09:05.0" creator="1"
+            order_number="ORD-3" order_action="NEW" care_setting="1" date_created="2008-08-18 14:11:05.0"
+            voided="false" patient_id="1" orderer="23" auto_expire_date="2008-08-21 14:09:05.0"
+            uuid="amkb3idk-ciek-u6y4-c83k-d92sc6c63ab0"/>
+    <drug_order order_id="67" drug_inventory_id="301" dose="10" as_needed="false" quantity="192" duration="10"
+                duration_units="804" route="701" frequency="2"
+                quantity_units="50" dispense_as_written="true" dose_units="50"/>
+
+    <orders order_id="68" order_type_id="1" encounter_id="41" urgency="ROUTINE" concept_id="301" previous_order_id="67"
+            scheduled_date="2008-08-18 14:11:05.0" date_activated="2008-08-18 14:11:05.0" creator="1" order_number="ORD-3" order_action="DISCONTINUE"
+            care_setting="1" date_created="2008-08-18 14:11:05.0" voided="false" patient_id="1" orderer="23"
+            auto_expire_date="2008-08-18 14:11:05.0" uuid="amkb3idk-ciek-u6y4-h6y5-d92sc6c63ab0"/>
+    <drug_order order_id="68" drug_inventory_id="301" dose="10" as_needed="false" quantity="192" duration="10"
+                duration_units="804" route="701" frequency="2"
+                quantity_units="50" dispense_as_written="true" dose_units="50"/>
+    <!--Encounter with drug order. previous order in same encounter already downloaded-->
+</dataset>

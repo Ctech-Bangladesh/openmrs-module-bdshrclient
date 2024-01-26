@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
+    <patient patient_id="1" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+    <concept_reference_source concept_source_id="1" name="ICD10-BD" creator="1" date_created="2004-08-12 00:00:00.0" uuid="b5e44116-778f-11e2-ad73-903c7bb72694"/>
+
+    <concept concept_id="398" retired="false" datatype_id="4" class_id="11" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-bb88-812ectrabcd"/>
+    <concept_name concept_id="398" concept_name_id="3982" name="Fever" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="lkiay80e-1fz9-fda3-2b88-8122ce88687h"/>
+    <concept_reference_term concept_reference_term_id="1" concept_source_id="1" code="A001" creator="1" date_created="2004-08-12 00:00:00.0" uuid="123dg80f-1yz9-4da3-ba88-812eaaaabcd"></concept_reference_term>
+    <concept_reference_map concept_map_id="1" concept_id="398" concept_reference_term_id="1" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"></concept_reference_map>
+    <concept_reference_term concept_reference_term_id="2" concept_source_id="1" code="B001" creator="1" date_created="2004-08-12 00:00:00.0" uuid="456f680f-1yz9-4da3-ba88-812eaaaabcd"></concept_reference_term>
+    <concept_reference_map concept_map_id="2" concept_id="398" concept_reference_term_id="2" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"></concept_reference_map>
+
+    <shr_id_mapping id="1" internal_id="juydg80f-1yz9-4da3-bb88-812ectrabcd" external_id="101" type="concept" uri="/concepts/101"></shr_id_mapping>
+    <shr_id_mapping id="2" internal_id="123dg80f-1yz9-4da3-ba88-812eaaaabcd" external_id="1101" type="concept_reference_term" uri="/refterms/1101"></shr_id_mapping>
+    <shr_id_mapping id="3" internal_id="456f680f-1yz9-4da3-ba88-812eaaaabcd" external_id="1102" type="concept_reference_term" uri="/refterms/1102"></shr_id_mapping>
+
+    <!--Value Set-->
+    <concept concept_id="500" retired="false" datatype_id="4" class_id="11" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version=""
+             changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-ald8-812ectrabcd"/>
+    <concept_name concept_id="500" concept_name_id="300" name="Value Set Concept" locale="en" creator="1"
+                  date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"
+                  voided="false" uuid="lkiay80e-1fz9-fda3-2b88-8122als8687h"/>
+
+    <concept concept_id="401" retired="false" datatype_id="4" class_id="11" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version=""
+             changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-adle-ald8-812ectrabcd"/>
+    <concept_name concept_id="401" concept_name_id="401" name="Value Set Answer 1" locale="en" creator="1"
+                  date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"
+                  voided="false" uuid="lkiay80e-1fz9-fda3-2b88-812aalsa687h"/>
+    <concept_name concept_name_id="806" concept_id="401" name="VSA-1" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="g3zazzv9-e1w4-41d4-b2d6-bc4335835bbe"
+                  concept_name_type="SHORT" locale_preferred="0"/>
+    <concept_answer concept_answer_id="500" concept_id="500" answer_concept="401" sort_weight="1" date_created="2004-08-12 00:00:00.0" creator="1" uuid="qkiay80e-1fz9-fda3-2ba8-qa2aalqa687h" />
+    <concept_reference_term concept_reference_term_id="10" concept_source_id="1" code="VSA-ref" name="VS-ref-name"
+                            creator="1" date_created="2004-08-12 00:00:00.0" uuid="aaea67Zc-bZ4e-ab04-7028-c3b9941hji94"></concept_reference_term>
+    <concept_reference_map concept_map_id="10" concept_id="401" concept_reference_term_id="10" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"></concept_reference_map>
+    <!--Value Set-->
+
+    <concept concept_id="402" retired="false" datatype_id="4" class_id="11" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version=""
+             changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-adle-ald8-8o2eotrabcd"/>
+    <concept_name concept_id="402" concept_name_id="402" name="Route of Administration" locale="en" creator="1"
+                  date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"
+                  voided="false" uuid="lkiay80e-1fz9-fda3-2b88-812oaloa687h"/>
+    <global_property property="shr.concept.routeOfAdministration" property_value="402" description="Route of Administration" uuid="lkiwy8w8-1fw9-fda3-2b99-812aalsa677h"/>
+
+    <concept concept_id="403" retired="false" datatype_id="4" class_id="11" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version=""
+             changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-adle-ald8-8o2eotrabci"/>
+    <concept_name concept_id="403" concept_name_id="403" name="Relationship Type" locale="en" creator="1"
+                  date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"
+                  voided="false" uuid="lkiay80e-1fi9-fda3-2b88-812oaloa687h"/>
+
+    <!--Two ValueSets with same code-->
+    <concept concept_id="312" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0" version="" changed_by="1"
+             date_changed="2005-02-25 11:43:43.0" uuid="dia999-78i3-zhem-ucme-8122sis" />
+    <concept_name concept_name_id="312" concept_id="312" name="ValueSet One" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="diatppv9-8che-cejd-uce3-bc433583sis"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
+    <concept concept_id="604" retired="false" datatype_id="4" class_id="2" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="pne45-3ca8-y1e3-cg3b-a6782m0nia12"/>
+    <concept_name concept_name_id="604" concept_id="604" name="ValueSet One Completed" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="b47l00p9-7cy3-43yd-93yd-b4335835for"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_name concept_name_id="605" concept_id="604" name="completed" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="b47l00p9-7cy0-40yd-83jc-b4335835for"
+                  concept_name_type="SHORT" locale_preferred="0"/>
+    <concept_answer concept_answer_id="604" concept_id="312" answer_concept="604" sort_weight="1" date_created="2004-08-12 00:00:00.0" creator="1" uuid="eachro8f-uom3-6cu3-873d-qa3a3lz36ans" />
+
+    <concept concept_id="313" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0" version="" changed_by="1"
+             date_changed="2005-02-25 11:43:43.0" uuid="dia999-78i3-zhem-uome-812iiis" />
+    <concept_name concept_name_id="313" concept_id="313" name="ValueSet Two" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="98atppv9-8che-cejd-uded-b3433583sis"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+
+    <concept concept_id="606" retired="false" datatype_id="4" class_id="2" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="pne45-3ca8-y1e3-cg3b-a678250nia12"/>
+    <concept_name concept_name_id="606" concept_id="606" name="ValueSet Two Completed" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="b47e00e9-7cy3-43yd-93yd-b4335835for"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_name concept_name_id="607" concept_id="606" name="completed" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="b47l00p9-7cy0-40pd-8pjc-b4335835for"
+                  concept_name_type="SHORT" locale_preferred="0"/>
+    <concept_answer concept_answer_id="606" concept_id="313" answer_concept="606" sort_weight="1" date_created="2004-08-12 00:00:00.0" creator="1" uuid="eachro8f-uom3-6cu3-873d-qa3a3oz36ans" />
+
+    <!--Two ValueSets with same code-->
+
+    <!--drug concept with TR mapping-->
+    <concept concept_id="301" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_name_id="301" concept_id="301" name="Lactic Acid" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <drug drug_id="301" concept_id="301" name="Lactic Acid" combination="true" creator="1"
+          date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00b94-26fe-102b-80cb-0017a47871b2"/>
+    <shr_id_mapping id="3012" internal_id="7f7379ba-3ca8-11e3-bf2b-0800271c1b75" external_id="102" type="concept"
+                    uri="/concepts/102"></shr_id_mapping>
+    <shr_id_mapping id="3013" internal_id="42f00b94-26fe-102b-80cb-0017a47871b2" external_id="104" type="medication"
+                    uri="drugs/104"></shr_id_mapping>
+    <!--drug concept with TR mapping-->
+</dataset>

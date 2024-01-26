@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <person person_id="100" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
+    <patient patient_id="100" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+    <person_name person_name_id="100" preferred="true" person_id="100" prefix="" given_name="firstName" middle_name=""
+                 family_name="lastName" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+                 voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
+
+    <person person_id="101" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bf2b-0800271c1a75"/>
+    <patient patient_id="101" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+    <person_name person_name_id="101" preferred="true" person_id="101" prefix="" given_name="firstName" middle_name=""
+                 family_name="lastName" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+                 voided="false" void_reason="" uuid="378e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
+
+    <location location_id="13" name="Hospital 1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="be69741b-29e9-49a1-hhhh-2a726e6610e4"/>
+    <location location_id="14" name="Hospital 2" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="be69741b-29e9-49a1-qazx-2a726e6610e4"/>
+
+    <visit_type visit_type_id="11" name="outpatient" description="OPD" creator="1" date_created="2005-01-01 00:00:00.0"
+                retired="false" uuid="c0c579b0-8e59-401d-qq4q-976a0b183519"/>
+    <visit_type visit_type_id="12" name="inpatient" description="IPD" creator="1" date_created="2005-01-01 00:00:00.0"
+                retired="false" uuid="c0c579b0-8e59-401d-qq4q-976a0qwer519"/>
+
+    <visit visit_id="100" date_started="2014-07-10 05:00:00" date_created="2014-07-11 00:00:00" patient_id="100"
+           visit_type_id="11" date_stopped="2014-07-10 20:59:59" location_id="13" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
+    <visit visit_id="101" date_started="2014-07-11 05:00:00" date_created="2014-07-11 00:00:00" patient_id="101"
+           visit_type_id="12" date_stopped="2014-07-11 06:59:59" location_id="14" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59tf9acf5a" voided="0"/>
+    <visit visit_id="102" date_started="2015-07-10 05:00:00" date_created="2015-07-11 00:00:00" patient_id="100"
+           visit_type_id="11" date_stopped="2015-07-10 20:59:59" location_id="13" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-a41a-12as-8835-2f59099acf5a" voided="0"/>
+    <visit visit_id="103" date_started="2015-07-10 07:00:00" date_created="2015-07-11 00:00:00" patient_id="100"
+           visit_type_id="11" date_stopped="2015-07-10 20:59:59" location_id="13" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-123b-12as-8835-2f59099acf5a" voided="0"/>
+
+
+    <visit visit_id="104" date_started="2015-08-10 07:00:00" date_created="2015-07-11 00:00:00" patient_id="100"
+           visit_type_id="11" date_stopped="2015-08-11 20:59:59" location_id="13" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-123b-12as-8835-2f5z0z9acf5a" voided="0"/>
+    <encounter encounter_id="36" encounter_type="2" patient_id="100" visit_id="104" location_id="13"
+               encounter_datetime="2015-08-11 12:00:00" creator="1" date_created="2015-07-11 00:00:00"
+               voided="false" uuid="6d0af6767-707a-4629-9850-f15206e63ab0"/>
+
+</dataset>

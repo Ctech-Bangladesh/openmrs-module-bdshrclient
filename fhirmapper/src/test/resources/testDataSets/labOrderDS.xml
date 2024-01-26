@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <global_property property="shr.orderTypeToFHIRCodeMappings" property_value='[{"type":"Radiology Order","code":"RAD","display":"Radiology"},
+    {"type":"Custom Order","code":"CUST","display":"Custom"}]' description="A Map for Openmrs Order to FHIR Order Category Code" uuid="qkieyg88-efd9-fda3-2b99-z12aalsa677h"/>
+    <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
+
+    <encounter_type encounter_type_id="2" name="OPD" description="Some desc 2" creator="1"
+                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
+
+    <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
+    <patient patient_id="1" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+    <person_name person_name_id="1" preferred="true" person_id="1" prefix="" given_name="firstName" middle_name=""
+                 family_name="lastName" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+                 voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
+
+    <care_setting care_setting_id="1" name="OutPatient" description="OutPatient" care_setting_type="OUTPATIENT" creator="1" date_created="2008-08-19 12:35:30.0" retired="false" uuid="6f0c9a92-6f24-11e3-af88-005056821db0"/>
+
+    <visit visit_id="1" date_started="2014-07-10 00:00:00" date_created="2014-07-10 00:00:00" patient_id="1"
+           visit_type_id="1" date_stopped="2014-07-10 23:59:59" location_id="2" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
+
+    <!--shr client system provider-->
+    <person person_id="2" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bf2b-080009861b75"/>
+    <person_name person_name_id="2" preferred="true" person_id="2" prefix="" given_name="shrclientsystem" middle_name=""
+                 family_name="system" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+                 voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07b12343cca"/>
+
+    <users user_id="777" person_id="2" system_id="3-6" username="shrclientsystem" retired="false"
+           password="ff6d1655327d385e11a04e1632b4f33ceb8fafd2" salt="5d32c5fd9fde391c755f1f4dfd5e1d6e3debe6"
+           secret_question="" creator="1" date_created="2008-08-15 15:46:47.0" uuid="Z9fd3a7b-6482-487d-87eR-c07b123MxF99"/>
+
+    <provider provider_id="22" person_id="2" name="shrclientsystem" creator="1" date_created="2005-01-01 00:00:00.0"
+              retired="false" uuid="331c6bf8-7846-11e3-a96a-0900271c1b75"/>
+    <!--shr client system provider-->
+
+    <!--hie provider-->
+    <provider provider_id="23" identifier="812" name="demo provider" creator="1" date_created="2005-01-01 00:00:00.0"
+              retired="false" uuid="331c6bf8-7846-11e3-az6a-z9z0z7zc1b75"/>
+    <provider_id_mapping id="1" internal_id="331c6bf8-7846-11e3-az6a-z9z0z7zc1b75" external_id="812"
+                         uri="http://pr.com/provider/812.json"/>
+    <!--hie provider-->
+
+    <concept_class concept_class_id="30" name="LabTest" description="Lab test class" creator="1" 
+                   date_created="2004-03-02 00:00:00.0" retired="false" uuid="x02l138c-x02o-lx02-bb92-753f41f8be16"/>
+
+    <concept_reference_source concept_source_id="1" name="LOINC" creator="1" date_created="2004-08-12 00:00:00.0" uuid="b5e44116-778f-11e2-ad73-903c7bb72694"/>
+
+    <!--Test Without Panel-->
+    <concept concept_id="107" retired="false" datatype_id="1" class_id="30" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7923d0e0-8734-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_name_id="9" concept_id="107" name="Urea Nitorgen" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="252b58c0-872e-11f3-baa7-080X12Fc9a66" locale_preferred="0"/>
+    <!--Test Without Panel-->
+
+    <!--TR test - Haemoglobin-->
+    <concept concept_id="303" retired="false" datatype_id="1" class_id="30" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_name_id="303" concept_id="303" name="Haemoglobin" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_reference_term concept_reference_term_id="9" concept_source_id="1" code="20563-3" name="Carboxyhemoglobin/Hemoglobin.total:MFr:Pt:Bld:Qn"
+                            creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-ab04-7028-c3b994132b85"/>
+    <concept_reference_map concept_map_id="9" concept_id="303" concept_reference_term_id="9" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <shr_id_mapping id="1" internal_id="baef67ac-b24e-ab04-7028-c3b994132b85" external_id="501qb827-a67c-4q1f-a705-e5efe0q6a972" 
+                    type="concept_reference_term" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a705-e5efe0q6a972"/>
+    <shr_id_mapping id="11" internal_id="7f7379ba-3ca8-11e3-bf2b-0800271c1b75" external_id="123"
+                    type="concept" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/123"/>
+    <!--TR test - Haemoglobin-->
+
+    <!--TR test - ESR-->
+    <concept concept_id="304" retired="false" datatype_id="1" class_id="30" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="a04c36be-3f90-11e3-968c-0800271c1b75"/>
+    <concept_name concept_name_id="304" concept_id="304" name="ESR" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="d5af5872-3f90-11e3-968c-0800271c1b75"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_reference_term concept_reference_term_id="10" concept_source_id="1" code="20563-4" name="ESR/ESR.total:MFr:Pt:Bld:Qn"
+                            creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-ab04-7028-c3b9941hji94"/>
+    <concept_reference_map concept_map_id="10" concept_id="304" concept_reference_term_id="10" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <shr_id_mapping id="2" internal_id="baef67ac-b24e-ab04-7028-c3b9941hji94" external_id="501qb827-a67c-4q1f-a714-e5efe0qjki2w" 
+                    type="concept_reference_term" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/referenceterms/501qb827-a67c-4q1f-a714-e5efe0qjki2w"/>
+    <shr_id_mapping id="21" internal_id="a04c36be-3f90-11e3-968c-0800271c1b75" external_id="124"
+                    type="concept" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/124"/>
+    <!--TR test - ESR-->
+
+    <!--Local Test - Hb Electrophoresis-->
+    <concept concept_id="305" retired="false" datatype_id="2" class_id="30" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="da4bf386-3fcc-11e3-968c-0800271c1b75"/>
+    <concept_name concept_name_id="305" concept_id="305" name="Hb Electrophoresis" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="e019e8c2-3fcc-11e3-968c-0800271c1b75"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <!--Local Test - Hb Electrophoresis-->
+
+    <!--Local Test - WBC-->
+    <concept concept_id="306" retired="false" datatype_id="2" class_id="30" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="da4bf386-3fcc-7g4e-968c-0800271c1b75"/>
+    <concept_name concept_name_id="306" concept_id="306" name="WBC" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="e019e8c2-l84r-11e3-968c-0800271c1b75"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <!--Local Test - WBC-->
+
+    <!--Local - Blood Panel with TR tests Haemoglobin, ESR and local test Hb Electrophoresis-->
+    <concept concept_id="302" retired="false" datatype_id="1" class_id="8" is_set="true" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="cfc5056c-3f8e-11e3-968c-0800271c1b75"/>
+    <concept_name concept_name_id="302" concept_id="302" name="Blood Panel" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="d81ce11c-3f8e-11e3-968c-0800271c1b75"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+
+    <concept_set concept_set_id="301" concept_id="306" concept_set="302" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+    <concept_set concept_set_id="302" concept_id="303" concept_set="302" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+    <concept_set concept_set_id="303" concept_id="304" concept_set="302" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+    <concept_set concept_set_id="304" concept_id="305" concept_set="302" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+    <!--Local - Blood Panel with TR tests Haemoglobin, ESR and local test Hb Electrophoresis, WBC-->
+
+    <!--TR Panel - Complete Blood Count with TR tests Haemoglobin, ESR-->
+    <concept concept_id="402" retired="false" datatype_id="1" class_id="8" is_set="true" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="cfc5056c-3f8e-11e3-x02l-0800271c1b75"/>
+    <concept_name concept_name_id="402" concept_id="402" name="Complete Blood Count" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="d81c20sl-swl2-11e3-968c-0800271c1b75"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <shr_id_mapping id="402" internal_id="cfc5056c-3f8e-11e3-x02l-0800271c1b75" external_id="30xlb827-s02l-4q1f-a705-e5efe0qjki2w"
+                    type="concept_reference_term" uri="http://localhost:9997/openmrs/ws/rest/v1/tr/concepts/30xlb827-s02l-4q1f-a705-e5efe0qjki2w"/>
+
+    <concept_set concept_set_id="401" concept_id="303" concept_set="402" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+    <concept_set concept_set_id="402" concept_id="304" concept_set="402" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+    <!--Tr Panel - Complete Blood Count with TR tests Haemoglobin, ESR-->
+
+    <order_type order_type_id="16" name="Lab Order" description="An order for tests" creator="1" java_class_name="org.openmrs.Order"
+                date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
+
+    <!--test order with a hemaglobin test-->
+    <encounter encounter_id="36" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-707a-4629-9850-f15206e63ab0"/>
+
+    <encounter_provider encounter_provider_id="2" encounter_id="36" provider_id="22" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>
+
+
+    <orders order_id="16" order_type_id="16" encounter_id="36" urgency="ROUTINE" concept_id="303"
+            instructions="Hemoglobin" date_activated="2008-08-08 00:00:00.0" creator="1" order_number="12343" order_action="NEW"
+            care_setting="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            accession_number="accession-number" uuid="6d0ae386-707a-f123-9850-f15206e63ab0"/>
+    <!--test order with a hemaglobin test-->
+
+    <!-- test order without a panel, no loinc name for test-->
+    <encounter encounter_id="37" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-707a-4629-9850-235216e63ab0"/>
+
+    <encounter_provider encounter_provider_id="3" encounter_id="37" provider_id="22" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6g0bf6767-707a-1519-1850-f15206e63ab0"/>
+
+    <orders order_id="17" order_type_id="16" encounter_id="37" urgency="ROUTINE" concept_id="107"
+            instructions="Regular Urea Nitrogen test" date_activated="2008-08-08 00:00:00.0" order_number="12344" order_action="NEW"
+            care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            accession_number="accession-number" uuid="6d0ae396-efab-4629-1930-f15206e63ab0"/>
+    <!-- test order without a panel-->
+
+    <!--encounter with local panel-->
+    <encounter encounter_id="38" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0ll6767-707a-4629-9850-lll216e63ab0"/>
+
+    <encounter_provider encounter_provider_id="4" encounter_id="38" provider_id="22" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6gdbf6767-707a-4la0-1850-f15206e63ab0"/>
+
+    <orders order_id="19" order_type_id="16" encounter_id="38" urgency="ROUTINE" concept_id="302"
+            instructions="Blood Panel" date_activated="2008-08-08 00:00:00.0" order_number="12744" order_action="NEW"
+            care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            accession_number="accession-number" uuid="6d1ae326-efab-462a-jsla-f15206e63aaaa"/>
+    <!--encounter with local panel-->
+    
+    <!-- encounter with orders TR panel-->
+    <encounter encounter_id="39" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0ll6767-707a-4629-9850-lll216egjf90"/>
+
+    <encounter_provider encounter_provider_id="5" encounter_id="39" provider_id="22" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6gdbf6767-707a-4la0-1850-f15206ehj98h"/>
+
+    <orders order_id="20" order_type_id="16" encounter_id="39" urgency="ROUTINE" concept_id="402"
+            instructions="" date_activated="2008-08-08 00:00:00.0" order_number="12744" order_action="NEW"
+            care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            accession_number="accession-number" uuid="6d1ae326-efab-4629-jsla-f1520ghkp0b0"/>
+    <!-- encounter with orders TR panel-->
+
+    <!--encounter with orders with same accession number-->
+
+    <!--encounter with local panel order Blood panel-->
+    <encounter encounter_id="40" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0ll6767-laxl-4629-9850-lll216egjf90"/>
+
+    <encounter_provider encounter_provider_id="6" encounter_id="40" provider_id="22" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6alsc6767-707a-4la0-1850-f15206ehja8h"/>
+
+    <orders order_id="22" order_type_id="16" encounter_id="40" urgency="ROUTINE" concept_id="302"
+            instructions="Hemoglobin" date_activated="2008-08-08 00:00:00.0" order_number="12744" order_action="NEW"
+            care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23"
+            accession_number="accession-number1" uuid="6glco326-eaab-4629-jsla-f1520ghkp0a0"/>
+
+    <!--encounter with local panel order Blood panel-->
+
+    <!--encounter with edited order-->
+    <encounter encounter_id="41" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0ll6767-12w4-4629-9850-lll216egjf90"/>
+
+    <encounter_provider encounter_provider_id="7" encounter_id="41" provider_id="23" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6alsc6767-12wa-4la0-1850-f15206ehja8h"/>
+
+    <!--stopped order-->
+    <orders order_id="24" order_type_id="16" encounter_id="41" urgency="ROUTINE" concept_id="305"
+            instructions="Hemoglobin" date_activated="2008-08-08 00:00:00.0" order_number="12744" order_action="NEW"
+            care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" date_stopped="2008-08-19 12:22:22.0"
+            voided="false" patient_id="1" orderer="23" accession_number="accession-number1"
+            uuid="6glco326-34ea-4629-jsla-f1520ghkp0a0"/>
+
+    <!--discontinued order with previous order 24-->
+    <orders order_id="25" order_type_id="16" encounter_id="41" urgency="ROUTINE" concept_id="305"
+            instructions="Hemoglobin" date_activated="2008-08-08 00:00:00.0" order_number="12744" order_action="DISCONTINUE"
+            care_setting="1" creator="1" date_created="2008-08-19 12:22:22.0" voided="false" previous_order_id="24" patient_id="1" orderer="23"
+            accession_number="accession-number1" uuid="6glco326-34ea-4629-34es-f1520ghkp0a0"/>
+
+    <!--encounter with edited order-->
+    
+    <!--encounter with order to be stopped after download-->
+    <encounter encounter_id="42" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0ll6767-12w4-4629-78yz-lll216egjf90"/>
+    <encounter_id_mapping id="111" internal_id="6d0ll6767-12w4-4629-78yz-lll216egjf90" external_id="shr-enc-id-1"
+                          uri="http://shr.com/patients/HIDA764177/encounters/shr-enc-id-1" />
+    <encounter_provider encounter_provider_id="8" encounter_id="42" provider_id="23" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6alsc6767-707a-4la0-po3w-f15206ehja8h"/>
+
+    <orders order_id="26" order_type_id="16" encounter_id="42" urgency="ROUTINE" concept_id="304"
+            instructions="ESR" date_activated="2008-08-08 00:00:00.0" order_number="12744" order_action="NEW"
+            care_setting="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" orderer="23" accession_number="accession-number1"
+            uuid="6glco326-34ea-45d4-jsla-f1520ghkp0a0"/>
+    <order_id_mapping id="15" internal_id="6glco326-34ea-45d4-jsla-f1520ghkp0a0" external_id="shr-enc-id-1:453b7b24-7847-49f7-8a33-2fc339e5c4c7#124"
+                      type="ProcedureOrder" uri="http://shr.com/patients/HIDA764177/encounters/shr-enc-id-1#ProcedureRequest/453b7b24-7847-49f7-8a33-2fc339e5c4c7#124"/>
+    <!--encounter with order to be stopped after download-->
+
+</dataset>

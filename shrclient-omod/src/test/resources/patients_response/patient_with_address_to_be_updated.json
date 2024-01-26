@@ -1,0 +1,46 @@
+{
+  "hid": "11421467785",
+  "nid": "7654376543127",
+  "bin_brn": "54098540985409815",
+  "given_name": "HouseHold",
+  "sur_name": "Patient",
+  "date_of_birth": "2015-02-15T00:00:00.000+05:30",
+  "dob_type": "1",
+  "gender": "F",
+  "uid": "54676546761",
+  "present_address": {
+    "address_line": "house 1",
+    "division_id": "30",
+    "district_id": "33",
+    "upazila_id": "34",
+    "city_corporation_id": "99",
+    "union_or_urban_ward_id": "15",
+    "rural_ward_id": "01",
+    "country_code": "050"
+  },
+  "confidential": "No",
+  "household_code": "124",
+  "created_by": {
+    "facility": {
+      "id": "10019841",
+      "name": null
+    },
+    "provider": null,
+    "admin": null,
+    "active": true
+  },
+  "updated_by": {
+    "facility": {
+      "id": "10019841",
+      "name": null
+    },
+    "provider": null,
+    "admin": null
+  },
+  "status": {
+    "type": "1"
+  },
+  "modified": "2015-04-07T15:05:16.916+05:30",
+  "created": "2015-04-07T15:05:16.916+05:30",
+  "active": true
+}

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.0//EN"
+		"http://resources.openmrs.org/doctype/config-1.2.dtd">
+
+<module configVersion="1.2">
+
+	<!-- Module Properties -->
+	<id>${project.parent.artifactId}</id>
+	<name>${project.parent.name}</name>
+	<version>${project.parent.version}</version>
+	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
+	<author>Thoughtworks</author>
+	<description>
+		${project.parent.description}
+	</description>
+	<updateURL>https://modules.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf</updateURL>
+	<require_version>${openMRSRuntimeVersion}</require_version>
+	<!-- / Module Properties -->
+
+
+
+    <!-- Required Modules -->
+	<require_version>${openMRSRuntimeVersion}</require_version>
+	<require_modules>
+		<require_module>org.ict4h.openmrs.openmrs-atomfeed</require_module>
+		<require_module>org.openmrs.module.addresshierarchy</require_module>
+		<require_module>org.openmrs.module.uiframework</require_module>
+		<require_module>org.openmrs.module.idgen</require_module>
+	</require_modules>
+
+    <!-- / Required Modules -->
+
+    <!-- Module Activator -->
+	<activator>org.openmrs.module.shrclient.ShrClientActivator</activator>
+
+    <advice>
+        <point>org.openmrs.api.EncounterService</point>
+        <class>org.openmrs.module.shrclient.advice.ShrEncounterAdvice</class>
+    </advice>
+
+	<!-- Filters -->
+	<filter>
+		<filter-name>ShrEncounterAdviceFilter</filter-name>
+		<filter-class>org.openmrs.module.shrclient.advice.ShrEncounterAdviceFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ShrEncounterAdviceFilter</filter-name>
+		<url-pattern>/ws/rest/v1/bahmnicore/bahmniencounter</url-pattern>
+	</filter-mapping>
+	<!-- Filters -->
+
+	<!-- Maps hibernate file's, if present -->
+	<!--
+	<mappingFiles>
+        
+	</mappingFiles>
+-->
+
+	<!-- Internationalization -->
+	<!-- All message codes should start with ${project.parent.artifactId}. -->
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	<messages>
+		<lang>fr</lang>
+		<file>messages_fr.properties</file>
+	</messages>
+	<messages>
+		<lang>es</lang>
+		<file>messages_es.properties</file>
+	</messages>
+	<!-- /Internationalization -->
+
+</module>
+

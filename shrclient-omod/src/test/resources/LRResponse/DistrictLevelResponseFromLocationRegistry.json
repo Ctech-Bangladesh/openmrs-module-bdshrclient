@@ -1,0 +1,192 @@
+[
+    {
+        "code": "3026",
+        "id": "3026",
+        "name": "Dhaka",
+        "type": "district",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "30",
+                "name": "Dhaka",
+                "type": "division"
+            },
+            {
+                "code": "26",
+                "name": "Dhaka",
+                "type": "district"
+            }
+        ]
+    },
+    {
+        "code": "3029",
+        "id": "3029",
+        "name": "Faridpur",
+        "type": "district",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "30",
+                "name": "Dhaka",
+                "type": "division"
+            },
+            {
+                "code": "29",
+                "name": "Faridpur",
+                "type": "district"
+            }
+        ]
+    },
+    {
+        "code": "3033",
+        "id": "3033",
+        "name": "Gazipur",
+        "type": "district",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "30",
+                "name": "Dhaka",
+                "type": "division"
+            },
+            {
+                "code": "33",
+                "name": "Gazipur",
+                "type": "district"
+            }
+        ]
+    },
+    {
+        "code": "3035",
+        "id": "3035",
+        "name": "Gopalganj",
+        "type": "district",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "30",
+                "name": "Dhaka",
+                "type": "division"
+            },
+            {
+                "code": "35",
+                "name": "Gopalganj",
+                "type": "district"
+            }
+        ]
+    },
+    {
+        "code": "3039",
+        "id": "3039",
+        "name": "Jamalpur",
+        "type": "district",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "30",
+                "name": "Dhaka",
+                "type": "division"
+            },
+            {
+                "code": "39",
+                "name": "Jamalpur",
+                "type": "district"
+            }
+        ]
+    },
+    {
+        "code": "3048",
+        "id": "3048",
+        "name": "Kishorgonj",
+        "type": "district",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "30",
+                "name": "Dhaka",
+                "type": "division"
+            },
+            {
+                "code": "48",
+                "name": "Kishorgonj",
+                "type": "district"
+            }
+        ]
+    },
+    {
+        "code": "3054",
+        "id": "3054",
+        "name": "Madaripur",
+        "type": "district",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "30",
+                "name": "Dhaka",
+                "type": "division"
+            },
+            {
+                "code": "54",
+                "name": "Madaripur",
+                "type": "district"
+            }
+        ]
+    },
+    {
+        "code": "3056",
+        "id": "3056",
+        "name": "Manikganj",
+        "type": "district",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "30",
+                "name": "Dhaka",
+                "type": "division"
+            },
+            {
+                "code": "56",
+                "name": "Manikganj",
+                "type": "district"
+            }
+        ]
+    },
+    {
+        "code": "3059",
+        "id": "3059",
+        "name": "Munshiganj",
+        "type": "district",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "30",
+                "name": "Dhaka",
+                "type": "division"
+            },
+            {
+                "code": "59",
+                "name": "Munshiganj",
+                "type": "district"
+            }
+        ]
+    },
+    {
+        "code": "3061",
+        "id": "3061",
+        "name": "Mymensingh",
+        "type": "district",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "30",
+                "name": "Dhaka",
+                "type": "division"
+            },
+            {
+                "code": "61",
+                "name": "Mymensingh",
+                "type": "district"
+            }
+        ]
+    }
+]

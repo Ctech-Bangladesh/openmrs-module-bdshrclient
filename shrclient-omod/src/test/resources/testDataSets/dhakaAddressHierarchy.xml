@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <address_hierarchy_level address_hierarchy_level_id="1" name="Division" address_field="STATE_PROVINCE" uuid="28956e72-76ff-11e5-968f-0050568266ff" required="1"/>
+    <address_hierarchy_level address_hierarchy_level_id="2" name="Zilla" parent_level_id="1" address_field="COUNTY_DISTRICT" uuid="28956e72-76ff-11e5-968f-0050568267af" required="1"/>
+    <address_hierarchy_level address_hierarchy_level_id="3" name="Upazilla" parent_level_id="2" address_field="ADDRESS_5" uuid="28956e72-76ff-11e5-968f-00505682666f" required="1"/>
+    <address_hierarchy_level address_hierarchy_level_id="4" name="Paurasava" parent_level_id="3" address_field="ADDRESS_4" uuid="28956e72-76ff-11e5-968f-00505682688f" required="1"/>
+    <address_hierarchy_level address_hierarchy_level_id="5" name="Ward/Union" parent_level_id="4" address_field="ADDRESS_3" uuid="28956e72-76ff-11e5-968f-00505682699f" required="1"/>
+    <address_hierarchy_level address_hierarchy_level_id="6" name="Rural Ward" parent_level_id="5" address_field="ADDRESS_2" uuid="28956e72-76ff-11e5-968f-00505682655f" required="1"/>
+    <address_hierarchy_level address_hierarchy_level_id="7" name="Address Line" parent_level_id="6" address_field="ADDRESS_1" uuid="28956e72-76ff-11e5-968f-00505682634f" required="1"/>
+
+    <address_hierarchy_entry address_hierarchy_entry_id = "1" level_id= "1" name="Dhaka" user_generated_id= "30"    uuid= "46840625-f2a1-4ffa-8b8a-670451b83d2a"/>
+    <address_hierarchy_entry address_hierarchy_entry_id = "2" level_id= "2" name="Dhaka" parent_id= "1" user_generated_id= "3026"    uuid= "46840625-f2a1-4ffa-8b8a-670451b83daa"/>
+    <address_hierarchy_entry address_hierarchy_entry_id = "3" level_id= "3" name="Adabor" parent_id= "2" user_generated_id= "302602"    uuid= "46840625-f2a1-4ffa-8b8a-670451b83dba"/>
+    <address_hierarchy_entry address_hierarchy_entry_id = "4" level_id= "4" name="Dhaka Uttar City Corp." parent_id= "3" user_generated_id= "30260225"    uuid= "46840625-f2a1-4ffa-8b8a-650451b83d2a"/>
+    <address_hierarchy_entry address_hierarchy_entry_id = "5" level_id= "5" name="Urban Ward No-30 (43)" parent_id= "4" user_generated_id= "3026022530"    uuid= "46840625-f2a1-4ffa-8b8a-670421b83d2a"/>
+
+</dataset>

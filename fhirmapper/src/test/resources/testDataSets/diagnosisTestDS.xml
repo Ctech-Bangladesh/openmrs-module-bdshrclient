@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
+    <patient patient_id="1" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+    <person_name person_name_id="1" preferred="true" person_id="1" prefix="" given_name="firstName" middle_name=""
+                 family_name="lastName" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+                 voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
+    
+    <location location_id="1" name="REG" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
+    <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
+
+    <encounter_type encounter_type_id="2" name="OPD" description="Some desc 2" creator="1"
+                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
+
+    <visit visit_id="1" date_started="2014-07-10 00:00:00" date_created="2014-07-10 00:00:00" patient_id="1"
+           visit_type_id="1" date_stopped="2014-07-10 23:59:59" location_id="2" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
+
+
+    <person person_id="2" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bf2b-080009861b75"/>
+    <person_name person_name_id="2" preferred="true" person_id="2" prefix="" given_name="shrclientsystem" middle_name=""
+                 family_name="system" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0"
+                 voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07b12343cca"/>
+
+    <users user_id="777" person_id="2" system_id="3-6" username="shrclientsystem" retired="false"
+           password="ff6d1655327d385e11a04e1632b4f33ceb8fafd2" salt="5d32c5fd9fde391c755f1f4dfd5e1d6e3debe6"
+           secret_question="" creator="1" date_created="2008-08-15 15:46:47.0" uuid="Z9fd3a7b-6482-487d-87eR-c07b123MxF99"/>
+
+    <provider provider_id="22" person_id="2" name="shrclientsystem" creator="1" date_created="2005-01-01 00:00:00.0"
+              retired="false" uuid="331c6bf8-7846-11e3-a96a-0900271c1b75"/>
+
+    <concept_reference_source concept_source_id="1" name="ICD10-BD" creator="1" date_created="2004-08-12 00:00:00.0" uuid="b5e44116-778f-11e2-ad73-903c7bb72694"/>
+    <concept_reference_source concept_source_id="2" name="org.openmrs.module.emrapi" creator="1" date_created="2004-08-12 00:00:00.0" uuid="b5e44116-778f-11e2-2eid-92odsbb72694"/>
+
+    <concept concept_id="399" retired="false" datatype_id="4" class_id="4" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-12ws-8122ctrXdef"/>
+    <concept_name concept_id="399" concept_name_id="3901" name="Cholera" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="lkiuy80f-4er5-4da3-78yg-8122ce88687h"/>
+    
+    <concept concept_id="400" retired="false" datatype_id="4" class_id="4" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-1w3q-8122ctrXdef"/>
+    <concept_name concept_id="400" concept_name_id="3900" name="Ankylosis of joint" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="lkiuy80f-4er5-4da3-bb88-8122ce88687h"/>
+    <shr_id_mapping id="1" internal_id="juydg80f-1yz9-4da3-1w3q-8122ctrXdef" external_id="101" type="concept" uri="http://tr.com/ws/concepts/101" />
+    
+    <concept concept_id="401" retired="false" datatype_id="4" class_id="10" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-bb88-8122ctrXdef"/>
+    <concept_name concept_id="401" concept_name_id="3981" name="Visit Diagnoses" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="lkiuy80f-1yz9-4da3-bb88-8122ce88687h"/>
+    <concept_reference_term concept_reference_term_id="401" concept_source_id="2" code="Diagnosis Concept Set" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="74a4c3d3-e6d0-xl11-xo1l-3895e4b61f5b" />
+    <concept_reference_map concept_map_id="401" concept_id="401" concept_reference_term_id="401" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0" uuid="74aso1l3-e6d0-xl11-xo1l-3895e4b61f5b" />
+
+    <concept concept_id="402" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="74a4c3d3-e6d0-407d-8ed3-3895e4b61f5b"/>
+    <concept_name concept_id="402" concept_name_id="1402" name="Coded Diagnosis" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="74a4c3d3-e6d0-407d-8ed3-3895e4b61f5b"/>
+    <concept_reference_term concept_reference_term_id="402" concept_source_id="2" code="Coded Diagnosis" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="74a4c3d3-e6d0-xl11-8ed3-3895e4b61f5b" />
+    <concept_reference_map concept_map_id="402" concept_id="402" concept_reference_term_id="402" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0" uuid="74xl1ad3-eso0-xl11-8ed3-3895e4b61f5b" />
+    <concept_set concept_set_id="402" concept_id="402" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1" />
+
+    <concept concept_id="404" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="589e92a0-91c4-447d-b71d-e28fd17b5865"/>
+    <concept_name concept_id="404" concept_name_id="1404" name="Diagnosis Certainty" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="589e92a0-91c4-447d-b71d-e28fd17b5865"/>
+    <concept_reference_term concept_reference_term_id="404" concept_source_id="2" code="Diagnosis Certainty" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="74a4c3d3-e6d0-xl11-xl2a-3895e4b61f5b" />
+    <concept_reference_map concept_map_id="404" concept_id="404" concept_reference_term_id="404" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0" uuid="14xi1ld3-eso0-xl11-8ed3-3895e4b61f5b"/>
+    <concept_set concept_set_id="404" concept_id="404" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1" />
+
+    <concept concept_id="405" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="4256cd44-9632-4b97-afdb-9528eb1af715"/>
+    <concept_name concept_id="405" concept_name_id="1405" name="Diagnosis order" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="4256cd44-9632-4b97-afdb-9528eb1af715"/>
+    <concept_reference_term concept_reference_term_id="405" concept_source_id="2" code="Diagnosis order" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="74a4c3d3-xlq1-xl11-8ed3-3895e4b61f5b" />
+    <concept_reference_map concept_map_id="405" concept_id="405" concept_reference_term_id="405" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0" uuid="74a4c3d3-xlq1-xl11-8ed3-38xo2lb6xo1a" />
+    <concept_set concept_set_id="405" concept_id="405" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1" />
+
+    <concept concept_id="406" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dd"/>
+    <concept_name concept_id="406" concept_name_id="1406" name="Primary" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dd"/>
+    <concept_reference_term concept_reference_term_id="406" concept_source_id="2" code="Primary" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="s1lac3d3-e6d0-xl11-8ed3-3895e4b61f5b" />
+    <concept_reference_map concept_map_id="406" concept_id="406" concept_reference_term_id="406" concept_map_type_id="2" creator="1" date_created="2004-08-12" uuid="s1lac3d3-e6d0-xl11-8ed3-3895e4b61f5b" />
+    <concept_answer concept_answer_id="406" concept_id="405" answer_concept="406" creator="1" date_created="2004-08-12 00:00:00.0"/>
+
+    <concept concept_id="416" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868ed"/>
+    <concept_name concept_id="416" concept_name_id="1416" name="Secondary" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868ed"/>
+    <concept_reference_term concept_reference_term_id="416" concept_source_id="2" code="Secondary" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="z10sc3d3-e6d0-xl21-8ed3-3895e4b61f5b" />
+    <concept_reference_map concept_map_id="416" concept_id="416" concept_reference_term_id="416" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0"  uuid="s1lac3d3-x01q-xl2s-csol-3895e4b61f5b" />
+    <concept_answer concept_answer_id="416" concept_id="405" answer_concept="416" creator="1" date_created="2004-08-12 00:00:00.0"/>
+
+    <concept concept_id="407" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868de"/>
+    <concept_name concept_id="407" concept_name_id="1407" name="Confirmed" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868de"/>
+    <concept_reference_term concept_reference_term_id="407" concept_source_id="2" code="Confirmed" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="74a4c3d3-e6d0-xl11-8ed3-3895e4soxo5b" />
+    <concept_reference_map concept_map_id="407" concept_id="407" concept_reference_term_id="407" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0"  uuid="s1lacxd3-x6d0-xlx1-8ed3-3895e4b61f5b" />
+    <concept_answer concept_answer_id="407" concept_id="404" answer_concept="407" creator="1" date_created="2004-08-12 00:00:00.0" uuid="766c8d85-abc9-4991-b1be-d2b0da8282dd"/>
+
+    <concept concept_id="417" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="e102c80f-1yz9-4da3-bb88-8122ce8868de"/>
+    <concept_name concept_id="417" concept_name_id="1417" name="Presumed" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="e102c80f-1yz9-4da3-bb88-8122ce8868de"/>
+    <concept_reference_term concept_reference_term_id="417" concept_source_id="2" code="Presumed" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="74a4c3d3-e6d0-xl11-8ed3-xlq1e4b61f5b" />
+    <concept_reference_map concept_map_id="417" concept_id="417" concept_reference_term_id="417" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0"  uuid="s1lac3d3-clxq-s0q1-0s24-3895e4b61f5b" />
+    <concept_answer concept_answer_id="417" concept_id="404" answer_concept="417" creator="1" date_created="2004-08-12 00:00:00.0" uuid="866c8d85-abc9-4991-b1be-d2b0da8282dd"/>
+
+    <concept concept_id="408" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868df"/>
+    <concept_name concept_id="408" concept_name_id="1408" name="Bahmni Diagnosis Status" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868df"/>
+
+    <concept concept_id="409" retired="false" datatype_id="3" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dg"/>
+    <concept_name concept_id="409" concept_name_id="1409" name="Bahmni Initial Diagnosis" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dg"/>
+
+    <concept concept_id="410" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868eg"/>
+    <concept_name concept_id="410" concept_name_id="1411" name="Ruled Out Diagnosis" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868eg"/>
+
+    <concept concept_id="411" retired="false" datatype_id="10" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="e102c80f-1yz9-4da3-bb88-8122ce8868dh"/>
+    <concept_name concept_id="411" concept_name_id="1410" name="Bahmni Diagnosis Revised" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="e102c80f-1yz9-4da3-bb88-8122ce8868dh"/>
+
+    <concept concept_id="412" retired="false" datatype_id="3" class_id="7" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="e102c80f-1s01-4da3-xo21-8122ce8868dh"/>
+    <concept_name concept_id="412" concept_name_id="1412" name="Non-coded Diagnosis" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="e102c80f-xwl2-4da3-bb88-8122ce8868dh"/>
+    <concept_reference_term concept_reference_term_id="412" concept_source_id="2" code="Non-Coded Diagnosis" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="74a4c3d3-slq1-xl11-8ed3-3895e4b61f5b" />
+    <concept_reference_map concept_map_id="412" concept_id="412" concept_reference_term_id="412" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0" uuid="74axiuu3-slq1-uuuu-8ed3-3895e4b61f5b" />
+    <concept_answer concept_answer_id="412" concept_id="412" answer_concept="407" creator="1" date_created="2004-08-12 00:00:00.0" uuid="766c8d85-s3o2-s02l-b1be-d2b0da8282dd"/>
+
+    <!--encounter with diagnosis-->
+    <encounter encounter_id="36" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-707a-4629-9850-f15206e63ab0"/>
+    <encounter_provider encounter_provider_id="2" encounter_id="36" provider_id="22" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>
+    
+    <!--diagnosis with tr concept-->
+    <obs obs_id="1" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" concept_id="401" voided="0" comments = "Some Comment" uuid="ef4554cb-2225-471a-9cd7-1434552c337c"/>
+    <obs obs_id="2" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="1" value_coded="400" concept_id="402" voided="0" uuid="eee554cb-2225-471a-9cd7-1434552c337c"/>
+    <obs obs_id="3" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="1" value_coded="406" concept_id="405" voided="0" uuid="eee554cb-2s25-471a-9sd7-1s34552c337c"/>
+    <obs obs_id="4" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="1" value_coded="407" concept_id="404" voided="0" uuid="eeea54cb-2a25-471a-9cd7-1434a5aa337a"/>
+    <obs obs_id="5" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="1" concept_id="409" value_text="ef4554cb-2225-471a-9cd7-1434552c337c" voided="0" uuid="eeea54cb-2a25-471a-9cd7-1430o5d5337a"/>
+    <obs obs_id="7" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="1" value_coded="8" concept_id="411" voided="0" uuid="eeea54cb-2a25-sjna-9cd7-14t0t5t5333a"/>
+    <!--diagnosis with tr concept-->
+
+    <!--diagnosis with local concept-->
+    <obs obs_id="8" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" concept_id="401" voided="0" comments = "Some Comment" uuid="ef4554cb-2225-471a-12wa-1434552c337c"/>
+    <obs obs_id="9" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="8" value_coded="399" concept_id="402" voided="0" uuid="eee554cb-2225-455t-9cd7-1434552c337c"/>
+    <obs obs_id="10" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="8" value_coded="406" concept_id="405" voided="0" uuid="eee554cb-2s25-12w4-9sd7-1s34552c337c"/>
+    <obs obs_id="11" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="8" value_coded="407" concept_id="404" voided="0" uuid="eeea54cb-2a25-lk7f-9cd7-1434a5aa337a"/>
+    <obs obs_id="12" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="8" concept_id="409" value_text="ef4554cb-2225-471a-12wa-1434552c337c" voided="0" uuid="eeea54cb-09re-471a-9cd7-1430o5d5337a"/>
+    <obs obs_id="14" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="8" value_coded="8" concept_id="411" voided="0" uuid="eeea54cb-2w4d-471a-9cd7-14t0t5t5333a"/>
+    <!--diagnosis with local concept-->
+
+    <!--updated diagnosis in the same encounter session-->
+    <obs obs_id="21" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" concept_id="401" voided="0" comments = "Some Comment" uuid="1f4r5sc3-29fl-471a-9cd7-1434552c337c"/>
+    <obs obs_id="22" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="21" value_coded="400" concept_id="402" voided="0" uuid="1f4r5sc3-2225-471a-9cd7-1434552c337c"/>
+    <obs obs_id="23" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="21" value_coded="406" concept_id="405" voided="0" uuid="1f4r5sc3-2s25-471a-9sd7-1s34552c337c"/>
+    <obs obs_id="24" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="21" value_coded="407" concept_id="404" voided="1" uuid="1f4r5sc3-2a25-471a-9cd7-1434a5aa337a"/>
+    <obs obs_id="25" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="21" concept_id="409" value_text="1f4r5sc3-29fl-471a-9cd7-1434552c337c" voided="0" uuid="1f4r5sc3-2a25-471a-9cd7-1430o5d5337a"/>
+    <obs obs_id="27" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="21" value_coded="8" concept_id="411" voided="0" uuid="1f4r5sc3-2a25-471a-9cd7-14t0t5t5333a"/>
+    <obs obs_id="28" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="21" value_coded="417" concept_id="404" voided="0" uuid="1f4r5sc3-2a25-471a-yt3e-1434a5aa337a"/>
+    <!--updated diagnosis in the same encounter session-->
+
+
+    <!--encounter with diagnosis-->
+    <!--encounter and diagnosis created initially-->
+    <encounter encounter_id="37" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-707a-4629-20dk-f15206e63ab0"/>
+    <encounter_provider encounter_provider_id="3" encounter_id="37" provider_id="22" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6g0bf6767-20dk-4329-9850-f15206e63ab0"/>
+    <encounter_id_mapping id="1" internal_id="6d0af6767-707a-4629-20dk-f15206e63ab0"
+                          external_id="shr_enc_id_1" uri="http://shr.com/patients/1234512345123/encounters/shr_enc_id_1" />
+
+    <obs obs_id="31" encounter_id="37" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" concept_id="401" voided="0" comments = "Some Comment" uuid="ef4554cb-3lci-471a-9cd7-1434552c337c"/>
+    <obs obs_id="32" encounter_id="37" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="31" value_coded="400" concept_id="402" voided="0" uuid="eee554cb-3lci-471a-9cd7-1434552c337c"/>
+    <obs obs_id="33" encounter_id="37" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="31" value_coded="406" concept_id="405" voided="0" uuid="eee554cb-3lci-471a-9sd7-1s34552c337c"/>
+    <obs obs_id="34" encounter_id="37" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="31" value_coded="407" concept_id="404" voided="0" uuid="eeea54cb-3lci-471a-9cd7-1434a5aa337a"/>
+    <obs obs_id="35" encounter_id="37" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="31" concept_id="409" value_text="ef4554cb-3lci-471a-9cd7-1434552c337c" voided="0" uuid="eeea54cb-2a25-3lci-9cd7-1430o5d5337a"/>
+    <obs obs_id="37" encounter_id="37" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="31" value_coded="7" concept_id="411" voided="0" uuid="eeea54cb-2a25-3lci-9cd7-14t0t5t5333a"/>
+    <diagnosis_id_mapping id="1" internal_id="ef4554cb-3lci-471a-9cd7-1434552c337c"
+                          external_id="shr_enc_id_1:ef4554cb-3lci-471a-9cd7-1434552c337c" uri="http://shr.com/patients/1234512345123/encounters/shr_enc_id_1#Condition/ef4554cb-3lci-471a-9cd7-1434552c337c" />
+    <!--encounter and diagnosis created initially-->
+
+    <!--new encounter with diagnosis (31) updated-->
+    <encounter encounter_id="38" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-707a-4629-20dv-f15206e63ab0"/>
+    <encounter_provider encounter_provider_id="4" encounter_id="38" provider_id="22" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6g0bf6767-707a-2cwd-9850-f15206e63ab0"/>
+
+    <obs obs_id="41" encounter_id="38" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" concept_id="401" voided="0" comments="Some Updated Comment" uuid="ef4554cb-2225-471a-j45g-1434552c337c"/>
+    <obs obs_id="42" encounter_id="38" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="41" value_coded="400" concept_id="402" voided="0" uuid="eee554cb-2225-471a-b3e6-1434552c337c"/>
+    <obs obs_id="43" encounter_id="38" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="41" value_coded="406" concept_id="405" voided="0" uuid="eee554cb-2s25-471a-l93s-1s34552c337c"/>
+    <obs obs_id="44" encounter_id="38" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="41" value_coded="417" concept_id="404" voided="0" uuid="eeea54cb-2a25-471a-1q23-1434a5aa337a"/>
+    <obs obs_id="45" encounter_id="38" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="41" concept_id="409" value_text="ef4554cb-3lci-471a-9cd7-1434552c337c" voided="0" uuid="eeea54cb-2a25-7y56-9cd7-1430o5d5337a"/>
+    <obs obs_id="47" encounter_id="38" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="41" value_coded="8" concept_id="411" voided="0" uuid="eeea54cb-2a25-471a-9cd7-14t0t5t5333a"/>
+    <!--new encounter with diagnosis (31) updated-->
+    <!--diagnosis updated in different encounter sessions-->
+
+    <!--encounter with diagnosis to be updated after download-->
+    <encounter encounter_id="39" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-12ws-4629-9850-f15206e63ab0"/>
+    <encounter_provider encounter_provider_id="5" encounter_id="39" provider_id="22" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6g0bf6767-2wer-4329-9850-f15206e63ab0"/>
+    <encounter_id_mapping id="2" internal_id="6d0af6767-12ws-4629-9850-f15206e63ab0"
+                          external_id="shr_enc_id_2" uri="http://shr.com/patients/1234512345123/encounters/shr_enc_id_2" />
+
+
+    <obs obs_id="51" encounter_id="39" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" concept_id="401" voided="0" comments = "Some Comment" uuid="ef4554cb-ndja-471a-9cd7-1434552c337c"/>
+    <obs obs_id="52" encounter_id="39" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="51" value_coded="400" concept_id="402" voided="0" uuid="eee554cb-3qdd-471a-9cd7-1434552c337c"/>
+    <obs obs_id="53" encounter_id="39" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="51" value_coded="406" concept_id="405" voided="0" uuid="eee554cb-2s25-34ed-9sd7-1s34552c337c"/>
+    <obs obs_id="54" encounter_id="39" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="51" value_coded="417" concept_id="404" voided="0" uuid="eeea54cb-2a25-471a-5rdq-1434a5aa337a"/>
+    <obs obs_id="55" encounter_id="39" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="51" concept_id="409" value_text="ef4554cb-ndja-471a-9cd7-1434552c337c" voided="0" uuid="eeea54cb-23s4-471a-9cd7-1430o5d5337a"/>
+    <obs obs_id="57" encounter_id="39" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="51" value_coded="8" concept_id="411" voided="0" uuid="eeea54cb-34ds-sjna-9cd7-14t0t5t5333a"/>
+    <diagnosis_id_mapping id="2" internal_id="ef4554cb-ndja-471a-9cd7-1434552c337c"
+                          external_id="shr_enc_id_2:35b57256-f229-476e-b5a1-c73af110485d" uri="http://shr.com/patients/1234512345123/encounters/shr_enc_id_2#Condition/35b57256-f229-476e-b5a1-c73af110485d" />
+    <!--encounter with diagnosis to be updated after download-->
+
+    <!--diagnosis with non coded diagnosis-->
+    <obs obs_id="61" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" concept_id="401" voided="0" comments = "Some Comment" uuid="ef4554cb-2225-s02l-12wa-1434552c337c"/>
+    <obs obs_id="62" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="61" value_text="Cough" concept_id="412" voided="0" uuid="eee554cb-slx2-455t-9cd7-1434552c337c"/>
+    <obs obs_id="63" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="61" value_coded="406" concept_id="405" voided="0" uuid="eee554cb-2s25-xl1a-9sd7-1s34552c337c"/>
+    <obs obs_id="64" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="61" value_coded="407" concept_id="404" voided="0" uuid="eeea54cb-zlq1-lk7f-9cd7-1434a5aa337a"/>
+    <obs obs_id="65" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="61" concept_id="409" value_text="ef4554cb-2225-s02l-12wa-1434552c337c" voided="0" uuid="eeea54cb-zll1-xll1-9cd7-1430o5d5337a"/>
+    <obs obs_id="67" encounter_id="36" person_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         creator="1" obs_group_id="61" value_coded="8" concept_id="411" voided="0" uuid="eeea54cb-2w4d-471a-xl21-14t0t5t5333a"/>
+    <!--diagnosis with local concept-->
+</dataset>

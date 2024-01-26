@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <person_attribute_type person_attribute_type_id="100" name="fatherName" description="Father's Name"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-11e4-b4e1-1e55d8e9e2ae" />
+
+    <person_attribute_type person_attribute_type_id="101" name="spouseName" description="Spouse Name"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-1122-b4e1-1e55d8e9e2ae"/>
+
+    <person_attribute_type person_attribute_type_id="102" name="motherName" description="Mother's Name"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-11e4-b4e1-x92kdxiii2ae"/>
+
+    <person_attribute_type person_attribute_type_id="103" name="healthId" description="Health Id"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-1133-b4e1-1e55d8e9e2ae"/>
+
+    <person_attribute_type person_attribute_type_id="104" name="nationalId" description="National Id"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-1144-b4e1-1e55d8e9e2ae"/>
+
+    <person_attribute_type person_attribute_type_id="105" name="birthRegistrationId" description="birth Registration Id"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-1144-b4e1-1e55d8e9e2af"/>
+
+    <person_attribute_type person_attribute_type_id="106" name="givenNameLocal" description="given Name Local"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-1144-b4e1-1e55d8e9e2ag"/>
+
+    <person_attribute_type person_attribute_type_id="107" name="familyNameLocal" description="family Name Local"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-1144-b4e1-1e55d8e9e2ah"/>
+
+
+    <person_attribute_type person_attribute_type_id="109" name="phoneNumber" description="phone Number"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-1144-b4e1-1e55d8e9e2aj"/>
+
+    <person_attribute_type person_attribute_type_id="110" name="householdCode" description="household Code"
+                           format="java.lang.String" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-1144-b4e1-1e55d8e9e2ak"/>
+
+    <person_attribute_type person_attribute_type_id="111" name="hidCardIssued" description="Health Id Card Issued"
+                           format="java.lang.Boolean" retired="0" creator="1" sort_weight="1"
+                           date_created="2005-01-01 00:00:00.0"
+                           searchable="1" uuid="5b19584d-10ab-1144-C5f2-1e55d8e9e2ak"/>
+
+    <patient_identifier_type patient_identifier_type_id="11" name="Health Id" description="Test description" location_behavior = "NOT_USED"
+                             creator="1" date_created="2016-12-22 14:34:21.6" required="false" retired="false"
+                             uuid="2238b039-7f77-4384-a912-360dd154f0d1"/>
+
+</dataset>

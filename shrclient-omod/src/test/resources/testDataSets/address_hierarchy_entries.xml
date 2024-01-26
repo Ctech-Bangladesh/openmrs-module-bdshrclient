@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <address_hierarchy_entry address_hierarchy_entry_id="1" name="Dhaka" level_id="1"
+                             user_generated_id="30" uuid="2927de2a-9abd-4b9c-97e4-1556bf5202ea"/>
+    <address_hierarchy_entry address_hierarchy_entry_id="2" name="Gazipur" level_id="2"
+                             parent_id="1" user_generated_id="3033" uuid="2927de2a-34r5-4b9c-97e4-1556bf5202ea"/>
+    <address_hierarchy_entry address_hierarchy_entry_id="3" name="Kaliganj" level_id="3"
+                             parent_id="2" user_generated_id="303334" uuid="2927de2a-fg45-4b9c-97e4-1556bf5202ea"/>
+    <address_hierarchy_entry address_hierarchy_entry_id="4" name="Unions Of Kaliganj Upazila" level_id="4"
+                             parent_id="3" user_generated_id="30333499" uuid="2927de2a-34ed-4b9c-97e4-1556bf5202ea"/>
+    <address_hierarchy_entry address_hierarchy_entry_id="5" name="Bahadursadi" level_id="5" parent_id="4"
+                             user_generated_id="3033349915" uuid="2927de2a-9abd-4b9c-hg67-1556bf5202ea"/>
+    <address_hierarchy_entry address_hierarchy_entry_id="6" name="Ward No-01" level_id="6" parent_id="5"
+                             user_generated_id="303334991501" uuid="2927de2a-9abd-56tf-97e4-1556bf5202ea"/>
+
+    <address_hierarchy_entry_translation address_hierarchy_entry_id="1" local_name="পুরান ঢাকার"/>
+</dataset>

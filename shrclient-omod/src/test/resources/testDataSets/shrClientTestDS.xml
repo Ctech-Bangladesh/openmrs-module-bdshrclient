@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <event_records id="1" uuid="event-uuid-1"
+                   title="Patient" timestamp="2014-04-15 10:00:01.0"
+                   object="/openmrs/ws/rest/v1/patient/patient-uuid-1?v=full"
+                   category="patient"/>
+    <event_records id="2" uuid="event-uuid-2"
+                   title="Patient" timestamp="2014-04-15 10:00:02.0"
+                   object="/openmrs/ws/rest/v1/patient/patient-uuid-2?v=full"
+                   category="patient"/>
+    <event_records id="3" uuid="event-uuid-3"
+                   title="Patient" timestamp="2014-04-15 10:00:03.0"
+                   object="/openmrs/ws/rest/v1/patient/patient-uuid-3?v=full"
+                   category="patient"/>
+
+
+    <markers feed_uri="openmrs:events:patients"
+            last_read_entry_id="tag:atomfeed.ict4h.org:event-uuid-1"
+            feed_uri_for_last_read_entry="openmrs:events:patients/recent" />
+
+
+</dataset>
+
+
+

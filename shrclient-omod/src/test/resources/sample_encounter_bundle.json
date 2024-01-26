@@ -1,0 +1,13 @@
+[
+    {
+        "healthId": "5925782371365289985",
+        "categories": [
+            "encounter"
+        ],
+        "id": "acdfd506-3d47-4ce3-bf28-9033d648e4d6",
+        "publishedDate": "2014-10-24T02:13:12.946-0700",
+        "title": "Encounter:acdfd506-3d47-4ce3-bf28-9033d648e4d6",
+        "link": "/patients/5925782371365289985/encounters/acdfd506-3d47-4ce3-bf28-9033d648e4d6",
+        "content": "<Bundle xmlns=\"http://hl7.org/fhir\">\n<id value=\"4fe6f9e2-d10a-4956-aae5-091e810090e1\"/>\n<meta>\n<lastUpdated value=\"2015-08-24T16:37:53.000+05:30\"/>\n</meta>\n<type value=\"document\"/>\n<entry>\n<resource>\n<Composition xmlns=\"http://hl7.org/fhir\">\n<identifier>\n<value value=\"urn:uuid:bce6c82a-01ec-482b-8dee-12240f372a38\"/>\n</identifier>\n<date value=\"2014-07-10T16:05:09+05:30\"/>\n<type>\n<coding>\n<system value=\"http://hl7.org/fhir/vs/doc-typecodes\"/>\n<code value=\"51899-3\"/>\n<display value=\"Details Document\"/>\n</coding>\n</type>\n<status value=\"final\"/>\n<confidentiality value=\"N\"/>\n<subject>\n<reference value=\"http://mci.com//api/default/patients/HIDA764177\"/>\n<display value=\"HIDA764177\"/>\n</subject>\n<author>\n<reference value=\"http://www.fr.com/10000069.json\"/>\n</author>\n<encounter>\n<reference value=\"urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b\"/>\n</encounter>\n<section>\n<content>\n<reference value=\"urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b\"/>\n<display value=\"Encounter\"/>\n</content>\n</section>\n</Composition>\n</resource>\n</entry>\n<entry>\n<base value=\"urn:uuid:\"/>\n<resource>\n<Encounter xmlns=\"http://hl7.org/fhir\">\n<id value=\"4d2f9872-4df1-438e-9d72-0a8b161d409b\"/>\n<identifier>\n<value value=\"urn:uuid:4d2f9872-4df1-438e-9d72-0a8b161d409b\"/>\n</identifier>\n<status value=\"finished\"/>\n<class value=\"outpatient\"/>\n<type>\n<text value=\"OPD\"/>\n</type>\n<patient>\n<reference value=\"http://mci.com//api/default/patients/HIDA764177\"/>\n<display value=\"HIDA764177\"/>\n</patient>\n<participant>\n<individual>\n<reference value=\"http://www.pr.com/812.json\"/>\n</individual>\n</participant>\n<serviceProvider>\n<reference value=\"http://www.fr.com/10000069.json\"/>\n</serviceProvider>\n</Encounter>\n</resource>\n</entry>\n</Bundle>"
+    }
+]

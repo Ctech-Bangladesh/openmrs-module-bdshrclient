@@ -1,0 +1,242 @@
+[
+    {
+        "code": "100409",
+        "id": "100409",
+        "name": "AMTALI",
+        "type": "upazila",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "09",
+                "name": "AMTALI",
+                "type": "upazila"
+            }
+        ]
+    },
+    {
+        "code": "100419",
+        "id": "100419",
+        "name": "BAMNA",
+        "type": "upazila",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "19",
+                "name": "BAMNA",
+                "type": "upazila"
+            }
+        ]
+    },
+    {
+        "code": "100428",
+        "id": "100428",
+        "name": "BARGUNA SADAR",
+        "type": "upazila",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "28",
+                "name": "BARGUNA SADAR",
+                "type": "upazila"
+            }
+        ]
+    },
+    {
+        "code": "100447",
+        "id": "100447",
+        "name": "BETAGI",
+        "type": "upazila",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "47",
+                "name": "BETAGI",
+                "type": "upazila"
+            }
+        ]
+    },
+    {
+        "code": "100485",
+        "id": "100485",
+        "name": "PATHARGHATA",
+        "type": "upazila",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "85",
+                "name": "PATHARGHATA",
+                "type": "upazila"
+            }
+        ]
+    },
+    {
+        "code": "100490",
+        "id": "100490",
+        "name": "TALTALI",
+        "type": "upazila",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "04",
+                "name": "Barguna",
+                "type": "district"
+            },
+            {
+                "code": "90",
+                "name": "TALTALI",
+                "type": "upazila"
+            }
+        ]
+    },
+    {
+        "code": "100602",
+        "id": "100602",
+        "name": "AGAILJHARA",
+        "type": "upazila",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "06",
+                "name": "Barisal",
+                "type": "district"
+            },
+            {
+                "code": "02",
+                "name": "AGAILJHARA",
+                "type": "upazila"
+            }
+        ]
+    },
+    {
+        "code": "100603",
+        "id": "100603",
+        "name": "BABUGANJ",
+        "type": "upazila",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "06",
+                "name": "Barisal",
+                "type": "district"
+            },
+            {
+                "code": "03",
+                "name": "BABUGANJ",
+                "type": "upazila"
+            }
+        ]
+    },
+    {
+        "code": "100607",
+        "id": "100607",
+        "name": "BAKERGANJ",
+        "type": "upazila",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "06",
+                "name": "Barisal",
+                "type": "district"
+            },
+            {
+                "code": "07",
+                "name": "BAKERGANJ",
+                "type": "upazila"
+            }
+        ]
+    },
+    {
+        "code": "100610",
+        "id": "100610",
+        "name": "BANARI PARA",
+        "type": "upazila",
+        "active": 1,
+        "hierarchy": [
+            {
+                "code": "10",
+                "name": "Barisal",
+                "type": "division"
+            },
+            {
+                "code": "06",
+                "name": "Barisal",
+                "type": "district"
+            },
+            {
+                "code": "10",
+                "name": "BANARI PARA",
+                "type": "upazila"
+            }
+        ]
+    }
+]

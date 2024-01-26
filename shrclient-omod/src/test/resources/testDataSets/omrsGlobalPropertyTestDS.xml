@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <!--Cause Of Death Global Settings-->
+    <concept concept_id="555" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2015-04-25 11:43:43.0" version=""
+             changed_by="1" date_changed="2015-04-25 11:43:43.0" uuid="juvvv80f-1yz9-adle-ald8-812ectrabcd"/>
+    <concept_name concept_id="555" concept_name_id="555" name="Cause Of Death" locale="en" creator="1"
+                  date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"
+                  voided="false" uuid="lkiay80e-1fz9-fda3-2b88-812aalsa677h"/>
+
+    <concept concept_id="556" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2015-04-25 11:43:43.0" version=""
+             changed_by="1" date_changed="2015-04-25 11:43:43.0" uuid="vuvvv80f-1yz9-adle-ald8-812ectrabcd"/>
+    <concept_name concept_id="556" concept_name_id="556" name="Unspecified Cause Of Death" locale="en" creator="1"
+                  date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"
+                  voided="false" uuid="lkiay80e-1fz9-fda3-2b88-812aalsa676k"/>
+
+    <global_property property="concept.causeOfDeath" property_value="555" description="Concept Id for cause Of Death" uuid="lkiay888-1fz9-fda3-2b99-812aalsa677h"/>
+    <global_property property="concept.unspecifiedCauseOfDeath" property_value="556" description="Concept Id for unspecified Cause Of Death" uuid="lkiay888-1fxx-fda3-2b99-812aalsa677h"/>
+    <!--Cause Of Death Global Settings-->
+</dataset>

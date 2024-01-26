@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.1//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.openmrs.module.shrclient.model">
+
+    <class name="IdMapping" table="shr_id_mapping">
+        <id name="id" type="long" column="id">
+            <generator class="native">
+                <param name="sequence">id_seq</param>
+            </generator>
+        </id>
+        <discriminator column="id" insert="false"/>
+        <property name="internalId" column="internal_id" type="java.lang.String" not-null="true" length="100"/>
+        <property name="externalId" column="external_id" type="java.lang.String" not-null="true" length="50"/>
+        <property name="type" column="type" type="java.lang.String" not-null="true" length="50"/>
+        <property name="uri" column="uri" type="java.lang.String" not-null="false" length="250" />
+        <property name="createdAt" column="created_at" type="java.util.Date"/>
+        <property name="lastSyncDateTime" type="java.util.Date" >
+            <column name="last_sync_datetime" default="now()" ></column>
+        </property>
+        <property name="serverUpdateDateTime" column="server_update_datetime" type="java.util.Date"/>
+    </class>
+
+    <class name="EncounterIdMapping" table="encounter_id_mapping">
+        <id name="id" type="long" column="id">
+            <generator class="native">
+                <param name="sequence">id_seq</param>
+            </generator>
+        </id>
+        <discriminator column="id" insert="false"/>
+        <property name="internalId" column="internal_id" type="java.lang.String" not-null="true" length="100"/>
+        <property name="externalId" column="external_id" type="java.lang.String" not-null="true" length="50"/>
+        <property name="uri" column="uri" type="java.lang.String" not-null="false" length="250" />
+        <property name="createdAt" column="created_at" type="java.util.Date"/>
+        <property name="lastSyncDateTime" type="java.util.Date" >
+            <column name="last_sync_datetime" default="now()" ></column>
+        </property>
+        <property name="serverUpdateDateTime" column="server_update_datetime" type="java.util.Date"/>
+    </class>
+    <class name="PatientIdMapping" table="patient_id_mapping">
+        <id name="id" type="long" column="id">
+            <generator class="native">
+                <param name="sequence">id_seq</param>
+            </generator>
+        </id>
+        <discriminator column="id" insert="false"/>
+        <property name="internalId" column="internal_id" type="java.lang.String" not-null="true" length="100"/>
+        <property name="externalId" column="external_id" type="java.lang.String" not-null="true" length="50"/>
+        <property name="uri" column="uri" type="java.lang.String" not-null="false" length="250" />
+        <property name="createdAt" column="created_at" type="java.util.Date"/>
+        <property name="lastSyncDateTime" type="java.util.Date" >
+            <column name="last_sync_datetime" default="now()" ></column>
+        </property>
+        <property name="serverUpdateDateTime" column="server_update_datetime" type="java.util.Date"/>
+    </class>
+    <class name="DiagnosisIdMapping" table="diagnosis_id_mapping">
+        <id name="id" type="long" column="id">
+            <generator class="native">
+                <param name="sequence">id_seq</param>
+            </generator>
+        </id>
+        <discriminator column="id" insert="false"/>
+        <property name="internalId" column="internal_id" type="java.lang.String" not-null="true" length="50"/>
+        <property name="externalId" column="external_id" type="java.lang.String" not-null="true" length="100"/>
+        <property name="uri" column="uri" type="java.lang.String" not-null="false" length="250"/>
+        <property name="createdAt" column="created_at" type="java.util.Date"/>
+    </class>
+    <class name="OrderIdMapping" table="order_id_mapping">
+        <id name="id" type="long" column="id">
+            <generator class="native">
+                <param name="sequence">id_seq</param>
+            </generator>
+        </id>
+        <discriminator column="id" insert="false"/>
+        <property name="internalId" column="internal_id" type="java.lang.String" not-null="true" length="50"/>
+        <property name="externalId" column="external_id" type="java.lang.String" not-null="true" length="100"/>
+        <property name="type" column="type" type="java.lang.String" not-null="true" length="50"/>
+        <property name="uri" column="uri" type="java.lang.String" not-null="false" length="250" />
+        <property name="createdAt" column="created_at" type="java.util.Date"/>
+    </class>
+    <class name="ProviderIdMapping" table="provider_id_mapping">
+        <id name="id" type="long" column="id">
+            <generator class="native">
+                <param name="sequence">id_seq</param>
+            </generator>
+        </id>
+        <discriminator column="id" insert="false"/>
+        <property name="internalId" column="internal_id" type="java.lang.String" not-null="true" length="50"/>
+        <property name="externalId" column="external_id" type="java.lang.String" not-null="true" length="100"/>
+        <property name="uri" column="uri" type="java.lang.String" not-null="false" length="250" />
+        <property name="createdAt" column="created_at" type="java.util.Date"/>
+    </class>
+    <class name="FacilityCatchment" table="facility_catchment">
+        <composite-id>
+            <key-property name="locationId" column="location_id" type="java.lang.Integer" access="field"/>
+            <key-property name="catchment" column="catchment" type="java.lang.String" access="field"/>
+        </composite-id>
+    </class>
+</hibernate-mapping>

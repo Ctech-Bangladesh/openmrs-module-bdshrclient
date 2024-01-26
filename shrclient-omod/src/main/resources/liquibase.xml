@@ -1,0 +1,1356 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="shrclient-atomfeed-20151209-2116" context="setup" author="ict4h">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="markers"/>
+            </not>
+        </preConditions>
+        <comment>Creating table markers if not present already</comment>
+        <createTable tableName="markers">
+            <column name="feed_uri" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="last_read_entry_id" type="varchar(255)"/>
+            <column name="feed_uri_for_last_read_entry" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="shrclient-atomfeed-20151209-2117" context="setup" author="ict4h">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="failed_events"/>
+            </not>
+        </preConditions>
+        <comment>Creating table failed_events if not present already</comment>
+        <createTable tableName="failed_events">
+            <column name="id" type="serial">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="feed_uri" type="varchar(255)"/>
+            <column name="failed_at" type="timestamp"/>
+            <!-- TODO: change to CLOB -->
+            <column name="error_message" type="mediumtext"/>
+            <column name="event_id" type="varchar(255)"/>
+            <!-- TODO: change to CLOB -->
+            <column name="event_content" type="mediumtext"/>
+            <column name="error_hash_code" type="int"/>
+            <column name="title" type="varchar(255)"></column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="shrclient-atomfeed-20151209-2118" author="Dubey,Sukreet" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="title" tableName="failed_events"/>
+            </not>
+        </preConditions>
+        <comment>Creating column failed_events.title</comment>
+        <addColumn tableName="failed_events">
+            <column name="title" type="varchar(255)"></column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="shrclient-atomfeed-20151209-2119" context="setup" author="utsab">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from information_schema.columns where column_name='retries' and table_name = 'failed_events';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add column 'retries' and not null constraint, if does not exists</comment>
+        <addColumn tableName="failed_events">
+            <column name="retries" type="int"/>
+        </addColumn>
+        <addNotNullConstraint columnDataType="int"
+                              columnName="retries"
+                              defaultNullValue="0"
+                              tableName="failed_events"/>
+    </changeSet>
+    <changeSet id="shrclient-atomfeed-20151209-2120" author="tw" context="setup">
+        <comment>changing failed_events.event_content column to mediumtext</comment>
+        <modifyDataType columnName="event_content"
+                        newDataType="mediumtext"
+                        tableName="failed_events"/>
+    </changeSet>
+
+    <changeSet id="shrclient-atomfeed-20151209-2121" author="Dubey,Sukreet" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="failed_event_retry_log"/>
+            </not>
+        </preConditions>
+        <comment>Create table failed_event_retry_log if does not exists</comment>
+        <createTable tableName="failed_event_retry_log">
+            <column name="id" type="serial">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="feed_uri" type="varchar(255)"/>
+            <column name="failed_at" type="timestamp"/>
+            <column name="error_message" type="mediumtext"/>
+            <column name="event_id" type="varchar(255)"/>
+            <column name="event_content" type="mediumtext"/>
+            <column name="error_hash_code" type="int"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="shrclient-atomfeed-20151209-2122" author="tw" context="setup">
+        <comment>changing failed_event_retry_log.event_content column type to mediumtext</comment>
+        <modifyDataType columnName="event_content"
+                        newDataType="mediumtext"
+                        tableName="failed_event_retry_log"/>
+    </changeSet>
+
+    <changeSet id="shrclient-atomfeed-20151209-2123" author="Dubey" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="event_records_queue"/>
+            </not>
+        </preConditions>
+        <comment>adding table event_records_queue if not exists</comment>
+        <createTable tableName="event_records_queue">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="uuid" type="varchar(40)"/>
+            <column name="title" type="varchar(255)"/>
+            <column name="timestamp" type="TIMESTAMP" defaultValueDate="CURRENT_TIMESTAMP"/>
+            <column name="uri" type="varchar(255)"/>
+            <!-- Change to CLOB -->
+            <column name="object" type="varchar(1000)"/>
+            <column name="category" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="shrclient-atomfeed-20151209-2124" author="Dubey" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.atomfeed.scheduler.tasks.EventPublisherTask';
+            </sqlCheck>
+        </preConditions>
+        <comment>adding OpenMRS event publisher task scheduler if not exists</comment>
+        <insert tableName="scheduler_task_config">
+            <column name="name" value="OpenMRS event publisher task"/>
+            <column name="schedulable_class" value="org.openmrs.module.atomfeed.scheduler.tasks.EventPublisherTask"/>
+            <column name="start_time" valueDate=" now() "/>
+            <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
+            <column name="repeat_interval" value="2"/>
+            <column name="start_on_startup" value="1"/>
+            <column name="started" value="1"/>
+            <column name="created_by" value="1"/>
+            <column name="date_created" valueDate=" now() "/>
+            <column name="uuid" valueComputed=" uuid() "/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="shrclient-020514" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.BahmniSyncTask';
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="scheduler_task_config">
+            <column name="name" value="Bahmni sync task"/>
+            <column name="schedulable_class" value="org.openmrs.module.shrclient.scheduler.tasks.BahmniSyncTask"/>
+            <column name="start_time" valueDate=" now() "/>
+            <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
+            <column name="repeat_interval" value="60"/>
+            <column name="start_on_startup" value="1"/>
+            <column name="started" value="1"/>
+            <column name="created_by" value="1"/>
+            <column name="date_created" valueDate=" now() "/>
+            <column name="uuid" valueComputed=" uuid() "/>
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="shrclient-040614" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from users where system_id = 'shrclientsystem';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            set @puuid = uuid();
+
+            insert into person(birthdate_estimated, dead, creator, date_created, uuid)
+            values(0, 0, 1, now(), @puuid);
+
+            insert into users(system_id, creator, date_created, person_id, uuid, username)
+            values ('shrclientsystem', 1, now(),(select person_id from person where uuid = @puuid) , uuid(), 'shrclientsystem');
+
+            insert into provider (person_id, identifier, creator, date_created, uuid, name) values ((select person_id from person where uuid = @puuid), 'SHRCLIENTSYSTEM', 1, now(), uuid(), 'shrclientsystem');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bdshrclient-100714" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from chunking_history;
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            truncate chunking_history;
+            insert into chunking_history (chunk_length, start) values (100, 1);
+        </sql>
+    </changeSet>
+
+    <changeSet id="bdshrclient-110714-1" author="tw" context="setup">
+        <validCheckSum>3:1f2e06b0ba6152c4d0397ff81a8a6871</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from person_name where given_name = "shrclientsystem";
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            set @person_id = 0;
+            select person_id into @person_id from users where username = 'shrclientsystem';
+            insert into person_name (preferred, person_id, given_name, family_name, creator, date_created, uuid) values (1, @person_id, 'shrclientsystem', 'system', 1, now(), uuid());
+        </sql>
+    </changeSet>
+
+    <changeSet id="bdshrclient-1" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.BahmniSyncRetryTask';
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="scheduler_task_config">
+            <column name="name" value="Bahmni sync retry task"/>
+            <column name="schedulable_class" value="org.openmrs.module.shrclient.scheduler.tasks.BahmniSyncRetryTask"/>
+            <column name="start_time" valueDate=" now() "/>
+            <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
+            <column name="repeat_interval" value="120"/>
+            <column name="start_on_startup" value="1"/>
+            <column name="started" value="1"/>
+            <column name="created_by" value="1"/>
+            <column name="date_created" valueDate=" now() "/>
+            <column name="uuid" valueComputed=" uuid() "/>
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="bdshrclient-291014-2100" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.CatchmentEncounterDownloadTask';
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="scheduler_task_config">
+            <column name="name" value="Catchment Encounters Sync Task"/>
+            <column name="schedulable_class" value="org.openmrs.module.shrclient.scheduler.tasks.CatchmentEncounterDownloadTask"/>
+            <column name="start_time" valueDate=" now() "/>
+            <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
+            <column name="repeat_interval" value="60"/>
+            <column name="start_on_startup" value="1"/>
+            <column name="started" value="1"/>
+            <column name="created_by" value="1"/>
+            <column name="date_created" valueDate=" now() "/>
+            <column name="uuid" valueComputed=" uuid() "/>
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="bdshrclient-041114-2100" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.LRSyncTask';
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="scheduler_task_config">
+            <column name="name" value="LR Sync Task"/>
+            <column name="schedulable_class" value="org.openmrs.module.shrclient.scheduler.tasks.LRSyncTask"/>
+            <column name="start_time" valueDate=" now() "/>
+            <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
+            <column name="repeat_interval" value="15"/>
+            <column name="start_on_startup" value="1"/>
+            <column name="started" value="1"/>
+            <column name="created_by" value="1"/>
+            <column name="date_created" valueDate=" now() "/>
+            <column name="uuid" valueComputed=" uuid() "/>
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="bdshrclient-111114-1700" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.FRSyncTask';
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="scheduler_task_config">
+            <column name="name" value="FR Sync Task"/>
+            <column name="schedulable_class" value="org.openmrs.module.shrclient.scheduler.tasks.FRSyncTask"/>
+            <column name="start_time" valueDate=" now() "/>
+            <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
+            <column name="repeat_interval" value="15"/>
+            <column name="start_on_startup" value="1"/>
+            <column name="started" value="1"/>
+            <column name="created_by" value="1"/>
+            <column name="date_created" valueDate=" now() "/>
+            <column name="uuid" valueComputed=" uuid() "/>
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="bdshrclient-131114-1800" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from location_tag where
+                name='SharedHealth Locations';
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="location_tag">
+            <column name="name" value="SharedHealth Locations"/>
+            <column name="creator" value="1"/>
+            <column name="date_created" valueDate=" now() "/>
+            <column name="uuid" valueComputed=" uuid() " />
+        </insert>
+
+    </changeSet>
+
+
+    <changeSet id="bdshrclient-191114-1800" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from markers where
+                last_read_entry_id='LR Sync Task';
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="lr.divisions"/>
+            <column name="last_read_entry_id" value="LR Sync Task"/>
+        </insert>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="lr.districts"/>
+            <column name="last_read_entry_id" value="LR Sync Task"/>
+        </insert>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="lr.upazilas"/>
+            <column name="last_read_entry_id" value="LR Sync Task"/>
+        </insert>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="lr.paurasavas"/>
+            <column name="last_read_entry_id" value="LR Sync Task"/>
+        </insert>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="lr.unions"/>
+            <column name="last_read_entry_id" value="LR Sync Task"/>
+        </insert>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="lr.wards"/>
+            <column name="last_read_entry_id" value="LR Sync Task"/>
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="bdshrclient-201114-1600" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from markers where
+                last_read_entry_id='FR Sync Task';
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="fr.facilities"/>
+            <column name="last_read_entry_id" value="FR Sync Task"/>
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="bdshrclient-211114-1800" author="tw">
+        <update tableName="scheduler_task_config">
+            <column name="start_on_startup" value="0" />
+            <where>name IN ('LR Sync Task', 'FR Sync Task')</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="bdshrclient-211114-1810" author="tw">
+        <update tableName="scheduler_task_config">
+            <column name="started" value="0" />
+            <where>name IN ('LR Sync Task', 'FR Sync Task')</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="bdshrclient-241114-1200" author="tw">
+        <update tableName="scheduler_task_config">
+            <column name="repeat_interval" value="86400" />
+            <where>name IN ('LR Sync Task', 'FR Sync Task')</where>
+        </update>
+    </changeSet>
+
+
+    <changeSet id="bdshrclient-241114-1800" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from location_tag where
+                name='SharedHealth Locations';
+            </sqlCheck>
+        </preConditions>
+
+        <update tableName="location_tag">
+            <column name="name" value="DGHS Facilities" />
+            <where>name = 'SharedHealth Locations'</where>
+        </update>
+
+    </changeSet>
+
+    <changeSet id="bdshrclient-221214-1500" author="tw" context="setup">
+        <modifyDataType tableName="address_hierarchy_entry" columnName="user_generated_id" newDataType="varchar(12)" />
+    </changeSet>
+
+    <changeSet id="bdshrclient-221214-1800" author="tw" context="setup">
+        <update tableName="markers">
+            <column name="last_read_entry_id" value="0" />
+            <column name="feed_uri_for_last_read_entry" value="0000-00-00 00:00:00" />
+            <where>feed_uri IN ('fr.facilities', 'lr.divisions', 'lr.districts', 'lr.upazilas', 'lr.paurasavas', 'lr.unions', 'lr.wards')</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="bdshrclient-291214-1800" author="tw" context="setup">
+        <delete tableName="markers">
+            <where>feed_uri IN ('fr.facilities', 'lr.divisions', 'lr.districts', 'lr.upazilas', 'lr.paurasavas', 'lr.unions', 'lr.wards')</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="bdshrclient-291214-1805" author="tw">
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="urn://lr/divisions"/>
+        </insert>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="urn://lr/districts"/>
+        </insert>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="urn://lr/upazilas"/>
+        </insert>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="urn://lr/paurasavas"/>
+        </insert>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="urn://lr/unions"/>
+        </insert>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="urn://lr/wards"/>
+        </insert>
+
+        <insert tableName="markers">
+            <column name="feed_uri" value="urn://fr/facilities"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-20150213-1429" author="tw">
+        <comment>Inserting pr feed into markers</comment>
+        <insert tableName="markers">
+            <column name="feed_uri" value="urn://pr/providers"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-20150213-1509" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.PRSyncTask';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding scheduler for pr sync task</comment>
+        <insert tableName="scheduler_task_config">
+            <column name="name" value="PR Sync Task"/>
+            <column name="schedulable_class" value="org.openmrs.module.shrclient.scheduler.tasks.PRSyncTask"/>
+            <column name="start_time" valueDate=" now() "/>
+            <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
+            <column name="repeat_interval" value="86400"/>
+            <column name="start_on_startup" value="0"/>
+            <column name="started" value="0"/>
+            <column name="created_by" value="1"/>
+            <column name="date_created" valueDate=" now() "/>
+            <column name="uuid" valueComputed=" uuid() "/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-110515-1228" author="sanjana" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from scheduler_task_config where
+                name='Catchment Encounters Sync Task';
+            </sqlCheck>
+        </preConditions>
+        <update tableName="scheduler_task_config">
+            <column name="start_on_startup" value="0"/>
+            <column name="started" value="0" />
+            <where>name='Catchment Encounters Sync Task'</where>
+        </update>
+    </changeSet>
+    <changeSet id="bdshrclient-130515-1833" author="sanjana" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='concept.unspecifiedCauseOfDeath';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for unspecified cause of death</comment>
+        <insert tableName="global_property">
+            <column name="property" value="concept.unspecifiedCauseOfDeath"/>
+            <column name="description" value="Concept Id for unspecified CAUSE OF DEATH"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="bdshrclient-280515-1445" author="ranjan" context="setup">
+        <preConditions onFail="HALT">
+            <not>
+                <tableExists tableName="facility_catchment"/>
+            </not>
+        </preConditions>
+        <comment>Adding a map of facility(location) and catchments</comment>
+        <createTable tableName="facility_catchment">
+            <column name="location_id" type="int"/>
+            <column name="catchment" type="varchar(255)"/>
+        </createTable>
+
+        <addPrimaryKey tableName="facility_catchment" columnNames="location_id, catchment" />
+        <addForeignKeyConstraint baseTableName="facility_catchment" baseColumnNames="location_id"
+                                 constraintName="fk_location_facility_catchment" referencedTableName="location"
+                                 referencedColumnNames="location_id"/>
+    </changeSet>
+
+    <changeSet id="bdshrclient-08062015-1603" author="neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from location_tag where
+                name='DGHS Facilities';
+            </sqlCheck>
+        </preConditions>
+
+        <update tableName="location_tag">
+            <column name="name" value="HIE Facilities" />
+            <where>name = 'DGHS Facilities'</where>
+        </update>
+
+    </changeSet>
+
+    <changeSet id="bdshrclient-050615-1608" author="neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.hie.facilities.location.tag';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the location tag id for HIE facilities.</comment>
+        <sql>
+            set @location_tag_id = 0;
+
+            select location_tag_id into @location_tag_id from location_tag where name = 'HIE Facilities';
+            insert into global_property (property, description, property_value, uuid) values ('shr.hie.facilities.location.tag', 'Location tag uuid for HIE Facilities', @location_tag_id, uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-23062015-1136" author="neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where property = 'shr.system.user';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            set @shr_system_user_id = 0;
+
+            select user_id into @shr_system_user_id from users where system_id  = 'shrclientsystem';
+            insert into global_property (property, description, property_value, uuid) values ('shr.system.user', 'Shr System User', @shr_system_user_id, uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-25062015-1536" author="neha,angshu" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="shr_id_mapping"></tableExists>
+            </not>
+        </preConditions>
+        <comment>Create a mapping table for external id to internal id mapping</comment>
+        <createTable tableName="shr_id_mapping">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="internal_id" type="varchar(50)"></column>
+            <column name="external_id" type="varchar(50)"></column>
+            <column name="type" type="varchar(50)"></column>
+            <column name="uri" type="varchar(150)"></column>
+        </createTable>
+    </changeSet>
+    <changeSet id="bdshrclient-25062015-1545" author="neha,angshu" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_shr_id_mapping_internal_id"/>
+            </not>
+        </preConditions>
+        <comment>Creating index shr_id_mapping.internal_id</comment>
+        <createIndex indexName="idx_shr_id_mapping_internal_id" tableName="shr_id_mapping">
+            <column name="internal_id" type="varchar(50)"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="bdshrclient-25062015-1546" author="neha,angshu" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_shr_id_mapping_external_id"/>
+            </not>
+        </preConditions>
+        <comment>Creating index shr_id_mapping.external_id</comment>
+        <createIndex indexName="idx_shr_id_mapping_external_id" tableName="shr_id_mapping">
+            <column name="external_id" type="varchar(50)"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="bdshrclient-25062015-1547" author="neha,angshu" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="last_sync_datetime" tableName="shr_id_mapping"/>
+            </not>
+        </preConditions>
+        <comment>Creating column shr_id_mapping.last_sync_datetime</comment>
+        <addColumn tableName="shr_id_mapping">
+            <column name="last_sync_datetime" type="datetime" defaultValueComputed="now()"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="bdshrclient-13082015-1755" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.concept.relationshipType';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for Relationship Type</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.concept.relationshipType"/>
+            <column name="description" value="Concept Id for Relationship Type"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-13082015-1756" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.concept.quantityUnits';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for Quantity Units</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.concept.quantityUnits"/>
+            <column name="description" value="Concept Id for Quantity Units"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-13082015-1757" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.concept.immunizationReason';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for Immunization Reason</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.concept.immunizationReason"/>
+            <column name="description" value="Concept Id for Immunization Reason"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-13082015-1758" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.concept.immunizationRefusalReason';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for Immunization Refusal Reason</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.concept.immunizationRefusalReason"/>
+            <column name="description" value="Concept Id for Immunization Refusal Reason"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-13082015-1759" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.concept.routeOfAdministration';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for Route of Administration</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.concept.routeOfAdministration"/>
+            <column name="description" value="Concept Id for Route Of Administration"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-05092015-1613" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.concept.procedureOutcome';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for Procedure Outcome</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.concept.procedureOutcome"/>
+            <column name="description" value="Concept Id for Procedure Outcome"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-07092015-1113" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.concept.procedureFollowUp';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for Procedure Follow Up</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.concept.procedureFollowUp"/>
+            <column name="description" value="Concept Id for Procedure Follow Up"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-08092015-1513" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.concept.procedureStatus';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for Procedure Status</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.concept.procedureStatus"/>
+            <column name="description" value="Concept Id for Procedure Status"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-18092015-1613" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.concept.immunizationStatus';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for Procedure Status</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.concept.immunizationStatus"/>
+            <column name="description" value="Concept Id for Immunization Status"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-09102015-1504" author="Neha" context="setup">
+        <comment>Increasing length of internal id column</comment>
+        <modifyDataType tableName="shr_id_mapping"
+                        columnName="internal_id"
+                        newDataType="varchar(100)" />
+    </changeSet>
+    <changeSet id="bdshrclient-12102015-1212" author="Neha" context="setup">
+        <comment>Deleting valueset procedure followup global property</comment>
+        <sql>
+            delete from global_property where
+            property='shr.concept.procedureFollowUp';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-15102015-1729" author="Dubey,sukreet" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.ignoreConceptList';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept ids for ignored concepts</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.ignoreConceptList"/>
+            <column name="description" value="Comma separated ignored concept ids"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-27102015-1601" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.concept.medicationForms';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for Medication Forms</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.concept.medicationForms"/>
+            <column name="description" value="Concept Id for Medication Forms"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-27102015-1602" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.concept.medicationPackageForms';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the concept id for Medication Package Forms</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.concept.medicationPackageForms"/>
+            <column name="description" value="Concept Id for Medication Package Forms"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-11122015-1138" author="dubey" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="server_update_datetime" tableName="shr_id_mapping"/>
+            </not>
+        </preConditions>
+        <comment>Creating column shr_id_mapping.server_update_datetime</comment>
+        <addColumn tableName="shr_id_mapping">
+            <column name="server_update_datetime" type="datetime(3)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="bdshrclient-14122015-1700" author="sanjana,sukreet" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="encounter_id_mapping"></tableExists>
+            </not>
+        </preConditions>
+        <comment>Create a mapping table for encounter external id to internal id mapping</comment>
+        <createTable tableName="encounter_id_mapping">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="internal_id" type="varchar(100)"></column>
+            <column name="external_id" type="varchar(50)"></column>
+            <column name="uri" type="varchar(150)"></column>
+            <column name="last_sync_datetime" type="datetime" defaultValueComputed="now()"></column>
+            <column name="server_update_datetime" type="datetime(3)"></column>
+        </createTable>
+    </changeSet>
+    <changeSet id="bdshrclient-14122015-1702" author="sanjana,sukreet" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_encounter_id_mapping_internal_id"/>
+            </not>
+        </preConditions>
+        <comment>Creating index encounter_id_mapping.internal_id</comment>
+        <createIndex indexName="idx_encounter_id_mapping_internal_id" tableName="encounter_id_mapping">
+            <column name="internal_id" type="varchar(100)"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="bdshrclient-14122015-1703" author="sanjana,sukreet" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_encounter_id_mapping_external_id"/>
+            </not>
+        </preConditions>
+        <comment>Creating index encounter_id_mapping.external_id</comment>
+        <createIndex indexName="idx_encounter_id_mapping_external_id" tableName="encounter_id_mapping">
+            <column name="external_id" type="varchar(50)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="bdshrclient-15122015-1800" author="sukreet,sanjana" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) != 0 from shr_id_mapping where type='encounter';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            insert into encounter_id_mapping(internal_id, external_id, uri, last_sync_datetime, server_update_datetime)
+            select internal_id, external_id, uri, last_sync_datetime, server_update_datetime from shr_id_mapping where type='encounter';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-17122015-1040" author="sukreet,sanjana" context="setup">
+        <preConditions>
+            <sqlCheck expectedResult="1">
+                select count(*) = (select count(*) from encounter_id_mapping) from shr_id_mapping where type='encounter';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            delete from shr_id_mapping where type='encounter';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-21122015-1740" author="sanjana,sukreet" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="patient_id_mapping"></tableExists>
+            </not>
+        </preConditions>
+        <comment>Create a mapping table for patient external id to internal id mapping</comment>
+        <createTable tableName="patient_id_mapping">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="internal_id" type="varchar(100)"></column>
+            <column name="external_id" type="varchar(50)"></column>
+            <column name="uri" type="varchar(150)"></column>
+            <column name="last_sync_datetime" type="datetime" defaultValueComputed="now()"></column>
+            <column name="server_update_datetime" type="datetime(3)"></column>
+        </createTable>
+    </changeSet>
+    <changeSet id="bdshrclient-21122015-1742" author="sanjana,sukreet" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_patient_id_mapping_internal_id"/>
+            </not>
+        </preConditions>
+        <comment>Creating index patient_id_mapping.internal_id</comment>
+        <createIndex indexName="idx_patient_id_mapping_internal_id" tableName="patient_id_mapping">
+            <column name="internal_id" type="varchar(100)"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="bdshrclient-21122015-1743" author="sanjana,sukreet" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_patient_id_mapping_external_id"/>
+            </not>
+        </preConditions>
+        <comment>Creating index patient_id_mapping.external_id</comment>
+        <createIndex indexName="idx_patient_id_mapping_external_id" tableName="patient_id_mapping">
+            <column name="external_id" type="varchar(50)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="bdshrclient-21122015-1744" author="sukreet,sanjana" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) != 0 from shr_id_mapping where type='patient';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            insert into patient_id_mapping(internal_id, external_id, uri, last_sync_datetime, server_update_datetime)
+            select internal_id, external_id, uri, last_sync_datetime, server_update_datetime from shr_id_mapping where type='patient';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-21122015-1745" author="sukreet,sanjana" context="setup">
+        <preConditions>
+            <sqlCheck expectedResult="1">
+                select count(*) = (select count(*) from patient_id_mapping) from shr_id_mapping where type='patient';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            delete from shr_id_mapping where type='patient';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-31122015-1041" context="setup" author="neha, dubey">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="date_created" tableName="event_records"/>
+            </not>
+        </preConditions>
+        <comment>Creating column date_created for queue table. This indicates the time event was raised or created.</comment>
+        <addColumn tableName="event_records">
+            <column name="date_created" type="TIMESTAMP" defaultValueDate="CURRENT_TIMESTAMP"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="bdshrclient-31122015-1043" context="setup" author="neha, dubey">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="tags" tableName="failed_events"/>
+            </not>
+        </preConditions>
+        <comment>Creating column tags for failed_events table. This is same as atom spec feed.entry.categories.</comment>
+        <addColumn tableName="failed_events">
+            <column name="tags" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="bdshrclient-31122015-1551" author="dubey,neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="medication_order_id_mapping"/>
+            </not>
+        </preConditions>
+        <comment>Create a mapping table for medication order external id to internal id mapping</comment>
+        <createTable tableName="medication_order_id_mapping">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="internal_id" type="varchar(50)"/>
+            <column name="external_id" type="varchar(100)"/>
+            <column name="uri" type="varchar(150)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="bdshrclient-31122015-1552" author="dubey,neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_medication_order_id_mapping_internal_id"/>
+            </not>
+        </preConditions>
+        <comment>Creating index medication_order_id_mapping.internal_id</comment>
+        <createIndex indexName="idx_medication_order_id_mapping_internal_id" tableName="medication_order_id_mapping">
+            <column name="internal_id" type="varchar(50)"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="bdshrclient-31122015-1553" author="dubey,neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_medication_order_id_mapping_external_id"/>
+            </not>
+        </preConditions>
+        <comment>Creating index medication_order_id_mapping.external_id</comment>
+        <createIndex indexName="idx_medication_order_id_mapping_external_id" tableName="medication_order_id_mapping">
+            <column name="external_id" type="varchar(100)"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="bdshrclient-31122015-1601" author="dubey,neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) != 0 from shr_id_mapping where type='MedicationOrder';
+            </sqlCheck>
+        </preConditions>
+        <comment>Moving medication order mappings to medication_order_mapping table</comment>
+        <sql>
+            insert into medication_order_id_mapping(internal_id, external_id, uri)
+            select internal_id,
+            concat_ws(':',substring_index(substring_index(uri,'/encounters/',-1),'#MedicationOrder/', 1), external_id),
+            uri from shr_id_mapping where type='MedicationOrder';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-31122015-1605" author="dubey,neha" context="setup">
+        <preConditions>
+            <sqlCheck expectedResult="1">
+                select count(*) = (select count(*) from medication_order_id_mapping) from shr_id_mapping where type='MedicationOrder';
+            </sqlCheck>
+        </preConditions>
+        <comment>deleting medication order mappings form shr_id_mapping table</comment>
+        <sql>
+            delete from shr_id_mapping where type='MedicationOrder';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-120116-1641" author="dubey,sukreet" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where property='shr.login.location.tag';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the location tag id for Login Locations.</comment>
+        <sql>
+            set @location_tag_id = 0;
+
+            select location_tag_id into @location_tag_id from location_tag where name = 'Login Location';
+            insert into global_property (property, description, property_value, uuid) values ('shr.login.location.tag', 'Location tag id for Login Locations', @location_tag_id, uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-23122015-1657" author="dubey,neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="diagnosis_id_mapping"/>
+            </not>
+        </preConditions>
+        <comment>Create a mapping table for diagnosis external id to internal id mapping</comment>
+        <createTable tableName="diagnosis_id_mapping">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="internal_id" type="varchar(50)"/>
+            <column name="external_id" type="varchar(100)"/>
+            <column name="uri" type="varchar(150)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="bdshrclient-23122015-1700" author="dubey,neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_diagnosis_id_mapping_internal_id"/>
+            </not>
+        </preConditions>
+        <comment>Creating index diagnosis_id_mapping.internal_id</comment>
+        <createIndex indexName="idx_diagnosis_id_mapping_internal_id" tableName="diagnosis_id_mapping">
+            <column name="internal_id" type="varchar(50)"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="bdshrclient-23122015-1701" author="dubey,neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_diagnosis_id_mapping_external_id"/>
+            </not>
+        </preConditions>
+        <comment>Creating index diagnosis_id_mapping.external_id</comment>
+        <createIndex indexName="idx_diagnosis_id_mapping_external_id" tableName="diagnosis_id_mapping">
+            <column name="external_id" type="varchar(50)"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="bdshrclient-040216-1211" author="neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.defaultPatientIdentifierSourceId';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property which saves the default patient identifier source id</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.defaultPatientIdentifierSourceId"/>
+            <column name="description" value="Default Patient Identifier Source Id"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-02022016-1756" context="setup" author="dubey">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="created_at" tableName="shr_id_mapping"/>
+            </not>
+        </preConditions>
+        <comment>Creating column created_at for shr_id_mapping table.</comment>
+        <addColumn tableName="shr_id_mapping">
+            <column name="created_at" type="datetime" defaultValueComputed="now()"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="bdshrclient-02022016-1759" context="setup" author="dubey">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="created_at" tableName="encounter_id_mapping"/>
+            </not>
+        </preConditions>
+        <comment>Creating column created_at for encounter_id_mapping table.</comment>
+        <addColumn tableName="encounter_id_mapping">
+            <column name="created_at" type="datetime" defaultValueComputed="now()"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="bdshrclient-02022016-1800" context="setup" author="dubey">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="created_at" tableName="patient_id_mapping" />
+            </not>
+        </preConditions>
+        <comment>Creating column created_at for patient_id_mapping table.</comment>
+        <addColumn tableName="patient_id_mapping">
+            <column name="created_at" type="datetime" defaultValueComputed="now()"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="bdshrclient-02022016-1801" context="setup" author="dubey">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="created_at" tableName="medication_order_id_mapping"/>
+            </not>
+        </preConditions>
+        <comment>Creating column created_at for medication_order_id_mapping table.</comment>
+        <addColumn tableName="medication_order_id_mapping">
+            <column name="created_at" type="datetime" defaultValueComputed="now()"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="bdshrclient-03022016-1201" context="setup" author="dubey,sukreet">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="created_at" tableName="diagnosis_id_mapping"/>
+            </not>
+        </preConditions>
+        <comment>Creating column created_at for diagnosis_id_mapping table.</comment>
+        <addColumn tableName="diagnosis_id_mapping">
+            <column name="created_at" type="datetime" defaultValueComputed="now()"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="bdshrclient-10022016-1536" context="setup" author="sukreet,dubey">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="type" tableName="medication_order_id_mapping"/>
+            </not>
+        </preConditions>
+        <comment>Creating column type for medication_order_id_mapping table.</comment>
+        <addColumn tableName="medication_order_id_mapping">
+            <column name="type" type="varchar(50)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="bdshrclient-10022016-1546" context="setup" author="sukreet,dubey">
+        <preConditions>
+                <tableExists tableName="medication_order_id_mapping"/>
+        </preConditions>
+        <comment>Renaming medication_order_id_mapping table to order_id_mapping.</comment>
+        <renameTable oldTableName="medication_order_id_mapping" newTableName="order_id_mapping"/>
+        <sql>
+            update order_id_mapping set type="MedicationOrder" where type is null;
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-28032016-1629" author="Dubey,sukreet" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where
+                property='shr.orderTypeToFHIRCodeMappings';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property to store mappings of openmrs order types to fhir category code and display
+        </comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.orderTypeToFHIRCodeMappings"/>
+            <column name="description" value="
+            List of maps for openmrs order types to fhir category code and display. E.g.:- [{&quot;type&quot;:&quot;Radiology Order&quot;,&quot;code&quot;:&quot;RAD&quot;,&quot;display&quot;:&quot;Radiology&quot;},
+            {&quot;type&quot;:&quot;Custom Order&quot;,&quot;code&quot;:&quot;CUST&quot;,&quot;display&quot;:&quot;Custom&quot;}]"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-20160406-1556" author="neha" context="setup">
+        <comment>Increasing the length of shr_id_mapping uri column</comment>
+        <sql>
+            ALTER TABLE shr_id_mapping MODIFY uri VARCHAR(250);
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-20160406-1557" author="neha" context="setup">
+        <comment>Increasing the length of encounter_id_mapping uri column</comment>
+        <sql>
+            ALTER TABLE encounter_id_mapping MODIFY uri VARCHAR(250);
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-20160406-1558" author="neha" context="setup">
+        <comment>Increasing the length of patient_id_mapping uri column</comment>
+        <sql>
+            ALTER TABLE patient_id_mapping MODIFY uri VARCHAR(250);
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-20160406-1559" author="neha" context="setup">
+        <comment>Increasing the length of diagnosis_id_mapping uri column</comment>
+        <sql>
+            ALTER TABLE diagnosis_id_mapping MODIFY uri VARCHAR(250);
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-20160406-1600" author="neha" context="setup">
+        <comment>Increasing the length of order_id_mapping uri column</comment>
+        <sql>
+            ALTER TABLE order_id_mapping MODIFY uri VARCHAR(250);
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-20160520-1209" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from global_property where property='shr.system.shrCategoryForEncounterEvents';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a global property for SHR encounter events category</comment>
+        <insert tableName="global_property">
+            <column name="property" value="shr.system.shrCategoryForEncounterEvents"/>
+            <column name="description" value="Category for SHR Encounter events to raised if given"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bdshrclient-20162007-1645" author="neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="provider_id_mapping"></tableExists>
+            </not>
+        </preConditions>
+        <comment>Create a mapping table for provider</comment>
+        <createTable tableName="provider_id_mapping">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="internal_id" type="varchar(100)"></column>
+            <column name="external_id" type="varchar(50)"></column>
+            <column name="uri" type="varchar(250)"></column>
+            <column name="created_at" type="datetime" defaultValueComputed="now()"></column>
+        </createTable>
+    </changeSet>
+    <changeSet id="bdshrclient-20170120-1449" author="Dubey/Abhilash" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="address_hierarchy_entry_translation"></tableExists>
+            </not>
+        </preConditions>
+        <comment>A table to store address translations in local language</comment>
+        <createTable tableName="address_hierarchy_entry_translation">
+            <column name="address_hierarchy_entry_id" type="int(11)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="local_name" type="varchar(160)"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="address_hierarchy_entry_translation" baseColumnNames="address_hierarchy_entry_id"
+                                 constraintName="fk_address_hierarchy_entry_translation" referencedTableName="address_hierarchy_entry"
+                                 referencedColumnNames="address_hierarchy_entry_id"/>
+    </changeSet>
+    <changeSet id="bdshrclient-300117-1709" author="tw" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.CatchmentPatientDownloadTask';
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="scheduler_task_config">
+            <column name="name" value="Catchment Patient Sync Task"/>
+            <column name="schedulable_class" value="org.openmrs.module.shrclient.scheduler.tasks.CatchmentPatientDownloadTask"/>
+            <column name="start_time" valueDate=" now() "/>
+            <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
+            <column name="repeat_interval" value="60"/>
+            <column name="start_on_startup" value="0"/>
+            <column name="started" value="0"/>
+            <column name="created_by" value="1"/>
+            <column name="date_created" valueDate=" now() "/>
+            <column name="uuid" valueComputed=" uuid() "/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="bdshrclient-070217-1208" author="Dubey/Abhilash" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.BahmniSyncRetryTask';
+            </sqlCheck>
+        </preConditions>
+        <comment>Removing BahmniSyncRetryTask</comment>
+        <sql>
+            delete from scheduler_task_config where
+            schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.BahmniSyncRetryTask';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-220217-1208" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.CatchmentEncounterDownloadTask';
+            </sqlCheck>
+        </preConditions>
+        <comment>Renaming Encounter Catchment Download task</comment>
+        <sql>
+            update scheduler_task_config 
+            set schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.CatchmentDownloadTask', name='Catchment Sync Task'
+            where schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.CatchmentEncounterDownloadTask';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-220217-1209" author="Neha" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from scheduler_task_config where
+                schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.CatchmentPatientDownloadTask';
+            </sqlCheck>
+        </preConditions>
+        <comment>Removing CatchmentPatientDownloadTask</comment>
+        <sql>
+            delete from scheduler_task_config where
+            schedulable_class='org.openmrs.module.shrclient.scheduler.tasks.CatchmentPatientDownloadTask';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-24052017-1100" author="sukreet,dubey" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) != 0 from order_id_mapping where type='MedicationOrder';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            update order_id_mapping set type = 'MedicationRequest' ,  uri=REPLACE(uri,'#MedicationOrder',
+            '#MedicationRequest') where type = 'MedicationOrder';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-24052017-1101" author="sukreet,dubey" context="setup">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) != 0 from order_id_mapping where type='ProcedureOrder';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            update order_id_mapping set type = 'ProcedureRequest' where type = 'ProcedureOrder';
+        </sql>
+    </changeSet>
+    <changeSet id="bdshrclient-30052017-1023" author="Dubey" context="setup">
+        <comment>Increasing length of external_id column</comment>
+        <modifyDataType tableName="order_id_mapping"
+                        columnName="external_id"
+                        newDataType="varchar(150)" />
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,237 @@
+@font-face {
+    font-family: 'SolaimanLipi';
+    src: url('SolaimanLipi.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+.user_selection {
+    padding-left: 31px;
+    padding-right: 31px;
+}
+
+body {
+    font-family: Arial, Sans-serif !important;
+    color: #333 !important;
+}
+
+.btn {
+    background: #88af28;
+    color: #fff;
+    border: 1px solid #88af28;
+    font-size: 14px;
+    border-radius: 3px;
+}
+
+.dateRange {
+    padding: 5px;
+    margin: 5px;
+}
+
+input {
+    margin: 0px 10px 0px 10px;
+    font-size: 18px;
+}
+
+.container {
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 24px;
+    color: #438D80;
+}
+
+.dateRange div {
+    display: inline-block;
+}
+
+select.user {
+    border: 1px solid #ccc;
+    height: 30px;
+}
+
+#printArea {
+    display: none;
+    font-family: SolaimanLipi !important;
+}
+.print_wrap{
+    margin:0 auto;
+    overflow: hidden;
+    clear: both;
+}
+
+.healthId {
+    border-style: solid;
+    width: 8.2cm !important;
+    height: 5.1cm !important;
+    margin: 30px;
+    float: left;
+    border-color: #afafaf;
+    border-width: medium;
+    position: relative;
+    box-sizing: border-box;
+    page-break-inside: avoid;
+}
+
+.heading{
+    padding: 3px 10px 14px 10px;
+    height : 27px;
+    font-size: 11px;
+    border: medium none;
+    border-bottom: groove #eee;
+    line-height: 13px;
+}
+
+.bdgov {
+    display: block;
+    text-align: center;
+}
+
+.eng_name{
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+#hidCard{
+    text-align: center;
+    font-weight: bold;
+    font-size: 11px !important;
+}
+
+.patient_details {
+    padding: 0px 10px 0px 10px;
+}
+
+.healthId img {
+    float: left;
+    width:39px;
+    height:39px;
+}
+
+.label_tag{
+    font-size:10px;
+}
+
+#english_name{
+    display: block;
+    clear: both;
+    overflow: hidden;
+    height: 17px;
+}
+
+#bangla_name{
+    display: block;
+    clear: both;
+    overflow: hidden;
+    height: 14px;
+    padding-top: 2px;
+    font-size:10px;
+}
+
+.name_no_overflow {
+    overflow: hidden;
+    height: 18px;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+#name,#nid,#brn,#gender,#dob,#issued{
+    font-size:10px;
+    display:inline;
+}
+
+#name_tag,#nid_tag,#brn_tag,#gender_tag,#dob_tag,#issued_tag,#address_tag{
+    display:inline-block;
+}
+
+#dob_and_gender, #nid_and_issued{
+    display:block;
+    clear: both;
+    overflow: hidden;
+    height: 16px;
+    line-height: 16px;
+    font-size:10px;
+}
+.form-field{
+    width:50%;
+    padding-right:5px;
+    float: left;
+    box-sizing: border-box;
+}
+
+.address_details{
+    display: block;
+    line-height: 13px;
+    overflow: hidden;
+    height: 30px;
+}
+
+.address {
+    display:inline;
+    font-size: 10px;
+    overflow: hidden;
+}
+
+.hid_footer{
+    padding-bottom: 1px;
+    position: absolute;
+    bottom: 0;
+    border: medium none;
+    border-top: groove #eee;
+}
+
+.disclaimer{
+    font-size: 7px;
+    line-height: 9px;
+    padding-top: 0px;
+    text-align: center;
+}
+
+.barcode{
+    height: 25px !important;
+    width: 300px !important;
+}
+
+.errorMessage {
+    padding: 2px 4px;
+    margin: 0 0 2% 0;
+    border: solid 1px #FBD3C6;
+    background: #FDE4E1;
+    color: #CB4721;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#info {
+    display: none;
+    padding: 2px 4px;
+    margin: 0 0 2% 0;
+    border: solid 1px #FBD3C6;
+    background: #fde085;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+@charset "UTF-8";
+
+@media print {
+    #content > :not(#printArea) {
+        display: none !important;
+        width: 0cm;
+        height: 0cm;
+    }
+    .healthId {
+        border-style: solid;
+        width: 8.2cm !important;
+        height: 5.1cm !important;
+        margin: 30px;
+        border-color: #afafaf;
+        border-width: medium;
+        position: relative;
+        box-sizing: border-box;
+        page-break-inside: avoid;
+        float: left;
+    }
+}
+

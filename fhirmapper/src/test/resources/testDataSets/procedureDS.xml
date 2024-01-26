@@ -1,0 +1,293 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
+
+    <encounter_type encounter_type_id="2" name="OPD" description="Some desc 2" creator="1"
+                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
+
+    <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false"
+            uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
+    <patient patient_id="1" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false"/>
+    <person_name person_name_id="1" preferred="true" person_id="1" given_name="firstName"
+                 family_name="lastName" creator="1" date_created="2005-09-22 00:00:00.0"
+                 voided="false" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
+
+    <concept_class concept_class_id="101" name="ProcedureTest" description="Describes a clinical procedure" creator="1"
+                   date_created="2004-03-02 00:00:00.0" retired="false" uuid="8d490bf4-c2cc-11de-8d13-0010c6dffd0f"/>
+
+    <!--Procedure concepts -->
+    <concept concept_id="300" retired="false" datatype_id="4" class_id="10" is_set="true" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-lk87-4da3-bb88-8122ctdiast"/>
+    <concept_name concept_name_id="300" concept_id="300" name="Procedure Order Fulfillment Form" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3zazzv9-e1v4-98ij-b2d6-bc4335835eaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+
+    <concept concept_id="301" retired="false" datatype_id="4" class_id="10" is_set="true" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-bb88-8122ctdiast"/>
+    <concept_name concept_name_id="301" concept_id="301" name="Procedure Template" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3zazzv9-e1v4-41d4-b2d6-bc4335835eaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="302" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg777-1yz9-4da3-bb88-8122ctdabcde"/>
+    <concept_name concept_name_id="302" concept_id="302" name="Procedure Outcome" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3zazzv9-e1v4-41t6-b2d6-bc4335835ebbd"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="606" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="cbd43a8d-7sk3-4b43-937s-29e54ad07afc"/>
+    <concept_name concept_name_id="606" concept_id="606" name="Successful" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="dzs4za8d-96je-4w13-8263-89e54ad07bfg"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_answer concept_answer_id="606" concept_id="302" answer_concept="606" sort_weight="1" date_created="2004-08-12 00:00:00.0" creator="1" uuid="y2y42a2d-2833-483-eeae-89e54ad07trw" />
+    <concept_reference_term concept_reference_term_id="35" concept_source_id="1" code="385669000" name="Successful"
+                            creator="1" date_created="2004-08-12 00:00:00.0" retired="false"
+                            uuid="alkjdf34-3892-ab04-4893-c3b004132b89"></concept_reference_term>
+    <concept_reference_map concept_map_id="35" concept_id="606" concept_reference_term_id="35" concept_map_type_id="2"
+                           creator="1" date_created="2004-08-12 00:00:00.0" uuid="alkjdf34-3892-ab04-4893-x3x004132x89"></concept_reference_map>
+    <shr_id_mapping id="64" internal_id="alkjdf34-3892-ab04-4893-c3b004132b89" external_id="123" type="concept_reference_term"
+                    uri="http://tr.com/123"></shr_id_mapping>
+    <shr_id_mapping id="65" internal_id="cbd43a8d-7sk3-4b43-937s-29e54ad07afc" external_id="682" type="concept"
+                    uri="http://tr.com/682"></shr_id_mapping>
+
+    <concept concept_id="303" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg999-1yz9-4da3-bb88-8122ctdabcde"/>
+    <concept_name concept_name_id="303" concept_id="303" name="Procedure Followup" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3zayyv9-e1v4-41t6-b2d6-bc4335835eaaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+
+    <concept concept_id="607" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="cbd43a8e-8djw-4b43-6293-29e54ad07afc"/>
+    <concept_name concept_name_id="607" concept_id="607" name="Change of dressing" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="dzs4za8d-icke-icme-8263-89e54ad07bfg"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_answer concept_answer_id="607" concept_id="303" answer_concept="607" sort_weight="1" date_created="2004-08-12 00:00:00.0" creator="1" uuid="y2y42a2d-8sk3-483-uces-89e54ad07trw" />
+    <shr_id_mapping id="67" internal_id="cbd43a8e-8djw-4b43-6293-29e54ad07afc" external_id="6831" type="concept"
+                    uri="http://tr.com/6831"></shr_id_mapping>
+    
+    <concept_reference_term concept_reference_term_id="36" concept_source_id="1" code="18949003" name="Change of dressing"
+                            creator="1" date_created="2004-08-12 00:00:00.0" retired="false"
+                            uuid="alkjdf34-usjw-wawa-4893-cjb004132b89"></concept_reference_term>
+    <concept_reference_map concept_map_id="36" concept_id="607" concept_reference_term_id="36" concept_map_type_id="2"
+                           creator="1" date_created="2004-08-12 00:00:00.0" uuid="alkjdf34-oxkw-ab04-uxhw-x3x004132x89"></concept_reference_map>
+    <shr_id_mapping id="66" internal_id="alkjdf34-usjw-wawa-4893-cjb004132b89" external_id="12345" type="concept_reference_term"
+                    uri="http://tr.com/12345"></shr_id_mapping>
+    <concept_reference_term concept_reference_term_id="37" concept_source_id="1" code="18949003" name="Change of dressing"
+                            creator="1" date_created="2004-08-12 00:00:00.0" retired="false"
+                            uuid="alkjdf34-usjw-wawa-34rf-cjb004132b89"></concept_reference_term>
+    <concept_reference_map concept_map_id="37" concept_id="607" concept_reference_term_id="37" concept_map_type_id="3"
+                           creator="1" date_created="2004-08-12 00:00:00.0" uuid="alkjdf34-oxkw-q23e-uxhw-x3x004132x89"></concept_reference_map>
+    <shr_id_mapping id="68" internal_id="alkjdf34-usjw-wawa-34rf-cjb004132b89" external_id="12346" type="concept_reference_term"
+                    uri="http://tr.com/12346"></shr_id_mapping>
+
+    <concept concept_id="304" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg999-1yz7-4da3-oo88-8122ctdpqrst"/>
+    <concept_name concept_name_id="304" concept_id="304" name="Procedure Type" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3zaxxv9-e1v4-52t6-b2d6-bc4335835eqqq"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="601" retired="false" datatype_id="4" class_id="2" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="8h7379ba-3ca8-y1e3-cg3b-a8az2a1abc94"/>
+    <concept_name concept_name_id="601" concept_id="601" name="ProcedureAnswer1" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="b47ae9a9-e1a4-51d4-b5d6-bc4335835ea6"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_answer concept_answer_id="601" concept_id="304" answer_concept="601" sort_weight="1" date_created="2004-08-12 00:00:00.0" creator="1" uuid="qkiay98f-1fz9-fda3-2b68-qa3a3lz3689j" />
+    <shr_id_mapping id="40" internal_id="8h7379ba-3ca8-y1e3-cg3b-a8az2a1abc94" external_id="Osteopathic-Treatment-of-Abdomen" type="concept"
+                    uri="http://tr.com/Osteopathic-Treatment-of-Abdomen"></shr_id_mapping>
+
+    <concept concept_id="305" retired="false" datatype_id="6" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="songg999-1yz7-lee3-oo88-8122ctdpqrst"/>
+    <concept_name concept_name_id="305" concept_id="305" name="Procedure Start Date" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3zchov9-e1v4-52t6-b2d6-seo335835eqqq"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="306" retired="false" datatype_id="6" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="miag999-1yz7-lee3-oo88-8122ctdphwang"/>
+    <concept_name concept_name_id="306" concept_id="306" name="Procedure End Date" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="parkhov9-e1v4-52t6-b2d6-anki35835eqqq"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+
+    <concept concept_id="307" retired="false" datatype_id="4" class_id="10" is_set="true" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="judge999-1yz7-4da3-oo88-8122mujrim"/>
+    <concept_name concept_name_id="307" concept_id="307" name="Procedure Diagnostic Study" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a3zseoul-e1v4-52t6-b2d6-4335835delhi"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="308" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="test999-1yz7-4da3-oo88-8122zzzz"/>
+    <concept_name concept_name_id="308" concept_id="308" name="Procedure Diagnostic Test" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="testxxv9-e1v4-52t6-b2d6-bc433583xxxx"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="602" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="cbd43a8d-cf4f-4b13-8daf-89e54ad07afc"/>
+    <concept_name concept_name_id="602" concept_id="602" name="Test A" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="dfs43a8d-cf4f-4c13-8daf-89e54ad07bfg"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_answer concept_answer_id="602" concept_id="308" answer_concept="602" sort_weight="1" date_created="2004-08-12 00:00:00.0" creator="1" uuid="yyy43a8d-cf4f-777-8daf-89e54ad07trw" />
+    <concept_reference_term concept_reference_term_id="10" concept_source_id="1" code="Test A-LOINC" name="Sugar Test"
+                            creator="1" date_created="2004-08-12 00:00:00.0" retired="false"
+                            uuid="flat67ac-b24e-ab04-7028-c3b004132b89"></concept_reference_term>
+    <concept_reference_map concept_map_id="10" concept_id="602" concept_reference_term_id="10" concept_map_type_id="2"
+                           creator="1" date_created="2004-08-12 00:00:00.0" uuid="alkjdf34-3892-ab04-4893-c3c0c4333x89"></concept_reference_map>
+    <shr_id_mapping id="42" internal_id="cbd43a8d-cf4f-4b13-8daf-89e54ad07afc" external_id="Test A" type="concept"
+                    uri="http://tr.com/Test-A"></shr_id_mapping>
+    <shr_id_mapping id="43" internal_id="flat67ac-b24e-ab04-7028-c3b004132b89" external_id="Test A-LOINC" type="concept"
+                    uri="http://tr.com/Test-A-LOINC"></shr_id_mapping>
+
+
+    <concept concept_id="309" retired="false" datatype_id="3" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="test999-1yz7-4da3-oo99-8122result"/>
+    <concept_name concept_name_id="309" concept_id="309" name="Procedure Diagnostic Result" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="testppv9-e1v4-52t8-b2d6-bc433583name"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="310" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0"
+             version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="dia999-1yz7-4gno3-oo99-8122sis"/>
+    <concept_name concept_name_id="310" concept_id="310" name="Procedure Diagnosis" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="diatppv9-e1v4-52g8-n2o6-bc433583sis"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="603" retired="false" datatype_id="4" class_id="2" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="pne45-3ca8-y1e3-cg3b-a6782monia12"/>
+    <concept_name concept_name_id="603" concept_id="603" name="Viral pneumonia 406475" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="b47loop9-e1a4-51d4-b5d6-b4335835for"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_answer concept_answer_id="603" concept_id="310" answer_concept="603" sort_weight="1" date_created="2004-08-12 00:00:00.0" creator="1" uuid="eachr98f-1fz4-fda3-2b68-qa3a3lz36ans" />
+    <concept_reference_term concept_reference_term_id="9" concept_source_id="1" code="J19.406475" name="Viral pneumonia 406475"
+                            creator="1" date_created="2004-08-12 00:00:00.0" retired="false"
+                            uuid="stream67ac-b24e-ab04-7028-c3b004132b82"></concept_reference_term>
+    <concept_reference_map concept_map_id="9" concept_id="603" concept_reference_term_id="9" concept_map_type_id="2"
+                           creator="1" date_created="2004-08-12 00:00:00.0" uuid="alkjdf34-w8w2-wb04-4893-x3x004132x89"></concept_reference_map>
+    <shr_id_mapping id="44" internal_id="stream67ac-b24e-ab04-7028-c3b004132b82" external_id="Viral-Pneumonia-LOINC" type="concept"
+                    uri="http://tr.com/Viral-Pneumonia-LOINC"></shr_id_mapping>
+    <shr_id_mapping id="45" internal_id="pne45-3ca8-y1e3-cg3b-a6782monia12" external_id="Viral-Pneumonia" type="concept"
+                    uri="http://tr.com/Viral-Pneumonia"></shr_id_mapping>
+
+    <concept concept_id="311" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0" version="" changed_by="1"
+             date_changed="2005-02-25 11:43:43.0" uuid="dia999-1yz7-2kxme-3de3-8122sis" />
+    <concept_name concept_name_id="311" concept_id="311" name="Procedure Notes" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="diatppv9-7cje-52g8-ukv3-bc433583sis"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+    <concept_set concept_set_id="311" concept_id="311" concept_set="301" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="2"></concept_set>
+
+    <concept concept_id="312" retired="false" datatype_id="2" class_id="11" is_set="false" creator="1"
+             date_created="2004-08-12 00:00:00.0" version="" changed_by="1"
+             date_changed="2005-02-25 11:43:43.0" uuid="dia999-78i3-zhem-ucme-8122sis" />
+    <concept_name concept_name_id="312" concept_id="312" name="Procedure Status" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="diatppv9-8che-cejd-uce3-bc433583sis"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0" />
+    <concept_set concept_set_id="312" concept_id="312" concept_set="301" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1" />
+
+    <concept concept_id="604" retired="false" datatype_id="4" class_id="2" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="pne45-3ca8-y1e3-cg3b-a6782m0nia12"/>
+    <concept_name concept_name_id="604" concept_id="604" name="In Progress" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="b47l00p9-7cy3-43yd-93yd-b4335835for"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_name concept_name_id="605" concept_id="604" name="in-progress" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="b47l00p9-7cy0-40yd-83jc-b4335835for"
+                  concept_name_type="SHORT" locale_preferred="0"/>
+    <concept_answer concept_answer_id="604" concept_id="312" answer_concept="604" sort_weight="1" date_created="2004-08-12 00:00:00.0" creator="1" uuid="eachro8f-uom3-6cu3-873d-qa3a3lz36ans" />
+
+    <!-- Procedure observations -->
+    <visit visit_id="1" date_started="2014-07-10 00:00:00" date_created="2014-07-10 00:00:00" patient_id="1"
+           visit_type_id="1" date_stopped="2014-07-10 23:59:59" location_id="2" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
+
+    <encounter encounter_id="36" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2010-08-01 00:00:00.0" creator="1" date_created="2010-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-707a-4629-9850-f15206e63ab0"/>
+    <obs obs_id="1100" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="ef4554cb-22gg-471a-lld7-1434552c337c1" creator="1" concept_id="301" voided="0"/>
+    <obs obs_id="1101" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1100"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="ef4554cb-22gg-471a-lld7-1434552c337d2" creator="1" concept_id="302" voided="0" value_coded="606"/>
+    <obs obs_id="1102" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1100"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="ef4554cb-22ff-471a-ghy7-1434552c337d2" creator="1" concept_id="303" voided="0" value_coded="607"/>
+    <obs obs_id="1103" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1100"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="ef4554cb-22xx-471a-ghy7-1434552c33457" creator="1" concept_id="304" voided="0" value_coded="601"/>
+    <obs obs_id="1104" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1100"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="af6574cb-22yy-471a-giz7-1434112c77458" creator="1" concept_id="305" voided="0" value_datetime="2015-01-10 00:00:00.0"/>
+    <obs obs_id="1105" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1100"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="bg6574cb-22yy-581a-giz7-1434552c77459" creator="1" concept_id="306" voided="0" value_datetime="2015-01-15 00:00:00.0"/>
+    <obs obs_id="1110" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1100"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="bg6574cb-22yy-8cu3-eixk-1434552c77459" creator="1" concept_id="311" voided="0" value_text="Procedure went well"/>
+    <obs obs_id="1111" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1100"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="bg05740b-22yy-8cu3-eixk-1434552c77459" creator="1" concept_id="312" voided="0" value_coded="604"/>
+
+    <!--Diagnostic Study -->
+    <obs obs_id="1106" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1100"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="ew6574cb-22yy-891a-giz7-3450552c77459" creator="1" concept_id="307" voided="0" />
+    <obs obs_id="1107" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1106"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="dia574cb-22yy-901a-giz7-3450552c7test" creator="1" concept_id="308" voided="0" value_coded="602"/>
+    <obs obs_id="1108" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1106"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="dia574cb-22yy-671a-giz7-3450552cresult" creator="1" concept_id="309" voided="0" value_text="Blood Pressure is very high"/>
+    <obs obs_id="1109" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1106"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="dia574-22yy-691a-giz7-345055diagnosis" creator="1" concept_id="310" voided="0" value_coded="603"/>
+
+    <!-- Obs without procedure type-->
+    <obs obs_id="1500" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="ef4778cb-22gg-471a-lld7-1434552c337c1" creator="1" concept_id="301" voided="0"/>
+
+    <!-- Obs with procedure type without diagnosis test and status-->
+    <obs obs_id="1501" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="ef4778cb-22gg-466a-lld7-1434552c337c1" creator="1" concept_id="301" voided="0"/>
+    <obs obs_id="1502" encounter_id="36" person_id="1" obs_datetime="2010-08-01 15:09:05.0" obs_group_id="1501"
+         date_created="2010-08-18 15:09:05.0"
+         uuid="ef4998cb-22gg-471a-lld7-1434552c337c1" creator="1" concept_id="304" voided="0" value_coded="601"/>
+
+    <!--data for fulfillment download-->
+    <!--Create Procedure Order Type-->
+    <encounter encounter_id="35" encounter_type="1" patient_id="1" visit_id="1" location_id="2"
+               encounter_datetime="2010-08-01 00:00:00.0" creator="1" date_created="2010-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-jh7l-4629-9850-f15206e63ab0"/>
+
+    <concept concept_id="107" retired="false" datatype_id="1" class_id="2" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7923d0e0-8734-11e3-baa7-0800200c9a66"/>
+
+    <order_type order_type_id="16" name="Procedure Order" description="An order for procedures" creator="1"
+                java_class_name="org.openmrs.Order"
+                date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
+
+    <orders order_id="150" order_type_id="16" encounter_id="35" urgency="ROUTINE" concept_id="107"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-17" order_action="NEW"
+            care_setting="1" date_created="2008-08-08 00:00:00.0" voided="false" patient_id="1" orderer="1"
+            comment_to_fulfiller="Some Notes" uuid="6d0ae386-707a-f123-16ws-f15206e63ab0"/>
+
+
+    <order_id_mapping id="1" internal_id="6d0ae386-707a-f123-16ws-f15206e63ab0" external_id="shr-enc-id-1:procedure-req-id"
+                      type="ProcedureOrder" uri="http://shr.com/patients/HID123/encounters/shr-enc-1#ProcedureRequest/procedure_req_id"/>
+    <!--Create Procedure Order Type-->
+    <!--data for fulfillment download-->
+</dataset>

@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <provider provider_id="22" person_id="2" name="shrclientsystem" creator="1" date_created="2005-01-01 00:00:00.0"
+              retired="false" uuid="331c6bf8-7846-11e3-a96a-0900271c1b75"/>
+
+    <person person_id="11" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
+
+    <patient patient_id="11" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="1" patient_id="11"
+                        identifier="GAN200000" identifier_type="2" creator="1"
+                        uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0"/>
+
+    <person person_id="21" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
+            uuid="75e04d42-3ca8-11e3-bccc-0800271c1b75"/>
+
+    <patient patient_id="21" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="2" patient_id="21"
+                        identifier="GAN200001" identifier_type="2" creator="1"
+                        uuid="7cb74fd1-128d-4584-8444-81d3335da3a6" preferred="1" voided="0"/>
+
+    <patient_id_mapping id="50" internal_id="75e04d42-3ca8-11e3-bf2b-0800271c1b75" external_id="11421467785"
+                    uri="/patients/11421467785" last_sync_datetime="2015-04-06 15:05:16.916" created_at="2015-04-06 15:05:16.916"></patient_id_mapping>
+    <patient_id_mapping id="51" internal_id="75e04d42-3ca8-11e3-bccc-0800271c1b75" external_id="12341467785"
+                    uri="/patients/12341467785" last_sync_datetime="2015-04-06 15:05:16.916" created_at="2015-04-06 15:05:16.916"></patient_id_mapping>
+
+
+    <location location_id="1" name="REG" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
+    <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"
+              uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
+
+    <encounter_type encounter_type_id="1" name="REG" description="Some desc" creator="1"
+                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
+    <encounter_type encounter_type_id="2" name="OPD" description="Some desc 2" creator="1"
+                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
+
+    <visit visit_id="1" date_started="2014-07-10 00:00:00" date_created="2015-07-10 00:00:00" patient_id="11"
+           visit_type_id="1" date_stopped="2015-07-15 23:59:59" location_id="2" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
+
+    <visit visit_id="2" date_started="2014-07-11 00:00:00" date_created="2015-07-11 00:00:00" patient_id="21"
+           visit_type_id="1" location_id="2" creator="1" changed_by="1"
+           voided_by="1" uuid="ad41fb41-a41a-4567-8835-2f59099acf5a" voided="0"/>
+
+    <encounter encounter_id="57" encounter_type="1" patient_id="11" visit_id="1" location_id="2"
+               encounter_datetime="2015-07-10 12:00:00.0" creator="1" date_created="2015-07-10 12:00:00.0"
+               voided="false" uuid="6d0af6767-707a-4629-9850-ttc2c6e63ab0"/>
+    <encounter_id_mapping id="1111" internal_id="6d0af6767-707a-4629-9850-ttc2c6e63ab0" external_id="shr_enc_id_1" uri="http://shr.com/patients/11421467785/encounters/shr_enc_id_1" />
+
+
+    <encounter_provider encounter_provider_id="2" encounter_id="57" provider_id="22" creator="1"
+                        date_created="2015-07-10 12:00:00.0"
+                        voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>
+
+
+    <encounter encounter_id="77" encounter_type="1" patient_id="21" visit_id="2" location_id="2"
+               encounter_datetime="2015-07-10 12:00:00.0" creator="1" date_created="2015-07-10 12:00:00.0"
+               voided="false" uuid="6d0af6767-707a-4629-9850-ttc2c6e33abc"/>
+    <encounter_id_mapping id="1112" internal_id="6d0af6767-707a-4629-9850-ttc2c6e33abc" external_id="shr_enc_id_2" uri="http://shr.com/patients/12341467785/encounters/shr_enc_id_1" />
+
+
+    <encounter_provider encounter_provider_id="2" encounter_id="57" provider_id="22" creator="1"
+                        date_created="2015-07-10 12:00:00.0"
+                        voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>
+
+
+    <concept concept_id="601" retired="false" datatype_id="4" class_id="11" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="baef67ac-b24e-4b04-ac83-c3b994132b85"/>
+    <concept_name concept_id="601" concept_name_id="6011" name="Vitals" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="baef67ac-b24e-4b04-ac83-c3b994132b85"/>
+
+    <concept concept_id="602" retired="false" datatype_id="4" class_id="11" is_set="true" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-bb88-8122ctrXdef"/>
+    <concept_name concept_id="602" concept_name_id="6012" name="Blood Pressure" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="lkiuy80f-1yz9-4da3-bb88-8122ce88687h"/>
+    <concept_set concept_set_id="1" concept_id="602" concept_set="601" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+
+    <concept concept_id="603" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-bb88-8122ctpulse"/>
+    <concept_name concept_id="603" concept_name_id="6013" name="Pulse" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="juydg80f-1yz9-4da3-bb88-8122ctuiopl"/>
+    <concept_numeric concept_id="603" precise="0"/>
+    <concept_set concept_set_id="2" concept_id="603" concept_set="601" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+    <concept_reference_term concept_reference_term_id="1" concept_source_id="1" code="M54.418965" creator="1" retired="false"
+                            date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-ab04-7028-c3b9941hji94"></concept_reference_term>
+    <concept_reference_map concept_map_id="1" concept_id="603" concept_reference_term_id="1" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-ab04-7028-c3b9941hj898"></concept_reference_map>
+    
+    <concept concept_id="605" retired="false" datatype_id="1" class_id="11" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="juydg80f-1yz9-4da3-bb88-8122ctdiast"/>
+    <concept_name concept_id="605" concept_name_id="6015" name="Diastolic" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="juydg80f-1yz9-4da3-bb88-812rrtdiast"/>
+    <concept_numeric concept_id="605" precise="0"/>
+    <concept_reference_term concept_reference_term_id="2" concept_source_id="1" code="271649006" creator="1" retired="false"
+                            date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-ui67-7028-c3b9941hji94"></concept_reference_term>
+    <concept_reference_map concept_map_id="2" concept_id="605" concept_reference_term_id="2" concept_map_type_id="2" creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-ab04-7028-c3b6671hji94"></concept_reference_map>
+    <concept_set concept_set_id="4" concept_id="605" concept_set="602" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+
+
+    <obs obs_id="111" encounter_id="57" person_id="11" location_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="ef4554cb-22gg-471a-lld7-1434552c337c1" creator="1" concept_id="601" voided="0" />
+    <obs obs_id="112" encounter_id="57" person_id="11" location_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="eee554cb-2afa-471a-9cd7-1434552c337c2"  creator="1" obs_group_id="111" concept_id="602" voided="0" />
+    <obs obs_id="113" encounter_id="57" person_id="11" location_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="eee554cb-22ff-471a-9cd7-1434552c337c2" creator="1" obs_group_id="112" value_numeric="120" concept_id="605" voided="0" />
+    <obs obs_id="114" encounter_id="57" person_id="11" location_id="2" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="eeea54cb-2aee-471a-9cd7-1434a5aa337a4" creator="1" obs_group_id="111" value_numeric="133" concept_id="603" voided="1" />
+
+    <concept concept_id="301" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_name_id="301" concept_id="301" name="Lactic Acid" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_reference_term concept_reference_term_id="9" concept_source_id="1" code="G01AD01" name="lactic acid"
+                            creator="1" date_created="2004-08-12 00:00:00.0" retired="0"
+                            uuid="baef67ac-b24e-ab04-7028-c3b994132b85"></concept_reference_term>
+    <concept_reference_map concept_map_id="9" concept_id="301" concept_reference_term_id="9" concept_map_type_id="1"
+                           creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-93kf-ix3d-c3b994132b85"/>
+
+    <concept concept_id="701" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-a8a02a1cab75"/>
+    <concept_name concept_name_id="701" concept_id="701" name="Oral" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a37ae9a9-e1a4-41d4-b2d6-bc4335835ea9"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="701" concept_id="701" concept_set="30" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+
+    <concept concept_id="807" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7h7379ba-eee8-a1a3-bh2b-a8ax2axvafyl"/>
+    <concept_name concept_name_id="807" concept_id="807" name="Pill" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="g3zazzv9-e1w4-41d4-b2d6-bx43x5835bbe"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <!--<concept_set concept_set_id="817" concept_id="807" concept_set="1208" creator="1"-->
+                 <!--date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>-->
+    <!--<concept_set concept_set_id="820" concept_id="807" concept_set="25" creator="1"-->
+                 <!--date_created="2004-08-12 00:00:00.0" sort_weight="2"></concept_set>-->
+    <!--<concept_set concept_set_id="823" concept_id="807" concept_set="26" creator="1"-->
+                 <!--date_created="2004-08-12 00:00:00.0" sort_weight="2"></concept_set>-->
+
+
+
+    <drug drug_id="301" concept_id="301" dosage_form="51" name="Lactic Acid" combination="true" creator="1"
+          strength="200"
+          date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00b94-26fe-102b-80cb-0017a47871b2"/>
+
+    <orders order_id="24" order_type_id="1" encounter_id="57" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2015-07-10 12:00:00.0" voided="false" patient_id="11" orderer="22"
+            auto_expire_date="2015-07-10 23:59:59.0" uuid="amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"/>
+    <drug_order order_id="24" drug_inventory_id="301" as_needed="false" quantity="192" duration="2" route="701"
+                duration_units="803" dosing_instructions="{&quot;instructions&quot;:&quot;As directed&quot;,&quot;eveningDose&quot;:30}"
+                quantity_units="50" dispense_as_written="true" dose_units="807"/>
+
+    <orders order_id="25" order_type_id="1" encounter_id="57" urgency="ROUTINE" concept_id="301"
+            date_activated="2008-08-08 00:00:00.0" creator="1" order_number="ORD-3" order_action="NEW"
+            care_setting="1" date_created="2015-07-10 12:00:00.0" voided="true" patient_id="11" orderer="22"
+            auto_expire_date="2015-07-10 23:59:59.0" uuid="amJJja86-awaa-g1f3-9qw0-ccc2c6c63ab0"/>
+    <drug_order order_id="25" drug_inventory_id="301" as_needed="false" quantity="192" duration="2" route="701"
+                duration_units="803" dosing_instructions="{&quot;instructions&quot;:&quot;As directed&quot;,&quot;eveningDose&quot;:30}"
+                quantity_units="50" dispense_as_written="true" dose_units="807"/>
+    <order_id_mapping id="24" internal_id="amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0" external_id="shr_enc_id_2:amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"
+                      type="MedicationRequest" uri="/patients/11421467785/encounters/shr_enc_id_2#MedicationRequest/amkbja86-awaa-g1f3-9qw0-ccc2c6c63ab0"/>
+
+    <concept concept_id="803" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-eee8-e1e3-bf2b-a8a02a1vava5"/>
+    <concept_name concept_name_id="803" concept_id="803" name="Day(s)" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="a37ae9v9-e1v4-41d4-b2d6-bc4335835eaa"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+
+    <users user_id="777" person_id="2" system_id="3-6" username="shrclientsystem" retired="false"
+           password="ff6d1655327d385e11a04e1632b4f33ceb8fafd2" salt="5d32c5fd9fde391c755f1f4dfd5e1d6e3debe6"
+           creator="1" date_created="2008-08-15 15:46:47.0" uuid="Z9fd3a7b-6482-487d-87eR-c07b123MxF99"/>
+
+
+
+    <global_property property="shr.system.user" property_value="777" description="Shr System User" uuid="lkieyg88-efd9-fda3-2b99-z12aalsa677h"/>
+</dataset>

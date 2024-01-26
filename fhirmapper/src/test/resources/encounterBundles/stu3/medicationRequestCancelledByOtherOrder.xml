@@ -1,0 +1,273 @@
+<Bundle xmlns="http://hl7.org/fhir">
+    <id value="285d85fa-6781-45f9-a488-4fa68a989b0c"/>
+    <meta>
+        <lastUpdated value="2008-08-18T14:09:05.000+05:30"/>
+    </meta>
+    <type value="collection"/>
+    <entry>
+        <fullUrl value="urn:uuid:e1c2e2ab-ecd6-4e11-a6ca-3273c4e2232c"/>
+        <resource>
+            <Composition xmlns="http://hl7.org/fhir">
+                <identifier>
+                    <value value="urn:uuid:e1c2e2ab-ecd6-4e11-a6ca-3273c4e2232c"/>
+                </identifier>
+                <status value="final"/>
+                <type>
+                    <coding>
+                        <system value="http://hl7.org/fhir/vs/doc-typecodes"/>
+                        <code value="51899-3"/>
+                        <display value="Details Document"/>
+                    </coding>
+                </type>
+                <subject>
+                    <reference value="http://public.com/api/default/patients/1234512345123"/>
+                    <display value="1234512345123"/>
+                </subject>
+                <encounter>
+                    <reference value="urn:uuid:6d0af6767-cleo-hj65-c93s-co32c6e63ab0"/>
+                </encounter>
+                <date value="2008-08-18T14:09:05+05:30"/>
+                <author>
+                    <reference value="http://localhost:9997/api/1.0/facilities/12345.json"/>
+                </author>
+                <title value="Patient Clinical Encounter"/>
+                <confidentiality value="N"/>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:6d0af6767-cleo-hj65-c93s-co32c6e63ab0"/>
+                        <display value="Encounter"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:amkb3idk-ciek-u6y4-c83k-d92sc6c63ab0"/>
+                        <display value="Medication Request"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:amkb3idk-ciek-u6y4-c83k-d92sc6c63ab0-provenance"/>
+                        <display value="Medication Request Provenance"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:amkb3idk-ciek-u6y4-h6y5-d92sc6c63ab0"/>
+                        <display value="Medication Request"/>
+                    </entry>
+                </section>
+                <section>
+                    <entry>
+                        <reference value="urn:uuid:amkb3idk-ciek-u6y4-h6y5-d92sc6c63ab0-provenance"/>
+                        <display value="Medication Request Provenance"/>
+                    </entry>
+                </section>
+            </Composition>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:6d0af6767-cleo-hj65-c93s-co32c6e63ab0"/>
+        <resource>
+            <Encounter xmlns="http://hl7.org/fhir">
+                <identifier>
+                    <value value="urn:uuid:6d0af6767-cleo-hj65-c93s-co32c6e63ab0"/>
+                </identifier>
+                <status value="finished"/>
+                <class>
+                    <system value="http://hl7.org/fhir/v3/ActCode"/>
+                    <code value="AMB"/>
+                    <display value="ambulatory"/>
+                </class>
+                <type>
+                    <text value="Scheduled"/>
+                </type>
+                <subject>
+                    <reference value="http://public.com/api/default/patients/1234512345123"/>
+                    <display value="1234512345123"/>
+                </subject>
+                <period>
+                    <start value="2014-07-10T00:00:00.000+05:30"/>
+                    <end value="2014-07-10T23:59:59.000+05:30"/>
+                </period>
+                <serviceProvider>
+                    <reference value="http://localhost:9997/api/1.0/facilities/12345.json"/>
+                </serviceProvider>
+            </Encounter>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:amkb3idk-ciek-u6y4-c83k-d92sc6c63ab0"/>
+        <resource>
+            <MedicationRequest xmlns="http://hl7.org/fhir">
+                <identifier>
+                    <value value="urn:uuid:amkb3idk-ciek-u6y4-c83k-d92sc6c63ab0"/>
+                </identifier>
+                <status value="cancelled"/>
+                <intent value="order"/>
+                <medicationCodeableConcept>
+                    <coding>
+                        <system value="drugs/104"/>
+                        <code value="104"/>
+                        <display value="Lactic Acid"/>
+                    </coding>
+                </medicationCodeableConcept>
+                <subject>
+                    <reference value="http://public.com/api/default/patients/1234512345123"/>
+                    <display value="1234512345123"/>
+                </subject>
+                <context>
+                    <reference value="urn:uuid:6d0af6767-cleo-hj65-c93s-co32c6e63ab0"/>
+                </context>
+                <authoredOn value="2008-08-18T14:09:05+05:30"/>
+                <requester>
+                    <agent>
+                        <reference value="http://pr.com/provider/321.json"/>
+                    </agent>
+                </requester>
+                <dosageInstruction>
+                    <timing>
+                        <repeat>
+                            <boundsDuration>
+                                <value value="10"/>
+                                <system value="http://unitsofmeasure.org"/>
+                                <code value="wk"/>
+                            </boundsDuration>
+                            <frequency value="2"/>
+                            <period value="1"/>
+                            <periodUnit value="wk"/>
+                        </repeat>
+                    </timing>
+                    <asNeededBoolean value="false"/>
+                    <route>
+                        <coding>
+                            <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Route-of-Administration"/>
+                            <code value="Oral"/>
+                            <display value="Oral"/>
+                        </coding>
+                    </route>
+                    <doseQuantity>
+                        <value value="10"/>
+                        <unit value="mg"/>
+                    </doseQuantity>
+                </dosageInstruction>
+                <dispenseRequest>
+                    <quantity>
+                        <value value="192.0"/>
+                        <unit value="mg"/>
+                    </quantity>
+                </dispenseRequest>
+            </MedicationRequest>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:amkb3idk-ciek-u6y4-c83k-d92sc6c63ab0-provenance"/>
+        <resource>
+            <Provenance xmlns="http://hl7.org/fhir">
+                <target>
+                    <reference value="urn:uuid:amkb3idk-ciek-u6y4-c83k-d92sc6c63ab0"/>
+                </target>
+                <recorded value="2008-08-18T14:09:05.000+05:30"/>
+                <activity>
+                    <system value="http://hl7.org/fhir/v3/DataOperation"/>
+                    <code value="CANCEL"/>
+                </activity>
+                <agent>
+                    <whoReference>
+                        <reference value="http://pr.com/provider/321.json"/>
+                    </whoReference>
+                </agent>
+            </Provenance>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:amkb3idk-ciek-u6y4-h6y5-d92sc6c63ab0"/>
+        <resource>
+            <MedicationRequest xmlns="http://hl7.org/fhir">
+                <identifier>
+                    <value value="urn:uuid:amkb3idk-ciek-u6y4-h6y5-d92sc6c63ab0"/>
+                </identifier>
+                <status value="stopped"/>
+                <intent value="order"/>
+                <medicationCodeableConcept>
+                    <coding>
+                        <system value="drugs/104"/>
+                        <code value="104"/>
+                        <display value="Lactic Acid"/>
+                    </coding>
+                </medicationCodeableConcept>
+                <subject>
+                    <reference value="http://public.com/api/default/patients/1234512345123"/>
+                    <display value="1234512345123"/>
+                </subject>
+                <context>
+                    <reference value="urn:uuid:6d0af6767-cleo-hj65-c93s-co32c6e63ab0"/>
+                </context>
+                <authoredOn value="2008-08-18T14:11:05+05:30"/>
+                <requester>
+                    <agent>
+                        <reference value="http://pr.com/provider/321.json"/>
+                    </agent>
+                </requester>
+                <dosageInstruction>
+                    <timing>
+                        <repeat>
+                            <boundsDuration>
+                                <value value="10"/>
+                                <system value="http://unitsofmeasure.org"/>
+                                <code value="wk"/>
+                            </boundsDuration>
+                            <frequency value="2"/>
+                            <period value="1"/>
+                            <periodUnit value="wk"/>
+                        </repeat>
+                    </timing>
+                    <asNeededBoolean value="false"/>
+                    <route>
+                        <coding>
+                            <system value="http://localhost:9080/openmrs/ws/rest/v1/tr/vs/Route-of-Administration"/>
+                            <code value="Oral"/>
+                            <display value="Oral"/>
+                        </coding>
+                    </route>
+                    <doseQuantity>
+                        <value value="10"/>
+                        <unit value="mg"/>
+                    </doseQuantity>
+                </dosageInstruction>
+                <dispenseRequest>
+                    <quantity>
+                        <value value="192.0"/>
+                        <unit value="mg"/>
+                    </quantity>
+                </dispenseRequest>
+                <priorPrescription>
+                    <reference value="urn:uuid:amkb3idk-ciek-u6y4-c83k-d92sc6c63ab0"/>
+                </priorPrescription>
+            </MedicationRequest>
+        </resource>
+    </entry>
+    <entry>
+        <fullUrl value="urn:uuid:amkb3idk-ciek-u6y4-h6y5-d92sc6c63ab0-provenance"/>
+        <resource>
+            <Provenance xmlns="http://hl7.org/fhir">
+                <target>
+                    <reference value="urn:uuid:amkb3idk-ciek-u6y4-h6y5-d92sc6c63ab0"/>
+                </target>
+                <period>
+                    <start value="2008-08-18T14:11:05.000+05:30"/>
+                    <end value="2008-08-18T14:11:05.000+05:30"/>
+                </period>
+                <recorded value="2008-08-18T14:11:05.000+05:30"/>
+                <activity>
+                    <system value="http://hl7.org/fhir/v3/DataOperation"/>
+                    <code value="ABORT"/>
+                </activity>
+                <agent>
+                    <whoReference>
+                        <reference value="http://pr.com/provider/321.json"/>
+                    </whoReference>
+                </agent>
+            </Provenance>
+        </resource>
+    </entry>
+</Bundle>
