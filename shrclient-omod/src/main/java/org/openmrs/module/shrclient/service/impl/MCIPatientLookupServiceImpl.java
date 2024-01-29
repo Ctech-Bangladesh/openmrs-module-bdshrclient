@@ -42,11 +42,11 @@ public class MCIPatientLookupServiceImpl extends BaseOpenmrsService implements M
     private static final String PHONE_NO_PARAM_KEY = "phone_no";
     private final String patientContext;
 
-    private EMRPatientService emrPatientService;
-    private PropertiesReader propertiesReader;
-    private IdentityStore identityStore;
-    private EMREncounterService emrEncounterService;
-    private EMRPatientMergeService emrPatientMergeService;
+    private final EMRPatientService emrPatientService;
+    private final PropertiesReader propertiesReader;
+    private final IdentityStore identityStore;
+    private final EMREncounterService emrEncounterService;
+    private final EMRPatientMergeService emrPatientMergeService;
 
     @Autowired
     public MCIPatientLookupServiceImpl(@Qualifier("hieEmrPatientService") EMRPatientService emrPatientService, PropertiesReader propertiesReader,

@@ -36,7 +36,7 @@ public class FacilityPull {
     private static final String SINGLE_SPACE = " ";
     public static final String FR_FACILITY_LEVEL_FEED_URI = "urn://fr/facilities";
     public static final String FR_PATH_INFO = "fr.pathInfo";
-    private static final int MAX_NUMBER_OF_ENTRIES_TO_BE_SYNCHRONIZED = 1000;
+    private static final int MAX_NUMBER_OF_ENTRIES_TO_BE_SYNCHRONIZED = 100000;
     private static final String INITIAL_DATETIME = "0000-00-00 00:00:00";
 
     private final LocationService locationService;

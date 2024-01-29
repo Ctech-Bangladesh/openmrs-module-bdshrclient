@@ -120,6 +120,12 @@ public abstract class IdMappingDao {
         return getIdMappings(likeHealthId, getFetchByHealthIdSql());
     }
 
+    protected IdMapping findIdMappingByHealthId(String healthID) {
+        String likeHealthId = "%" + healthID + "%";
+        List<IdMapping> idMappings = getIdMappings(likeHealthId, getFetchByHealthIdSql());
+        return idMappings.size() > 0 ? idMappings.get(0) : null;
+    }
+
     protected PreparedStatement getBatchStatement(Connection connection, List<IdMapping> idMappings) throws SQLException {
         if (idMappings.size() == 0) {
             return null;

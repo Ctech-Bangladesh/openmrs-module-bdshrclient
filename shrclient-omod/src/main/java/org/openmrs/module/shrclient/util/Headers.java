@@ -13,7 +13,7 @@ public class Headers {
     public static final String AUTH_TOKEN_KEY = "X-Auth-Token";
     public static final String FROM_KEY = "From";
     public static final String ACCEPT_HEADER_KEY = "Accept";
-    public static final String CLIENT_ID_KEY = "client_id";
+    public static final String CLIENT_ID_KEY = "client-id";
     public static final String FACILITY_API_TOKEN_KEY = "facility.apiToken";
     public static final String FACILITY_CLIENT_ID_KEY = "facility.clientId";
     public static final String FACILITY_EMAIL_KEY = "facility.email";

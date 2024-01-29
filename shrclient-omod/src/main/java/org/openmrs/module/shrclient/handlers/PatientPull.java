@@ -13,6 +13,7 @@ import org.openmrs.module.shrclient.util.StringUtil;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import static org.openmrs.module.shrclient.handlers.EncounterPull.getCatchmentSting;
 import static org.openmrs.module.shrclient.util.Headers.ACCEPT_HEADER_KEY;
 import static org.openmrs.module.shrclient.util.Headers.getHrmAccessTokenHeaders;
 import static org.springframework.http.MediaType.APPLICATION_ATOM_XML;
@@ -89,12 +90,6 @@ public class PatientPull {
     private ArrayList<String> getMCIFeedUrls(PropertiesReader propertiesReader) {
         String mciBaseURL = StringUtil.ensureSuffix(propertiesReader.getMciBaseUrl(), "/");
         String catchmentPathPattern = StringUtil.removePrefix(propertiesReader.getMCICatchmentPathPattern(), "/");
-        List<String> facilityCatchments = propertiesReader.getFacilityCatchments();
-        ArrayList<String> catchmentsUrls = new ArrayList<>();
-        for (String facilityCatchment : facilityCatchments) {
-            String catchmentUrl = mciBaseURL + String.format(catchmentPathPattern, facilityCatchment);
-            catchmentsUrls.add(catchmentUrl);
-        }
-        return catchmentsUrls;
+      return getCatchmentSting(propertiesReader, mciBaseURL, catchmentPathPattern);
     }
 }

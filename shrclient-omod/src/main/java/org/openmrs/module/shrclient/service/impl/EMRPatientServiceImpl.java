@@ -44,14 +44,14 @@ public class EMRPatientServiceImpl implements EMRPatientService {
     private static final Logger logger = Logger.getLogger(EMRPatientServiceImpl.class);
     public static final String REGEX_TO_MATCH_MULTIPLE_WHITE_SPACE = "\\s+";
 
-    private BbsCodeService bbsCodeService;
-    private PatientService patientService;
-    private IdMappingRepository idMappingsRepository;
-    private PropertiesReader propertiesReader;
-    private SystemUserService systemUserService;
-    private PersonAttributeMapper personAttributeMapper;
-    private EMRPatientDeathService patientDeathService;
-    private GlobalPropertyLookUpService globalPropertyLookUpService;
+    private final BbsCodeService bbsCodeService;
+    private final PatientService patientService;
+    private final IdMappingRepository idMappingsRepository;
+    private final PropertiesReader propertiesReader;
+    private final SystemUserService systemUserService;
+    private final PersonAttributeMapper personAttributeMapper;
+    private final EMRPatientDeathService patientDeathService;
+    private final GlobalPropertyLookUpService globalPropertyLookUpService;
 
     @Autowired
     public EMRPatientServiceImpl(BbsCodeService bbsCodeService,
@@ -128,7 +128,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
 
             Date dob = mciPatient.getDateOfBirth();
             emrPatient.setBirthdate(dob);
-            emrPatient.setBirthtime(dob);
+//            emrPatient.setBirthtime(dob);
             emrPatient.setBirthdateEstimated(Boolean.FALSE);
             if (DOB_TYPE_ESTIMATED.equals(mciPatient.getDobType())) {
                 emrPatient.setBirthdateEstimated(Boolean.TRUE);
@@ -169,12 +169,9 @@ public class EMRPatientServiceImpl implements EMRPatientService {
         Date lastSyncDateTime = patientIdMapping.getLastSyncDateTime();
         Date patientModifiedTime = updatePatient.getModifiedTime();
 
-        if (lastSyncDateTime != null &&
-                (DateUtil.isLaterThan(lastSyncDateTime, patientModifiedTime)
-                        || DateUtil.isEqualTo(patientModifiedTime, lastSyncDateTime))) {
-            return false;
-        }
-        return true;
+      return lastSyncDateTime == null ||
+          (!DateUtil.isLaterThan(lastSyncDateTime, patientModifiedTime)
+              && !DateUtil.isEqualTo(patientModifiedTime, lastSyncDateTime));
     }
 
     private void setEducation(Patient mciPatient, org.openmrs.Patient emrPatient) {
@@ -316,8 +313,7 @@ public class EMRPatientServiceImpl implements EMRPatientService {
     private PatientIdentifierType getPatientIdentifierType() {
         AdministrationService administrationService = Context.getAdministrationService();
         String globalProperty = administrationService.getGlobalProperty(MRSProperties.GLOBAL_PROPERTY_EMR_PRIMARY_IDENTIFIER_TYPE);
-        PatientIdentifierType patientIdentifierByUuid = Context.getPatientService().getPatientIdentifierTypeByUuid(globalProperty);
-        return patientIdentifierByUuid;
+      return Context.getPatientService().getPatientIdentifierTypeByUuid(globalProperty);
     }
 
     private void addPatientToIdMapping(org.openmrs.Patient emrPatient, String healthId, Date serverModifiedTime) {

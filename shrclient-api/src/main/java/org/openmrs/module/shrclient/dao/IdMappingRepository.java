@@ -58,6 +58,10 @@ public class IdMappingRepository {
         return idMappingDao(idMappingType).findByHealthId(healthId);
     }
 
+    public IdMapping findIdByHealthId(String healthId, String idMappingType) {
+        return idMappingDao(idMappingType).findIdMappingByHealthId(healthId);
+    }
+
     public void replaceHealthId(final String toBeReplaced, final String toReplaceWith) {
         final List<IdMapping> reassignedEncounterIdMappings = updateHealthIds(findByHealthId(toBeReplaced, IdMappingType.ENCOUNTER), toBeReplaced, toReplaceWith);
         final List<IdMapping> reassignedMedicationRequestIdMappings = updateHealthIds(findByHealthId(toBeReplaced, IdMappingType.MEDICATION_ORDER), toBeReplaced, toReplaceWith);
