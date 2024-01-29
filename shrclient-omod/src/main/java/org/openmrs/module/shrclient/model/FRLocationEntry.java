@@ -23,6 +23,10 @@ public class FRLocationEntry {
     @JsonInclude(NON_EMPTY)
     private String id;
 
+    @JsonProperty("code")
+    @JsonInclude(NON_EMPTY)
+    private String code;
+
     @JsonProperty("active")
     private String active;
 
@@ -63,6 +67,14 @@ public class FRLocationEntry {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getActive() {
@@ -379,6 +391,7 @@ public class FRLocationEntry {
         if (coordinates != null ? !coordinates.equals(that.coordinates) : that.coordinates != null) return false;
         if (createdAt != null ? !createdAt.equals(that.createdAt) : that.createdAt != null) return false;
         if (!id.equals(that.id)) return false;
+        if (!code.equals(that.code)) return false;
         if (identifiers != null ? !identifiers.equals(that.identifiers) : that.identifiers != null) return false;
         if (properties != null ? !properties.equals(that.properties) : that.properties != null) return false;
         if (!name.equals(that.name)) return false;
@@ -393,6 +406,7 @@ public class FRLocationEntry {
         int result = name.hashCode();
         result = 31 * result + (url != null ? url.hashCode() : 0);
         result = 31 * result + id.hashCode();
+        result = 31 * result + code.hashCode();
         result = 31 * result + (active != null ? active.hashCode() : 0);
         result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
         result = 31 * result + (updatedAt != null ? updatedAt.hashCode() : 0);
@@ -408,6 +422,7 @@ public class FRLocationEntry {
         sb.append("name='").append(name).append('\'');
         sb.append(", url='").append(url).append('\'');
         sb.append(", id='").append(id).append('\'');
+        sb.append(", code='").append(code).append('\'');
         sb.append(", active='").append(active).append('\'');
         sb.append(", createdAt='").append(createdAt).append('\'');
         sb.append(", updatedAt='").append(updatedAt).append('\'');
