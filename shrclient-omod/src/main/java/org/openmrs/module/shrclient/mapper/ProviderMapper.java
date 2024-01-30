@@ -1,12 +1,18 @@
 package org.openmrs.module.shrclient.mapper;
 
+import static org.apache.commons.lang3.StringUtils.trim;
+
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.openmrs.*;
+import org.openmrs.Location;
+import org.openmrs.Person;
+import org.openmrs.PersonName;
+import org.openmrs.Provider;
+import org.openmrs.ProviderAttribute;
+import org.openmrs.ProviderAttributeType;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.module.fhir.mapper.model.EntityReference;
-import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.model.IdMapping;
 import org.openmrs.module.shrclient.model.IdMappingType;
@@ -16,22 +22,17 @@ import org.openmrs.module.shrclient.util.SystemProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
-import java.util.List;
-
-import static org.apache.commons.lang3.StringUtils.trim;
-import static org.openmrs.module.fhir.utils.DateUtil.*;
-
 @Component
 public class ProviderMapper {
     private final static String ORGANIZATION_ATTRIBUTE_TYPE_NAME = "Organization";
+    private final static String DESIGNATION_ATTRIBUTE_TYPE_NAME = "Designation";
     final static String PROVIDER_RETIRE_REASON = "Upstream Deletion";
     final static String PERSON_RETIRE_REASON = "Upstream Deletion of Mapped Provider";
     private final static String NOT_ACTIVE = "0";
     private final static String ACTIVE = "1";
-    private ProviderService providerService;
-    private IdMappingRepository idMappingRepository;
-    private PersonService personService;
+    private final ProviderService providerService;
+    private final IdMappingRepository idMappingRepository;
+    private final PersonService personService;
 
     @Autowired
     public ProviderMapper(ProviderService providerService, IdMappingRepository idMappingRepository, PersonService personService) {
@@ -42,8 +43,15 @@ public class ProviderMapper {
 
     public void createOrUpdate(ProviderEntry providerEntry, SystemProperties systemProperties) {
         String providerIdentifier = trim(providerEntry.getId());
+        Provider provider = providerService.getProviderByIdentifier(providerIdentifier);
         IdMapping idMapping = idMappingRepository.findByExternalId(providerIdentifier, IdMappingType.PROVIDER);
-        Provider provider = null;
+
+        if (provider != null && idMapping == null){
+            String providerUrl = new EntityReference().build(Provider.class, systemProperties, providerIdentifier);
+            idMappingRepository.saveOrUpdateIdMapping(new ProviderIdMapping(provider.getUuid(), providerIdentifier, providerUrl));
+            idMapping = idMappingRepository.findByExternalId(providerIdentifier, IdMappingType.PROVIDER);
+        }
+
         if (idMapping == null) {
             provider = new Provider();
             provider.setIdentifier(providerIdentifier);
@@ -55,6 +63,7 @@ public class ProviderMapper {
         provider.setName(buildProviderName(providerEntry));
         mapActive(providerEntry, provider);
         mapOrganization(providerEntry, provider);
+        mapDesignation(providerEntry, provider);
         personService.savePerson(provider.getPerson());
         providerService.saveProvider(provider);
         String providerUrl = new EntityReference().build(Provider.class, systemProperties, providerIdentifier);
@@ -119,7 +128,7 @@ public class ProviderMapper {
 
     private void mapOrganization(ProviderEntry providerEntry, Provider provider) {
         if (providerEntry.getOrganization() != null) {
-            ProviderAttribute providerAttribute = getProviderAttribute(provider);
+            ProviderAttribute providerAttribute = getProviderOrganizationAttribute(provider);
             String facilityUrl = providerEntry.getOrganization().getReference();
             String facilityId = new EntityReference().parse(Location.class, facilityUrl);
             providerAttribute.setValue(facilityId);
@@ -128,11 +137,30 @@ public class ProviderMapper {
         }
     }
 
-    private ProviderAttribute getProviderAttribute(Provider provider) {
+    private void mapDesignation(ProviderEntry providerEntry, Provider provider) {
+        if (providerEntry.getProperties() != null) {
+            ProviderAttribute providerAttribute = getProviderDesignationAttribute(provider);
+            String designation = providerEntry.getProperties().getDesignation();
+            providerAttribute.setValue(designation);
+            providerAttribute.setValueReferenceInternal(designation);
+            provider.setAttribute(providerAttribute);
+        }
+    }
+
+    private ProviderAttribute getProviderOrganizationAttribute(Provider provider) {
         ProviderAttributeType organizationAttributeType = findOrganizationProviderAttributeType();
         ProviderAttribute providerAttribute = findInExistingAttributes(provider, organizationAttributeType);
         if (providerAttribute == null) {
             providerAttribute = createNewProviderAttribute(provider, organizationAttributeType);
+        }
+        return providerAttribute;
+    }
+
+    private ProviderAttribute getProviderDesignationAttribute(Provider provider) {
+        ProviderAttributeType designationAttributeType = findDesignationProviderAttributeType();
+        ProviderAttribute providerAttribute = findInExistingAttributes(provider, designationAttributeType);
+        if (providerAttribute == null) {
+            providerAttribute = createNewProviderAttribute(provider, designationAttributeType);
         }
         return providerAttribute;
     }
@@ -143,17 +171,26 @@ public class ProviderMapper {
         return null;
     }
 
-    private ProviderAttribute createNewProviderAttribute(Provider provider, ProviderAttributeType organizationAttributeType) {
+    private ProviderAttribute createNewProviderAttribute(Provider provider, ProviderAttributeType attributeType) {
         ProviderAttribute providerAttribute;
         providerAttribute = new ProviderAttribute();
         providerAttribute.setProvider(provider);
-        providerAttribute.setAttributeType(organizationAttributeType);
+        providerAttribute.setAttributeType(attributeType);
         return providerAttribute;
     }
 
     private ProviderAttributeType findOrganizationProviderAttributeType() {
         for (ProviderAttributeType providerAttributeType : providerService.getAllProviderAttributeTypes(false)) {
             if (providerAttributeType.getName().equals(ORGANIZATION_ATTRIBUTE_TYPE_NAME)) {
+                return providerAttributeType;
+            }
+        }
+        return null;
+    }
+
+    private ProviderAttributeType findDesignationProviderAttributeType() {
+        for (ProviderAttributeType providerAttributeType : providerService.getAllProviderAttributeTypes(false)) {
+            if (providerAttributeType.getName().equals(DESIGNATION_ATTRIBUTE_TYPE_NAME)) {
                 return providerAttributeType;
             }
         }

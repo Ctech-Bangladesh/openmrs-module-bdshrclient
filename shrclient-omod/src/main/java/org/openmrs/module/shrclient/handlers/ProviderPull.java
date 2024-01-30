@@ -16,12 +16,12 @@ import java.util.Map;
 import static org.openmrs.module.shrclient.util.URLParser.parseURL;
 
 public class ProviderPull {
-    private static final int MAX_NUMBER_OF_ENTRIES_TO_BE_SYNCHRONIZED = 1000;
+    private static final int MAX_NUMBER_OF_ENTRIES_TO_BE_SYNCHRONIZED = 1000000000;
     public static final String PR_FEED_URI = "urn://pr/providers";
     public static final String PR_PROVIDERS_PATH_INFO = "pr.pathInfo";
     private static final String OFFSET = "offset";
     private static final String UPDATED_SINCE = "updatedSince";
-    private static final int DEFAULT_LIMIT = 100;
+    private static final int DEFAULT_LIMIT = 50;
     private static final int INITIAL_OFFSET = 0;
     private static final String INITIAL_DATETIME = "0000-00-00 00:00:00";
     private static final String EXTRA_FILTER_PATTERN = "?offset=%d&limit=%d&updatedSince=%s";
