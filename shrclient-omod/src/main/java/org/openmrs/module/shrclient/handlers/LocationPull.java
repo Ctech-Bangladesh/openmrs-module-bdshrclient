@@ -42,7 +42,7 @@ public class LocationPull {
     public static final String OFFSET = "offset";
     public static final String UPDATED_SINCE = "updatedSince";
     public static final String SINGLE_SPACE = " ";
-    private static final int DEFAULT_LIMIT = 100;
+    private static final int DEFAULT_LIMIT = 50;
     private static final String EXTRA_FILTER_PATTERN = "?offset=%s&limit=%s&updatedSince=%s";
     private static final int MAX_NUMBER_OF_ENTRIES_TO_BE_SYNCHRONIZED = 1000000000;
     private static final String INITIAL_DATETIME = "0000-00-00 00:00:00";

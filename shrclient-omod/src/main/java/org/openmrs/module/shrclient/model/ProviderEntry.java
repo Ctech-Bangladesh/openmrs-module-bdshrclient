@@ -109,7 +109,7 @@ public class ProviderEntry {
         private String maritalStatus;
 
         @JsonProperty("freedomFighter")
-        private int freedomFighter;
+        private String freedomFighter;
 
         @JsonProperty("tribial")
         private String tribial;
@@ -156,11 +156,11 @@ public class ProviderEntry {
             this.maritalStatus = maritalStatus;
         }
 
-        public int getFreedomFighter() {
+        public String getFreedomFighter() {
             return freedomFighter;
         }
 
-        public void setFreedomFighter(int freedomFighter) {
+        public void setFreedomFighter(String freedomFighter) {
             this.freedomFighter = freedomFighter;
         }
 
