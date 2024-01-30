@@ -141,9 +141,6 @@ public class ProviderEntry {
         @JsonProperty("designationDiscipline")
         private String designationDiscipline;
 
-        @JsonProperty("machineid")
-        private String[] machineid;
-
         // Constructors (default and parameterized) can also be added
 
         // Setters and Getters
@@ -242,14 +239,6 @@ public class ProviderEntry {
 
         public void setDesignationDiscipline(String designationDiscipline) {
             this.designationDiscipline = designationDiscipline;
-        }
-
-        public String[] getMachineid() {
-            return machineid;
-        }
-
-        public void setMachineid(String[] machineid) {
-            this.machineid = machineid;
         }
     }
 
