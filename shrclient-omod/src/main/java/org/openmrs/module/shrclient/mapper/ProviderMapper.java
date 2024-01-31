@@ -54,12 +54,12 @@ public class ProviderMapper {
 
         if (idMapping == null) {
             provider = new Provider();
-            provider.setIdentifier(providerIdentifier);
             mapProviderToPerson(providerEntry, provider);
         } else {
             provider = providerService.getProviderByUuid(idMapping.getInternalId());
             mapProviderToPerson(providerEntry, provider);
         }
+        provider.setIdentifier(providerIdentifier);
         provider.setName(buildProviderName(providerEntry));
         mapActive(providerEntry, provider);
         mapOrganization(providerEntry, provider);
