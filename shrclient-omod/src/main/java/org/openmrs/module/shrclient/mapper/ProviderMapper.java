@@ -139,11 +139,13 @@ public class ProviderMapper {
 
     private void mapDesignation(ProviderEntry providerEntry, Provider provider) {
         if (providerEntry.getProperties() != null) {
-            ProviderAttribute providerAttribute = getProviderDesignationAttribute(provider);
-            String designation = providerEntry.getProperties().getDesignation();
-            providerAttribute.setValue(designation);
-            providerAttribute.setValueReferenceInternal(designation);
-            provider.setAttribute(providerAttribute);
+            if (providerEntry.getProperties().getDesignation() != null){
+                ProviderAttribute providerAttribute = getProviderDesignationAttribute(provider);
+                String designation = providerEntry.getProperties().getDesignation();
+                providerAttribute.setValue(designation);
+                providerAttribute.setValueReferenceInternal(designation);
+                provider.setAttribute(providerAttribute);
+            }
         }
     }
 
