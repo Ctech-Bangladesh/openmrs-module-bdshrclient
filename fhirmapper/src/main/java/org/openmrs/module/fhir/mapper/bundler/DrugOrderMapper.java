@@ -189,7 +189,16 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
     private Dosage getDoseInstructions(DrugOrder drugOrder, SystemProperties systemProperties) {
         Dosage dosageInstruction = new Dosage();
 
-        dosageInstruction.setRoute(getRoute(drugOrder, systemProperties));
+        //TODO: Remove this section when TR is okay
+        /*Static Route*/
+        CodeableConcept codeableConcept = new CodeableConcept();
+        Coding coding = codeableConcept.addCoding();
+        coding.setDisplay(drugOrder.getRoute().getName().getName());
+        dosageInstruction.setRoute(codeableConcept);
+        /*--------------*/
+
+        //TODO: Uncomment it when TR is okay
+//        dosageInstruction.setRoute(getRoute(drugOrder, systemProperties));
 
         dosageInstruction.setAdditionalInstruction(asList(getAdditionalInstructions(drugOrder)));
 
@@ -197,7 +206,16 @@ public class DrugOrderMapper implements EmrOrderResourceHandler {
 
         addTiming(drugOrder, dosageInstruction);
         if (null != drugOrder.getDoseUnits()) {
-            SimpleQuantity doseQuantity = getDoseQuantityWithUnitsOnly(drugOrder, systemProperties);
+
+            //TODO: Remove this section when TR is okay
+            /*Static Quantity*/
+            SimpleQuantity doseQuantity = new SimpleQuantity();
+            doseQuantity.setUnit(drugOrder.getDoseUnits().getName().getName());
+            /*--------------*/
+
+            //TODO: Uncomment it when TR is okay
+//            SimpleQuantity doseQuantity = getDoseQuantityWithUnitsOnly(drugOrder, systemProperties);
+
             dosageInstruction.setDose(doseQuantity);
             if (drugOrder.getDose() != null) {
                 getDosageInstructionsForGenericDose(drugOrder, dosageInstruction);
