@@ -13,6 +13,8 @@ public class ProviderEntry {
     private String name;
     @JsonProperty("organization")
     private Organization organization;
+    @JsonProperty("properties")
+    private Properties properties;
     @JsonProperty("active")
     private String active;
     @JsonProperty("gender")
@@ -42,6 +44,14 @@ public class ProviderEntry {
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
     }
 
     public String getActive() {
@@ -91,4 +101,145 @@ public class ProviderEntry {
             this.display = display;
         }
     }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public class Properties {
+
+        @JsonProperty("maritalStatus")
+        private String maritalStatus;
+
+        @JsonProperty("freedomFighter")
+        private String freedomFighter;
+
+        @JsonProperty("tribial")
+        private String tribial;
+
+        @JsonProperty("qualification")
+        private String qualification;
+
+        @JsonProperty("category")
+        private String category;
+
+        @JsonProperty("discipline")
+        private String discipline;
+
+        @JsonProperty("department")
+        private String department;
+
+        @JsonProperty("attendanceid")
+        private String attendanceid;
+
+        @JsonProperty("professionalDiscipline")
+        private String professionalDiscipline;
+
+        @JsonProperty("designation")
+        private String designation;
+
+        @JsonProperty("designationBdProfessionalCategory")
+        private String designationBdProfessionalCategory;
+
+        @JsonProperty("designationDiscipline")
+        private String designationDiscipline;
+
+        // Constructors (default and parameterized) can also be added
+
+        // Setters and Getters
+
+        public String getMaritalStatus() {
+            return maritalStatus;
+        }
+
+        public void setMaritalStatus(String maritalStatus) {
+            this.maritalStatus = maritalStatus;
+        }
+
+        public String getFreedomFighter() {
+            return freedomFighter;
+        }
+
+        public void setFreedomFighter(String freedomFighter) {
+            this.freedomFighter = freedomFighter;
+        }
+
+        public String getTribial() {
+            return tribial;
+        }
+
+        public void setTribial(String tribial) {
+            this.tribial = tribial;
+        }
+
+        public String getQualification() {
+            return qualification;
+        }
+
+        public void setQualification(String qualification) {
+            this.qualification = qualification;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public String getDiscipline() {
+            return discipline;
+        }
+
+        public void setDiscipline(String discipline) {
+            this.discipline = discipline;
+        }
+
+        public String getDepartment() {
+            return department;
+        }
+
+        public void setDepartment(String department) {
+            this.department = department;
+        }
+
+        public String getAttendanceid() {
+            return attendanceid;
+        }
+
+        public void setAttendanceid(String attendanceid) {
+            this.attendanceid = attendanceid;
+        }
+
+        public String getProfessionalDiscipline() {
+            return professionalDiscipline;
+        }
+
+        public void setProfessionalDiscipline(String professionalDiscipline) {
+            this.professionalDiscipline = professionalDiscipline;
+        }
+
+        public String getDesignation() {
+            return designation;
+        }
+
+        public void setDesignation(String designation) {
+            this.designation = designation;
+        }
+
+        public String getDesignationBdProfessionalCategory() {
+            return designationBdProfessionalCategory;
+        }
+
+        public void setDesignationBdProfessionalCategory(String designationBdProfessionalCategory) {
+            this.designationBdProfessionalCategory = designationBdProfessionalCategory;
+        }
+
+        public String getDesignationDiscipline() {
+            return designationDiscipline;
+        }
+
+        public void setDesignationDiscipline(String designationDiscipline) {
+            this.designationDiscipline = designationDiscipline;
+        }
+    }
+
 }

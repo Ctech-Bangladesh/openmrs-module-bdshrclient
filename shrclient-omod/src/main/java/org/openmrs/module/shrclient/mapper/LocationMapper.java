@@ -14,7 +14,7 @@ public class LocationMapper {
         return writeChanges(new Location(), locationEntry);
     }
     private Location writeChanges(Location location, FRLocationEntry locationEntry) {
-        String locationName = String.format("%s (%s)", locationEntry.getName(), locationEntry.getId());
+        String locationName = String.format("%s (%s)", locationEntry.getName(), locationEntry.getCode());
         location.setName(locationName);
         if ("0".equals(locationEntry.getActive())) {
             location.setRetired(true);
