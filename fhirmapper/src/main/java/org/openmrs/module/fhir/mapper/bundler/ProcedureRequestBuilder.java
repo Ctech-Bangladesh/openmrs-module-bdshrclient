@@ -39,8 +39,9 @@ public class ProcedureRequestBuilder {
     private void addCategory(ProcedureRequest procedureRequest, SystemProperties systemProperties, String trOrderTypeCode) {
         Coding coding = procedureRequest.addCategory().addCoding();
         coding.setCode(trOrderTypeCode);
-        String trValuesetUrl = systemProperties.createValueSetUrlFor(MRSProperties.TR_ORDER_TYPE_VALUESET_NAME);
-        coding.setSystem(trValuesetUrl);
+        // TODO: Update with TR
+//        String trValuesetUrl = systemProperties.createValueSetUrlFor(MRSProperties.TR_ORDER_TYPE_VALUESET_NAME);
+//        coding.setSystem(trValuesetUrl);
     }
 
     private void setProcedureRequestId(SystemProperties systemProperties, ProcedureRequest procedureRequest, String orderUuid) {

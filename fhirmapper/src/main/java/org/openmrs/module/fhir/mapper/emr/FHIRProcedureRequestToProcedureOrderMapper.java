@@ -82,7 +82,9 @@ public class FHIRProcedureRequestToProcedureOrderMapper implements FHIRResourceM
             if (null == previousOrder) return null;
             order.setPreviousOrder(previousOrder);
         }
-        order.setOrderType(orderService.getOrderTypeByName(MRS_PROCEDURE_ORDER_TYPE));
+        //TODO: validate with TR
+        // order.setOrderType(orderService.getOrderTypeByName(MRS_PROCEDURE_ORDER_TYPE));
+        order.setOrderType(orderService.getOrderTypeByName("Lab Order"));
         Concept concept = omrsConceptLookup.findConceptByCode(procedureRequest.getCode().getCoding());
         if (null == concept) return null;
         order.setConcept(concept);
