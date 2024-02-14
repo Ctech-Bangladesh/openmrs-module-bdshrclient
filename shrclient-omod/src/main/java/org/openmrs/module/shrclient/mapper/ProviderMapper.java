@@ -52,6 +52,13 @@ public class ProviderMapper {
             idMapping = idMappingRepository.findByExternalId(providerIdentifier, IdMappingType.PROVIDER);
         }
 
+        if (provider != null && idMapping != null){
+            if (!provider.getUuid().equals(idMapping.getInternalId())){
+                provider.setIdentifier(null);
+                providerService.saveProvider(provider);
+            }
+        }
+
         if (idMapping == null) {
             provider = new Provider();
             mapProviderToPerson(providerEntry, provider);

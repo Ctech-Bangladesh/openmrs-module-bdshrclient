@@ -1,5 +1,6 @@
 package org.openmrs.module.shrclient.scheduler.tasks;
 
+import java.util.Objects;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.utils.OMRSLocationService;
@@ -24,12 +25,13 @@ public class FRSyncTask extends AbstractTask {
             frClient = new ClientRegistry(propertiesReader, identityStore).getFRClient();
 
             new FacilityPull(propertiesReader, frClient,
-                    Context.getService(LocationService.class),
-                    PlatformUtil.getRegisteredComponent(ScheduledTaskHistory.class),
-                    PlatformUtil.getIdMappingsRepository(),
-                    new LocationMapper(),
-                    PlatformUtil.getFacilityCatchmentRepository(),
-                    PlatformUtil.getRegisteredComponent(OMRSLocationService.class)).synchronize();
+                Context.getService(LocationService.class),
+                PlatformUtil.getRegisteredComponent(ScheduledTaskHistory.class),
+                PlatformUtil.getIdMappingsRepository(),
+                new LocationMapper(),
+                PlatformUtil.getFacilityCatchmentRepository(),
+                Objects.requireNonNull(
+                    PlatformUtil.getRegisteredComponent(OMRSLocationService.class))).synchronize();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException();

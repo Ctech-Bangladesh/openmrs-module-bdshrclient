@@ -1,8 +1,20 @@
 package org.openmrs.module.shrclient.util;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Map;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -16,27 +28,34 @@ import org.apache.log4j.Logger;
 import org.openmrs.module.shrclient.identity.IdentityUnauthorizedException;
 import org.springframework.http.HttpStatus;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
 public class WebClient {
 
     private static final Logger log = Logger.getLogger(WebClient.class);
     public static final String ZERO_WIDTH_NO_BREAK_SPACE = "\uFEFF";
     public static final String BLANK_CHARACTER = "";
-    private String baseUrl;
-    private Map<String, String> headers;
+    private final String baseUrl;
+    private final Map<String, String> headers;
 
 
     public WebClient(String baseUrl, Map<String, String> headers) {
         this.baseUrl = baseUrl;
         this.headers = headers;
     }
+
+    private static final TrustManager[] trustAllCertificates = new TrustManager[]{
+        new X509TrustManager() {
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
+
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        }
+    };
+
 
 
     public String get(String path) throws IdentityUnauthorizedException {
@@ -93,28 +112,37 @@ public class WebClient {
             httpClientBuilder.setRedirectStrategy(new DefaultRedirectStrategy());
         else
             httpClientBuilder.disableRedirectHandling();
+
+        // Custom SSL Context to trust all certificates
+        try {
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
+            httpClientBuilder.setSSLContext(sslContext);
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            log.error("Error initializing SSL context", e);
+            throw new RuntimeException(e);
+        }
+
         try (CloseableHttpClient httpClient = httpClientBuilder.build()) {
             addHeaders(request);
 
-            ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-                public String handleResponse(final HttpResponse response) throws IOException {
-                    int status = response.getStatusLine().getStatusCode();
-                    HttpEntity entity = response.getEntity();
-                    String content = parseContentInputAsString(entity);
-                    if (status >= 200 && status < 300) {
-                        return entity != null ? content : null;
-                    } else if (status == HttpStatus.NOT_FOUND.value()) {
-                        return null;
-                    } else if (status == HttpStatus.UNAUTHORIZED.value()) {
-                        throw new IdentityUnauthorizedException("Identity not authorized");
-                    } else if (status == HttpStatus.FORBIDDEN.value()) {
-                        throw new ClientProtocolException("Access is denied: " + status);
-                    } else if (status >= 400 && status < 500) {
-                        String errorMessage = String.format("Unexpected response status: %s. \nResponse returned is %s.\n", status, content);
-                        throw new ClientProtocolException(errorMessage);
-                    } else {
-                        throw new ClientProtocolException("Unexpected response status: " + status);
-                    }
+            ResponseHandler<String> responseHandler = response -> {
+                int status = response.getStatusLine().getStatusCode();
+                HttpEntity entity = response.getEntity();
+                String content = parseContentInputAsString(entity);
+                if (status >= 200 && status < 300) {
+                    return content;
+                } else if (status == HttpStatus.NOT_FOUND.value()) {
+                    return null;
+                } else if (status == HttpStatus.UNAUTHORIZED.value()) {
+                    throw new IdentityUnauthorizedException("Identity not authorized");
+                } else if (status == HttpStatus.FORBIDDEN.value()) {
+                    throw new ClientProtocolException("Access is denied: " + status);
+                } else if (status >= 400 && status < 500) {
+                    String errorMessage = String.format("Unexpected response status: %s. \nResponse returned is %s.\n", status, content);
+                    throw new ClientProtocolException(errorMessage);
+                } else {
+                    throw new ClientProtocolException("Unexpected response status: " + status);
                 }
             };
             return httpClient.execute(request, responseHandler);
