@@ -26,6 +26,7 @@ public class LocationPull {
 
     public static final String LR_DIVISIONS_LEVEL_FEED_URI = "urn://lr/divisions";
     public static final String LR_DISTRICTS_LEVEL_FEED_URI = "urn://lr/districts";
+    public static final String LR_CITY_CORPORATION_LEVEL_FEED_URI = "urn://lr/city-corporation";
     public static final String LR_UPAZILAS_LEVEL_FEED_URI = "urn://lr/upazilas";
     public static final String LR_PAURASAVAS_LEVEL_FEED_URI = "urn://lr/paurasavas";
     public static final String LR_UNIONS_LEVEL_FEED_URI = "urn://lr/unions";
@@ -35,6 +36,7 @@ public class LocationPull {
     public static final String LR_UPAZILAS_PATH_INFO = "lr.upazilasPathInfo";
     public static final String LR_PAURASAVAS_PATH_INFO = "lr.paurasavasPathInfo";
     public static final String LR_UNIONS_PATH_INFO = "lr.unionsPathInfo";
+    public static final String LR_CITY_CORPORATION_PATH_INFO = "lr.cityCorporationPathInfo";
     public static final String LR_WARDS_PATH_INFO = "lr.wardsPathInfo";
     public static final String ENCODED_SINGLE_SPACE = "%20";
 
@@ -43,7 +45,7 @@ public class LocationPull {
     public static final String UPDATED_SINCE = "updatedSince";
     public static final String SINGLE_SPACE = " ";
     private static final int DEFAULT_LIMIT = 50;
-    private static final String EXTRA_FILTER_PATTERN = "?offset=%s&limit=%s&updatedSince=%s";
+    private static final String EXTRA_FILTER_PATTERN = "?offset=%s&limit=%s";
     private static final int MAX_NUMBER_OF_ENTRIES_TO_BE_SYNCHRONIZED = 1000000000;
     private static final String INITIAL_DATETIME = "0000-00-00 00:00:00";
 
@@ -68,18 +70,18 @@ public class LocationPull {
     }
 
     public void synchronize() throws IOException {
-        noOfEntriesSynchronizedSoFar = 0;
-
-        syncHelper(LR_DIVISIONS_PATH_INFO, LR_DIVISIONS_LEVEL_FEED_URI, LR_DISTRICTS_PATH_INFO,
-            LR_DISTRICTS_LEVEL_FEED_URI, LR_UPAZILAS_PATH_INFO, LR_UPAZILAS_LEVEL_FEED_URI);
-
-        syncHelper(LR_PAURASAVAS_PATH_INFO, LR_PAURASAVAS_LEVEL_FEED_URI, LR_UNIONS_PATH_INFO,
-            LR_UNIONS_LEVEL_FEED_URI, LR_WARDS_PATH_INFO, LR_WARDS_LEVEL_FEED_URI);
+//        noOfEntriesSynchronizedSoFar = 0;
+//
+//        syncHelper(LR_DIVISIONS_PATH_INFO, LR_DIVISIONS_LEVEL_FEED_URI, LR_DISTRICTS_PATH_INFO,
+//            LR_DISTRICTS_LEVEL_FEED_URI, LR_UPAZILAS_PATH_INFO, LR_UPAZILAS_LEVEL_FEED_URI, LR_CITY_CORPORATION_PATH_INFO, LR_CITY_CORPORATION_LEVEL_FEED_URI);
+//
+//        syncHelper(LR_PAURASAVAS_PATH_INFO, LR_PAURASAVAS_LEVEL_FEED_URI, LR_UNIONS_PATH_INFO,
+//            LR_UNIONS_LEVEL_FEED_URI, LR_WARDS_PATH_INFO, LR_WARDS_LEVEL_FEED_URI, null, null);
     }
 
     private void syncHelper(String lrDivisionsPathInfo, String lrDivisionsLevelFeedUri,
         String lrDistrictsPathInfo, String lrDistrictsLevelFeedUri, String lrUpazilasPathInfo,
-        String lrUpazilasLevelFeedUri) throws IOException {
+        String lrUpazilasLevelFeedUri, String lrCityCorporationsPathInfo, String lrCityCorporationsLevelFeedUri) throws IOException {
         List<LRAddressHierarchyEntry> synchronizedAddressHierarchyEntriesForDivisions = synchronizeUpdatesByLevel(
             lrDivisionsPathInfo, lrDivisionsLevelFeedUri);
         logger.info(synchronizedAddressHierarchyEntriesForDivisions.size() + " entries updated");
@@ -87,6 +89,12 @@ public class LocationPull {
         List<LRAddressHierarchyEntry> synchronizedAddressHierarchyEntriesForDistricts = synchronizeUpdatesByLevel(
             lrDistrictsPathInfo, lrDistrictsLevelFeedUri);
         logger.info(synchronizedAddressHierarchyEntriesForDistricts.size() + " entries updated");
+
+        if (lrCityCorporationsLevelFeedUri != null && lrCityCorporationsPathInfo != null){
+            List<LRAddressHierarchyEntry> synchronizedAddressHierarchyEntriesForCityCorporations = synchronizeUpdatesByLevel(
+                lrCityCorporationsPathInfo, lrCityCorporationsLevelFeedUri);
+            logger.info(synchronizedAddressHierarchyEntriesForCityCorporations.size() + " entries updated");
+        }
 
         List<LRAddressHierarchyEntry> synchronizedAddressHierarchyEntriesForUpazilas = synchronizeUpdatesByLevel(
             lrUpazilasPathInfo, lrUpazilasLevelFeedUri);
@@ -177,7 +185,7 @@ public class LocationPull {
     }
 
     private String getExtraFilters(int offset, String updatedSince) {
-        return String.format(EXTRA_FILTER_PATTERN, offset, DEFAULT_LIMIT, updatedSince).replace(SINGLE_SPACE, ENCODED_SINGLE_SPACE);
+        return String.format(EXTRA_FILTER_PATTERN, offset, DEFAULT_LIMIT).replace(SINGLE_SPACE, ENCODED_SINGLE_SPACE);
     }
 
     private void saveOrUpdateAddressHierarchyEntries(List<LRAddressHierarchyEntry> lrAddressHierarchyEntries) {

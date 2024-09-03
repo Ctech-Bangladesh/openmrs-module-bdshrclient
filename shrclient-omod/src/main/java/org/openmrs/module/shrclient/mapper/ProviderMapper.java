@@ -2,7 +2,9 @@ package org.openmrs.module.shrclient.mapper;
 
 import static org.apache.commons.lang3.StringUtils.trim;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.Person;
@@ -42,6 +44,10 @@ public class ProviderMapper {
     }
 
     public void createOrUpdate(ProviderEntry providerEntry, SystemProperties systemProperties) {
+
+        /*Trim the name in a short form if it's too large*/
+        providerEntry.setName(shortenName(providerEntry.getName()));
+
         String providerIdentifier = trim(providerEntry.getId());
         Provider provider = providerService.getProviderByIdentifier(providerIdentifier);
         IdMapping idMapping = idMappingRepository.findByExternalId(providerIdentifier, IdMappingType.PROVIDER);
@@ -204,5 +210,77 @@ public class ProviderMapper {
             }
         }
         return null;
+    }
+
+/*    public static String shortenName(String fullName) {
+        // Split the full name by spaces
+        List<String> words = Arrays.asList(fullName.split(" "));
+
+        // Check if the name has more than 6 words
+        if (words.size() <= 6) {
+            return fullName; // Return the original name if it has 6 or fewer words
+        }
+
+        // The first word is always included
+        String firstWord = words.get(0);
+
+        // Filter out invalid words and collect valid words except the first and the last two
+        List<String> validWords = words.stream()
+            .skip(1) // Skip the first word
+            .limit(words.size() - 3) // Exclude the last two words
+            .filter(word -> !word.contains(".") && word.length() > 2) // Filter valid words
+            .collect(Collectors.toList());
+
+        // If there are fewer than 4 valid words, return the full name
+        if (validWords.size() < 4) {
+            return fullName;
+        }
+
+        // Create the short form using the first letter of the first four valid words
+        String shortForm = validWords.stream()
+            .limit(4)
+            .map(word -> String.valueOf(word.charAt(0)))
+            .collect(Collectors.joining());
+
+        // Append the rest of the valid words after the first four
+        String restValidWords = validWords.stream()
+            .skip(4)
+            .map(word -> String.valueOf(word.charAt(0)))
+            .collect(Collectors.joining());
+
+        // Collect the last two words
+        String lastTwoWords = String.join(" ", words.subList(words.size() - 2, words.size()));
+
+        // Build the final shortened name
+        StringBuilder shortenedName = new StringBuilder();
+        shortenedName.append(firstWord).append(" ")
+            .append(shortForm).append(" ");
+        if (!restValidWords.isEmpty()) {
+            shortenedName.append(restValidWords).append(" ");
+        }
+        shortenedName.append(lastTwoWords);
+
+        return shortenedName.toString();
+    }*/
+
+    public static String shortenName(String name) {
+      // Split the name into words
+      String[] words = name.split("\\s+");
+
+      // If there are 5 or fewer words, return the original name
+      if (words.length <= 5) {
+        return name;
+      }
+
+      // Join the first 5 words into a single string
+      StringBuilder shortenedName = new StringBuilder();
+      for (int i = 0; i < 5; i++) {
+        shortenedName.append(words[i]);
+        if (i < 4) {
+          shortenedName.append(" ");
+        }
+      }
+
+      return shortenedName.toString();
     }
 }

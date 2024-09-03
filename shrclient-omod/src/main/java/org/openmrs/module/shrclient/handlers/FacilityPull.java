@@ -35,7 +35,7 @@ public class FacilityPull {
   private static final String OFFSET = "offset";
   private static final String UPDATED_SINCE = "updatedSince";
   private static final int DEFAULT_LIMIT = 100;
-  private static final String EXTRA_FILTER_PATTERN = "?offset=%d&limit=%d&updatedSince=%s";
+  private static final String EXTRA_FILTER_PATTERN = "?offset=%d&limit=%d";
   private static final String ENCODED_SINGLE_SPACE = "%20";
   private static final String SINGLE_SPACE = " ";
   public static final String FR_FACILITY_LEVEL_FEED_URI = "urn://fr/facilities";
@@ -73,9 +73,9 @@ public class FacilityPull {
   }
 
   public void synchronize() throws IOException {
-    noOfEntriesSynchronizedSoFar = 0;
-    List<FRLocationEntry> frLocationEntries = synchronizeUpdates();
-    logger.info(frLocationEntries.size() + " entries updated");
+//    noOfEntriesSynchronizedSoFar = 0;
+//    List<FRLocationEntry> frLocationEntries = synchronizeUpdates();
+//    logger.info(frLocationEntries.size() + " entries updated");
   }
 
   private List<FRLocationEntry> synchronizeUpdates() throws IOException {
@@ -240,7 +240,7 @@ public class FacilityPull {
   }
 
   private String getExtraFilters(int offset, String updatedSince) {
-    return String.format(EXTRA_FILTER_PATTERN, offset, DEFAULT_LIMIT, updatedSince)
+    return String.format(EXTRA_FILTER_PATTERN, offset, DEFAULT_LIMIT)
         .replace(SINGLE_SPACE, ENCODED_SINGLE_SPACE);
   }
 

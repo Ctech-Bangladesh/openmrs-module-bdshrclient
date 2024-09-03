@@ -24,7 +24,7 @@ public class ProviderPull {
     private static final int DEFAULT_LIMIT = 50;
     private static final int INITIAL_OFFSET = 0;
     private static final String INITIAL_DATETIME = "0000-00-00 00:00:00";
-    private static final String EXTRA_FILTER_PATTERN = "?offset=%d&limit=%d&updatedSince=%s";
+    private static final String EXTRA_FILTER_PATTERN = "?offset=%d&limit=%d";
     private static final String ENCODED_SINGLE_SPACE = "%20";
     private static final String SINGLE_SPACE = " ";
 
@@ -46,16 +46,16 @@ public class ProviderPull {
     }
 
     public void synchronize() throws IOException {
-        SystemProperties systemProperties = new SystemProperties(
-                propertiesReader.getFrProperties(),
-                propertiesReader.getTrProperties(),
-                propertiesReader.getPrProperties(),
-                propertiesReader.getFacilityInstanceProperties(),
-                propertiesReader.getMciProperties(),
-                propertiesReader.getShrProperties(),
-                propertiesReader.getFhirMappingProperties());
-
-        synchronizeUpdates(systemProperties);
+//        SystemProperties systemProperties = new SystemProperties(
+//                propertiesReader.getFrProperties(),
+//                propertiesReader.getTrProperties(),
+//                propertiesReader.getPrProperties(),
+//                propertiesReader.getFacilityInstanceProperties(),
+//                propertiesReader.getMciProperties(),
+//                propertiesReader.getShrProperties(),
+//                propertiesReader.getFhirMappingProperties());
+//
+//        synchronizeUpdates(systemProperties);
     }
 
     private void synchronizeUpdates(SystemProperties systemProperties) throws IOException {
@@ -144,7 +144,7 @@ public class ProviderPull {
     }
 
     private String getExtraFilters(int offset, String updatedSince) {
-        return String.format(EXTRA_FILTER_PATTERN, offset, DEFAULT_LIMIT, updatedSince)
+        return String.format(EXTRA_FILTER_PATTERN, offset, DEFAULT_LIMIT)
                 .replace(SINGLE_SPACE, ENCODED_SINGLE_SPACE);
     }
 }

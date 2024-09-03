@@ -1,7 +1,7 @@
     function isPatientIdValid(idType, patientId) {
     if (idType === "nid") {
-        if (!patientId.match("^(\\d{13}|\\d{17})$")) {
-            jq(".errorMessage").text("National Id should be 13 or 17 digit number.");
+        if (!patientId.match("^(\\d{10}|\\d{13}|\\d{17})$")) {
+            jq(".errorMessage").text("National Id should be 10, 13 or 17 digit number.");
             jq(".errorMessage").show();
             return false;
         }

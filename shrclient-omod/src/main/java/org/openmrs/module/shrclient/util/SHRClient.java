@@ -103,6 +103,34 @@ public class SHRClient {
     private StringEntity getPayload(Bundle bundle) throws Exception {
         IParser xmlParser = FhirBundleContextHolder.getFhirContext().newXmlParser();
         String bundleXML = xmlParser.encodeResourceToString(bundle);
+
+        // Print the JSON string
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println("Encounter-check-start-update===============");
+        System.out.println();
+        System.out.println(bundleXML);
+
+        System.out.println();
+        System.out.println();
+        System.out.println("Encounter-End-update");
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+
+
         StringEntity entity = new StringEntity(bundleXML);
         entity.setContentType("application/xml;charset=UTF-8");
         return entity;

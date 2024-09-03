@@ -4,6 +4,7 @@ package org.openmrs.module.shrclient.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Objects;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 
@@ -15,6 +16,10 @@ public class LRAddressHierarchyEntry {
     private String shortLocationCode;
 
     @JsonProperty("id")
+    @JsonInclude(NON_EMPTY)
+    private String locationId;
+
+    @JsonProperty("combined_code")
     @JsonInclude(NON_EMPTY)
     private String fullLocationCode;
 
@@ -30,7 +35,7 @@ public class LRAddressHierarchyEntry {
     @JsonInclude(NON_EMPTY)
     private String active;
 
-    @JsonProperty("name_BN")
+    @JsonProperty("name_bn")
     @JsonInclude(NON_EMPTY)
     private String localName;
 
@@ -48,6 +53,14 @@ public class LRAddressHierarchyEntry {
 
     public void setFullLocationCode(String fullLocationCode) {
         this.fullLocationCode = fullLocationCode;
+    }
+
+    public String getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(String locationId) {
+        this.locationId = locationId;
     }
 
     public String getLocationName() {
@@ -76,15 +89,14 @@ public class LRAddressHierarchyEntry {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("LRAddressHierarchyEntry{");
-        sb.append("shortLocationCode='").append(shortLocationCode).append('\'');
-        sb.append(", fullLocationCode='").append(fullLocationCode).append('\'');
-        sb.append(", locationName='").append(locationName).append('\'');
-        sb.append(", locationLevelName='").append(locationLevelName).append('\'');
-        sb.append(", active='").append(active).append('\'');
-        sb.append(", name_BN='").append(localName).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return "LRAddressHierarchyEntry{" + "shortLocationCode='" + shortLocationCode + '\''
+            + ", fullLocationCode='" + fullLocationCode + '\''
+            + ", locationId='" + locationId + '\''
+            + ", locationName='" + locationName + '\''
+            + ", locationLevelName='" + locationLevelName + '\''
+            + ", active='" + active + '\''
+            + ", name_bn='" + localName + '\''
+            + '}';
     }
 
     @Override
@@ -94,19 +106,19 @@ public class LRAddressHierarchyEntry {
 
         LRAddressHierarchyEntry that = (LRAddressHierarchyEntry) o;
 
-        if (active != null ? !active.equals(that.active) : that.active != null) return false;
+        if (!Objects.equals(active, that.active)) return false;
         if (!fullLocationCode.equals(that.fullLocationCode)) return false;
+        if (!locationId.equals(that.locationId)) return false;
         if (!locationLevelName.equals(that.locationLevelName)) return false;
         if (!locationName.equals(that.locationName)) return false;
-        if (!shortLocationCode.equals(that.shortLocationCode)) return false;
-
-        return true;
+        return shortLocationCode.equals(that.shortLocationCode);
     }
 
     @Override
     public int hashCode() {
         int result = shortLocationCode.hashCode();
         result = 31 * result + fullLocationCode.hashCode();
+        result = 31 * result + locationId.hashCode();
         result = 31 * result + locationName.hashCode();
         result = 31 * result + locationLevelName.hashCode();
         result = 31 * result + (active != null ? active.hashCode() : 0);
