@@ -51,7 +51,10 @@ public class CompositionBundleCreator {
         addBundleEntry(bundle, encounterResource);
 
         mapObs(emrEncounter, systemProperties, fhirEncounter, composition, bundle);
-        mapOrders(emrEncounter, systemProperties, hibernateLazyLoader, fhirEncounter, composition, bundle);
+
+        /*TODO: Remove the comments to include Medication and Lab Orders in the Bundle*/
+        /*Commenting Out to remove Medications and Lab orders from the Bundle*/
+        //mapOrders(emrEncounter, systemProperties, hibernateLazyLoader, fhirEncounter, composition, bundle);
 
         return bundle;
     }

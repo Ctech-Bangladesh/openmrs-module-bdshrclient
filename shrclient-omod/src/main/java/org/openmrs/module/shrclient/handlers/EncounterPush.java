@@ -91,8 +91,11 @@ public class EncounterPush implements EventWorker {
       saveEncounterIdMapping(openMrsEncounter.getUuid(), healthId, shrEncounterId,
           systemProperties);
       saveIdMappingForDiagnosis(openMrsEncounter, healthId, shrEncounterId, systemProperties);
-      saveIdMappingsForOrders(openMrsEncounter.getOrders(), healthId, shrEncounterId,
-          systemProperties);
+
+      /*TODO: Remove the comments to include Medication and Lab Orders in the Bundle*/
+      /*Commenting Out to remove Medications and Lab orders from the Bundle*/
+      /*saveIdMappingsForOrders(openMrsEncounter.getOrders(), healthId, shrEncounterId,
+          systemProperties);*/
     } catch (Exception e) {
       log.error("Error while processing encounter sync event.", e);
       throw new RuntimeException(e);
