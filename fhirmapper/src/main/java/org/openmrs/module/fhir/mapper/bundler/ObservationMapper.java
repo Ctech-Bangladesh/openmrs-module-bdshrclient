@@ -52,10 +52,12 @@ public class ObservationMapper implements EmrObsResourceHandler {
     @Override
     public List<FHIRResource> map(Obs obs, FHIREncounter fhirEncounter, SystemProperties systemProperties) {
         List<FHIRResource> result = new ArrayList<>();
-        FHIRResource rootObservationEntry = mapObs(obs, fhirEncounter, null, result, systemProperties);
-        if (rootObservationEntry != null) {
-            removeObservationsHierarchyWithoutValues(result, rootObservationEntry);
-        }
+        /*TODO: Remove the comments to include Obs (Observations) in the Bundle*/
+        /*Commenting Out to remove Obs (Observations) from the Bundle*/
+//        FHIRResource rootObservationEntry = mapObs(obs, fhirEncounter, null, result, systemProperties);
+//        if (rootObservationEntry != null) {
+//            removeObservationsHierarchyWithoutValues(result, rootObservationEntry);
+//        }
 
         return result;
     }
