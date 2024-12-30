@@ -6,10 +6,12 @@ import org.apache.log4j.Logger;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Composition;
 import org.hl7.fhir.dstu3.model.Period;
+import org.hl7.fhir.dstu3.model.Reference;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.transaction.AFTransactionManager;
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
@@ -20,12 +22,21 @@ import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.ShrEncounterBundle;
 import org.openmrs.module.fhir.utils.DateUtil;
 import org.openmrs.module.fhir.utils.FHIRBundleHelper;
+import org.openmrs.module.fhir.utils.OMRSLocationService;
 import org.openmrs.module.shrclient.advice.SHREncounterEventService;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
+import org.openmrs.module.shrclient.handlers.ClientRegistry;
+import org.openmrs.module.shrclient.mapper.LocationMapper;
 import org.openmrs.module.shrclient.model.EncounterIdMapping;
+import org.openmrs.module.shrclient.model.FRLocationEntry;
+import org.openmrs.module.shrclient.model.IdMapping;
 import org.openmrs.module.shrclient.model.IdMappingType;
 import org.openmrs.module.shrclient.service.*;
+import org.openmrs.module.shrclient.util.Headers;
+import org.openmrs.module.shrclient.util.PlatformUtil;
 import org.openmrs.module.shrclient.util.PropertiesReader;
+import org.openmrs.module.shrclient.util.RestClient;
+import org.openmrs.module.shrclient.util.StringUtil;
 import org.openmrs.module.shrclient.util.SystemProperties;
 import org.openmrs.module.shrclient.util.SystemUserService;
 import org.openmrs.module.shrclient.web.controller.dto.EncounterEvent;
@@ -125,6 +136,9 @@ public class EMREncounterServiceImpl implements EMREncounterService {
                 propertiesReader.getFhirMappingProperties());
 
         ShrEncounterBundle shrEncounterBundle = new ShrEncounterBundle(bundle, healthId, shrEncounterId);
+
+         /*pullLocationIfNotExists(shrEncounterBundle);*/
+
         org.openmrs.Encounter newEmrEncounter = fhirMapper.map(emrPatient, shrEncounterBundle, systemProperties);
 
         VisitType visitType = fhirMapper.getVisitType(shrEncounterBundle,systemProperties);
@@ -247,5 +261,130 @@ public class EMREncounterServiceImpl implements EMREncounterService {
         List<PlatformTransactionManager> platformTransactionManagers = Context.getRegisteredComponents
                 (PlatformTransactionManager.class);
         return platformTransactionManagers.get(0);
+    }
+
+    private void pullLocationIfNotExists(ShrEncounterBundle shrEncounterBundle) {
+        Location location = fhirMapper.getEncounterLocation(shrEncounterBundle);
+
+        RestClient frWebClient;
+
+        if (location == null){
+
+            Reference serviceProvider = null;
+            org.hl7.fhir.dstu3.model.Encounter fhirEncounter = FHIRBundleHelper.getEncounter(shrEncounterBundle.getBundle());
+
+            if (fhirEncounter != null){
+                serviceProvider = fhirEncounter.getServiceProvider();
+            }
+
+            if (serviceProvider != null && !serviceProvider.isEmpty()) {
+
+                String locationUrl =
+                    StringUtil.ensureSuffix(propertiesReader.getFrBaseUrl(), "/") + new EntityReference().parse(Location.class, serviceProvider.getReference())
+                        + ".json";
+
+                System.out.println("====================== FR Download Check =============================");
+                System.out.println("====================== FR Download Check =============================");
+                System.out.println("====================== FR Download Check =============================");
+                System.out.println("====================== FR Download Check =============================");
+                System.out.println();
+                System.out.println();
+                System.out.println(Headers.getHrmIdentityHeaders(propertiesReader.getFacilityInstanceProperties()));
+                System.out.println();
+                System.out.println();
+                System.out.println(locationUrl);
+
+                System.out.println();
+                System.out.println();
+                System.out.println();
+                System.out.println();
+
+                System.out.println("====================== FR Download CheckFR Download CheckFR Download Check =============================");
+                System.out.println("====================== FR Download Check =============================");
+                System.out.println("====================== FR Download Check =============================");
+                System.out.println("====================== FR Download Check =============================");
+
+                Object object = null;
+                try {
+                    frWebClient = new ClientRegistry(propertiesReader, PlatformUtil.getIdentityStore()).getFRClient();
+                    object = frWebClient.get(locationUrl, Object.class);
+                } catch (Exception e) {
+                    logger.error("Error while downloading chunk of Updates from FR : " + e);
+                }
+
+                System.out.println();
+                System.out.println();
+                System.out.println();
+                System.out.println();
+                System.out.println(object);
+
+                if (object != null){
+                    FRLocationEntry frLocationEntry = (FRLocationEntry) object;
+
+                    IdMapping facilityIdMapping = idMappingRepository.findByExternalId(frLocationEntry.getCode(),
+                        IdMappingType.FACILITY);
+
+                    String locationName = String.format("%s (%s)", frLocationEntry.getName(),
+                        frLocationEntry.getCode());
+
+                    if (facilityIdMapping == null) {
+                        Location existingLocation = Context.getService(LocationService.class).getLocation(locationName);
+                        if (existingLocation != null) {
+                            idMappingRepository.saveOrUpdateIdMapping(
+                                new IdMapping(existingLocation.getUuid(), frLocationEntry.getCode(),
+                                    IdMappingType.FACILITY, locationUrl, new Date()));
+                            facilityIdMapping = idMappingRepository.findByExternalId(frLocationEntry.getCode(),
+                                IdMappingType.FACILITY);
+                            if (facilityIdMapping != null) {
+                                updateExistingLocation(frLocationEntry, facilityIdMapping);
+                            }
+                        } else {
+                            createNewLocation(frLocationEntry);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void createNewLocation(FRLocationEntry frLocationEntry) {
+        logger.info("Creating new location: " + frLocationEntry.getName());
+        Location location;
+        try {
+            location = new LocationMapper().create(frLocationEntry);
+            location.addTag(Context.getService(LocationService.class).getLocationTag(
+                Context.getService(OMRSLocationService.class).getHIEFacilityLocationTag()));
+            location = Context.getService(LocationService.class).saveLocation(location);
+
+            PlatformUtil.getFacilityCatchmentRepository().saveMappings(location.getLocationId(),
+                frLocationEntry.getProperties().getCatchments());
+
+            String locationUrl =
+                StringUtil.ensureSuffix(propertiesReader.getFrBaseUrl(), "/") + frLocationEntry.getCode()
+                    + ".json";
+            idMappingRepository.saveOrUpdateIdMapping(
+                new IdMapping(location.getUuid(), frLocationEntry.getCode(), IdMappingType.FACILITY,
+                    locationUrl, new Date()));
+
+        } catch (Exception e) {
+            logger.error("Error while creating a new Location : " + e);
+            logger.info("Logging the failed event : " + frLocationEntry);
+        }
+    }
+
+    private void updateExistingLocation(FRLocationEntry frLocationEntry, IdMapping idMapping) {
+        logger.info("Updating existing location: " + frLocationEntry.getName());
+        Location location = null;
+        try {
+            location = new LocationMapper().updateExisting(
+                Context.getService(LocationService.class).getLocationByUuid(idMapping.getInternalId()), frLocationEntry);
+            PlatformUtil.getFacilityCatchmentRepository().saveMappings(location.getLocationId(),
+                frLocationEntry.getProperties().getCatchments());
+
+        } catch (Exception e) {
+            logger.error("Error while updating an old Location : " + e);
+            logger.info("Logging the failed event : " + frLocationEntry);
+        }
+        Context.getService(LocationService.class).saveLocation(location);
     }
 }

@@ -62,6 +62,19 @@ public class CompositionBundleCreator {
     public void mapOrders(Encounter emrEncounter, SystemProperties systemProperties, HibernateLazyLoader hibernateLazyLoader, FHIREncounter fhirEncounter, Composition composition, Bundle bundle) {
         Set<Order> orders = emrEncounter.getOrders();
         for (Order order : orders) {
+            System.out.println("================ Provider UUID ===============");
+            System.out.println("================ Provider UUID ===============");
+            System.out.println("================ Provider UUID ===============");
+            System.out.println("================ Provider UUID ===============");
+            System.out.println("================ Provider UUID ===============");
+            System.out.println("================ Provider UUID ===============");
+            System.out.println(order.getUuid());
+            System.out.println("================ Provider UUID ===============");
+            System.out.println("================ Provider UUID ===============");
+            System.out.println("================ Provider UUID ===============");
+            System.out.println("================ Provider UUID ===============");
+            System.out.println("================ Provider UUID ===============");
+            System.out.println("================ Provider UUID ===============");
             order = hibernateLazyLoader.load(order);
             for (EmrOrderResourceHandler handler : orderResourceHandlers) {
                 if (!handler.canHandle(order)) continue;
