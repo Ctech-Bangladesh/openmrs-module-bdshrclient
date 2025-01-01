@@ -66,6 +66,11 @@ public class HIDCardUserServiceImpl extends BaseOpenmrsService implements HIDCar
         }
     }
 
+    @Override
+    public HealthIdCard getPatientHIDByPatientId(int patientId) {
+        return hidCardDao.getPatientHIDByPatientId(String.valueOf(patientId));
+    }
+
     private UserService getUserService() {
         if (userService == null) {
             userService = Context.getUserService();

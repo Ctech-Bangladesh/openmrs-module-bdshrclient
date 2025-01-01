@@ -16,4 +16,7 @@ public interface HIDCardUserService extends OpenmrsService {
 
     @Authorized(value = {"Print HID Card"}, requireAll = true)
     public List<HealthIdCard> getAllCardsByUserWithinDateRange(int userId, String from, String to) throws IOException;
+
+    HealthIdCard getPatientHIDByPatientId(int patientId);
+
 }

@@ -15,6 +15,7 @@ import org.openmrs.*;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.MRSProperties;
 import org.openmrs.module.fhir.mapper.bundler.CompositionBundleCreator;
 import org.openmrs.module.fhir.mapper.model.CompoundObservation;
@@ -23,6 +24,7 @@ import org.openmrs.module.fhir.mapper.model.ObservationType;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.identity.IdentityUnauthorizedException;
 import org.openmrs.module.shrclient.model.*;
+import org.openmrs.module.shrclient.service.HIDCardUserService;
 import org.openmrs.module.shrclient.util.*;
 
 import java.io.IOException;
@@ -60,12 +62,25 @@ public class EncounterPush implements EventWorker {
   public void process(Event event) {
     log.debug("Event: [" + event + "]");
     try {
+
+      HIDCardUserService hidCardUserService=Context.getService(HIDCardUserService.class);
       String uuid = getUuid(event.getContent());
       org.openmrs.Encounter openMrsEncounter = encounterService.getEncounterByUuid(uuid);
+
       if (openMrsEncounter == null) {
         log.debug(String.format("No OpenMRS encounter exists with uuid: [%s].", uuid));
         return;
       }
+
+      HealthIdCard healthIdCard=hidCardUserService.getPatientHIDByPatientId(openMrsEncounter.getPatient()
+          .getPatientId());
+
+      if(healthIdCard==null) {
+        log.debug(String.format(" This encounter patient doesn't have HID available : [%s].", openMrsEncounter.getPatient().getPatientIdentifier().getIdentifier()));
+        return;
+      }
+
+
       if (openMrsEncounter.getEncounterType().getName().equals("REG")) {
         log.debug("Encounter skipped::" + openMrsEncounter.getEncounterType().getName());
         return;

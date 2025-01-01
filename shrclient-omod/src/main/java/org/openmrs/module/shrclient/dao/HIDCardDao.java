@@ -240,4 +240,37 @@ public class HIDCardDao {
                 "                AND pi.identifier_type = ? " +
                 "                AND p.uuid = ?;";
     }
+
+
+    public HealthIdCard getPatientHIDByPatientId(final String patientId) {
+        return database.executeInTransaction(new Database.TxWork<HealthIdCard>() {
+            @Override
+            public HealthIdCard execute(Connection connection) {
+                HealthIdCard healthIdCard=new HealthIdCard();
+//                List<HealthIdCard> healthIdCards = new ArrayList<>();
+                String result=null;
+                try {
+
+                    String query = getHIDQuery();
+                    PreparedStatement statement = connection.prepareStatement(query);
+                    statement.setString(1, patientId);
+                    ResultSet resultSet = statement.executeQuery();
+                    while (resultSet.next()) {
+                        healthIdCard.setHid(resultSet.getString(1));
+                    }
+                } catch (SQLException e) {
+                    logger.error(String.format("Error while fetching Health-Id Card details for person %s", patientId));
+                }
+                return healthIdCard;
+            }
+        });
+
+
+    }
+
+
+    private String getHIDQuery(){
+        return "SELECT  identifier from patient_identifier where identifier='4' and patient_id=?";
+    }
+
 }
