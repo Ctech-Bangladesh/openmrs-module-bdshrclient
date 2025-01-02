@@ -1,19 +1,25 @@
 package org.openmrs.module.shrclient.scheduler.tasks;
 
 
-import org.apache.commons.lang3.StringUtils;
+import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
 import org.apache.log4j.Logger;
 import org.openmrs.module.shrclient.handlers.EncounterPush;
 import org.openmrs.module.shrclient.handlers.PatientPush;
 import org.openmrs.module.shrclient.util.PropertiesReader;
-
-import java.net.URISyntaxException;
 
 public class BahmniSyncTask extends AbstractBahmniSyncTask {
     private static final Logger log = Logger.getLogger(BahmniSyncTask.class);
 
     @Override
     protected void executeBahmniTask(PatientPush patientPush, EncounterPush encounterPush, PropertiesReader propertiesReader) {
+
+        if (!isInternetAvailable()) {
+            log.warn("Internet is not available. Skipping the SHR Patient Sync Task.");
+            return;
+        }
+
         /*
         * todo: for now this class processes new and failed events both. Failed events should be processed in BahmniSyncRetryTask.
         * */
@@ -27,4 +33,20 @@ public class BahmniSyncTask extends AbstractBahmniSyncTask {
             log.error(e.getMessage());
         }
     }
+
+    private boolean isInternetAvailable() {
+        try {
+            URL url = new URL("https://www.google.com");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+            connection.setRequestMethod("HEAD");
+            int responseCode = connection.getResponseCode();
+            return (responseCode == 200);
+        } catch (Exception e) {
+            log.error("HTTP-based internet check failed: " + e.getMessage());
+            return false;
+        }
+    }
+
 }

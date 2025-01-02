@@ -2,6 +2,14 @@ package org.openmrs.module.shrclient.handlers;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.hl7.fhir.dstu3.model.BaseResource;
 import org.hl7.fhir.dstu3.model.Condition;
@@ -11,8 +19,9 @@ import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.openmrs.Encounter;
-import org.openmrs.*;
+import org.openmrs.Obs;
 import org.openmrs.Order;
+import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
@@ -23,14 +32,20 @@ import org.openmrs.module.fhir.mapper.model.EntityReference;
 import org.openmrs.module.fhir.mapper.model.ObservationType;
 import org.openmrs.module.shrclient.dao.IdMappingRepository;
 import org.openmrs.module.shrclient.identity.IdentityUnauthorizedException;
-import org.openmrs.module.shrclient.model.*;
+import org.openmrs.module.shrclient.model.DiagnosisIdMapping;
+import org.openmrs.module.shrclient.model.EncounterIdMapping;
+import org.openmrs.module.shrclient.model.EncounterResponse;
+import org.openmrs.module.shrclient.model.HealthIdCard;
+import org.openmrs.module.shrclient.model.IdMapping;
+import org.openmrs.module.shrclient.model.IdMappingType;
+import org.openmrs.module.shrclient.model.OrderIdMapping;
+import org.openmrs.module.shrclient.model.PatientIdMapping;
 import org.openmrs.module.shrclient.service.HIDCardUserService;
-import org.openmrs.module.shrclient.util.*;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.openmrs.module.shrclient.util.PropertiesReader;
+import org.openmrs.module.shrclient.util.SHRClient;
+import org.openmrs.module.shrclient.util.StringUtil;
+import org.openmrs.module.shrclient.util.SystemProperties;
+import org.openmrs.module.shrclient.util.SystemUserService;
 
 public class EncounterPush implements EventWorker {
 
@@ -62,8 +77,6 @@ public class EncounterPush implements EventWorker {
   public void process(Event event) {
     log.debug("Event: [" + event + "]");
     try {
-
-      HIDCardUserService hidCardUserService=Context.getService(HIDCardUserService.class);
       String uuid = getUuid(event.getContent());
       org.openmrs.Encounter openMrsEncounter = encounterService.getEncounterByUuid(uuid);
 
@@ -72,17 +85,24 @@ public class EncounterPush implements EventWorker {
         return;
       }
 
-      HealthIdCard healthIdCard=hidCardUserService.getPatientHIDByPatientId(openMrsEncounter.getPatient()
-          .getPatientId());
+      HealthIdCard healthIdCard = systemUserService.getPatientHIDByPatientId(
+          String.valueOf(openMrsEncounter.getPatient().getPatientId()));
 
-      if(healthIdCard==null) {
-        log.debug(String.format(" This encounter patient doesn't have HID available : [%s].", openMrsEncounter.getPatient().getPatientIdentifier().getIdentifier()));
+      if (healthIdCard == null) {
+
+        log.debug(String.format(" This encounter patient doesn't have HID available : [%s].",
+            openMrsEncounter.getPatient().getPatientIdentifier().getIdentifier()));
         return;
       }
 
-
       if (openMrsEncounter.getEncounterType().getName().equals("REG")) {
         log.debug("Encounter skipped::" + openMrsEncounter.getEncounterType().getName());
+        return;
+      }
+
+      // If there is no CC or Diagnosis then the Bundle will not send
+      if (openMrsEncounter.getAllObs().isEmpty()) {
+        log.debug("Encounter skipped because there is no CC or Diagnosis::");
         return;
       }
       IdMapping mapping = getEncounterMapping(openMrsEncounter);

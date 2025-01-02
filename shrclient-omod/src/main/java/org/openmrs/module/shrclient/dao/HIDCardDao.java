@@ -246,7 +246,7 @@ public class HIDCardDao {
         return database.executeInTransaction(new Database.TxWork<HealthIdCard>() {
             @Override
             public HealthIdCard execute(Connection connection) {
-                HealthIdCard healthIdCard=new HealthIdCard();
+                HealthIdCard healthIdCard = new HealthIdCard();
 //                List<HealthIdCard> healthIdCards = new ArrayList<>();
                 String result=null;
                 try {
@@ -261,7 +261,10 @@ public class HIDCardDao {
                 } catch (SQLException e) {
                     logger.error(String.format("Error while fetching Health-Id Card details for person %s", patientId));
                 }
-                return healthIdCard;
+                if (healthIdCard.getHid() == null) {
+                  return healthIdCard;
+                }
+                return null;
             }
         });
 
@@ -270,7 +273,7 @@ public class HIDCardDao {
 
 
     private String getHIDQuery(){
-        return "SELECT  identifier from patient_identifier where identifier='4' and patient_id=?";
+        return "SELECT identifier from patient_identifier where identifier='4' and patient_id=?";
     }
 
 }

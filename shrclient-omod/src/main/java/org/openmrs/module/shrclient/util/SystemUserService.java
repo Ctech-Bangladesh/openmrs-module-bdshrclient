@@ -1,5 +1,6 @@
 package org.openmrs.module.shrclient.util;
 
+import java.sql.ResultSet;
 import org.apache.log4j.Logger;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Encounter;
@@ -9,6 +10,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.utils.GlobalPropertyLookUpService;
+import org.openmrs.module.shrclient.model.HealthIdCard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -104,5 +106,33 @@ public class SystemUserService {
                 return null;
             }
         });
+    }
+
+    public HealthIdCard getPatientHIDByPatientId(final String patientId) {
+        return database.executeInTransaction(connection -> {
+            HealthIdCard healthIdCard = new HealthIdCard();
+//                List<HealthIdCard> healthIdCards = new ArrayList<>();
+            try {
+                String query = getHIDQuery();
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setString(1, patientId);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    healthIdCard.setHid(resultSet.getString(1));
+                }
+            } catch (SQLException e) {
+                logger.error(String.format("Error while fetching Health-Id Card details for person %s", patientId));
+            }
+            if (healthIdCard.getHid() == null) {
+                return null;
+            }
+            return healthIdCard;
+        });
+    }
+
+    private String getHIDQuery(){
+        return "SELECT identifier from patient_identifier pi"
+            + " inner join patient_identifier_type pt on pt.patient_identifier_type_id = pi.identifier_type"
+            + " where pt.name='Health Id' and patient_id=?";
     }
 }
